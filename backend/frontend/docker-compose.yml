@@ -6,11 +6,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./mysqldb/init.sql:/docker-entrypoint-initdb.d/0_init.sql
-      - $HOME/database:/var/lib/mysql
+      - /absolute/path/to/database:/var/lib/mysql
     ports:
         - 3306:3306
-    expose:
-      - 3306
     environment:
       MYSQL_DATABASE: pcbeedb
       MYSQL_USER: admin
