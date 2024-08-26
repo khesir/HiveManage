@@ -6,6 +6,7 @@ import cors from 'cors';
 import Response from './domain/response';
 import log from './util/logger'
 import { HttpStatus } from './config/config';
+import employeeRoute from './modules/employee/employee/employee.route';
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ const app = express();
 
 app.use(cors({origin: '*'}));
 app.use(express.json());
+
+// 
+app.use('/employee',employeeRoute)
 
 // Put the routes here
 app.get('/', (req, res) => res.send(new Response(HttpStatus.OK.code, HttpStatus.OK.status, 'Patient API, v1.0.0 - All Systems Go', [])));
