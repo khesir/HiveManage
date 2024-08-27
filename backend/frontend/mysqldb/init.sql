@@ -259,14 +259,13 @@ VALUES
     ('Sales', 'active');
 
 
-
 CREATE TABLE item (
   item_id BIGINT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255),
   description VARCHAR(255),
   quantity INTEGER,
   type ENUM('device', 'parts'),
-  condition ENUM('used', 'new', 'damage'),
+  item_condition ENUM('used', 'new', 'damage'),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -295,7 +294,7 @@ VALUES
   ('Parts Unlimited', '098-765-4321', 'Provides various parts', NOW(), NOW());
 
 
-INSERT INTO item (name, description, quantity, type, condition, created_at, last_updated)
+INSERT INTO item (name, description, quantity, type, item_condition, created_at, last_updated)
 VALUES 
   ('Laptop', '14-inch laptop with 16GB RAM', 10, 'device', 'new', NOW(), NOW()),
   ('Monitor', '24-inch monitor', 15, 'device', 'used', NOW(), NOW()),
