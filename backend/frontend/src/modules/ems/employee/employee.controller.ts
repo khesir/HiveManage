@@ -1,14 +1,15 @@
 
 
 import { Request, Response as ExpressResponse} from 'express';
+import { Pool } from 'mysql2/promise';
+
 import { EmployeeModel } from './employee.model';
-import pool from '../../../config/mysql.config';
 import { HttpStatus } from '../../../config/config';
 import Response from '../../../domain/response';
 export class EmployeeController {
     private employeeModel: EmployeeModel;
 
-    constructor() {
+    constructor(pool : Pool) {
         this.employeeModel = new EmployeeModel(pool);
     }
 

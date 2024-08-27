@@ -21,6 +21,12 @@ DROP TABLE IF EXISTS identification_financial_information;
 DROP TABLE IF EXISTS personal_information;
 DROP TABLE IF EXISTS employee;
 
+-- inventory
+DROP TABLE IF EXISTS tag_items;
+DROP TABLE IF EXISTS supplier;
+DROP TABLE IF EXISTS item;
+
+
 CREATE TABLE employee (
   employee_id bigint PRIMARY KEY  AUTO_INCREMENT,
   uuid varchar(225),
@@ -50,22 +56,22 @@ CREATE TABLE personal_information (
 );
 
 CREATE TABLE identification_financial_information (
-  identificationID bigint PRIMARY KEY  AUTO_INCREMENT,
-  employeeID bigint,
-  pag_ibig_id int,
-  sss_id int,
-  philhealth_id int,
-  tin int,
+  identification_id bigint PRIMARY KEY  AUTO_INCREMENT,
+  employee_id bigint,
+  pag_ibig_id varchar(255),
+  sss_id varchar(255),
+  philhealth_id varchar(255),
+  tin varchar(255),
   bank_account_number varchar(255),
-  FOREIGN KEY (employeeID) REFERENCES employee(employee_id)
+  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
 );
 
-CREATE TABLE ActivityLogs (
+CREATE TABLE activity_log (
   activity_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  employeeID bigint,
+  employee_id bigint,
   action varchar(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (employeeID) REFERENCES employee(employee_id)
+  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
 );
 
 CREATE TABLE salary_information (
@@ -88,18 +94,16 @@ CREATE TABLE department (
 
 CREATE TABLE designation (
   designation_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  department_id bigint,
   title varchar(255),
   status varchar(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (department_id) REFERENCES department(department_id)
+  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE employement_information (
-  employement_information_id bigint PRIMARY KEY  AUTO_INCREMENT,
+CREATE TABLE employment_information (
+  employment_information_id bigint PRIMARY KEY  AUTO_INCREMENT,
   employee_id bigint,
-  hireDate date,
+  hireDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   department_id bigint,
   designation_id bigint,
   employee_type ENUM ('regular', 'probationary', 'contractual', 'seasonal', 'temporary'),
@@ -129,6 +133,7 @@ CREATE TABLE leave_request (
 CREATE TABLE leave_limit (
   leave_limit_id bigint PRIMARY KEY  AUTO_INCREMENT,
   employee_id bigint,
+  limit_count int,
   leaveType ENUM ('sick_leave', 'vacation_leave', 'personal_leave'),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -240,3 +245,63 @@ CREATE TABLE attendance (
   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
 );
+
+-- Creating Default data
+INSERT INTO department (name, status)
+VALUES ('Sales', 'active'),
+       ('Technical', 'active');
+
+INSERT INTO designation (title, status)
+VALUES 
+    ('Technician Head', 'active'),
+    ('Technician', 'active'),
+    ('Sales Head', 'active'),
+    ('Sales', 'active');
+
+
+
+CREATE TABLE item (
+  item_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255),
+  description VARCHAR(255),
+  quantity INTEGER,
+  type ENUM('device', 'parts'),
+  condition ENUM('used', 'new', 'damage'),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE supplier (
+  supplier_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255),
+  contact_number VARCHAR(255),
+  remarks VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tag_items (
+  supplier_id BIGINT,
+  item_id BIGINT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (supplier_id) REFERENCES supplier(supplier_id),
+  FOREIGN KEY (item_id) REFERENCES item(item_id)
+);
+
+INSERT INTO supplier (name, contact_number, remarks, created_at, last_updated)
+VALUES 
+  ('Tech Supplies Co.', '123-456-7890', 'Primary tech supplier', NOW(), NOW()),
+  ('Parts Unlimited', '098-765-4321', 'Provides various parts', NOW(), NOW());
+
+
+INSERT INTO item (name, description, quantity, type, condition, created_at, last_updated)
+VALUES 
+  ('Laptop', '14-inch laptop with 16GB RAM', 10, 'device', 'new', NOW(), NOW()),
+  ('Monitor', '24-inch monitor', 15, 'device', 'used', NOW(), NOW()),
+  ('RAM Module', '8GB DDR4 RAM', 50, 'parts', 'new', NOW(), NOW());
+INSERT INTO tag_items (supplier_id, item_id, created_at, last_updated)
+VALUES 
+  (1, 1, NOW(), NOW()),  -- Tech Supplies Co. supplies Laptop
+  (1, 2, NOW(), NOW()),  -- Tech Supplies Co. supplies Monitor
+  (2, 3, NOW(), NOW());  -- Parts Unlimited supplies RAM Module
