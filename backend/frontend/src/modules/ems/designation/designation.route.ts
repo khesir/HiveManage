@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { DesignationController } from "./designation.controller";
-import pool from "../../../../config/mysql.config";
+import pool from "../../../config/mysql.config";
 
 const designationRoute = Router({mergeParams:true})
 const designationController = new DesignationController(pool)
