@@ -10,5 +10,6 @@ const emsRoute = Router({mergeParams: true})
 emsRoute.use('/department', departmentRoute)
 emsRoute.use('/designation', designationRoute)
 emsRoute.use('/activity-logs', activityLogRoute)
+emsRoute.use('/employee', employeeRoute)
 
 export default emsRoute

@@ -8,7 +8,6 @@ import salaryInformationRouter from './salary_information/salary_information.rou
 import personalInformationRouter from './personal_information/personal-information.route';
 import identificationFinancialInformationRouter from './identification_financial_information/identification-financial-information.route';
 import leaveLimitRouter from './leave_limit/leave-limit.route';
-import emsRoute from '../ems.route';
 
 const employeeRoute = Router({mergeParams: true});
 const employeeController = new EmployeeController(pool);
@@ -20,12 +19,11 @@ employeeRoute.put('/:id', employeeController.updateEmployee.bind(employeeControl
 employeeRoute.delete('/:id', employeeController.deleteEmployee.bind(employeeController));
 
 
-emsRoute.use('/employee', employeeRoute)
-emsRoute.use('/employmentInformation', employmentInformationRoute)
-emsRoute.use('/salaryInformation', salaryInformationRouter)
-emsRoute.use('/personalInformation', personalInformationRouter)
-emsRoute.use('/idenficationFinancialInformation', identificationFinancialInformationRouter)
-emsRoute.use('/leaveLimit', leaveLimitRouter)
+employeeRoute.use('/employmentInformation', employmentInformationRoute)
+employeeRoute.use('/salaryInformation', salaryInformationRouter)
+employeeRoute.use('/personalInformation', personalInformationRouter)
+employeeRoute.use('/idenficationFinancialInformation', identificationFinancialInformationRouter)
+employeeRoute.use('/leaveLimit', leaveLimitRouter)
 
 
 export default employeeRoute;
