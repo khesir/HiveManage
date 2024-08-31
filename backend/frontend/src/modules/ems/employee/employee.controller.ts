@@ -1,5 +1,3 @@
-
-
 import { Request, Response as ExpressResponse} from 'express';
 import { Pool } from 'mysql2/promise';
 
