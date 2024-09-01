@@ -2,8 +2,8 @@ import { Request, Response as ExpressResponse } from 'express';
 import { Pool } from 'mysql2/promise';
 
 import { DesignationModel } from './designation.model';
-import Response from '../../../lib/response';
-import { HttpStatus } from '../../../lib/config';
+import Response from '../../../../lib/response';
+import { HttpStatus } from '../../../../lib/config';
 
 export class DesignationController {
   private designationModel: DesignationModel;

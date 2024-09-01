@@ -1,13 +1,13 @@
 import { Router } from 'express';
 
 import { EmployeeController } from './employee.controller';
-import pool from '../../../drizzle.config';
+import pool from '../../../../drizzle.config';
 
-import employmentInformationRoute from './employment_information/employment-information.route';
-import salaryInformationRouter from './salary_information/salary_information.route';
-import personalInformationRouter from './personal_information/personal-information.route';
-import identificationFinancialInformationRouter from './identification_financial_information/identification-financial-information.route';
-import leaveLimitRouter from './leave_limit/leave-limit.route';
+import employmentInformationRoute from '../employment_information/employment-information.route';
+import salaryInformationRouter from '../salary_information/salary_information.route';
+import personalInformationRouter from '../personal_information/personal-information.route';
+import identificationFinancialInformationRouter from '../identification_financial_information/identification-financial-information.route';
+import leaveLimitRouter from '../../company/leave_limit/leave-limit.route';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(pool);

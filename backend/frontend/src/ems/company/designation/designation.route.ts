@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { DesignationController } from './designation.controller';
-import pool from '../../../drizzle.config';
+import pool from '../../../../drizzle.config';
 
 const designationRoute = Router({ mergeParams: true });
 const designationController = new DesignationController(pool);
