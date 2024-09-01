@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { DepartmentController } from './department.controller';
-import pool from '../../../config/mysql.config';
+import pool from '../../../drizzle.config';
 
 const departmentRoute = Router({ mergeParams: true });
 const departmentController = new DepartmentController(pool);

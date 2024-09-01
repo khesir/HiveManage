@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { drizzle } from 'drizzle-orm/mysql2/driver';
 import { createPool, Pool } from 'mysql2/promise';
 
 dotenv.config();
@@ -12,8 +13,6 @@ const config = {
   port: 3306,
 };
 
-// Create a MySQL connection pool
-const pool: Pool = createPool(config);
+export const pool: Pool = createPool(config);
 
-// Export the pool for use in other parts of the application
-export default pool;
+export const db = drizzle(pool);

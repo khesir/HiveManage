@@ -2,7 +2,7 @@ import { Request, Response as ExpressResponse } from 'express';
 import { Pool } from 'mysql2/promise';
 
 import { LeaveLimitModel } from './leave-limit.model';
-import { HttpStatus } from '../../../../config/config';
+import { HttpStatus } from '../../../../lib/config';
 import Response from '../../../../lib/response';
 
 export class LeaveLimitController {

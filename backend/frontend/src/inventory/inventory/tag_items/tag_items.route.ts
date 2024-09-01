@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import pool from '../../../../config/mysql.config';
+import pool from '../../../../drizzle.config';
 import { TagItemController } from './tag_items.controller';
 
 const tagitemRoute = Router({ mergeParams: true });

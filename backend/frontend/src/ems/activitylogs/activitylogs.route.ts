@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ActivityLogController } from './activitylogs.controller';
-import pool from '../../../config/mysql.config';
+import pool from '../../../drizzle.config';
 
 const activityLogRoute = Router();
 const activityLogsController = new ActivityLogController(pool);

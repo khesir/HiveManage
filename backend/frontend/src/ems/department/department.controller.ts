@@ -3,7 +3,7 @@ import { Pool } from 'mysql2/promise';
 
 import { DepartmentModel } from './department.model';
 import Response from '../../../lib/response';
-import { HttpStatus } from '../../../config/config';
+import { HttpStatus } from '../../../lib/config';
 
 export class DepartmentController {
   private departmentModel: DepartmentModel;

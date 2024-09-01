@@ -2,7 +2,7 @@ import { Request, Response as ExpressResponse } from 'express';
 import { Pool } from 'mysql2/promise';
 
 import Response from '../../../../lib/response';
-import { HttpStatus } from '../../../../config/config';
+import { HttpStatus } from '../../../../lib/config';
 import { TagItemsModel } from './tag_items.model';
 
 export class TagItemController {

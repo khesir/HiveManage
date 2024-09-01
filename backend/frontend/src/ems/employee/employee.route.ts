@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { EmployeeController } from './employee.controller';
-import pool from '../../../config/mysql.config';
+import pool from '../../../drizzle.config';
 
 import employmentInformationRoute from './employment_information/employment-information.route';
 import salaryInformationRouter from './salary_information/salary_information.route';

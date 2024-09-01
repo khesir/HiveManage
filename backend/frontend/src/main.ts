@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 import Response from 'lib/response';
-import { HttpStatus } from 'config/config';
+import { HttpStatus } from 'lib/config';
 import log from 'lib/logger';
 import emsRoute from './ems/ems.route';
 import imsRoute from './inventory/inventory.route';

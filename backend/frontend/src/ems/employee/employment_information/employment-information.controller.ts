@@ -1,6 +1,6 @@
 import { Request, Response as ExpressResponse } from 'express';
 import { EmploymentInformationModel } from './employment-information.model';
-import { HttpStatus } from '../../../../config/config';
+import { HttpStatus } from '../../../../lib/config';
 import Response from '../../../../lib/response';
 import { Pool } from 'mysql2/promise';
 

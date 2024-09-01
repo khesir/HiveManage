@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import pool from '../../../../config/mysql.config';
+import pool from '../../../../drizzle.config';
 import { IdentificationFinancialInformationController } from './identification-financial-information.controller';
 
 const identificationFinancialInformationRouter = Router({ mergeParams: true });

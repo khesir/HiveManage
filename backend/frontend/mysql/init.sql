@@ -27,94 +27,6 @@ DROP TABLE IF EXISTS supplier;
 DROP TABLE IF EXISTS item;
 
 
-CREATE TABLE employee (
-  employee_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  uuid varchar(225),
-  firstname varchar(255),
-  middlename varchar(255),
-  lastname varchar(255),
-  status varchar(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE personal_information (
-  personal_information_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  employee_id bigint,
-  birthday varchar(255),
-  gender ENUM ('male', 'female', 'others'),
-  phone varchar(255),
-  email varchar(255),
-  address_line varchar(255),
-  postal_code varchar(255),
-  emergency_contact_name varchar(255),
-  emergency_contact_phone varchar(255),
-  emergency_contact_relationship varchar(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
-);
-
-CREATE TABLE identification_financial_information (
-  identification_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  employee_id bigint,
-  pag_ibig_id varchar(255),
-  sss_id varchar(255),
-  philhealth_id varchar(255),
-  tin varchar(255),
-  bank_account_number varchar(255),
-  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
-);
-
-CREATE TABLE activity_log (
-  activity_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  employee_id bigint,
-  action varchar(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
-);
-
-CREATE TABLE salary_information (
-  salary_information_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  employee_id bigint,
-  payroll_frequency ENUM ('daily', 'weekly', 'biWeekly', 'semiMonthly', 'monthly'),
-  base_salary float,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
-);
-
-CREATE TABLE department (
-  department_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  name varchar(255),
-  status varchar(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE designation (
-  designation_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  title varchar(255),
-  status varchar(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE employment_information (
-  employment_information_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  employee_id bigint,
-  hireDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  department_id bigint,
-  designation_id bigint,
-  employee_type ENUM ('regular', 'probationary', 'contractual', 'seasonal', 'temporary'),
-  employee_status ENUM ('active', 'onLeave', 'terminated', 'resigned', 'suspended', 'retired', 'inactive'),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (employee_id) REFERENCES employee(employee_id),
-  FOREIGN KEY (department_id) REFERENCES department(department_id),
-  FOREIGN KEY (designation_id) REFERENCES designation(designation_id)
-);
-
 CREATE TABLE leave_request (
   leave_request_id bigint PRIMARY KEY  AUTO_INCREMENT,
   employee_id bigint,
@@ -124,16 +36,6 @@ CREATE TABLE leave_request (
   date_of_return date,
   status varchar(255),
   comment varchar(255),
-  leaveType ENUM ('sick_leave', 'vacation_leave', 'personal_leave'),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
-);
-
-CREATE TABLE leave_limit (
-  leave_limit_id bigint PRIMARY KEY  AUTO_INCREMENT,
-  employee_id bigint,
-  limit_count int,
   leaveType ENUM ('sick_leave', 'vacation_leave', 'personal_leave'),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

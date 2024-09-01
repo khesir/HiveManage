@@ -1,7 +1,7 @@
 import { Request, Response as ExpressResponse } from 'express';
 import { SalaryInformationModel } from './salary_information.model';
 import { Pool } from 'mysql2/promise';
-import { HttpStatus } from '../../../../config/config';
+import { HttpStatus } from '../../../../lib/config';
 import Response from '../../../../lib/response';
 
 export class SalaryInformationController {

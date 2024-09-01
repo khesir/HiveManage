@@ -1,7 +1,7 @@
 import { Request, Response as ExpressResponse } from 'express';
 import { Pool } from 'mysql2/promise';
 import { IdentificationFinancialInformationModel } from './identification-financial-information.model';
-import { HttpStatus } from '../../../../config/config';
+import { HttpStatus } from '../../../../lib/config';
 import Response from '../../../../lib/response';
 export class IdentificationFinancialInformationController {
   private model: IdentificationFinancialInformationModel;

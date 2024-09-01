@@ -2,7 +2,7 @@ import { Request, Response as ExpressResponse } from 'express';
 import { Pool } from 'mysql2/promise';
 
 import { EmployeeModel } from './employee.model';
-import { HttpStatus } from '../../../config/config';
+import { HttpStatus } from '../../../lib/config';
 import Response from '../../../lib/response';
 export class EmployeeController {
   private employeeModel: EmployeeModel;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { SupplierController } from './supplier.controller';
-import pool from '../../../../config/mysql.config';
+import pool from '../../../../drizzle.config';
 
 const supplierRoute = Router({ mergeParams: true });
 const supplierController = new SupplierController(pool);

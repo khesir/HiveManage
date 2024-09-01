@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { EmploymentInformationController } from './employment-information.controller';
-import pool from '../../../../config/mysql.config';
+import pool from '../../../../drizzle.config';
 
 const employmentInformationRoute = Router({ mergeParams: true });
 const controller = new EmploymentInformationController(pool);
