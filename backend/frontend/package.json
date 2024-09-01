@@ -5,10 +5,12 @@
   "scripts": {
     "start:dev": "nodemon src/main.ts",
     "start:prod": "node src/main.ts",
-    "db:start": "docker-compose up",
+    "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
     "db:generate": "drizzle-kit generate",
+    "db:generate:drop": "drizzle-kit drop",
     "db:migrate": "npx tsx drizzle/migrate",
+    "db:studio": "npx drizzle-kit studio",
     "prepare": "husky install && npx lint-staged",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
