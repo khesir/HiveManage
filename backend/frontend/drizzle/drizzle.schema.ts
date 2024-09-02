@@ -203,6 +203,8 @@ export const payrollReports = mysqlTable('payroll_reports', {
   grosspay: float('grosspay'),
   total_deductions: float('total_deductions'),
   total_benefits: float('total_benefits'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
 });
 
 // Signatory Table
@@ -214,6 +216,7 @@ export const signatory = mysqlTable('signatory', {
   permission_level: int('permission_level'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at').defaultNow(),
 });
 
 //  =======================================================================================
