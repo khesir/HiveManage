@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "src/main.ts",
   "scripts": {
-    "start:dev": "nodemon src/main.ts",
-    "start:prod": "node src/main.ts",
+    "dev": "nodemon src/main.ts",
+    "prod": "node src/main.ts",
+    "test": "jest",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
     "db:generate": "drizzle-kit generate",

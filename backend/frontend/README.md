@@ -52,7 +52,7 @@ DB_CONNECTION_LIMIT=20
 
 # Server ENV
 SERVER_PORT=5000
-
+NODE_ENV = 'dev'
 ```
 7. Update the database by the Drizzle migrations
 ```
