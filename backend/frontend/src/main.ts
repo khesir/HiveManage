@@ -3,37 +3,30 @@ import ip from 'ip';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
-import Response from 'lib/response';
-import { HttpStatus } from 'lib/config';
-import log from 'lib/logger';
-import emsRoute from './ems/ems.route';
-import imsRoute from './inventory/inventory.route';
+import { HttpStatus } from '../lib/config';
+import log from '../lib/logger';
+import baseRoute from './app.route';
 
 dotenv.config();
+async function bootstrap() {
+  const PORT = process.env.SERVER_PORT || 3000;
+  const app = express();
 
-const PORT = process.env.SERVER_PORT || 3000;
-const app = express();
+  app.use(cors({ origin: '*' }));
+  app.use(express.json());
 
-app.use(cors({ origin: '*' }));
-app.use(express.json());
+  app.use('/api', baseRoute);
 
-// Employee Management System API
-app.use('/ems', emsRoute);
+  app.all('*', (req, res) => res.status(HttpStatus.NOT_FOUND.code));
 
-// Inventory Management System API
-app.use('/ims', imsRoute);
+  app.listen(PORT, () => {
+    const url =
+      process.env.NODE_ENV === 'dev'
+        ? `localhost:${PORT}`
+        : `${ip.address()}:${PORT}`;
 
-// Put the routes here
-app.get('/', (req, res) =>
-  res.send(
-    new Response(
-      HttpStatus.OK.code,
-      HttpStatus.OK.status,
-      'Patient API, v1.0.0 - All Systems Go',
-      [],
-    ),
-  ),
-);
-app.all('*', (req, res) => res.status(HttpStatus.NOT_FOUND.code));
-
-app.listen(PORT, () => log.info(`Server running on: ${ip.address()}:${PORT}`));
+    log.info(`Server Running: ${url}`);
+    log.info(`Docs available at : ${url}/api/docs`);
+  });
+}
+bootstrap();
