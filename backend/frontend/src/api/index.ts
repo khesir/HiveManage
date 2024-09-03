@@ -3,15 +3,19 @@ import express from 'express';
 import swaggerDocs from '../../swagger/swaggerDocs';
 import { HttpStatus } from '../../lib/config';
 
-import emsRoute from './ems/ems.route';
+import emsRoute from './ems/index';
 import imsRoute from './inventory/inventory.route';
-const baseRoute = express.Router();
+
+import log from '../../lib/logger';
+
+const baseRoute = express.Router({ mergeParams: true });
 
 // Employee Management System API
 baseRoute.use('/ems', emsRoute);
-
+log.info('ROUTE /ems route set');
 // Inventory Management System API
 baseRoute.use('/ims', imsRoute);
+log.info('ROUTE /ims route set');
 
 swaggerDocs(baseRoute);
 

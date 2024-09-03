@@ -16,11 +16,19 @@ export function validateRequest(validators: RequestValidators) {
       if (validators.query) {
         req.query = await validators.query.parseAsync(req.query);
       }
+      next();
     } catch (error) {
       if (error instanceof ZodError) {
-        res.status(402);
+        const formattedErrors = error.errors.map((err) => ({
+          field: err.path.join('.'),
+          message: err.message,
+        }));
+        res.status(400).json({
+          status: 400,
+          message: 'Validation error',
+          errors: formattedErrors,
+        });
       }
-      next(error);
     }
   };
 }
