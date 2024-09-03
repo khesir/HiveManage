@@ -1,3 +1,4 @@
+import log from '../lib/logger';
 import dotenv from 'dotenv';
 import { drizzle } from 'drizzle-orm/mysql2/driver';
 import { createPool, Pool } from 'mysql2/promise';
@@ -16,3 +17,4 @@ const config = {
 export const pool: Pool = createPool(config);
 
 export const db = drizzle(pool);
+log.info('DB Started');
