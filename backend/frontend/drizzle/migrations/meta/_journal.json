@@ -15,6 +15,13 @@
       "when": 1725243320512,
       "tag": "0001_many_warbound",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1725429725180,
+      "tag": "0002_moaning_jean_grey",
+      "breakpoints": true
     }
   ]
 }

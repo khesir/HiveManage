@@ -1,0 +1,41 @@
+{
+  "paths": {
+    "/departments/{id}": {
+      "get": {
+        "tags": ["Departments"],
+        "summary": "Get department by ID",
+        "description": "Retrieves a specific department by its ID.",
+        "operationId": "getDepartmentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the department to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A department object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Department"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Department not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}
