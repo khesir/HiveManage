@@ -1,6 +1,5 @@
 import express from 'express';
 
-import swaggerDocs from '../../swagger/swaggerDocs';
 import { HttpStatus } from '../../lib/config';
 
 import emsRoute from './ems/index';
@@ -16,8 +15,6 @@ log.info('ROUTE /ems route set');
 // Inventory Management System API
 baseRoute.use('/ims', imsRoute);
 log.info('ROUTE /ims route set');
-
-swaggerDocs(baseRoute);
 
 baseRoute.get('/', (req, res) => {
   res.send({

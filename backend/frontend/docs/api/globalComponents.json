@@ -1,0 +1,21 @@
+{
+  "components":{
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Description of the error",
+            "example": "Invalid input data"
+          },
+          "code": {
+            "type": "integer",
+            "description": "Error code",
+            "example": 400
+          }
+        }
+      }
+    }
+  }
+}

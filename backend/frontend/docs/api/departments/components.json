@@ -1,0 +1,25 @@
+{
+  "components": {
+    "schemas": {
+      "Department": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the department"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the department"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the department was created"
+          }
+        },
+        "required": ["id", "name", "createdAt"]
+      }
+    }
+  }
+}
