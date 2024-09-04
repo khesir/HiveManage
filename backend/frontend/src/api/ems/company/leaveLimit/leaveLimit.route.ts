@@ -50,7 +50,7 @@ leaveLimitRoute.patch(
   ],
   controller.updateleaveLimit.bind(controller),
 );
-log.info('PATH /leaveLimit/:leaveLimit_id set');
+log.info('PUT /leaveLimit/:leaveLimit_id set');
 
 leaveLimitRoute.delete(
   '/:leaveLimit_id',
