@@ -1,70 +1,92 @@
-import { Request, Response as ExpressResponse } from 'express';
-import { Pool } from 'mysql2/promise';
+import { Request, Response, NextFunction } from 'express';
 
-import { DesignationModel } from './designation.model';
-import Response from '../../../../lib/response';
 import { HttpStatus } from '../../../../../lib/config';
+import { DesignationService } from './designation.service';
+import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 
 export class DesignationController {
-  private designationModel: DesignationModel;
+  private designationService: DesignationService;
 
-  constructor(pool: Pool) {
-    this.designationModel = new DesignationModel(pool);
+  constructor(pool: MySql2Database) {
+    this.designationService = new DesignationService(pool);
   }
 
-  async getAllDesignation(req: Request, res: ExpressResponse): Promise<void> {
+  async getAllDesignation(req: Request, res: Response, next: NextFunction) {
+    const status = (req.query.status as string) || undefined;
     try {
-      const designation = await this.designationModel.getAllDesignation();
-      const response = new Response(
-        HttpStatus.OK.code,
-        HttpStatus.OK.status,
-        'Designation retrieved successfully',
-        designation,
-      );
-      res.status(HttpStatus.OK.code).send(response);
-    } catch {
-      const response = new Response(
-        HttpStatus.INTERNAL_SERVER_ERROR.code,
-        HttpStatus.INTERNAL_SERVER_ERROR.status,
-        'Failed to retrieve designations',
-        null,
-      );
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).send(response);
+      const data = await this.designationService.getAllDesignations(status);
+      res.status(HttpStatus.OK.code).json({ data: data });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ message: 'Internal Server Error' });
+      next(error);
     }
   }
 
-  // Get a department by ID
-  async getDepartmentById(req: Request, res: ExpressResponse): Promise<void> {
+  async getDesignationById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { designationId } = req.params;
-      const designation = await this.designationModel.getDesignationById(
-        Number(designationId),
+      const { designation_id } = req.params;
+      const data = await this.designationService.getDesignationById(
+        Number(designation_id),
       );
-      if (designation) {
-        const response = new Response(
-          HttpStatus.OK.code,
-          HttpStatus.OK.status,
-          'Designation retrieved successfully',
-          designation,
-        );
-        res.status(HttpStatus.OK.code).send(response);
-      } else {
-        const response = new Response(
-          HttpStatus.NOT_FOUND.code,
-          HttpStatus.NOT_FOUND.status,
-          'Designation not found',
-          null,
-        );
-        res.status(HttpStatus.NOT_FOUND.code).send(response);
-      }
-    } catch {
-      const response = new Response(
-        HttpStatus.INTERNAL_SERVER_ERROR.code,
-        HttpStatus.INTERNAL_SERVER_ERROR.status,
-        'Failed to retrieve Designation',
-        null,
+
+      res.status(HttpStatus.OK.code).send({ data: data });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .send({ message: 'Internal Server Error' });
+      next(error);
+    }
+  }
+
+  async createDesignation(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { name, status } = req.body;
+      await this.designationService.createDesignation({
+        name,
+        status,
+      });
+      res.status(HttpStatus.CREATED.code).json({
+        message: 'Designation Created successfully',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+  async updateDesignation(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { designation_id } = req.params;
+      const { title, status } = req.body;
+      await this.designationService.updateDesignation(
+        { title, status },
+        Number(designation_id),
       );
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).send(response);
+      res.status(HttpStatus.OK.code).json({
+        message: 'Designation Updated succesfully',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+  async deleteDesignationByID(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { designation_id } = req.params;
+      await this.designationService.deleteDesignation(Number(designation_id));
+      res.status(200).json({
+        message: `Designation ID: ${designation_id} deleted successfully`,
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
     }
   }
 }

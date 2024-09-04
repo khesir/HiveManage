@@ -1,29 +1,15 @@
-import { Pool } from 'mysql2/promise';
+import { z } from 'zod';
 
-interface Designation {
-  designation_id?: number;
-  title: string;
-  status: string;
-  created_at?: Date;
-  last_updated?: Date;
-}
+export const CreateDesignation = z.object({
+  title: z.string().min(1),
+  status: z.string().min(1),
+});
 
-export class DesignationModel {
-  private db: Pool;
+export type CreateDesignation = z.infer<typeof CreateDesignation>;
 
-  constructor(db: Pool) {
-    this.db = db;
-  }
+export const UpdateDesignation = z.object({
+  title: z.string().min(1).optional(),
+  status: z.string().min(1).optional(),
+});
 
-  async getAllDesignation(): Promise<Designation[]> {
-    const sql = `SELECT * FROM designation`;
-    const [rows] = await this.db.execute(sql);
-    return rows as Designation[];
-  }
-  async getDesignationById(department_id: number): Promise<Designation | null> {
-    const sql = `SELECT * FROM designation WHERE designation_id = ?`;
-    const [rows] = await this.db.execute(sql, [department_id]);
-    const designation = rows as Designation[];
-    return designation.length > 0 ? designation[0] : null;
-  }
-}
+export type UpdateDesignation = z.infer<typeof UpdateDesignation>;

@@ -1,71 +1,92 @@
-import { Request, Response as ExpressResponse } from 'express';
-import { Pool } from 'mysql2/promise';
+import { Request, Response, NextFunction } from 'express';
+import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 
-import { DepartmentModel } from './department.model';
-import Response from '../../../../lib/response';
 import { HttpStatus } from '../../../../../lib/config';
+import { DepartmentService } from './department.service';
 
 export class DepartmentController {
-  private departmentModel: DepartmentModel;
+  private departmentService: DepartmentService;
 
-  constructor(pool: Pool) {
-    this.departmentModel = new DepartmentModel(pool);
+  constructor(pool: MySql2Database) {
+    this.departmentService = new DepartmentService(pool);
   }
 
-  // Get all departments
-  async getAllDepartments(req: Request, res: ExpressResponse): Promise<void> {
+  async getAllDepartments(req: Request, res: Response, next: NextFunction) {
+    const status = (req.query.status as string) || undefined;
     try {
-      const departments = await this.departmentModel.getAllDepartments();
-      const response = new Response(
-        HttpStatus.OK.code,
-        HttpStatus.OK.status,
-        'Departments retrieved successfully',
-        departments,
-      );
-      res.status(HttpStatus.OK.code).send(response);
-    } catch {
-      const response = new Response(
-        HttpStatus.INTERNAL_SERVER_ERROR.code,
-        HttpStatus.INTERNAL_SERVER_ERROR.status,
-        'Failed to retrieve departments',
-        null,
-      );
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).send(response);
+      const departments =
+        await this.departmentService.getAllDepartments(status);
+      res.status(HttpStatus.OK.code).json({ data: departments });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
     }
   }
 
-  // Get a department by ID
-  async getDepartmentById(req: Request, res: ExpressResponse): Promise<void> {
+  async getDepartmentById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { departmentId } = req.params;
-      const department = await this.departmentModel.getDepartmentById(
-        Number(departmentId),
+      const { department_id } = req.params;
+      const data = await this.departmentService.getDepartmentById(
+        Number(department_id),
       );
-      if (department) {
-        const response = new Response(
-          HttpStatus.OK.code,
-          HttpStatus.OK.status,
-          'Department retrieved successfully',
-          department,
-        );
-        res.status(HttpStatus.OK.code).send(response);
-      } else {
-        const response = new Response(
-          HttpStatus.NOT_FOUND.code,
-          HttpStatus.NOT_FOUND.status,
-          'Department not found',
-          null,
-        );
-        res.status(HttpStatus.NOT_FOUND.code).send(response);
-      }
-    } catch {
-      const response = new Response(
-        HttpStatus.INTERNAL_SERVER_ERROR.code,
-        HttpStatus.INTERNAL_SERVER_ERROR.status,
-        'Failed to retrieve department',
-        null,
+      res.status(HttpStatus.OK.code).json({ data: data });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+
+  async createDepartment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { name, status } = req.body;
+      await this.departmentService.createDepartment({
+        name,
+        status,
+      });
+      res.status(HttpStatus.CREATED.code).json({
+        message: 'Department Created',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+  async updateDepartment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { department_id } = req.params;
+      const { name, status } = req.body;
+      await this.departmentService.updateDepartment(
+        { name, status },
+        Number(department_id),
       );
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).send(response);
+      res.status(HttpStatus.OK.code).json({
+        message: 'Department Updated succesfully',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+  async deleteDepartmentByID(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { department_id } = req.params;
+      await this.departmentService.deleteDepartment(Number(department_id));
+      res.status(200).json({
+        message: `Department ID: ${department_id} deleted successfully`,
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
     }
   }
 }

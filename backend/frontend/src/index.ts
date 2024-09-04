@@ -3,7 +3,7 @@ import log from '../lib/logger';
 import app from './app';
 
 const PORT = process.env.SERVER_PORT || 3000;
-const INTRO = ` PC BEE Business Management System:
+const INTRO = `PC BEE Business Management System:
  ________  ________          ________  _______   _______      
 |\\   __  \\|\\   ____\\        |\\   __  \\|\\  ___ \\ |\\  ___ \\     
 \\ \\  \\|\\  \\ \\  \\___|        \\ \\  \\|\\ \\ \\   __/|\\ \\   __/|    

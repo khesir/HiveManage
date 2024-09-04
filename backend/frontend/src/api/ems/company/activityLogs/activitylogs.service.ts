@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 
 import { activityLog } from '../../../../../drizzle/drizzle.schema';
 
@@ -14,23 +14,40 @@ export class ActivityLogService {
     await this.db.insert(activityLog).values(data);
   }
 
-  async getAllActivityLogs() {
-    const result = await this.db.select().from(activityLog);
-    return result;
-  }
-
-  async getActivityLogById(id: number) {
+  async getAllActivityLogs({ limit = 10, sort = 'asc', page = 1 }) {
+    const offset = (page - 1) * limit;
     const result = await this.db
       .select()
       .from(activityLog)
-      .where(eq(activityLog.activity_id, id));
+      .orderBy(
+        sort === 'asc'
+          ? asc(activityLog.created_at)
+          : desc(activityLog.created_at),
+      )
+      .limit(limit)
+      .offset(offset);
+    return result;
+  }
+
+  async getActivityLogById(paramsId: number) {
+    const result = await this.db
+      .select()
+      .from(activityLog)
+      .where(eq(activityLog.activity_id, paramsId));
     return result[0];
   }
 
-  async updateActivityLog(data: object, id: number) {
+  async updateActivityLog(data: object, paramsId: number) {
     await this.db
       .update(activityLog)
       .set(data)
-      .where(eq(activityLog.activity_id, id));
+      .where(eq(activityLog.activity_id, paramsId));
+  }
+
+  async deleteActivityLog(paramsId: number): Promise<void> {
+    await this.db
+      .update(activityLog)
+      .set({ deleted_at: new Date(Date.now()) })
+      .where(eq(activityLog.activity_id, paramsId));
   }
 }

@@ -11,7 +11,42 @@ export class ActivityLogController {
     this.activityLogService = new ActivityLogService(pool);
   }
 
-  // Create a new activity log
+  async getAllActivityLogs(req: Request, res: Response, next: NextFunction) {
+    const limit = Number(req.query.limit) || 10; // Default limit to 10
+    const sort = (req.query.sort as string) || 'asc'; // Default sort to 'asc'
+    const page = Number(req.query.page) || 1;
+    try {
+      const activityLogs = await this.activityLogService.getAllActivityLogs({
+        limit,
+        sort,
+        page,
+      });
+      res.status(200).json({ data: activityLogs });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
+      next(error);
+    }
+  }
+
+  async getActivityLogById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { activity_id } = req.params;
+      const data = await this.activityLogService.getActivityLogById(
+        Number(activity_id),
+      );
+      res.status(200).json({ message: data });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
+      next(error);
+    }
+  }
+
   async createActivityLog(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_id, action } = req.body;
@@ -21,34 +56,14 @@ export class ActivityLogController {
         action,
       });
       res.status(HttpStatus.CREATED.code).json({
-        statusCode: 201,
         message: 'Succesfully Created Activity Logs',
         // data: id,
       });
     } catch (error) {
-      next(error);
-    }
-  }
-
-  // Get all activity logs
-  async getAllActivityLogs(req: Request, res: Response, next: NextFunction) {
-    try {
-      const activityLogs = await this.activityLogService.getAllActivityLogs();
-      res.status(200).json({ statusCode: 200, data: activityLogs });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  // Get an activity log by ID
-  async getActivityLogById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { activity_id } = req.params;
-      const data = await this.activityLogService.getActivityLogById(
-        Number(activity_id),
-      );
-      res.status(200).json({ message: data });
-    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
       next(error);
     }
   }
@@ -66,10 +81,27 @@ export class ActivityLogController {
         Number(activity_id),
       );
       res.status(HttpStatus.OK.code).json({
-        statusCode: HttpStatus.OK.code,
         message: 'Activity Log Updated succesfully',
       });
     } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+
+  async deleteActivityLogbyID(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { activity_id } = req.params;
+      await this.activityLogService.deleteActivityLog(Number(activity_id));
+      res.status(200).json({
+        message: `Activity Log ID:${activity_id} is deleted successfully`,
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
       next(error);
     }
   }
