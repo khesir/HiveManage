@@ -24,7 +24,6 @@ function combineSwaggerDocs(docsDir: string) {
         readDir(itemPath); // Recursively process directories
       } else if (fs.statSync(itemPath).isFile() && item.endsWith('.json')) {
         const fileContent = JSON.parse(fs.readFileSync(itemPath, 'utf-8'));
-        console.log(itemPath);
         if (fileContent.paths) {
           combinedDocs.paths = {
             ...combinedDocs.paths,

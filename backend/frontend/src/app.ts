@@ -16,7 +16,7 @@ app.use(express.json());
 
 swaggerDocs(app);
 
-app.use('/api', baseRoute);
+app.use('/api/v1', baseRoute);
 log.info('Api base route set');
 
 app.get<object, MessageResponse>('/', (req, res) => {

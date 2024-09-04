@@ -18,6 +18,7 @@ export const employee = mysqlTable('employee', {
   status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Personal Information Table
@@ -39,6 +40,7 @@ export const personalInformation = mysqlTable('personal_information', {
   }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Identification Financial Information Table
@@ -50,6 +52,7 @@ export const financialInformation = mysqlTable('financial_information', {
   philhealth_id: varchar('philhealth_id', { length: 255 }),
   tin: varchar('tin', { length: 255 }),
   bank_account_number: varchar('bank_account_number', { length: 255 }),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Salary Information Table
@@ -68,6 +71,7 @@ export const salaryInformation = mysqlTable('salary_information', {
   base_salary: int('base_salary'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Employment Information Table
@@ -97,6 +101,7 @@ export const employmentInformation = mysqlTable('employment_information', {
   ]),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 //  =======================================================================================
@@ -109,6 +114,7 @@ export const department = mysqlTable('department', {
   status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Designation Table
@@ -118,6 +124,7 @@ export const designation = mysqlTable('designation', {
   status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Activity Log Table
@@ -126,6 +133,7 @@ export const activityLog = mysqlTable('activity_log', {
   employee_id: int('employee_id').references(() => employee.employee_id),
   action: varchar('action', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 export const leaveRequest = mysqlTable('leave_request', {
@@ -144,6 +152,7 @@ export const leaveRequest = mysqlTable('leave_request', {
   ]),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 export const leaveLimit = mysqlTable('leave_limit', {
@@ -157,6 +166,7 @@ export const leaveLimit = mysqlTable('leave_limit', {
   ]),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 //  =======================================================================================
@@ -171,6 +181,7 @@ export const payroll = mysqlTable('payroll', {
   status: mysqlEnum('approvalStatus', ['active', 'inactive', 'inprogress']),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // On Payroll Table
@@ -178,6 +189,9 @@ export const onPayroll = mysqlTable('on_payroll', {
   on_payroll_id: int('on_payroll_id').primaryKey().autoincrement(),
   payroll_id: int('payroll_id').references(() => payroll.payroll_id),
   employee_id: int('employee_id').references(() => employee.employee_id),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Payroll Approval Table
@@ -193,6 +207,7 @@ export const payrollApproval = mysqlTable('payroll_approval', {
   approval_date: date('approval_date'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Payroll Reports Table
@@ -205,6 +220,7 @@ export const payrollReports = mysqlTable('payroll_reports', {
   total_benefits: float('total_benefits'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Signatory Table
@@ -233,6 +249,7 @@ export const deductions = mysqlTable('deductions', {
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Benefits Table
@@ -246,6 +263,7 @@ export const benefits = mysqlTable('benefits', {
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Adjustments Table
@@ -258,6 +276,7 @@ export const adjustments = mysqlTable('adjustments', {
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Additional Pay Table
@@ -269,6 +288,7 @@ export const additionalPay = mysqlTable('additional_pay', {
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 // Attendance Table
@@ -289,6 +309,7 @@ export const attendance = mysqlTable('attendance', {
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 //  =======================================================================================
 // ===================================== SALES ======================================
