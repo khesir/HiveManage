@@ -5,6 +5,7 @@ import log from '../../../lib/logger';
 import departmentRoute from './company/department/department.route';
 import designationRoute from './company/designation/designation.route';
 import leaveLimitRoute from './company/leaveLimit/leaveLimit.route';
+import leaveRequestRoute from './company/leaveRequest/leaveRequest.route';
 
 const emsRoute = Router({ mergeParams: true });
 
@@ -19,5 +20,8 @@ log.info('ROUTE /designation set');
 
 emsRoute.use('/leaveLimit', leaveLimitRoute);
 log.info('ROUTE /leaveLimit set');
+
+emsRoute.use('/leaveRequest', leaveRequestRoute);
+log.info('ROUTE /leaveRequest set');
 
 export default emsRoute;
