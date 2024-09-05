@@ -42,14 +42,15 @@ export class EmployeeController {
 
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { uuid, firstname, middlename, lastname, status } = req.body;
-      await this.employeeService.createEmployee({
-        uuid,
-        firstname,
-        middlename,
-        lastname,
-        status,
-      });
+      // const { uuid, firstname, middlename, lastname, status } = req.body;
+      console.log(req.body);
+      // await this.employeeService.createEmployee({
+      //   uuid,
+      //   firstname,
+      //   middlename,
+      //   lastname,
+      //   status,
+      // });
       res.status(HttpStatus.CREATED.code).json({
         message: 'Employee Created successfully',
       });
