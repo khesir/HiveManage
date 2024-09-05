@@ -70,8 +70,6 @@ employeeRoute.delete(
 log.info('DELETE /employee/:employee_id set');
 
 // ============================ NESTED ROUTE ===========================
-// employeeRoute.use('/employmentInformation', employmentInformationRoute);
-// log.info('ROUTE /employmentInformation set');
 
 // employeeRoute.use('/salaryInformation', salaryInformationRouter);
 // log.info('ROUTE /salaryInformation set');

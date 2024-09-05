@@ -6,6 +6,7 @@ import departmentRoute from './company/department/department.route';
 import designationRoute from './company/designation/designation.route';
 import leaveLimitRoute from './company/leaveLimit/leaveLimit.route';
 import leaveRequestRoute from './company/leaveRequest/leaveRequest.route';
+import employmentInformationRoute from './employee/employment_information/employmentInformation.route';
 import employeeRoute from './employee/employee/employee.route';
 
 const emsRoute = Router({ mergeParams: true });
@@ -27,4 +28,8 @@ log.info('ROUTE /leaveRequest set');
 
 emsRoute.use('/employee', employeeRoute);
 log.info('ROUTe /employee set');
+
+emsRoute.use('/employmentInformation', employmentInformationRoute);
+log.info('ROUTE /employmentInformation set');
+
 export default emsRoute;
