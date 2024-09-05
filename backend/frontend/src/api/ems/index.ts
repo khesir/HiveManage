@@ -10,6 +10,7 @@ import employeeRoute from './employee/employee/employee.route';
 import employmentInformationRoute from './employee/employmentInformation/employmentInformation.route';
 import financiallInformationRoute from './employee/financialInformation/financialInformation.route';
 import personalInformationRoute from './employee/personal_information/personalInformation.route';
+import salaryInformationRoute from './employee/salary_information/salaryInformation.route';
 
 const emsRoute = Router({ mergeParams: true });
 
@@ -39,5 +40,8 @@ log.info('ROUTE /financialInformation set');
 
 emsRoute.use('/personalInformation', personalInformationRoute);
 log.info('ROUTE /personalInformation set');
+
+emsRoute.use('/salaryInformation', salaryInformationRoute);
+log.info('ROUTE /salaryInformation set');
 
 export default emsRoute;
