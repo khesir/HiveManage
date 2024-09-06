@@ -10,32 +10,21 @@ export class PayrollController {
   constructor(pool: MySql2Database) {
     this.payrollService = new PayrollService(pool);
   }
-
-  async getPayRollById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { payroll_id } = req.params;
-      const data = await this.payrollService.getPayrollById(Number(payroll_id));
-      res.status(200).json({ message: data });
-    } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
-        message: 'Internal Server Error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
-      });
-      next(error);
-    }
-  }
-
   async createPayRoll(req: Request, res: Response, next: NextFunction) {
     try {
-      const { payroll_id, action } = req.body;
+      const { start, end, pay_date, payroll_finished, approvalStatus } =
+        req.body;
 
       await this.payrollService.createPayroll({
-        payroll_id,
-        action,
+        start,
+        end,
+        pay_date,
+        payroll_finished,
+        approvalStatus,
       });
       res
         .status(HttpStatus.CREATED.code)
-        .json({ message: 'Successfully Created Payroll' });
+        .json({ message: 'Payroll Successfully Created' });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         message: 'Internal Server Error',

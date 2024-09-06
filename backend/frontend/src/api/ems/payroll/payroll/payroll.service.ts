@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { payroll } from '../../../../../drizzle/drizzle.schema';
 
@@ -11,13 +10,5 @@ export class PayrollService {
 
   async createPayroll(data: object) {
     await this.db.insert(payroll).values(data);
-  }
-
-  async getPayrollById(paramsId: number) {
-    const result = await this.db
-      .select()
-      .from(payroll)
-      .where(eq(payroll.payroll_id, paramsId));
-    return result[0];
   }
 }

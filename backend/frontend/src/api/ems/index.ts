@@ -18,6 +18,6 @@ emsRoute.use('/designation', designationRoute);
 log.info('ROUTE /designation set');
 
 emsRoute.use('/payroll', payrollRoute);
-log.info('Route /payroll set');
+log.info('ROUTE /payroll set');
 
 export default emsRoute;
