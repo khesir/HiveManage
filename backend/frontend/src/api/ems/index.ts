@@ -4,6 +4,7 @@ import activityLogRoute from './company/activityLogs/activitylogs.route';
 import log from '../../../lib/logger';
 import departmentRoute from './company/department/department.route';
 import designationRoute from './company/designation/designation.route';
+import payrollRoute from './payroll/payroll/payroll.route';
 import leaveLimitRoute from './company/leaveLimit/leaveLimit.route';
 import leaveRequestRoute from './company/leaveRequest/leaveRequest.route';
 import employeeRoute from './employee/employee/employee.route';
@@ -23,6 +24,8 @@ log.info('ROUTE /department set');
 emsRoute.use('/designation', designationRoute);
 log.info('ROUTE /designation set');
 
+emsRoute.use('/payroll', payrollRoute);
+log.info('ROUTE /payroll set');
 emsRoute.use('/leaveLimit', leaveLimitRoute);
 log.info('ROUTE /leaveLimit set');
 
