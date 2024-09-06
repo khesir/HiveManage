@@ -11,19 +11,21 @@ export class FinancialInformationController {
     this.financialInformationService = new FinancialInformationService(pool);
   }
 
-  async getFinancialIDByEmployeeID(
+  async getFinancialInformation(
     req: Request,
     res: Response,
     next: NextFunction,
   ) {
     try {
+      const { financial_id } = req.params;
       const { employee_id } = req.query;
-      const data =
-        await this.financialInformationService.getFinancialInformationByEmployeeID(
+      const result =
+        await this.financialInformationService.getFinancialInformation(
+          Number(financial_id),
           Number(employee_id),
         );
 
-      res.status(HttpStatus.OK.code).send({ data: data });
+      res.status(HttpStatus.OK.code).json({ data: result });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -63,6 +65,26 @@ export class FinancialInformationController {
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+  async deleteEmploymentInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { financial_id } = req.params;
+      await this.financialInformationService.deleteFinancialInformation(
+        Number(financial_id),
+      );
+      res
+        .status(HttpStatus.OK.code)
+        .json({ message: 'Employment Information deleted succesfully' });
+    } catch (error) {
+      res.status(HttpStatus.OK.code).json({
         message: 'Internal Server Error',
       });
       next(error);

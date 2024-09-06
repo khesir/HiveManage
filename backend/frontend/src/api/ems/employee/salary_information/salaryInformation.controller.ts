@@ -11,19 +11,16 @@ export class SalaryInformationController {
     this.salaryInformationService = new SalaryInformationService(pool);
   }
 
-  async getPersonalIDByEmployeeID(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async getSalaryInformation(req: Request, res: Response, next: NextFunction) {
     try {
+      const { salaryInfo_id } = req.params;
       const { employee_id } = req.query;
-      const data =
-        await this.salaryInformationService.getSalaryInformationByEmployeeID(
-          Number(employee_id),
-        );
+      const result = await this.salaryInformationService.getSalaryInformation(
+        Number(salaryInfo_id),
+        Number(employee_id),
+      );
 
-      res.status(HttpStatus.OK.code).send({ data: data });
+      res.status(HttpStatus.OK.code).json({ data: result });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -32,7 +29,7 @@ export class SalaryInformationController {
     }
   }
 
-  async updatePersonalInformation(
+  async updateSalaryInformation(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -53,6 +50,26 @@ export class SalaryInformationController {
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+  async deleteSalaryInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { salaryInfo_id } = req.params;
+      await this.salaryInformationService.deleteSalaryInformation(
+        Number(salaryInfo_id),
+      );
+      res
+        .status(HttpStatus.OK.code)
+        .json({ message: 'Salary Information deleted succesfully' });
+    } catch (error) {
+      res.status(HttpStatus.OK.code).json({
         message: 'Internal Server Error',
       });
       next(error);

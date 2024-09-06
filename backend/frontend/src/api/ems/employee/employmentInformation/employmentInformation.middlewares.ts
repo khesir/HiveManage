@@ -29,9 +29,8 @@ export async function validateEmploymentID(
           isNull(employmentInformation.deleted_at),
         ),
       );
-    console.log(activity);
     if (!activity[0]) {
-      return res.status(404).json({ message: 'Leave Limit not found' });
+      return res.status(404).json({ message: 'Employment not found' });
     }
     next();
   } catch (error) {
@@ -46,25 +45,27 @@ export async function validateEmployeeID(
   next: NextFunction,
 ) {
   const employee_id = req.body.employee_id || req.query.employee_id;
-  if (employee_id === undefined) {
-    next();
-  }
+
   try {
-    const data = await db
-      .select()
-      .from(employee)
-      .where(
-        and(
-          eq(employee.employee_id, Number(employee_id)),
-          isNull(employee.deleted_at),
-        ),
-      );
-    if (!data[0]) {
-      return res
-        .status(HttpStatus.NOT_FOUND.code)
-        .json({ message: 'Employee not found' });
+    if (employee_id === undefined) {
+      next();
+    } else {
+      const data = await db
+        .select()
+        .from(employee)
+        .where(
+          and(
+            eq(employee.employee_id, Number(employee_id)),
+            isNull(employee.deleted_at),
+          ),
+        );
+      if (!data[0]) {
+        return res
+          .status(HttpStatus.NOT_FOUND.code)
+          .json({ message: 'Employee not found' });
+      }
+      next();
     }
-    next();
   } catch (error) {
     console.log(error);
     log.error(error);

@@ -9,12 +9,27 @@ export class PersonalInformationService {
     this.db = db;
   }
 
-  async getPersonalInformationByEmployeeID(paramsId: number) {
-    const result = await this.db
-      .select()
-      .from(personalInformation)
-      .where(eq(personalInformation.employee_id, paramsId));
-    return result;
+  async getPersonalInformation(paramsID: number, queryId: number) {
+    if (!isNaN(queryId)) {
+      const result = await this.db
+        .select()
+        .from(personalInformation)
+        .where(eq(personalInformation.employee_id, queryId));
+      return result;
+    } else if (!isNaN(paramsID)) {
+      const result = await this.db
+        .select()
+        .from(personalInformation)
+        .where(eq(personalInformation.personal_information_id, paramsID));
+      return result;
+    } else {
+      const result = await this.db.select().from(personalInformation);
+      return result;
+    }
+  }
+
+  async createPersonalInformation(data: object) {
+    await this.db.insert(personalInformation).values(data);
   }
 
   async updatePersonalInformation(data: object, paramsId: number) {
@@ -22,5 +37,12 @@ export class PersonalInformationService {
       .update(personalInformation)
       .set(data)
       .where(eq(personalInformation.personal_information_id, paramsId));
+  }
+
+  async deletePersonalInformation(paramsID: number) {
+    await this.db
+      .update(personalInformation)
+      .set({ deleted_at: new Date(Date.now()) })
+      .where(eq(personalInformation.personal_information_id, paramsID));
   }
 }

@@ -11,19 +11,21 @@ export class PersonalInformationController {
     this.personalInformationService = new PersonalInformationService(pool);
   }
 
-  async getPersonalIDByEmployeeID(
+  async getPersonalInformation(
     req: Request,
     res: Response,
     next: NextFunction,
   ) {
     try {
+      const { personalInfo_id } = req.params;
       const { employee_id } = req.query;
-      const data =
-        await this.personalInformationService.getPersonalInformationByEmployeeID(
+      const result =
+        await this.personalInformationService.getPersonalInformation(
+          Number(personalInfo_id),
           Number(employee_id),
         );
 
-      res.status(HttpStatus.OK.code).send({ data: data });
+      res.status(HttpStatus.OK.code).json({ data: result });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -71,6 +73,27 @@ export class PersonalInformationController {
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+
+  async deleteEmploymentInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { personalInfo_id } = req.params;
+      await this.personalInformationService.deletePersonalInformation(
+        Number(personalInfo_id),
+      );
+      res
+        .status(HttpStatus.OK.code)
+        .json({ message: 'Financial Information deleted succesfully' });
+    } catch (error) {
+      res.status(HttpStatus.OK.code).json({
         message: 'Internal Server Error',
       });
       next(error);

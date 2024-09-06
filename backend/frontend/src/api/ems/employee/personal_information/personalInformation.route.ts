@@ -15,9 +15,16 @@ const controller = new PersonalInformationController(db);
 personalInformationRoute.get(
   '/',
   validateEmployeeID,
-  controller.getPersonalIDByEmployeeID.bind(controller),
+  controller.getPersonalInformation.bind(controller),
 );
-log.info('GET /personalInformation/:employee_id set');
+log.info('GET /personalInformation/ set');
+
+personalInformationRoute.get(
+  '/:personalInfo_id',
+  validatePersonalID,
+  controller.getPersonalInformation.bind(controller),
+);
+log.info('GET /personalInformation/:personalInfo_id set');
 
 personalInformationRoute.put(
   '/:personalInfo_id',
@@ -30,5 +37,12 @@ personalInformationRoute.put(
   controller.updatePersonalInformation.bind(controller),
 );
 log.info('PUT /personalInformation/:personalInfo_id set');
+
+personalInformationRoute.delete(
+  '/:personalInfo_id',
+  validatePersonalID,
+  controller.deleteEmploymentInformation.bind(controller),
+);
+log.info('DELETE /personalInformation/:personalInfo_id set');
 
 export default personalInformationRoute;

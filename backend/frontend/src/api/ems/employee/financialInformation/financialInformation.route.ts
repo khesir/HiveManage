@@ -15,9 +15,16 @@ const controller = new FinancialInformationController(db);
 financiallInformationRoute.get(
   '/',
   validateEmployeeID,
-  controller.getFinancialIDByEmployeeID.bind(controller),
+  controller.getFinancialInformation.bind(controller),
 );
-log.info('GET /employeeInformation/:employee_id set');
+log.info('GET /employeeInformation/ set');
+
+financiallInformationRoute.get(
+  '/:financial_id',
+  validateFinancialID,
+  controller.getFinancialInformation.bind(controller),
+);
+log.info('GET /employeeInformation/:financial_id set');
 
 financiallInformationRoute.put(
   '/:financial_id',
@@ -29,6 +36,12 @@ financiallInformationRoute.put(
   ],
   controller.updateFinancialInformation.bind(controller),
 );
-log.info('PUT /employeeInformation/:employee_id set');
+log.info('PUT /employeeInformation/:financial_id set');
+
+financiallInformationRoute.delete(
+  '/:financial_id',
+  validateFinancialID,
+  controller.deleteEmploymentInformation.bind(controller),
+);
 
 export default financiallInformationRoute;

@@ -15,7 +15,14 @@ const controller = new EmploymentInformationController(db);
 employmentInformationRoute.get(
   '/',
   validateEmployeeID,
-  controller.getEmploymentIDByEmployeeID.bind(controller),
+  controller.getEmploymentInformation.bind(controller),
+);
+log.info('GET /employmentInformation/ set');
+
+employmentInformationRoute.get(
+  '/:employment_id',
+  validateEmploymentID,
+  controller.getEmploymentInformation.bind(controller),
 );
 log.info('GET /employmentInformation/:employee_id set');
 
@@ -30,5 +37,12 @@ employmentInformationRoute.put(
   controller.updateEmploymentInformation.bind(controller),
 );
 log.info('PUT /employmentInformation/:employment_id set');
+
+employmentInformationRoute.delete(
+  '/:employment_id',
+  validateEmploymentID,
+  controller.deleteEmploymentInformation.bind(controller),
+);
+log.info('DELETE /employmentInformation/:employment_id set');
 
 export default employmentInformationRoute;

@@ -16,7 +16,14 @@ const controller = new SalaryInformationController(db);
 salaryInformationRoute.get(
   '/',
   validateEmployeeID,
-  controller.getPersonalIDByEmployeeID.bind(controller),
+  controller.getSalaryInformation.bind(controller),
+);
+log.info('GET /salaryInformation/ set');
+
+salaryInformationRoute.get(
+  '/:salaryInfo_id',
+  validateSalaryID,
+  controller.getSalaryInformation.bind(controller),
 );
 log.info('GET /salaryInformation/:employee_id set');
 
@@ -28,8 +35,15 @@ salaryInformationRoute.put(
     }),
     validateSalaryID,
   ],
-  controller.updatePersonalInformation.bind(controller),
+  controller.updateSalaryInformation.bind(controller),
 );
 log.info('PUT /salaryInformation/:personalInfo_id set');
+
+salaryInformationRoute.delete(
+  '/:salaryInfo_id',
+  validateSalaryID,
+  controller.deleteSalaryInformation.bind(controller),
+);
+log.info('DELETE /salaryInformation/:personalInfo_id set');
 
 export default salaryInformationRoute;

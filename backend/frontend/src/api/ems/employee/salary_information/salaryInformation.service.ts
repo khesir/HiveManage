@@ -9,12 +9,23 @@ export class SalaryInformationService {
     this.db = db;
   }
 
-  async getSalaryInformationByEmployeeID(paramsId: number) {
-    const result = await this.db
-      .select()
-      .from(salaryInformation)
-      .where(eq(salaryInformation.employee_id, paramsId));
-    return result;
+  async getSalaryInformation(paramsID: number, queryId: number) {
+    if (!isNaN(queryId)) {
+      const result = await this.db
+        .select()
+        .from(salaryInformation)
+        .where(eq(salaryInformation.employee_id, queryId));
+      return result;
+    } else if (!isNaN(paramsID)) {
+      const result = await this.db
+        .select()
+        .from(salaryInformation)
+        .where(eq(salaryInformation.salary_information_id, paramsID));
+      return result;
+    } else {
+      const result = await this.db.select().from(salaryInformation);
+      return result;
+    }
   }
 
   async updateSalaryInformation(data: object, paramsId: number) {
@@ -22,5 +33,12 @@ export class SalaryInformationService {
       .update(salaryInformation)
       .set(data)
       .where(eq(salaryInformation.salary_information_id, paramsId));
+  }
+
+  async deleteSalaryInformation(paramsID: number) {
+    await this.db
+      .update(salaryInformation)
+      .set({ deleted_at: new Date(Date.now()) })
+      .where(eq(salaryInformation.salary_information_id, paramsID));
   }
 }
