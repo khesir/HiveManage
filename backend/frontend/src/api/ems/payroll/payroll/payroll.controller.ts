@@ -11,15 +11,26 @@ export class PayrollController {
     this.payrollService = new PayrollService(pool);
   }
 
-  async getPayRollById(req: Request, res: Response, next: NextFunction) {
+  async updatePayroll(req: Request, res: Response, next: NextFunction) {
     try {
       const { payroll_id } = req.params;
-      const data = await this.payrollService.getPayrollById(Number(payroll_id));
-      res.status(200).json({ message: data });
+      const { start, end, pay_date, payroll_finished, approvalStatus } =
+        req.body;
+
+      await this.payrollService.updatePayrolls(
+        {
+          start,
+          end,
+          pay_date,
+          payroll_finished,
+          approvalStatus,
+        },
+        Number(payroll_id),
+      );
+      res.status(HttpStatus.OK.code).json({ message: 'Payroll Updated ' });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         message: 'Internal Server Error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
       });
       next(error);
     }
@@ -27,11 +38,15 @@ export class PayrollController {
 
   async createPayRoll(req: Request, res: Response, next: NextFunction) {
     try {
-      const { payroll_id, action } = req.body;
+      const { start, end, pay_date, payroll_finished, approvalStatus } =
+        req.body;
 
       await this.payrollService.createPayroll({
-        payroll_id,
-        action,
+        start,
+        end,
+        pay_date,
+        payroll_finished,
+        approvalStatus,
       });
       res
         .status(HttpStatus.CREATED.code)

@@ -13,11 +13,10 @@ export class PayrollService {
     await this.db.insert(payroll).values(data);
   }
 
-  async getPayrollById(paramsId: number) {
-    const result = await this.db
-      .select()
-      .from(payroll)
+  async updatePayrolls(data: object, paramsId: number) {
+    await this.db
+      .update(payroll)
+      .set(data)
       .where(eq(payroll.payroll_id, paramsId));
-    return result[0];
   }
 }

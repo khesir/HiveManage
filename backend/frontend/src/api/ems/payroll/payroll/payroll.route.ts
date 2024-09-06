@@ -1,27 +1,23 @@
 import { Router } from 'express';
 import { PayrollController } from './payroll.controller';
 
-import { CreatePayroll } from './payroll.model';
-import { validatePayrollId } from './payroll.middleware';
 import { db } from '../../../../../mysql/mysql.pool';
 import log from '../../../../../lib/logger';
+import { validatePayrollId } from './payroll.middleware';
 import { validateRequest } from '../../../../../src/middlewares';
+import { UpdatePayroll } from './payroll.model';
 
 const payrollRoute = Router({ mergeParams: true });
 const payrollController = new PayrollController(db);
 
-payrollRoute.post(
-  '/',
-  [validateRequest({ body: CreatePayroll }), validatePayrollId],
-  payrollController.createPayRoll.bind(payrollController),
-);
+payrollRoute.post('/', payrollController.createPayRoll.bind(payrollController));
 log.info('Post /payroll/ set');
 
-payrollRoute.get(
-  '/payroll_id',
-  validatePayrollId,
-  payrollController.getPayRollById.bind(payrollController),
+payrollRoute.patch(
+  '/:payroll_id',
+  [validateRequest({ body: UpdatePayroll }), validatePayrollId],
+  payrollController.updatePayroll.bind(payrollController),
 );
-log.info('GET /payroll/:payroll_id set');
+log.info('PATCH /payroll/:payroll_id set');
 
 export default payrollRoute;
