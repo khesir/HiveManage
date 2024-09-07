@@ -61,21 +61,13 @@ export class PayrollController {
   }
 
   async getAllPayroll(req: Request, res: Response, next: NextFunction) {
-    const limit = Number(req.query.limit) || 10;
-    const sort = (req.query.sort as string) || 'asc';
-    const page = Number(req.query.page) || 1;
-
+    const approvalStatus = (req.query.status as string) || undefined;
     try {
-      const pl = await this.payrollService.getAllPayroll({
-        limit,
-        sort,
-        page,
-      });
-      res.status(200).json({ data: pl });
+      const payrolls = await this.payrollService.getAllPayroll(approvalStatus);
+      res.status(HttpStatus.OK.code).json({ data: payrolls });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
-        message: 'Internal Server Error ',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+        message: 'Internal Server Error',
       });
       next(error);
     }

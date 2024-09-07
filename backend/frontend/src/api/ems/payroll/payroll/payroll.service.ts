@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { payroll } from '../../../../../drizzle/drizzle.schema';
-import { eq, asc, desc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 export class PayrollService {
   private db: MySql2Database;
@@ -20,17 +20,25 @@ export class PayrollService {
       .where(eq(payroll.payroll_id, paramsId));
   }
 
-  async getAllPayroll({ limit = 10, sort = 'asc', page = 1 }) {
-    const offset = (page - 1) * limit;
-    const result = await this.db
-      .select()
-      .from(payroll)
-      .orderBy(
-        sort === 'asc' ? asc(payroll.created_at) : desc(payroll.created_at),
-      )
-      .limit(limit)
-      .offset(offset);
-    return result;
+  async getAllPayroll(approvalStatus: string | undefined) {
+    if (
+      approvalStatus &&
+      ['active', 'inactive', 'inprogress'].includes(approvalStatus)
+    ) {
+      const result = await this.db
+        .select()
+        .from(payroll)
+        .where(
+          eq(
+            payroll.status,
+            approvalStatus as 'active' | 'inactive' | 'inprogress',
+          ),
+        );
+      return result;
+    } else {
+      const result = await this.db.select().from(payroll);
+      return result;
+    }
   }
 
   async getPayrollById(paramsId: number) {
