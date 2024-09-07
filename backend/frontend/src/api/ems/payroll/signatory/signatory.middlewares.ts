@@ -3,12 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '../../../../../lib/logger';
 import { db } from '../../../../../mysql/mysql.pool';
-import {
-  employee,
-  signatory,
-} from '../../../../../drizzle/drizzle.schema';
+import { employee, signatory } from '../../../../../drizzle/drizzle.schema';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
-
 
 export async function validateSignatoryID(
   req: Request,

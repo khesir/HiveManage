@@ -53,7 +53,7 @@ export class SignatoryService {
   }
 
   async deleteSignatory(paramsID: number) {
-    console.log("Params-service: " + paramsID);
+    console.log('Params-service: ' + paramsID);
     await this.db
       .update(signatory)
       .set({ deleted_at: new Date(Date.now()) })

@@ -4,7 +4,10 @@ import { db } from '../../../../../mysql/mysql.pool';
 import log from '../../../../../lib/logger';
 import { validateRequest } from '../../../../middlewares';
 import { CreateSignatory, UpdateSignatory } from './signatory.model';
-import { validateSignatoryID, validateEmployeeID } from './signatory.middlewares';
+import {
+  validateSignatoryID,
+  validateEmployeeID,
+} from './signatory.middlewares';
 
 const signatoryRoute = Router({ mergeParams: true });
 const controller = new SignatoryController(db);

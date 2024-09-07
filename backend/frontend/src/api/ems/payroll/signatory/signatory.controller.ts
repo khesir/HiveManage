@@ -18,7 +18,7 @@ export class SignatoryController {
         employee_id,
         signatory_name,
         role,
-        permission_level
+        permission_level,
       });
       res.status(HttpStatus.CREATED.code).json({
         message: 'Signatory Created',
@@ -62,19 +62,15 @@ export class SignatoryController {
     }
   }
 
-  async updateSignatory(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async updateSignatory(req: Request, res: Response, next: NextFunction) {
     try {
       const { signatory_id } = req.params;
       const { employee_id, signatory_name, role, permission_level } = req.body;
       await this.signatoryService.updateSignatory(
         {
           employee_id,
-          signatory_name, 
-          role, 
+          signatory_name,
+          role,
           permission_level,
         },
         Number(signatory_id),
@@ -93,11 +89,13 @@ export class SignatoryController {
   async deleteSignatory(req: Request, res: Response, next: NextFunction) {
     try {
       const { signatory_id } = req.params;
-      console.log("Params-controller: " + req.params);
+      console.log('Params-controller: ' + req.params);
       await this.signatoryService.deleteSignatory(Number(signatory_id));
-      res.status(HttpStatus.OK.code).json({ message: 'Signatory deleted successfully' });
+      res
+        .status(HttpStatus.OK.code)
+        .json({ message: 'Signatory deleted successfully' });
     } catch (error) {
-      next(error); 
+      next(error);
     }
   }
 }

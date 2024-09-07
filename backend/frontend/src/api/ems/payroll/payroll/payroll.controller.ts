@@ -10,6 +10,32 @@ export class PayrollController {
   constructor(pool: MySql2Database) {
     this.payrollService = new PayrollService(pool);
   }
+
+  async updatePayroll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payroll_id } = req.params;
+      const { start, end, pay_date, payroll_finished, approvalStatus } =
+        req.body;
+
+      await this.payrollService.updatePayrolls(
+        {
+          start,
+          end,
+          pay_date,
+          payroll_finished,
+          approvalStatus,
+        },
+        Number(payroll_id),
+      );
+      res.status(HttpStatus.OK.code).json({ message: 'Payroll Updated ' });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+
   async createPayRoll(req: Request, res: Response, next: NextFunction) {
     try {
       const { start, end, pay_date, payroll_finished, approvalStatus } =

@@ -14,7 +14,6 @@ import personalInformationRoute from './employee/personal_information/personalIn
 import salaryInformationRoute from './employee/salary_information/salaryInformation.route';
 import signatoryRoute from './payroll/signatory/signatory.route';
 
-
 const emsRoute = Router({ mergeParams: true });
 
 emsRoute.use('/activityLogs', activityLogRoute);
