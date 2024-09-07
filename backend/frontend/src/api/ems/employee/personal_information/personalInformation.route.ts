@@ -26,6 +26,18 @@ personalInformationRoute.get(
 );
 log.info('GET /personalInformation/:personalInfo_id set');
 
+personalInformationRoute.post(
+  '/',
+  [
+    validateRequest({
+      body: PersonalInformation,
+    }),
+    validateEmployeeID,
+  ],
+  controller.createPersonalInformation.bind(controller),
+);
+log.info('POST /personalInformation/ set');
+
 personalInformationRoute.put(
   '/:personalInfo_id',
   [
@@ -33,6 +45,7 @@ personalInformationRoute.put(
       body: PersonalInformation,
     }),
     validatePersonalID,
+    validateEmployeeID,
   ],
   controller.updatePersonalInformation.bind(controller),
 );

@@ -33,6 +33,46 @@ export class PersonalInformationController {
       next(error);
     }
   }
+  async createPersonalInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const {
+        employee_id,
+        birthday,
+        gender,
+        phone,
+        email,
+        address_line,
+        postal_code,
+        emergency_contact_name,
+        emergency_contact_phone,
+        emergency_contact_relationship,
+      } = req.body;
+      await this.personalInformationService.createPersonalInformation({
+        employee_id,
+        birthday,
+        gender,
+        phone,
+        email,
+        address_line,
+        postal_code,
+        emergency_contact_name,
+        emergency_contact_phone,
+        emergency_contact_relationship,
+      });
+      res.status(HttpStatus.OK.code).json({
+        message: 'Personal Information Created succesfully',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
 
   async updatePersonalInformation(
     req: Request,

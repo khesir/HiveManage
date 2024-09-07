@@ -27,7 +27,9 @@ export class SalaryInformationService {
       return result;
     }
   }
-
+  async createSalaryInformation(data: object) {
+    await this.db.insert(salaryInformation).values(data);
+  }
   async updateSalaryInformation(data: object, paramsId: number) {
     await this.db
       .update(salaryInformation)

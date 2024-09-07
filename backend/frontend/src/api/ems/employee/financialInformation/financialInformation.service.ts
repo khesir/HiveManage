@@ -28,7 +28,9 @@ export class FinancialInformationService {
       return result;
     }
   }
-
+  async createFinancialInformation(data: object) {
+    await this.db.insert(financialInformation).values(data);
+  }
   async updateFinancialInformation(data: object, paramsId: number) {
     await this.db
       .update(financialInformation)

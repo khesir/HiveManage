@@ -28,7 +28,28 @@ export class SalaryInformationController {
       next(error);
     }
   }
-
+  async createSalaryInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { employee_id, payroll_frequency, base_salary } = req.body;
+      await this.salaryInformationService.createSalaryInformation({
+        employee_id,
+        payroll_frequency,
+        base_salary,
+      });
+      res.status(HttpStatus.OK.code).json({
+        message: 'Salary Information Created succesfully',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
   async updateSalaryInformation(
     req: Request,
     res: Response,

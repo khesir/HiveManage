@@ -33,7 +33,38 @@ export class FinancialInformationController {
       next(error);
     }
   }
-
+  async createFinancialInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const {
+        employee_id,
+        pag_ibig_id,
+        sss_id,
+        philhealth_id,
+        tin,
+        bank_account_number,
+      } = req.body;
+      await this.financialInformationService.createFinancialInformation({
+        employee_id,
+        pag_ibig_id,
+        sss_id,
+        philhealth_id,
+        tin,
+        bank_account_number,
+      });
+      res.status(HttpStatus.OK.code).json({
+        message: 'Financial Information Updated succesfully',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
   async updateFinancialInformation(
     req: Request,
     res: Response,

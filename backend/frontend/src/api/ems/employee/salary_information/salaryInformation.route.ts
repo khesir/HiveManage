@@ -27,6 +27,18 @@ salaryInformationRoute.get(
 );
 log.info('GET /salaryInformation/:employee_id set');
 
+salaryInformationRoute.post(
+  '/',
+  [
+    validateRequest({
+      body: SalaryInformation,
+    }),
+    validateEmployeeID,
+  ],
+  controller.createSalaryInformation.bind(controller),
+);
+log.info('POST /salaryInformation/ set');
+
 salaryInformationRoute.put(
   '/:salaryInfo_id',
   [
@@ -34,6 +46,7 @@ salaryInformationRoute.put(
       body: SalaryInformation,
     }),
     validateSalaryID,
+    validateEmployeeID,
   ],
   controller.updateSalaryInformation.bind(controller),
 );

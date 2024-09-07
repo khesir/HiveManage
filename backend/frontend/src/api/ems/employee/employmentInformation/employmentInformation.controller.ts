@@ -33,7 +33,36 @@ export class EmploymentInformationController {
       next(error);
     }
   }
-
+  async createEmploymentInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const {
+        employee_id,
+        department_id,
+        designation_id,
+        employee_type,
+        employee_status,
+      } = req.body;
+      await this.employmentInformationService.createEmploymentInformation({
+        employee_id,
+        department_id,
+        designation_id,
+        employee_type,
+        employee_status,
+      });
+      res.status(HttpStatus.OK.code).json({
+        message: 'Employment Information created succesfully',
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
   async updateEmploymentInformation(
     req: Request,
     res: Response,

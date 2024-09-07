@@ -26,6 +26,18 @@ employmentInformationRoute.get(
 );
 log.info('GET /employmentInformation/:employee_id set');
 
+employmentInformationRoute.post(
+  '/',
+  [
+    validateRequest({
+      body: EmploymentInformation,
+    }),
+    validateEmployeeID,
+  ],
+  controller.createEmploymentInformation.bind(controller),
+);
+log.info('POST /employmentInformation set');
+
 employmentInformationRoute.put(
   '/:employment_id',
   [
@@ -33,6 +45,7 @@ employmentInformationRoute.put(
       body: EmploymentInformation,
     }),
     validateEmploymentID,
+    validateEmployeeID,
   ],
   controller.updateEmploymentInformation.bind(controller),
 );
