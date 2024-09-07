@@ -24,4 +24,21 @@ payrollRoute.patch(
 );
 log.info('PATCH /payroll/:payroll_id set');
 
+payrollRoute.get('/', payrollController.getAllPayroll.bind(payrollController));
+log.info('GET /payroll set');
+
+payrollRoute.get(
+  '/:payroll_id',
+  validatePayrollId,
+  payrollController.getPayrollId.bind(payrollController),
+);
+log.info('GET /payroll/:payroll_id set');
+
+payrollRoute.delete(
+  '/:payroll_id',
+  validatePayrollId,
+  payrollController.deletePayrollById.bind(payrollController),
+);
+log.info('DELETE /payroll/:payroll_id set');
+
 export default payrollRoute;
