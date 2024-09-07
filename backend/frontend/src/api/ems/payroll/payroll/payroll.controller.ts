@@ -50,7 +50,7 @@ export class PayrollController {
       });
       res
         .status(HttpStatus.CREATED.code)
-        .json({ message: 'Successfully Created Payroll' });
+        .json({ message: 'Payroll Successfully Created' });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         message: 'Internal Server Error',

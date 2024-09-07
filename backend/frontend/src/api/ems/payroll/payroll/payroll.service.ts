@@ -1,6 +1,6 @@
-import { eq } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { payroll } from '../../../../../drizzle/drizzle.schema';
+import { eq } from 'drizzle-orm';
 
 export class PayrollService {
   private db: MySql2Database;

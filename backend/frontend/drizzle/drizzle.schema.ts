@@ -52,6 +52,8 @@ export const financialInformation = mysqlTable('financial_information', {
   philhealth_id: varchar('philhealth_id', { length: 255 }),
   tin: varchar('tin', { length: 255 }),
   bank_account_number: varchar('bank_account_number', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
   deleted_at: timestamp('deleted_at'),
 });
 
@@ -232,7 +234,7 @@ export const signatory = mysqlTable('signatory', {
   permission_level: int('permission_level'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
-  deleted_at: timestamp('deleted_at').defaultNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 //  =======================================================================================
