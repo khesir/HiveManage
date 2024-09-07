@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
-    "start:dev": "node src/index.ts",
     "dev": "nodemon src/index.ts",
     "prod": "node src/index.ts",
     "test": "jest",

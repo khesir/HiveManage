@@ -31,20 +31,33 @@ export class SignatoryController {
     }
   }
 
-  async getSignatory(req: Request, res: Response, next: NextFunction) {
+  async getSignatoryByID(req: Request, res: Response, next: NextFunction) {
     try {
       const { signatory_id } = req.params;
       const { employee_id } = req.query;
       const result = await this.signatoryService.getSignatory(
         Number(signatory_id),
-        Number(signatory_id)
+        Number(employee_id),
       );
-
       res.status(HttpStatus.OK.code).json({ data: result });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
         .send({ message: 'Internal Server Error' });
+      next(error);
+    }
+  }
+
+  async getAllSignatories(req: Request, res: Response, next: NextFunction) {
+    const employee_id = Number(req.query.employee_id) || undefined;
+    try {
+      const signatories =
+        await this.signatoryService.getAllSignatories(employee_id);
+      res.status(HttpStatus.OK.code).json({ data: signatories });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
       next(error);
     }
   }

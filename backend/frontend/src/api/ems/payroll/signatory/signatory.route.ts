@@ -14,16 +14,24 @@ signatoryRoute.post(
   validateRequest({
     body: CreateSignatory,
   }),
+  validateEmployeeID,
   controller.createSignatory.bind(controller),
 );
 log.info('POST /signatory set');
 
 signatoryRoute.get(
+  '/',
+  validateEmployeeID,
+  controller.getSignatoryByID.bind(controller),
+);
+log.info('GET /salaryInformation/ set');
+
+signatoryRoute.get(
   '/:signatory_id',
   validateSignatoryID,
-  controller.getSignatory.bind(controller),
+  controller.getSignatoryByID.bind(controller),
 );
-log.info('GET /signatory/:signatory_id set');
+log.info('GET /leaveRequest/:leaveRequest_id set');
 
 signatoryRoute.put(
   '/:signatory_id',

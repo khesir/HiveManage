@@ -18,13 +18,26 @@ export class SignatoryService {
       const result = await this.db
         .select()
         .from(signatory)
-        .where(eq(signatory.signatory_id, queryId));
+        .where(eq(signatory.employee_id, queryId));
       return result;
     } else if (!isNaN(paramsID)) {
       const result = await this.db
         .select()
         .from(signatory)
         .where(eq(signatory.signatory_id, paramsID));
+      return result;
+    } else {
+      const result = await this.db.select().from(signatory);
+      return result;
+    }
+  }
+
+  async getAllSignatories(employee_id: number | undefined) {
+    if (employee_id) {
+      const result = await this.db
+        .select()
+        .from(signatory)
+        .where(eq(signatory.employee_id, employee_id));
       return result;
     } else {
       const result = await this.db.select().from(signatory);
