@@ -12,6 +12,8 @@ import employmentInformationRoute from './employee/employmentInformation/employm
 import financiallInformationRoute from './employee/financialInformation/financialInformation.route';
 import personalInformationRoute from './employee/personal_information/personalInformation.route';
 import salaryInformationRoute from './employee/salary_information/salaryInformation.route';
+import signatoryRoute from './payroll/signatory/signatory.route';
+
 
 const emsRoute = Router({ mergeParams: true });
 
@@ -46,5 +48,8 @@ log.info('ROUTE /personalInformation set');
 
 emsRoute.use('/salaryInformation', salaryInformationRoute);
 log.info('ROUTE /salaryInformation set');
+
+emsRoute.use('/signatory', signatoryRoute);
+log.info('ROUTE /signatory set');
 
 export default emsRoute;
