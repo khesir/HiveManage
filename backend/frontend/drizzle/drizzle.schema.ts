@@ -234,7 +234,7 @@ export const signatory = mysqlTable('signatory', {
   permission_level: int('permission_level'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
-  deleted_at: timestamp('deleted_at').defaultNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 //  =======================================================================================
