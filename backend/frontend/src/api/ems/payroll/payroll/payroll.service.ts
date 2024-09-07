@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { payroll } from '../../../../../drizzle/drizzle.schema';
-import { eq } from 'drizzle-orm';
+import { eq, asc, desc } from 'drizzle-orm';
 
 export class PayrollService {
   private db: MySql2Database;
@@ -17,6 +17,34 @@ export class PayrollService {
     await this.db
       .update(payroll)
       .set(data)
+      .where(eq(payroll.payroll_id, paramsId));
+  }
+
+  async getAllPayroll({ limit = 10, sort = 'asc', page = 1 }) {
+    const offset = (page - 1) * limit;
+    const result = await this.db
+      .select()
+      .from(payroll)
+      .orderBy(
+        sort === 'asc' ? asc(payroll.created_at) : desc(payroll.created_at),
+      )
+      .limit(limit)
+      .offset(offset);
+    return result;
+  }
+
+  async getPayrollById(paramsId: number) {
+    const result = await this.db
+      .select()
+      .from(payroll)
+      .where(eq(payroll.payroll_id, paramsId));
+    return result[0];
+  }
+
+  async deletePayroll(paramsId: number): Promise<void> {
+    await this.db
+      .update(payroll)
+      .set({ deleted_at: new Date(Date.now()) })
       .where(eq(payroll.payroll_id, paramsId));
   }
 }
