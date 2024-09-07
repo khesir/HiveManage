@@ -27,14 +27,14 @@ signatoryRoute.get(
   validateEmployeeID,
   controller.getSignatoryByID.bind(controller),
 );
-log.info('GET /salaryInformation/ set');
+log.info('GET /signatory/ set');
 
 signatoryRoute.get(
   '/:signatory_id',
   validateSignatoryID,
   controller.getSignatoryByID.bind(controller),
 );
-log.info('GET /leaveRequest/:leaveRequest_id set');
+log.info('GET /signatory/:signatory_id set');
 
 signatoryRoute.put(
   '/:signatory_id',
