@@ -15,6 +15,7 @@ import salaryInformationRoute from './employee/salary_information/salaryInformat
 import signatoryRoute from './payroll/signatory/signatory.route';
 import onPayrollRoute from './payroll/onPayroll/onpayroll.route';
 import payrollApprovalRoute from './payroll/payroll_approval/payrollApproval.route';
+import payrollreportRoute from './payroll/payroll_reports/payrollReports.route';
 
 const emsRoute = Router({ mergeParams: true });
 
@@ -58,5 +59,8 @@ log.info('ROUTE /onPayroll set');
 
 emsRoute.use('/payrollApproval', payrollApprovalRoute);
 log.info('ROUTE /payrollApproval set');
+
+emsRoute.use('/payrollReports', payrollreportRoute);
+log.info('ROUTE /payrollReports set');
 
 export default emsRoute;
