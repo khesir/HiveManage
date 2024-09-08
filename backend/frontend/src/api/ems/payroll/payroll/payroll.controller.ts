@@ -59,4 +59,46 @@ export class PayrollController {
       next(error);
     }
   }
+
+  async getAllPayroll(req: Request, res: Response, next: NextFunction) {
+    const approvalStatus = (req.query.status as string) || undefined;
+    try {
+      const payrolls = await this.payrollService.getAllPayroll(approvalStatus);
+      res.status(HttpStatus.OK.code).json({ data: payrolls });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
+
+  async getPayrollId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payroll_id } = req.params;
+      const data = await this.payrollService.getPayrollById(Number(payroll_id));
+      res.status(200).json({ message: data });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error ',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
+      next(error);
+    }
+  }
+
+  async deletePayrollById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payroll_id } = req.params;
+      await this.payrollService.deletePayroll(Number(payroll_id));
+      res.status(200).json({
+        message: `Payroll ID:${payroll_id} is deleted successfully`,
+      });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
 }
