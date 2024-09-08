@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { eq } from 'drizzle-orm';
+import { eq,and,isNull } from 'drizzle-orm';
 
 import { department } from '../../../../../drizzle/drizzle.schema';
 
@@ -19,10 +19,15 @@ export class DepartmentService {
       const result = await this.db
         .select()
         .from(department)
-        .where(eq(department.status, status));
+        .where(
+          and(
+            eq(department.status, status),
+            isNull(department.deleted_at)
+          )
+        );
       return result;
     } else {
-      const result = await this.db.select().from(department);
+      const result = await this.db.select().from(department).where(isNull(department.deleted_at));
       return result;
     }
   }

@@ -4,8 +4,8 @@ import { db } from '../../../../../mysql/mysql.pool';
 import { validateRequest } from '../../../../middlewares';
 import { FinancialInformation } from './financialInformation.model';
 import {
-  validateEmployeeID,
-  validateFinancialID,
+  validateEmployeeId,
+  validateFinancialId,
 } from './financialInformation.middleware';
 import log from '../../../../../lib/logger';
 
@@ -14,14 +14,14 @@ const controller = new FinancialInformationController(db);
 
 financiallInformationRoute.get(
   '/',
-  validateEmployeeID,
+  validateEmployeeId,
   controller.getFinancialInformation.bind(controller),
 );
 log.info('GET /employeeInformation/ set');
 
 financiallInformationRoute.get(
   '/:financial_id',
-  validateFinancialID,
+  validateFinancialId,
   controller.getFinancialInformation.bind(controller),
 );
 log.info('GET /employeeInformation/:financial_id set');
@@ -32,7 +32,7 @@ financiallInformationRoute.post(
     validateRequest({
       body: FinancialInformation,
     }),
-    validateEmployeeID,
+    validateEmployeeId,
   ],
   controller.createFinancialInformation.bind(controller),
 );
@@ -44,8 +44,8 @@ financiallInformationRoute.put(
     validateRequest({
       body: FinancialInformation,
     }),
-    validateFinancialID,
-    validateEmployeeID,
+    validateFinancialId,
+    validateEmployeeId,
   ],
   controller.updateFinancialInformation.bind(controller),
 );
@@ -53,7 +53,7 @@ log.info('PUT /employeeInformation/:financial_id set');
 
 financiallInformationRoute.delete(
   '/:financial_id',
-  validateFinancialID,
+  validateFinancialId,
   controller.deleteEmploymentInformation.bind(controller),
 );
 

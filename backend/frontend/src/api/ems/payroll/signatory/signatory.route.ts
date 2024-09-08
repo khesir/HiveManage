@@ -5,8 +5,8 @@ import log from '../../../../../lib/logger';
 import { validateRequest } from '../../../../middlewares';
 import { CreateSignatory, UpdateSignatory } from './signatory.model';
 import {
-  validateSignatoryID,
-  validateEmployeeID,
+  validateSignatoryId,
+  validateEmployeeId,
 } from './signatory.middlewares';
 
 const signatoryRoute = Router({ mergeParams: true });
@@ -17,22 +17,22 @@ signatoryRoute.post(
   validateRequest({
     body: CreateSignatory,
   }),
-  validateEmployeeID,
+  validateEmployeeId,
   controller.createSignatory.bind(controller),
 );
 log.info('POST /signatory set');
 
 signatoryRoute.get(
   '/',
-  validateEmployeeID,
-  controller.getSignatoryByID.bind(controller),
+  validateEmployeeId,
+  controller.getSignatoryById.bind(controller),
 );
 log.info('GET /signatory/ set');
 
 signatoryRoute.get(
   '/:signatory_id',
-  validateSignatoryID,
-  controller.getSignatoryByID.bind(controller),
+  validateSignatoryId,
+  controller.getSignatoryById.bind(controller),
 );
 log.info('GET /signatory/:signatory_id set');
 
@@ -42,8 +42,8 @@ signatoryRoute.put(
     validateRequest({
       body: UpdateSignatory,
     }),
-    validateSignatoryID,
-    validateEmployeeID,
+    validateSignatoryId,
+    validateEmployeeId,
   ],
   controller.updateSignatory.bind(controller),
 );
@@ -51,7 +51,7 @@ log.info('PUT /signatory/:signatory_id set');
 
 signatoryRoute.delete(
   '/:signatory_id',
-  validateSignatoryID,
+  validateSignatoryId,
   controller.deleteSignatory.bind(controller),
 );
 log.info('DELETE /signatory/:signatory_id set');

@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { asc, desc, eq } from 'drizzle-orm';
+import { asc, desc, eq, isNull } from 'drizzle-orm';
 
 import { activityLog } from '../../../../../drizzle/drizzle.schema';
 
@@ -19,6 +19,7 @@ export class ActivityLogService {
     const result = await this.db
       .select()
       .from(activityLog)
+      .where(isNull(activityLog.deleted_at))
       .orderBy(
         sort === 'asc'
           ? asc(activityLog.created_at)

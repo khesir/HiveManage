@@ -9,7 +9,7 @@ import { HttpStatus } from '../../../../../lib/HttpStatus';
 // There's a globally used
 // middlewere like error handling and schema validation
 
-export async function validateLeaveRequestID(
+export async function validateLeaveRequestId(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -36,7 +36,7 @@ export async function validateLeaveRequestID(
   }
 }
 
-export async function validateEmployeeID(
+export async function validateEmployeeId(
   req: Request,
   res: Response,
   next: NextFunction,

@@ -11,7 +11,7 @@ export class LeaveRequestController {
     this.leaveRequestService = new LeaveRequestService(pool);
   }
 
-  async getAllleaveRequest(req: Request, res: Response, next: NextFunction) {
+  async getAllLeaveRequest(req: Request, res: Response, next: NextFunction) {
     const employee_id = Number(req.query.employee_id) || undefined;
     try {
       const data =
@@ -25,7 +25,7 @@ export class LeaveRequestController {
     }
   }
 
-  async getleaveRequestById(req: Request, res: Response, next: NextFunction) {
+  async getLeaveRequestById(req: Request, res: Response, next: NextFunction) {
     try {
       const { leaveRequest_id } = req.params;
       const data = await this.leaveRequestService.getLeaveRequestById(
@@ -95,7 +95,7 @@ export class LeaveRequestController {
       next(error);
     }
   }
-  async deleteleaveRequestByID(
+  async deleteleaveRequestById(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -106,7 +106,7 @@ export class LeaveRequestController {
         Number(leaveRequest_id),
       );
       res.status(200).json({
-        message: `Leave Request ID: ${leaveRequest_id} deleted successfully`,
+        message: `Leave Request Id: ${leaveRequest_id} deleted successfully`,
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({

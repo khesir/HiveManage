@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { EmploymentInformationController } from './employmentInformation.controller';
 import { db } from '../../../../../mysql/mysql.pool';
 import {
-  validateEmployeeID,
-  validateEmploymentID,
+  validateEmployeeId,
+  validateEmploymentId,
 } from './employmentInformation.middlewares';
 import { validateRequest } from '../../../../middlewares';
 import { EmploymentInformation } from './employmentInformation.model';
@@ -14,14 +14,14 @@ const controller = new EmploymentInformationController(db);
 
 employmentInformationRoute.get(
   '/',
-  validateEmployeeID,
+  validateEmployeeId,
   controller.getEmploymentInformation.bind(controller),
 );
 log.info('GET /employmentInformation/ set');
 
 employmentInformationRoute.get(
   '/:employment_id',
-  validateEmploymentID,
+  validateEmploymentId,
   controller.getEmploymentInformation.bind(controller),
 );
 log.info('GET /employmentInformation/:employee_id set');
@@ -32,7 +32,7 @@ employmentInformationRoute.post(
     validateRequest({
       body: EmploymentInformation,
     }),
-    validateEmployeeID,
+    validateEmployeeId,
   ],
   controller.createEmploymentInformation.bind(controller),
 );
@@ -44,8 +44,8 @@ employmentInformationRoute.put(
     validateRequest({
       body: EmploymentInformation,
     }),
-    validateEmploymentID,
-    validateEmployeeID,
+    validateEmploymentId,
+    validateEmployeeId,
   ],
   controller.updateEmploymentInformation.bind(controller),
 );
@@ -53,7 +53,7 @@ log.info('PUT /employmentInformation/:employment_id set');
 
 employmentInformationRoute.delete(
   '/:employment_id',
-  validateEmploymentID,
+  validateEmploymentId,
   controller.deleteEmploymentInformation.bind(controller),
 );
 log.info('DELETE /employmentInformation/:employment_id set');

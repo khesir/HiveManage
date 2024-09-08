@@ -9,7 +9,7 @@ import {
 } from '../../../../../drizzle/drizzle.schema';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
 
-export async function validatePersonalID(
+export async function validatePersonalId(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -41,7 +41,7 @@ export async function validatePersonalID(
   }
 }
 
-export async function validateEmployeeID(
+export async function validateEmployeeId(
   req: Request,
   res: Response,
   next: NextFunction,

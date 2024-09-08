@@ -9,7 +9,7 @@ import { HttpStatus } from '../../../../../lib/HttpStatus';
 // There's a globally used
 // middlewere like error handling and schema validation
 
-export async function validateActivtyId(
+export async function validateActivityID(
   req: Request,
   res: Response,
   next: NextFunction,

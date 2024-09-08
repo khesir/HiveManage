@@ -5,8 +5,8 @@ import log from '../../../../../lib/logger';
 
 import { LeaveRequest, UpdateLeave } from './leaveRequest.model';
 import {
-  validateEmployeeID,
-  validateLeaveRequestID,
+  validateEmployeeId,
+  validateLeaveRequestId,
 } from './leaveRequest.middlewares';
 import { LeaveRequestController } from './leaveRequest.controller';
 
@@ -15,15 +15,15 @@ const controller = new LeaveRequestController(db);
 
 leaveRequestRoute.get(
   '/',
-  validateEmployeeID,
-  controller.getAllleaveRequest.bind(controller),
+  validateEmployeeId,
+  controller.getAllLeaveRequest.bind(controller),
 );
 log.info('GET /leaveRequest/ set');
 
 leaveRequestRoute.get(
   '/:leaveRequest_id',
-  validateLeaveRequestID,
-  controller.getleaveRequestById.bind(controller),
+  validateLeaveRequestId,
+  controller.getLeaveRequestById.bind(controller),
 );
 log.info('GET /leaveRequest/:leaveRequest_id set');
 
@@ -33,7 +33,7 @@ leaveRequestRoute.post(
     validateRequest({
       body: LeaveRequest,
     }),
-    validateEmployeeID,
+    validateEmployeeId,
   ],
   controller.createleaveRequest.bind(controller),
 );
@@ -45,8 +45,8 @@ leaveRequestRoute.put(
     validateRequest({
       body: LeaveRequest,
     }),
-    validateEmployeeID,
-    validateLeaveRequestID,
+    validateEmployeeId,
+    validateLeaveRequestId,
   ],
   controller.updateleaveRequest.bind(controller),
 );
@@ -56,15 +56,15 @@ leaveRequestRoute.patch('/:leaveRequest_id', [
   validateRequest({
     body: UpdateLeave,
   }),
-  validateEmployeeID,
-  validateLeaveRequestID,
+  validateEmployeeId,
+  validateLeaveRequestId,
   controller.updateleaveRequest.bind(controller),
 ]);
 
 leaveRequestRoute.delete(
   '/:leaveRequest_id',
-  validateLeaveRequestID,
-  controller.deleteleaveRequestByID.bind(controller),
+  validateLeaveRequestId,
+  controller.deleteleaveRequestById.bind(controller),
 );
 log.info('DELETE /leaveRequest/:leaveRequest_id set');
 

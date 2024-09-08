@@ -48,7 +48,7 @@ log.info('PATCH /designation/:designation_id set');
 designationRoute.delete(
   '/:designation_id',
   validateDesignationID,
-  designationController.deleteDesignationByID.bind(designationController),
+  designationController.deleteDesignationById.bind(designationController),
 );
 log.info('DELETE /designation/:designation_id set');
 

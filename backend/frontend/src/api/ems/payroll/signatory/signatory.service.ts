@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { signatory } from '../../../../../drizzle/drizzle.schema';
-import { eq } from 'drizzle-orm';
+import { eq, and, isNull } from 'drizzle-orm';
 
 export class SignatoryService {
   private db: MySql2Database;
@@ -13,21 +13,21 @@ export class SignatoryService {
     await this.db.insert(signatory).values(data);
   }
 
-  async getSignatory(paramsID: number, queryId: number) {
+  async getSignatory(paramsId: number, queryId: number) {
     if (!isNaN(queryId)) {
       const result = await this.db
         .select()
         .from(signatory)
-        .where(eq(signatory.employee_id, queryId));
+        .where(and(eq(signatory.employee_id, queryId),isNull(signatory.deleted_at)));
       return result;
-    } else if (!isNaN(paramsID)) {
+    } else if (!isNaN(paramsId)) {
       const result = await this.db
         .select()
         .from(signatory)
-        .where(eq(signatory.signatory_id, paramsID));
+        .where(eq(signatory.signatory_id, paramsId));
       return result;
     } else {
-      const result = await this.db.select().from(signatory);
+      const result = await this.db.select().from(signatory).where(isNull(signatory.deleted_at));
       return result;
     }
   }
@@ -37,7 +37,12 @@ export class SignatoryService {
       const result = await this.db
         .select()
         .from(signatory)
-        .where(eq(signatory.employee_id, employee_id));
+        .where(
+          and(
+            eq(signatory.employee_id, employee_id),
+            isNull(signatory.deleted_at)
+          )
+        );
       return result;
     } else {
       const result = await this.db.select().from(signatory);
@@ -52,11 +57,11 @@ export class SignatoryService {
       .where(eq(signatory.signatory_id, paramsId));
   }
 
-  async deleteSignatory(paramsID: number) {
-    console.log('Params-service: ' + paramsID);
+  async deleteSignatory(paramsId: number) {
+    console.log('Params-service: ' + paramsId);
     await this.db
       .update(signatory)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(signatory.signatory_id, paramsID));
+      .where(eq(signatory.signatory_id, paramsId));
   }
 }

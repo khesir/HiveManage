@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, isNull, and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { employee } from '../../../../../drizzle/drizzle.schema';
 
@@ -14,10 +14,15 @@ export class EmployeeService {
       const result = await this.db
         .select()
         .from(employee)
-        .where(eq(employee.status, status));
+        .where(
+          and(
+            eq(employee.status, status),
+            isNull(employee.deleted_at)
+          )
+        );
       return result;
     } else {
-      const result = await this.db.select().from(employee);
+      const result = await this.db.select().from(employee).where(isNull(employee.deleted_at));
       return result;
     }
   }
@@ -41,7 +46,7 @@ export class EmployeeService {
       .where(eq(employee.employee_id, paramsId));
   }
 
-  async deleteEmployeeByID(employeeId: number): Promise<void> {
+  async deleteEmployeeById(employeeId: number): Promise<void> {
     await this.db
       .update(employee)
       .set({ deleted_at: new Date(Date.now()) })

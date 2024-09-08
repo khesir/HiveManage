@@ -31,7 +31,7 @@ export class SignatoryController {
     }
   }
 
-  async getSignatoryByID(req: Request, res: Response, next: NextFunction) {
+  async getSignatoryById(req: Request, res: Response, next: NextFunction) {
     try {
       const { signatory_id } = req.params;
       const { employee_id } = req.query;

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, isNull, and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { financialInformation } from '../../../../../drizzle/drizzle.schema';
 
@@ -8,23 +8,23 @@ export class FinancialInformationService {
   constructor(db: MySql2Database) {
     this.db = db;
   }
-  async getFinancialInformation(paramsID: number, queryId: number) {
-    console.log(paramsID);
+  async getFinancialInformation(paramsId: number, queryId: number) {
+    console.log(paramsId);
     console.log(queryId);
     if (!isNaN(queryId)) {
       const result = await this.db
         .select()
         .from(financialInformation)
-        .where(eq(financialInformation.employee_id, queryId));
+        .where(and(eq(financialInformation.employee_id, queryId),isNull(financialInformation.deleted_at)));
       return result;
-    } else if (!isNaN(paramsID)) {
+    } else if (!isNaN(paramsId)) {
       const result = await this.db
         .select()
         .from(financialInformation)
-        .where(eq(financialInformation.financial_id, paramsID));
+        .where(eq(financialInformation.financial_id, paramsId));
       return result;
     } else {
-      const result = await this.db.select().from(financialInformation);
+      const result = await this.db.select().from(financialInformation).where(isNull(financialInformation.deleted_at));
       return result;
     }
   }

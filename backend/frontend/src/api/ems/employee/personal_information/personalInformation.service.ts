@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, isNull, and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { personalInformation } from '../../../../../drizzle/drizzle.schema';
 
@@ -9,21 +9,21 @@ export class PersonalInformationService {
     this.db = db;
   }
 
-  async getPersonalInformation(paramsID: number, queryId: number) {
+  async getPersonalInformation(paramsId: number, queryId: number) {
     if (!isNaN(queryId)) {
       const result = await this.db
         .select()
         .from(personalInformation)
-        .where(eq(personalInformation.employee_id, queryId));
+        .where(and(eq(personalInformation.employee_id, queryId),isNull(personalInformation.deleted_at)));
       return result;
-    } else if (!isNaN(paramsID)) {
+    } else if (!isNaN(paramsId)) {
       const result = await this.db
         .select()
         .from(personalInformation)
-        .where(eq(personalInformation.personal_information_id, paramsID));
+        .where(eq(personalInformation.personal_information_id, paramsId));
       return result;
     } else {
-      const result = await this.db.select().from(personalInformation);
+      const result = await this.db.select().from(personalInformation).where(isNull(personalInformation.deleted_at));
       return result;
     }
   }
@@ -39,10 +39,10 @@ export class PersonalInformationService {
       .where(eq(personalInformation.personal_information_id, paramsId));
   }
 
-  async deletePersonalInformation(paramsID: number) {
+  async deletePersonalInformation(paramsId: number) {
     await this.db
       .update(personalInformation)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(personalInformation.personal_information_id, paramsID));
+      .where(eq(personalInformation.personal_information_id, paramsId));
   }
 }

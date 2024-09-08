@@ -40,11 +40,11 @@ export class PayrollApprovalController {
     }
   }
 
-  async getPayrollApprovalByID(req: Request, res: Response, next: NextFunction) {
+  async getPayrollApprovalById(req: Request, res: Response, next: NextFunction) {
     try {
       const { payroll_approval_id } = req.params;
       const { on_payroll_id } = req.query;
-      const result = await this.payrollApprovalService.getPayrollApproval(
+      const result = await this.payrollApprovalService.getPayrollApprovalbyId(
         Number(payroll_approval_id),
         Number(on_payroll_id),
       );
