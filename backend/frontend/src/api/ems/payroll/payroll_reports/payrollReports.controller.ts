@@ -5,13 +5,13 @@ import { HttpStatus } from '../../../../../lib/config';
 import { PayrollReportsService } from './payroll_reports.service';
 
 export class PayrollReportsController {
-  private payrollReportService: PayrollReportsService;
+  private payrollReportsService: PayrollReportsService;
 
   constructor(pool: MySql2Database) {
-    this.payrollReportService = new PayrollReportsService(pool);
+    this.payrollReportsService = new PayrollReportsService(pool);
   }
 
-  async updatePayroll(req: Request, res: Response, next: NextFunction) {
+  async updatePayrollReports(req: Request, res: Response, next: NextFunction) {
     try {
       const { payroll_report } = req.params;
       const {
@@ -22,7 +22,7 @@ export class PayrollReportsController {
         total_benefits,
       } = req.body;
 
-      await this.payrollReportService.updatePayrollReports(
+      await this.payrollReportsService.updatePayrollReports(
         {
           on_payroll_id,
           netpay,
