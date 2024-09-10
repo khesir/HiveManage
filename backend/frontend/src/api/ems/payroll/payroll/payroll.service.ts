@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { payroll } from '../../../../../drizzle/drizzle.schema';
-import { eq } from 'drizzle-orm';
+import { eq,and,isNull } from 'drizzle-orm';
 
 export class PayrollService {
   private db: MySql2Database;
@@ -29,10 +29,13 @@ export class PayrollService {
         .select()
         .from(payroll)
         .where(
-          eq(
-            payroll.status,
-            approvalStatus as 'active' | 'inactive' | 'inprogress',
-          ),
+          and(
+            eq(
+              payroll.status,
+              approvalStatus as 'active' | 'inactive' | 'inprogress',
+            ),
+            isNull(payroll.deleted_at)
+          )
         );
       return result;
     } else {
