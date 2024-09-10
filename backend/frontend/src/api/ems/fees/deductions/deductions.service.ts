@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { eq } from 'drizzle-orm';
+import { eq, and, isNull } from 'drizzle-orm';
 import { deductions } from '../../../../../drizzle/drizzle.schema';
 
 export class DeductionsService {
@@ -31,10 +31,18 @@ export class DeductionsService {
       const result = await this.db
         .select()
         .from(deductions)
-        .where(eq(deductions.employee_id, paramsId));
+        .where(
+          and(
+            eq(deductions.employee_id, paramsId),
+            isNull(deductions.deleted_at), // Exclude soft deleted data
+          ),
+        );
       return result;
     } else {
-      const result = await this.db.select().from(deductions);
+      const result = await this.db
+        .select()
+        .from(deductions)
+        .where(isNull(deductions.deleted_at));
       return result;
     }
   }
@@ -43,7 +51,12 @@ export class DeductionsService {
     const result = await this.db
       .select()
       .from(deductions)
-      .where(eq(deductions.deduction_id, paramsId));
+      .where(
+        and(
+          eq(deductions.deduction_id, paramsId),
+          isNull(deductions.deleted_at), // Excluded soft deleted data for general query
+        ),
+      );
     return result;
   }
 
