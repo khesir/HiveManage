@@ -1,13 +1,18 @@
 import { z } from 'zod';
 
-export const OnPayroll = z.object({
+export const Employeees = z.object({
   employee_id: z.number().min(1),
-  payroll_id: z.number().min(1),
 });
 
-export const OnPayrollArray = z.object({
-  employees: z.array(OnPayroll),
+export const CreateOnPayrollArray = z.object({
+  employees: z.array(Employeees),
 });
 
-export type OnPayroll = z.infer<typeof OnPayroll>;
-export type OnPayrollArray = z.infer<typeof OnPayrollArray>;
+export const UpadteOnPayrollArray = z.object({
+  toAddEmployee: z.array(Employeees).optional(),
+  toDeleteEmployee: z.array(Employeees).optional(),
+});
+
+export type OnPayroll = z.infer<typeof Employeees>;
+export type CreateOnPayrollArray = z.infer<typeof CreateOnPayrollArray>;
+export type UpdateOnPayrollArray = z.infer<typeof UpadteOnPayrollArray>;

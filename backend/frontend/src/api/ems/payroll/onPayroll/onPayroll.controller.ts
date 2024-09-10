@@ -31,4 +31,23 @@ export class OnPayrollController {
       }
     }
   }
+  async updateOnpayroll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payroll_id } = req.query || undefined;
+      const { toDeleteEmployee, toAddEmployee } = req.body;
+      const { message } = await this.onPayrollService.updateOnPayroll(
+        toAddEmployee,
+        toDeleteEmployee,
+        Number(payroll_id),
+      );
+      res.status(HttpStatus.OK.code).json({
+        message: message,
+      });
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST.code).json({
+        message: 'Internal Server Error',
+      });
+      next(error);
+    }
+  }
 }
