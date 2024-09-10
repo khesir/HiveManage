@@ -4,8 +4,8 @@ import { db } from '../../../../../mysql/mysql.pool';
 import log from '../../../../../lib/logger';
 import { OnPayrollController } from './onPayroll.controller';
 import { validateRequest } from '../../../../middlewares';
-import { CreateOnPayrollArray } from './onPayroll.model';
-import { validateOnPayrollID } from '../payroll_approval/payrollApproval.middlewares';
+import { CreateOnPayrollArray, UpadteOnPayrollArray } from './onPayroll.model';
+import { captureQuery } from './onPayroll.middlewares';
 
 const onPayrollRoute = Router({ mergeParams: true });
 const controller = new OnPayrollController(db);
@@ -19,7 +19,7 @@ log.info(`POST /onPayroll set`);
 
 onPayrollRoute.patch(
   '/',
-  validateOnPayrollID,
+  [validateRequest({ body: UpadteOnPayrollArray }), captureQuery],
   controller.updateOnpayroll.bind(controller),
 );
 log.info(`PATCH /onPayroll set`);

@@ -13,8 +13,16 @@ export class OnPayrollController {
   async createOnPayroll(req: Request, res: Response, next: NextFunction) {
     try {
       const { employees } = req.body;
-      console.log(employees);
-      await this.onPayrollService.createOnPayroll(employees);
+      const { payroll_id } = req.query || undefined;
+      if (payroll_id === undefined) {
+        throw new Error(
+          `payroll_id doesn't exists, kindly provide the payroll_id as query parameter`,
+        );
+      }
+      await this.onPayrollService.createOnPayroll(
+        employees,
+        Number(payroll_id),
+      );
       res
         .status(HttpStatus.CREATED.code)
         .json({ message: `${employees.length} Employee Added to payroll` });
@@ -35,9 +43,14 @@ export class OnPayrollController {
     try {
       const { payroll_id } = req.query || undefined;
       const { toDeleteEmployee, toAddEmployee } = req.body;
+      if (payroll_id === undefined) {
+        throw new Error(
+          `payroll_id doesn't exists, kindly provide the payroll_id as query parameter`,
+        );
+      }
       const { message } = await this.onPayrollService.updateOnPayroll(
-        toAddEmployee,
-        toDeleteEmployee,
+        toAddEmployee === undefined ? [] : toAddEmployee,
+        toDeleteEmployee === undefined ? [] : toDeleteEmployee,
         Number(payroll_id),
       );
       res.status(HttpStatus.OK.code).json({
