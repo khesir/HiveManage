@@ -11,18 +11,10 @@ export class PayrollApprovalController {
     this.payrollApprovalService = new PayrollApprovalService(pool);
   }
 
-  async createPayrollApproval(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async createPayrollApproval(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        on_payroll_id,
-        signatory_id,
-        approval_status,
-        approval_date,
-      } = req.body;
+      const { on_payroll_id, signatory_id, approval_status, approval_date } =
+        req.body;
       await this.payrollApprovalService.createPayrollApproval({
         on_payroll_id,
         signatory_id,
@@ -40,7 +32,11 @@ export class PayrollApprovalController {
     }
   }
 
-  async getPayrollApprovalById(req: Request, res: Response, next: NextFunction) {
+  async getPayrollApprovalById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const { payroll_approval_id } = req.params;
       const { on_payroll_id } = req.query;
@@ -57,7 +53,11 @@ export class PayrollApprovalController {
     }
   }
 
-  async getAllPayrollApprovals(req: Request, res: Response, next: NextFunction) {
+  async getAllPayrollApprovals(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     const on_payroll_id = Number(req.query.employee_id) || undefined;
     try {
       const payrollApprovals =
@@ -74,7 +74,8 @@ export class PayrollApprovalController {
   async updatePayrollApproval(req: Request, res: Response, next: NextFunction) {
     try {
       const { payroll_approval_id } = req.params;
-      const { on_payroll_id, signatory_id, approval_status, approval_date } = req.body;
+      const { on_payroll_id, signatory_id, approval_status, approval_date } =
+        req.body;
       await this.payrollApprovalService.updatePayrollApproval(
         {
           on_payroll_id,
@@ -95,11 +96,7 @@ export class PayrollApprovalController {
     }
   }
 
-  async deletePayrollApproval(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async deletePayrollApproval(req: Request, res: Response, next: NextFunction) {
     try {
       const { payroll_approval_id } = req.params;
       await this.payrollApprovalService.deletePayrollApproval(

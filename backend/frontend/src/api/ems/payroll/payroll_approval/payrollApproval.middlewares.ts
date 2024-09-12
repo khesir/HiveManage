@@ -3,7 +3,11 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '../../../../../lib/logger';
 import { db } from '../../../../../mysql/mysql.pool';
-import { payrollApproval, signatory, onPayroll } from '../../../../../drizzle/drizzle.schema';
+import {
+  payrollApproval,
+  signatory,
+  onPayroll,
+} from '../../../../../drizzle/drizzle.schema';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
 
 export async function validatePayrollApprovalId(
@@ -70,37 +74,38 @@ export async function validateSignatoryId(
 }
 
 export async function validateOnPayrollId(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    const on_payroll_id = req.body.on_payroll_id || req.query.on_payroll_id;
-  
-    try {
-      if (on_payroll_id === undefined) {
-        next();
-      } else {
-        const data = await db
-          .select()
-          .from(onPayroll)
-          .where(
-            and(
-              eq(onPayroll.on_payroll_id, Number(on_payroll_id)),
-              isNull(onPayroll.deleted_at),
-            ),
-          );
-        if (!data[0]) {
-          return res
-            .status(HttpStatus.NOT_FOUND.code)
-            .json({ message: 'On Payroll not found' });
-        }
-        next();
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const on_payroll_id = req.body.on_payroll_id || req.query.on_payroll_id;
+
+  try {
+    if (on_payroll_id === undefined) {
+      next();
+    } else {
+      const data = await db
+        .select()
+        .from(onPayroll)
+        .where(
+          and(
+            eq(onPayroll.on_payroll_id, Number(on_payroll_id)),
+            isNull(onPayroll.deleted_at),
+          ),
+        );
+      if (!data[0]) {
+        return res
+          .status(HttpStatus.NOT_FOUND.code)
+          .json({ message: 'On Payroll not found' });
       }
-    } catch (error) {
-      console.log(error);
-      log.error(error);
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
-        .json({ message: 'Internal server error' });
+      next();
     }
+    next();
+  } catch (error) {
+    console.log(error);
+    log.error(error);
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+      .json({ message: 'Internal server error' });
   }
+}
