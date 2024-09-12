@@ -6,7 +6,7 @@ import { db } from '../../../../../mysql/mysql.pool';
 import { employee } from '../../../../../drizzle/drizzle.schema';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
 
-export async function validateEmployeeID(
+export async function validateEmployeeId(
   req: Request,
   res: Response,
   next: NextFunction,

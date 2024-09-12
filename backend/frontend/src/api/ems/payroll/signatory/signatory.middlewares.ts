@@ -6,7 +6,7 @@ import { db } from '../../../../../mysql/mysql.pool';
 import { employee, signatory } from '../../../../../drizzle/drizzle.schema';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
 
-export async function validateSignatoryID(
+export async function validateSignatoryId(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -33,7 +33,7 @@ export async function validateSignatoryID(
   }
 }
 
-export async function validateEmployeeID(
+export async function validateEmployeeId(
   req: Request,
   res: Response,
   next: NextFunction,

@@ -75,7 +75,7 @@ export class DesignationController {
       next(error);
     }
   }
-  async deleteDesignationByID(req: Request, res: Response, next: NextFunction) {
+  async deleteDesignationById(req: Request, res: Response, next: NextFunction) {
     try {
       const { designation_id } = req.params;
       await this.designationService.deleteDesignation(Number(designation_id));

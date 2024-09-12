@@ -6,8 +6,8 @@ import log from '../../../../../lib/logger';
 import { SalaryInformationController } from './salaryInformation.controller';
 import { SalaryInformation } from './salaryInformation.model';
 import {
-  validateEmployeeID,
-  validateSalaryID,
+  validateEmployeeId,
+  validateSalaryId,
 } from './salaryInformation.middlewares';
 
 const salaryInformationRoute = Router({ mergeParams: true });
@@ -15,14 +15,14 @@ const controller = new SalaryInformationController(db);
 
 salaryInformationRoute.get(
   '/',
-  validateEmployeeID,
+  validateEmployeeId,
   controller.getSalaryInformation.bind(controller),
 );
 log.info('GET /salaryInformation/ set');
 
 salaryInformationRoute.get(
   '/:salaryInfo_id',
-  validateSalaryID,
+  validateSalaryId,
   controller.getSalaryInformation.bind(controller),
 );
 log.info('GET /salaryInformation/:employee_id set');
@@ -33,7 +33,7 @@ salaryInformationRoute.post(
     validateRequest({
       body: SalaryInformation,
     }),
-    validateEmployeeID,
+    validateEmployeeId,
   ],
   controller.createSalaryInformation.bind(controller),
 );
@@ -45,8 +45,8 @@ salaryInformationRoute.put(
     validateRequest({
       body: SalaryInformation,
     }),
-    validateSalaryID,
-    validateEmployeeID,
+    validateSalaryId,
+    validateEmployeeId,
   ],
   controller.updateSalaryInformation.bind(controller),
 );
@@ -54,7 +54,7 @@ log.info('PUT /salaryInformation/:personalInfo_id set');
 
 salaryInformationRoute.delete(
   '/:salaryInfo_id',
-  validateSalaryID,
+  validateSalaryId,
   controller.deleteSalaryInformation.bind(controller),
 );
 log.info('DELETE /salaryInformation/:personalInfo_id set');

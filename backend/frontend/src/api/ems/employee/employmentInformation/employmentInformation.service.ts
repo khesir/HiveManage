@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, isNull,and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { employmentInformation } from '../../../../../drizzle/drizzle.schema';
 
@@ -9,21 +9,21 @@ export class EmploymentInformationService {
     this.db = db;
   }
 
-  async getEmploymentInformation(paramsID: number, queryId: number) {
+  async getEmploymentInformation(paramsId: number, queryId: number) {
     if (!isNaN(queryId)) {
       const result = await this.db
         .select()
         .from(employmentInformation)
-        .where(eq(employmentInformation.employee_id, queryId));
+        .where(and(eq(employmentInformation.employee_id, queryId),isNull(employmentInformation.deleted_at)));
       return result;
-    } else if (!isNaN(paramsID)) {
+    } else if (!isNaN(paramsId)) {
       const result = await this.db
         .select()
         .from(employmentInformation)
-        .where(eq(employmentInformation.employment_information_id, paramsID));
+        .where(eq(employmentInformation.employment_information_id, paramsId));
       return result;
     } else {
-      const result = await this.db.select().from(employmentInformation);
+      const result = await this.db.select().from(employmentInformation).where(isNull(employmentInformation.deleted_at));
       return result;
     }
   }

@@ -9,7 +9,7 @@ import {
 } from '../../../../../drizzle/drizzle.schema';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
 
-export async function validateEmploymentID(
+export async function validateEmploymentId(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -30,7 +30,7 @@ export async function validateEmploymentID(
         ),
       );
     if (!activity[0]) {
-      return res.status(404).json({ message: 'Employment not found' });
+      return res.status(404).json({ message: 'Employment Information not found' });
     }
     next();
   } catch (error) {
@@ -39,7 +39,7 @@ export async function validateEmploymentID(
   }
 }
 
-export async function validateEmployeeID(
+export async function validateEmployeeId(
   req: Request,
   res: Response,
   next: NextFunction,

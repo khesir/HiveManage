@@ -4,7 +4,7 @@ import { ActivityLogController } from './activitylogs.controller';
 import { CreateActivityLog, UpdateActivityLog } from './activitylogs.model';
 import {
   validateActivityEmployeeID,
-  validateActivtyId,
+  validateActivityID,
 } from './activitylogs.middleware';
 import { validateRequest } from '../../../../middlewares';
 import { db } from '../../../../../mysql/mysql.pool';
@@ -20,7 +20,7 @@ log.info('GET /activityLogs set');
 
 activityRoute.get(
   '/:activity_id',
-  validateActivtyId,
+  validateActivityID,
   activityLogsController.getActivityLogById.bind(activityLogsController),
 );
 log.info('GET /activityLogs/:activity_id set');
@@ -44,7 +44,7 @@ activityRoute.put(
       body: UpdateActivityLog,
     }),
     validateActivityEmployeeID,
-    validateActivtyId,
+    validateActivityID,
   ],
   activityLogsController.updateActivityLog.bind(activityLogsController),
 );
@@ -52,7 +52,7 @@ log.info('PUT /activityLogs/:activity_id set');
 
 activityRoute.delete(
   '/:activity_id',
-  validateActivtyId,
+  validateActivityID,
   activityLogsController.deleteActivityLogbyID.bind(activityLogsController),
 );
 log.info('DELETE /activityLogs/:activity_id set');

@@ -10,7 +10,7 @@ import {
 } from '../../../../../drizzle/drizzle.schema';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
 
-export async function validatePayrollApprovalID(
+export async function validatePayrollApprovalId(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -37,7 +37,7 @@ export async function validatePayrollApprovalID(
   }
 }
 
-export async function validateSignatoryID(
+export async function validateSignatoryId(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -73,7 +73,7 @@ export async function validateSignatoryID(
   }
 }
 
-export async function validateOnPayrollID(
+export async function validateOnPayrollId(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -100,6 +100,7 @@ export async function validateOnPayrollID(
       }
       next();
     }
+    next();
   } catch (error) {
     console.log(error);
     log.error(error);

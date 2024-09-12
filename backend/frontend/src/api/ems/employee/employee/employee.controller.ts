@@ -85,12 +85,12 @@ export class EmployeeController {
       next(error);
     }
   }
-  async deleteEmployeeByID(req: Request, res: Response, next: NextFunction) {
+  async deleteEmployeeById(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_id } = req.params;
-      await this.employeeService.deleteEmployeeByID(Number(employee_id));
+      await this.employeeService.deleteEmployeeById(Number(employee_id));
       res.status(200).json({
-        message: `Employee ID: ${employee_id} deleted successfully`,
+        message: `Employee Id: ${employee_id} deleted successfully`,
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({

@@ -6,7 +6,7 @@ import { validateRequest } from '../../../../middlewares';
 
 import { EmployeeController } from './employee.controller';
 import { Employee, UpdateEmployee } from './employee.model';
-import { validateEmployeeID } from './employee.middlewares';
+import { validateEmployeeId } from './employee.middlewares';
 
 // import employmentInformationRoute from '../employment_information/employment-information.route';
 // import salaryInformationRouter from '../salary_information/salary_information.route';
@@ -24,7 +24,7 @@ log.info('GET /employee set');
 
 employeeRoute.get(
   '/:employee_id',
-  validateEmployeeID,
+  validateEmployeeId,
   employeeController.getEmployeeById.bind(employeeController),
 );
 log.info('GET /employee/:employee_id set');
@@ -44,7 +44,7 @@ employeeRoute.put(
     validateRequest({
       body: Employee,
     }),
-    validateEmployeeID,
+    validateEmployeeId,
   ],
   employeeController.updateEmployee.bind(employeeController),
 );
@@ -56,7 +56,7 @@ employeeRoute.patch(
     validateRequest({
       body: UpdateEmployee,
     }),
-    validateEmployeeID,
+    validateEmployeeId,
   ],
   employeeController.updateEmployee.bind(employeeController),
 );
@@ -64,8 +64,8 @@ log.info('PATCH /employee set');
 
 employeeRoute.delete(
   '/:employee_id',
-  validateEmployeeID,
-  employeeController.deleteEmployeeByID.bind(employeeController),
+  validateEmployeeId,
+  employeeController.deleteEmployeeById.bind(employeeController),
 );
 log.info('DELETE /employee/:employee_id set');
 
