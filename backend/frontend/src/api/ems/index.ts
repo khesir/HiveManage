@@ -18,6 +18,7 @@ import payrollApprovalRoute from './payroll/payroll_approval/payrollApproval.rou
 import benefitRoute from './fees/benefits/benefits.route';
 import deductionRoute from './fees/deductions/deductions.route';
 import payrollReportRoute from './payroll/payroll_reports/payrollReports.route';
+import additionalPayRoute from './fees/additional_pay/additionalPay.route';
 
 const emsRoute = Router({ mergeParams: true });
 
@@ -68,7 +69,11 @@ log.info('ROUTE /benefit set');
 
 emsRoute.use('/deductions', deductionRoute);
 log.info('ROUTE /deductions set');
+
 emsRoute.use('/payrollReport', payrollReportRoute);
 log.info('ROUTE /payrollReports set');
+
+emsRoute.use('/additionalPay', additionalPayRoute);
+log.info('ROUTE /additionalPay');
 
 export default emsRoute;
