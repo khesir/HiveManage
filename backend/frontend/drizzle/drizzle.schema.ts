@@ -322,6 +322,76 @@ export const attendance = mysqlTable('attendance', {
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
+//Item
+export const item = mysqlTable('item', {
+  item_id: int('item_id').primaryKey().autoincrement(),
+  product_id: int('product_id').references(() => product.product_id),
+  stock: float('stock'),
+  re_order_level: float('re_order_level'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Product
+export const product = mysqlTable('product', {
+  product_id: int('product_id').primaryKey().autoincrement(),
+  category_id: int('category_id').references(() => category.category_id), // Ensure category.category_id exists
+  supplier_id: int('supplier_id').references(() => supplier.supplier_id), // Ensure supplier.supplier_id exists
+  name: varchar('name', { length: 255 }),
+  description: varchar('description', { length: 255 }),
+  price: decimal('price', { precision: 10, scale: 2 }), // Ensure scale is defined if needed
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Category
+export const category = mysqlTable('category', {
+  category_id: int('category_id').primaryKey().autoincrement(), // Primary key with auto-increment
+  name: varchar('name', { length: 255 }), // Category name, up to 255 characters
+  content: varchar('content', { length: 255 }), // Additional information about the category, up to 255 characters
+});
+
+//Supplier
+export const supplier = mysqlTable('supplier', {
+  supplier_id: int('supplier_id').primaryKey().autoincrement(), // Primary key with auto-increment
+  name: varchar('name', { length: 255 }), // Supplier name, up to 255 characters
+  contact_number: varchar('contact_number', { length: 255 }), // Supplier contact number, up to 255 characters
+  remarks: varchar('remarks', { length: 255 }), // Additional remarks, up to 255 characters
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
+
+//Order
+export const order = mysqlTable('order', {
+  order_id: int('order_id').primaryKey().autoincrement(), // Primary key with auto-increment
+  product_id: int('product_id').references(() => product.product_id), // Foreign key reference to the product table
+  items_ordered: int('items_ordered'), // Number of items ordered
+  expected_arrival: date('expected_arrival'), // Expected arrival date
+  status: mysqlEnum('status', [
+    // Enum for order status
+    'Pending',
+    'Processing',
+    'Delivered',
+    'Cancelled',
+    'Return',
+    'Shipped',
+  ]),
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
+
+//Arrived_Items
+export const arrived_Items = mysqlTable('arrived_Items', {
+  order_id: int('order_id').references(() => order.order_id), // Foreign key reference to the order table
+  filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
 //  =======================================================================================
 // =================================== PARTORDER ==========================================
 

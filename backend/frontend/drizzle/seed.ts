@@ -21,6 +21,12 @@ import {
   adjustments,
   additionalPay,
   attendance,
+  product,
+  category,
+  supplier,
+  order,
+  arrived_Items,
+  item,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -440,6 +446,113 @@ async function seedAttendance() {
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
+async function seedItem() {
+  const productIDs = await db.select().from(product);
+
+  const itemRecords = Array.from({ length: 50 }).map(() => ({
+    product_id: faker.helpers.arrayElement(productIDs).product_id,
+    stock: faker.datatype.number({ min: 100, max: 500 }),
+    re_order_level: faker.datatype.number({ min: 100, max: 500 }),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(item).values(itemRecords);
+
+  log.info('Item records seeded successfully');
+}
+
+async function seedProduct() {
+  const categoryIDs = await db.select().from(category);
+  const supplierIDs = await db.select().from(supplier);
+
+  const productRecords = Array.from({ length: 50 }).map(() => ({
+    category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+    name: faker.commerce.productName(),
+    description: faker.lorem.sentence(),
+    price: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(product).values(productRecords);
+
+  log.info('Product records seeded successfully');
+}
+
+async function seedCategory() {
+  const categoryRecords = Array.from({ length: 25 }).map(() => ({
+    name: faker.commerce.department(),
+    content: faker.lorem.paragraph(),
+  }));
+
+  await db.insert(category).values(categoryRecords);
+
+  log.info('Category records seeded successfully');
+}
+
+async function seedSupplier() {
+  const supplierRecords = Array.from({ length: 25 }).map(() => ({
+    name: faker.commerce.productName(),
+    contact_number: faker.phone.number(),
+    remarks: faker.lorem.sentence(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(supplier).values(supplierRecords);
+
+  log.info('Supplier records seeded successfully');
+}
+
+async function seedOrder() {
+  const productIDs = await db.select().from(product);
+
+  const statuses: (
+    | 'Pending'
+    | 'Processing'
+    | 'Delivered'
+    | 'Cancelled'
+    | 'Return'
+    | 'Shipped'
+  )[] = [
+    'Pending',
+    'Processing',
+    'Delivered',
+    'Cancelled',
+    'Return',
+    'Shipped',
+  ];
+
+  const orderRecords = Array.from({ length: 50 }).map(() => ({
+    product_id: faker.helpers.arrayElement(productIDs).product_id,
+    items_ordered: Number(faker.finance.amount({ min: 1, max: 12, dec: 0 })),
+    expected_arrival: faker.date.future(),
+    status: faker.helpers.arrayElement(statuses),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(order).values(orderRecords);
+
+  log.info('Order records seeded successfully');
+}
+
+async function seedArrivedItems() {
+  const orderIDs = await db.select().from(order);
+
+  const arrivedItemsRecords = Array.from({ length: 50 }).map(() => ({
+    order_id: faker.helpers.arrayElement(orderIDs).order_id,
+    filePath: faker.lorem.sentence(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(arrived_Items).values(arrivedItemsRecords);
+
+  log.info('Arrived Items records seeded successfully');
+}
 //  =======================================================================================
 // =================================== PARTORDER ==========================================
 
@@ -468,6 +581,15 @@ async function main() {
   await seedAdditionalPay();
   await seedAdjustments();
   await seedAttendance();
+
+  //Inventory
+
+  await seedCategory();
+  await seedSupplier();
+  await seedProduct();
+  await seedOrder();
+  await seedArrivedItems();
+  await seedItem();
   log.info('Generating Dummy Data Completed');
 }
 
