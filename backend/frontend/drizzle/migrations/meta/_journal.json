@@ -8,6 +8,13 @@
       "when": 1726477600141,
       "tag": "0000_flaky_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1726500176346,
+      "tag": "0001_shocking_wasp",
+      "breakpoints": true
     }
   ]
 }
