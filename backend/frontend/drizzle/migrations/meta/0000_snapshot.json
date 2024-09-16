@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d385e470-c8a4-4167-9a47-b81437ee9736",
+  "id": "b7b0a7a3-36b4-4db5-97ef-0c19d049ffa6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "activity_log": {
@@ -363,7 +363,7 @@
         },
         "attendance_status": {
           "name": "attendance_status",
-          "type": "enum('present','absent','late','early_leave','paid_leave')",
+          "type": "enum('Present','Absent','Late','Early_Leave','Paid_Leave')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -914,14 +914,14 @@
         },
         "employee_type": {
           "name": "employee_type",
-          "type": "enum('regular','probationary','contractual','seasonal','temporary')",
+          "type": "enum('Regular','Probationary','Contractual','Seasonal','Temporary')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "employee_status": {
           "name": "employee_status",
-          "type": "enum('active','onLeave','terminated','resigned','suspended','retired','inactive')",
+          "type": "enum('Active','OnLeave','Terminated','Resigned','Suspended','Retired','Inactive')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1214,7 +1214,7 @@
         },
         "leaveType": {
           "name": "leaveType",
-          "type": "enum('sick_leave','vacation_leave','personal_leave')",
+          "type": "enum('Sick_Leave','Vacation_Leave','Personal_Leave')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1331,7 +1331,7 @@
         },
         "leaveType": {
           "name": "leaveType",
-          "type": "enum('sick_leave','vacation_leave','personal_leave')",
+          "type": "enum('Sick_Leave','Vacation_Leave','Personal_Leave')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1604,7 +1604,7 @@
         },
         "approvalStatus": {
           "name": "approvalStatus",
-          "type": "enum('active','inactive','inprogress')",
+          "type": "enum('Active','Inactive','Inprogress')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1672,7 +1672,7 @@
         },
         "approvalstatus": {
           "name": "approvalstatus",
-          "type": "enum('approved','pending','rejected')",
+          "type": "enum('Approved','Pending','Rejected')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1870,7 +1870,7 @@
         },
         "gender": {
           "name": "gender",
-          "type": "enum('male','female','others')",
+          "type": "enum('Male','Female','Others')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2103,7 +2103,7 @@
         },
         "payroll_frequency": {
           "name": "payroll_frequency",
-          "type": "enum('daily','weekly','biWeekly','semiMonthly','monthly')",
+          "type": "enum('Daily','Weekly','BiWeekly','SemiMonthly','Monthly')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

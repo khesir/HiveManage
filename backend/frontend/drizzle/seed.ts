@@ -34,7 +34,7 @@ import log from '../lib/logger';
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 
 async function seedEmployees() {
-  const employeeStatus: ('active' | 'inactive')[] = ['active', 'inactive'];
+  const employeeStatus: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
   const employees = Array.from({ length: 50 }).map(() => ({
     uuid: faker.string.uuid(),
     firstname: faker.person.firstName(),
@@ -48,15 +48,15 @@ async function seedEmployees() {
 }
 
 async function seedPersonalInformations() {
-  const allowedGenders: ('male' | 'female' | 'others')[] = [
-    'male',
-    'female',
-    'others',
+  const allowedGenders: ('Male' | 'Female' | 'Others')[] = [
+    'Male',
+    'Female',
+    'Others',
   ];
-  const allowedRelationships: ('parent' | 'sibling' | 'friend')[] = [
-    'parent',
-    'sibling',
-    'friend',
+  const allowedRelationships: ('Parent' | 'Sibling' | 'Friend')[] = [
+    'Parent',
+    'Sibling',
+    'Friend',
   ];
   const employees = await db.select().from(employee);
 
@@ -97,12 +97,12 @@ async function seedFinancialInformations() {
 
 async function seedSalaryInformations() {
   const allowedFrequencies: (
-    | 'daily'
-    | 'weekly'
-    | 'biWeekly'
-    | 'semiMonthly'
-    | 'monthly'
-  )[] = ['daily', 'weekly', 'biWeekly', 'semiMonthly', 'monthly'];
+    | 'Daily'
+    | 'Weekly'
+    | 'BiWeekly'
+    | 'SemiMonthly'
+    | 'Monthly'
+  )[] = ['Daily', 'Weekly', 'BiWeekly', 'SemiMonthly', 'Monthly'];
   const employees = await db.select().from(employee);
 
   const salaryInfos = Array.from({ length: 50 }).map(() => ({
@@ -117,29 +117,29 @@ async function seedSalaryInformations() {
 
 async function seedEmploymentInformations() {
   const allowedEmployeeTypes: (
-    | 'regular'
-    | 'probationary'
-    | 'contractual'
-    | 'seasonal'
-    | 'temporary'
-  )[] = ['regular', 'probationary', 'contractual', 'seasonal', 'temporary'];
+    | 'Regular'
+    | 'Probationary'
+    | 'Contractual'
+    | 'Seasonal'
+    | 'Temporary'
+  )[] = ['Regular', 'Probationary', 'Contractual', 'Seasonal', 'Temporary'];
 
   const allowedEmployeeStatuses: (
-    | 'active'
-    | 'onLeave'
-    | 'terminated'
-    | 'resigned'
-    | 'suspended'
-    | 'retired'
-    | 'inactive'
+    | 'Active'
+    | 'OnLeave'
+    | 'Terminated'
+    | 'Resigned'
+    | 'Suspended'
+    | 'Retired'
+    | 'Inactive'
   )[] = [
-    'active',
-    'onLeave',
-    'terminated',
-    'resigned',
-    'suspended',
-    'retired',
-    'inactive',
+    'Active',
+    'OnLeave',
+    'Terminated',
+    'Resigned',
+    'Suspended',
+    'Retired',
+    'Inactive',
   ];
   const employees = await db.select().from(employee);
   const departments = await db.select().from(department);
@@ -161,7 +161,7 @@ async function seedEmploymentInformations() {
 // =============================== COMPANY FEATURES ======================================
 
 async function seedDepartments() {
-  const departmentStatuses: ('active' | 'inactive')[] = ['active', 'inactive'];
+  const departmentStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
 
   const departments = Array.from({ length: 10 }).map(() => ({
     name: faker.commerce.department(),
@@ -173,7 +173,7 @@ async function seedDepartments() {
 }
 
 async function seedDesignations() {
-  const designationStatuses: ('active' | 'inactive')[] = ['active', 'inactive'];
+  const designationStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
 
   const designations = Array.from({ length: 10 }).map(() => ({
     title: faker.person.jobTitle(),
@@ -187,11 +187,11 @@ async function seedDesignations() {
 async function seedActivityLogs() {
   const employees = await db.select().from(employee);
 
-  const actions: ('hired' | 'promoted' | 'terminated' | 'resigned')[] = [
-    'hired',
-    'promoted',
-    'terminated',
-    'resigned',
+  const actions: ('Hired' | 'Promoted' | 'Terminated' | 'Resigned')[] = [
+    'Hired',
+    'Promoted',
+    'Terminated',
+    'Resigned',
   ];
 
   const activityLogs = Array.from({ length: 50 }).map(() => ({
@@ -205,10 +205,10 @@ async function seedActivityLogs() {
 
 async function seedLeaveLimits() {
   const employees = await db.select().from(employee);
-  const leaveTypes: ('sick_leave' | 'vacation_leave' | 'personal_leave')[] = [
-    'sick_leave',
-    'vacation_leave',
-    'personal_leave',
+  const leaveTypes: ('Sick_Leave' | 'Vacation_Leave' | 'Personal_Leave')[] = [
+    'Sick_Leave',
+    'Vacation_Leave',
+    'Personal_Leave',
   ];
   const leaveLimits = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -223,15 +223,15 @@ async function seedLeaveLimits() {
 }
 
 async function seedLeaveRequests() {
-  const leaveTypes: ('sick_leave' | 'vacation_leave' | 'personal_leave')[] = [
-    'sick_leave',
-    'vacation_leave',
-    'personal_leave',
+  const leaveTypes: ('Sick_Leave' | 'Vacation_Leave' | 'Personal_Leave')[] = [
+    'Sick_Leave',
+    'Vacation_Leave',
+    'Personal_Leave',
   ];
-  const statuses: ('pending' | 'approved' | 'rejected')[] = [
-    'pending',
-    'approved',
-    'rejected',
+  const statuses: ('Pending' | 'Approved' | 'Rejected')[] = [
+    'Pending',
+    'Approved',
+    'Rejected',
   ];
   const employees = await db.select().from(employee);
 
@@ -254,10 +254,10 @@ async function seedLeaveRequests() {
 // ==================================== PAYROLL ===========================================
 
 async function seedPayrolls() {
-  const statuses: ('active' | 'inactive' | 'inprogress')[] = [
-    'active',
-    'inactive',
-    'inprogress',
+  const statuses: ('Active' | 'Inactive' | 'Inprogress')[] = [
+    'Active',
+    'Inactive',
+    'Inprogress',
   ];
 
   const payrolls = Array.from({ length: 50 }).map(() => ({
@@ -307,10 +307,10 @@ async function seedSignatory() {
 async function seedPayrollApprovals() {
   const onPayrolls = await db.select().from(onPayroll);
   const signatories = await db.select().from(signatory);
-  const approvalStatuses: ('approved' | 'pending' | 'rejected')[] = [
-    'approved',
-    'pending',
-    'rejected',
+  const approvalStatuses: ('Approved' | 'Pending' | 'Rejected')[] = [
+    'Approved',
+    'Pending',
+    'Rejected',
   ];
   const payrollApprovalRecords = Array.from({ length: 50 }).map(() => ({
     on_payroll_id: faker.helpers.arrayElement(onPayrolls).on_payroll_id,
@@ -414,12 +414,12 @@ async function seedAdditionalPay() {
 async function seedAttendance() {
   const employeeIDs = await db.select().from(employee);
   const attendanceStatuses: (
-    | 'present'
-    | 'absent'
-    | 'late'
-    | 'early_leave'
-    | 'paid_leave'
-  )[] = ['present', 'absent', 'late', 'early_leave', 'paid_leave'];
+    | 'Present'
+    | 'Absent'
+    | 'Late'
+    | 'Early_Leave'
+    | 'Paid_Leave'
+  )[] = ['Present', 'Absent', 'Late', 'Early_Leave', 'Paid_Leave'];
 
   const attendanceRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
