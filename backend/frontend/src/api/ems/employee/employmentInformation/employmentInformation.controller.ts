@@ -18,7 +18,7 @@ export class EmploymentInformationController {
   ) {
     try {
       const { employment_id } = req.params;
-      const { employee_id } = req.query;
+      const { employee_id } = req.params;
       const result =
         await this.employmentInformationService.getEmploymentInformation(
           Number(employment_id),

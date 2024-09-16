@@ -7,6 +7,8 @@ import { validateRequest } from '../../../../middlewares';
 import { EmployeeController } from './employee.controller';
 import { Employee, UpdateEmployee } from './employee.model';
 import { validateEmployeeId } from './employee.middlewares';
+import personalInformationRoute from '../personal_information/personalInformation.route';
+import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
 
 // import employmentInformationRoute from '../employment_information/employment-information.route';
 // import salaryInformationRouter from '../salary_information/salary_information.route';
@@ -69,4 +71,12 @@ employeeRoute.delete(
 );
 log.info('DELETE /employee/:employee_id set');
 
+employeeRoute.use(
+  '/:employee_id/personalInformation',
+  personalInformationRoute,
+);
+employeeRoute.use(
+  '/:employee_id/employmentInformation',
+  employmentInformationRoute,
+);
 export default employeeRoute;

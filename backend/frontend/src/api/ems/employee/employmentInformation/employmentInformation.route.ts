@@ -21,7 +21,7 @@ log.info('GET /employmentInformation/ set');
 
 employmentInformationRoute.get(
   '/:employment_id',
-  validateEmploymentId,
+  [validateEmploymentId, validateEmployeeId],
   controller.getEmploymentInformation.bind(controller),
 );
 log.info('GET /employmentInformation/:employee_id set');
