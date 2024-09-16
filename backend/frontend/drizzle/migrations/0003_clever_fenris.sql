@@ -1,2 +1,0 @@
-ALTER TABLE `financial_information` ADD `created_at` timestamp DEFAULT (now());--> statement-breakpoint
-ALTER TABLE `financial_information` ADD `last_updated` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP;

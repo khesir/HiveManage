@@ -14,7 +14,7 @@ export class SalaryInformationController {
   async getSalaryInformation(req: Request, res: Response, next: NextFunction) {
     try {
       const { salaryInfo_id } = req.params;
-      const { employee_id } = req.query;
+      const { employee_id } = req.params;
       const result = await this.salaryInformationService.getSalaryInformation(
         Number(salaryInfo_id),
         Number(employee_id),

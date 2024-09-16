@@ -9,21 +9,29 @@ export class PersonalInformationService {
     this.db = db;
   }
 
-  async getPersonalInformation(paramsId: number, queryId: number) {
-    if (!isNaN(queryId)) {
+  async getPersonalInformation(personalID: number, employeeID: number) {
+    if (!isNaN(employeeID)) {
       const result = await this.db
         .select()
         .from(personalInformation)
-        .where(and(eq(personalInformation.employee_id, queryId),isNull(personalInformation.deleted_at)));
+        .where(
+          and(
+            eq(personalInformation.employee_id, employeeID),
+            isNull(personalInformation.deleted_at),
+          ),
+        );
       return result;
-    } else if (!isNaN(paramsId)) {
+    } else if (!isNaN(personalID)) {
       const result = await this.db
         .select()
         .from(personalInformation)
-        .where(eq(personalInformation.personal_information_id, paramsId));
+        .where(eq(personalInformation.personal_information_id, personalID));
       return result;
     } else {
-      const result = await this.db.select().from(personalInformation).where(isNull(personalInformation.deleted_at));
+      const result = await this.db
+        .select()
+        .from(personalInformation)
+        .where(isNull(personalInformation.deleted_at));
       return result;
     }
   }

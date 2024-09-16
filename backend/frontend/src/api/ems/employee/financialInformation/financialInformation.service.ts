@@ -9,13 +9,16 @@ export class FinancialInformationService {
     this.db = db;
   }
   async getFinancialInformation(paramsId: number, queryId: number) {
-    console.log(paramsId);
-    console.log(queryId);
     if (!isNaN(queryId)) {
       const result = await this.db
         .select()
         .from(financialInformation)
-        .where(and(eq(financialInformation.employee_id, queryId),isNull(financialInformation.deleted_at)));
+        .where(
+          and(
+            eq(financialInformation.employee_id, queryId),
+            isNull(financialInformation.deleted_at),
+          ),
+        );
       return result;
     } else if (!isNaN(paramsId)) {
       const result = await this.db
@@ -24,7 +27,10 @@ export class FinancialInformationService {
         .where(eq(financialInformation.financial_id, paramsId));
       return result;
     } else {
-      const result = await this.db.select().from(financialInformation).where(isNull(financialInformation.deleted_at));
+      const result = await this.db
+        .select()
+        .from(financialInformation)
+        .where(isNull(financialInformation.deleted_at));
       return result;
     }
   }

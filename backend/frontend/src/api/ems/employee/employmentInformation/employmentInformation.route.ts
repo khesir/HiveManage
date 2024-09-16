@@ -21,7 +21,7 @@ log.info('GET /employmentInformation/ set');
 
 employmentInformationRoute.get(
   '/:employment_id',
-  validateEmploymentId,
+  [validateEmploymentId, validateEmployeeId],
   controller.getEmploymentInformation.bind(controller),
 );
 log.info('GET /employmentInformation/:employee_id set');
@@ -54,6 +54,7 @@ log.info('PUT /employmentInformation/:employment_id set');
 employmentInformationRoute.delete(
   '/:employment_id',
   validateEmploymentId,
+  validateEmployeeId,
   controller.deleteEmploymentInformation.bind(controller),
 );
 log.info('DELETE /employmentInformation/:employment_id set');

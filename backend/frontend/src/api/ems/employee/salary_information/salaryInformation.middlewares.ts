@@ -41,7 +41,7 @@ export async function validateEmployeeId(
   res: Response,
   next: NextFunction,
 ) {
-  const employee_id = req.body.employee_id || req.query.employee_id;
+  const { employee_id } = req.params;
 
   try {
     if (employee_id === undefined) {

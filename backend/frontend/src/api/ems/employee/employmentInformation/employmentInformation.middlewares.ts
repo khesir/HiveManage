@@ -30,7 +30,9 @@ export async function validateEmploymentId(
         ),
       );
     if (!activity[0]) {
-      return res.status(404).json({ message: 'Employment Information not found' });
+      return res
+        .status(404)
+        .json({ message: 'Employment Information not found' });
     }
     next();
   } catch (error) {
@@ -44,7 +46,7 @@ export async function validateEmployeeId(
   res: Response,
   next: NextFunction,
 ) {
-  const employee_id = req.body.employee_id || req.query.employee_id;
+  const { employee_id } = req.params;
 
   try {
     if (employee_id === undefined) {

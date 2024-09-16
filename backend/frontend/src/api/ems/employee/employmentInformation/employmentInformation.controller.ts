@@ -18,14 +18,17 @@ export class EmploymentInformationController {
   ) {
     try {
       const { employment_id } = req.params;
-      const { employee_id } = req.query;
+      const { employee_id } = req.params;
       const result =
         await this.employmentInformationService.getEmploymentInformation(
           Number(employment_id),
           Number(employee_id),
         );
 
-      res.status(HttpStatus.OK.code).json({ data: result });
+      res.status(HttpStatus.OK.code).json({
+        status: HttpStatus.OK.status,
+        data: result,
+      });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

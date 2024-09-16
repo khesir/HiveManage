@@ -7,6 +7,10 @@ import { validateRequest } from '../../../../middlewares';
 import { EmployeeController } from './employee.controller';
 import { Employee, UpdateEmployee } from './employee.model';
 import { validateEmployeeId } from './employee.middlewares';
+import personalInformationRoute from '../personal_information/personalInformation.route';
+import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
+import financiallInformationRoute from '../financialInformation/financialInformation.route';
+import salaryInformationRoute from '../salary_information/salaryInformation.route';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);
@@ -63,5 +67,21 @@ employeeRoute.delete(
   employeeController.deleteEmployeeById.bind(employeeController),
 );
 log.info('DELETE /employee/:employee_id set');
+
+employeeRoute.use(
+  '/:employee_id/personalInformation',
+  personalInformationRoute,
+);
+employeeRoute.use(
+  '/:employee_id/employmentInformation',
+  employmentInformationRoute,
+);
+
+employeeRoute.use(
+  '/:employee_id/financialInformation',
+  financiallInformationRoute,
+);
+
+employeeRoute.use('/:employee_id/salaryInformation', salaryInformationRoute);
 
 export default employeeRoute;

@@ -22,6 +22,7 @@ log.info('GET /personalInformation/ set');
 personalInformationRoute.get(
   '/:personalInfo_id',
   validatePersonalId,
+  validateEmployeeId,
   controller.getPersonalInformation.bind(controller),
 );
 log.info('GET /personalInformation/:personalInfo_id set');
@@ -54,6 +55,7 @@ log.info('PUT /personalInformation/:personalInfo_id set');
 personalInformationRoute.delete(
   '/:personalInfo_id',
   validatePersonalId,
+  validateEmployeeId,
   controller.deleteEmploymentInformation.bind(controller),
 );
 log.info('DELETE /personalInformation/:personalInfo_id set');
