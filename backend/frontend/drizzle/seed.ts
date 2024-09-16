@@ -64,8 +64,7 @@ async function seedPersonalInformations() {
     employee_id: faker.helpers.arrayElement(employees).employee_id,
     birthday: faker.date
       .birthdate({ min: 18, max: 65, mode: 'age' })
-      .toISOString()
-      .split('T')[0], // Convert Date to string (YYYY-MM-DD)
+      .toISOString(),
     gender: faker.helpers.arrayElement(allowedGenders),
     phone: faker.phone.number(),
     email: faker.internet.email(),

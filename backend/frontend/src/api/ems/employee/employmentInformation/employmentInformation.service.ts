@@ -1,6 +1,10 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { employmentInformation } from '../../../../../drizzle/drizzle.schema';
+import {
+  department,
+  designation,
+  employmentInformation,
+} from '../../../../../drizzle/drizzle.schema';
 
 export class EmploymentInformationService {
   private db: MySql2Database;
@@ -14,6 +18,14 @@ export class EmploymentInformationService {
       const result = await this.db
         .select()
         .from(employmentInformation)
+        .leftJoin(
+          department,
+          eq(employmentInformation.department_id, department.department_id),
+        )
+        .leftJoin(
+          designation,
+          eq(employmentInformation.designation_id, designation.designation_id),
+        )
         .where(
           and(
             eq(employmentInformation.employee_id, employeeID),
@@ -33,6 +45,14 @@ export class EmploymentInformationService {
       const result = await this.db
         .select()
         .from(employmentInformation)
+        .leftJoin(
+          department,
+          eq(employmentInformation.department_id, department.department_id),
+        )
+        .leftJoin(
+          designation,
+          eq(employmentInformation.designation_id, designation.designation_id),
+        )
         .where(isNull(employmentInformation.deleted_at));
       return result;
     }
