@@ -390,6 +390,7 @@ export const order = mysqlTable('order', {
 
 //Arrived_Items
 export const arrived_Items = mysqlTable('arrived_Items', {
+  arrived_Items_id: int('arrived_Items_id').primaryKey().autoincrement(),
   order_id: int('order_id').references(() => order.order_id), // Foreign key reference to the order table
   filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation

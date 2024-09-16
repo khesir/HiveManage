@@ -33,11 +33,13 @@ CREATE TABLE `adjustments` (
 );
 --> statement-breakpoint
 CREATE TABLE `arrived_Items` (
+	`arrived_Items_id` int AUTO_INCREMENT NOT NULL,
 	`order_id` int,
 	`filePath` varchar(255),
 	`created_at` timestamp DEFAULT (now()),
 	`last_updated` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
-	`deleted_at` timestamp
+	`deleted_at` timestamp,
+	CONSTRAINT `arrived_Items_arrived_Items_id` PRIMARY KEY(`arrived_Items_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `attendance` (
