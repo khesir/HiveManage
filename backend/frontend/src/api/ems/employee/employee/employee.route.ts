@@ -9,6 +9,8 @@ import { Employee, UpdateEmployee } from './employee.model';
 import { validateEmployeeId } from './employee.middlewares';
 import personalInformationRoute from '../personal_information/personalInformation.route';
 import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
+import financiallInformationRoute from '../financialInformation/financialInformation.route';
+import salaryInformationRoute from '../salary_information/salaryInformation.route';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);
@@ -74,4 +76,12 @@ employeeRoute.use(
   '/:employee_id/employmentInformation',
   employmentInformationRoute,
 );
+
+employeeRoute.use(
+  '/:employee_id/financialInformation',
+  financiallInformationRoute,
+);
+
+employeeRoute.use('/:employee_id/salaryInformation', salaryInformationRoute);
+
 export default employeeRoute;

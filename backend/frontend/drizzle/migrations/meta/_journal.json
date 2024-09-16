@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1725195668410,
-      "tag": "0000_aberrant_thunderball",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1725243320512,
-      "tag": "0001_many_warbound",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1725429725180,
-      "tag": "0002_moaning_jean_grey",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1725523717212,
-      "tag": "0003_clever_fenris",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1725678291968,
-      "tag": "0004_superb_maria_hill",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1726422348535,
-      "tag": "0005_outstanding_marvel_zombies",
+      "when": 1726477600141,
+      "tag": "0000_flaky_firestar",
       "breakpoints": true
     }
   ]

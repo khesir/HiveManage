@@ -14,16 +14,29 @@ export class SalaryInformationService {
       const result = await this.db
         .select()
         .from(salaryInformation)
-        .where(and(eq(salaryInformation.employee_id, queryId), isNull(salaryInformation.deleted_at)));
+        .where(
+          and(
+            eq(salaryInformation.employee_id, queryId),
+            isNull(salaryInformation.deleted_at),
+          ),
+        );
       return result;
     } else if (!isNaN(paramsId)) {
       const result = await this.db
         .select()
         .from(salaryInformation)
-        .where(and(eq(salaryInformation.salary_information_id, paramsId), isNull(salaryInformation.deleted_at)));
+        .where(
+          and(
+            eq(salaryInformation.salary_information_id, paramsId),
+            isNull(salaryInformation.deleted_at),
+          ),
+        );
       return result;
     } else {
-      const result = await this.db.select().from(salaryInformation).where(isNull(salaryInformation.deleted_at));
+      const result = await this.db
+        .select()
+        .from(salaryInformation)
+        .where(isNull(salaryInformation.deleted_at));
       return result;
     }
   }

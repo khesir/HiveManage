@@ -1,1 +1,0 @@
-ALTER TABLE `signatory` MODIFY COLUMN `deleted_at` timestamp;

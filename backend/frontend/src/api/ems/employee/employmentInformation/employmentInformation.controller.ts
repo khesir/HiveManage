@@ -25,7 +25,10 @@ export class EmploymentInformationController {
           Number(employee_id),
         );
 
-      res.status(HttpStatus.OK.code).json({ data: result });
+      res.status(HttpStatus.OK.code).json({
+        status: HttpStatus.OK.status,
+        data: result,
+      });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

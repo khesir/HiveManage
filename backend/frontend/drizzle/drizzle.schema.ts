@@ -22,7 +22,7 @@ export const employee = mysqlTable('employee', {
 });
 
 // Personal Information Table
-export const personalInformation = mysqlTable('personal_information', {
+export const personalInformation = mysqlTable('personal_info', {
   personal_information_id: int('personal_information_id')
     .primaryKey()
     .autoincrement(),
@@ -44,7 +44,7 @@ export const personalInformation = mysqlTable('personal_information', {
 });
 
 // Identification Financial Information Table
-export const financialInformation = mysqlTable('financial_information', {
+export const financialInformation = mysqlTable('financial_info', {
   financial_id: int('financial_id').primaryKey().autoincrement(),
   employee_id: int('employee_id').references(() => employee.employee_id),
   pag_ibig_id: varchar('pag_ibig_id', { length: 255 }),
@@ -58,7 +58,7 @@ export const financialInformation = mysqlTable('financial_information', {
 });
 
 // Salary Information Table
-export const salaryInformation = mysqlTable('salary_information', {
+export const salaryInformation = mysqlTable('salary_info', {
   salary_information_id: int('salary_information_id')
     .primaryKey()
     .autoincrement(),
@@ -77,14 +77,18 @@ export const salaryInformation = mysqlTable('salary_information', {
 });
 
 // Employment Information Table
-export const employmentInformation = mysqlTable('employment_information', {
+export const employmentInformation = mysqlTable('employment_info', {
   employment_information_id: int('employment_information_id')
     .primaryKey()
     .autoincrement(),
   employee_id: int('employee_id').references(() => employee.employee_id),
   hireDate: timestamp('hireDate').defaultNow(),
-  department_id: int('department_id'),
-  designation_id: int('designation_id'),
+  department_id: int('department_id').references(
+    () => department.department_id,
+  ),
+  designation_id: int('designation_id').references(
+    () => designation.designation_id,
+  ),
   employee_type: mysqlEnum('employee_type', [
     'regular',
     'probationary',

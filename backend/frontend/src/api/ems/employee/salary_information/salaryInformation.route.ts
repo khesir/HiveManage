@@ -22,7 +22,7 @@ log.info('GET /salaryInformation/ set');
 
 salaryInformationRoute.get(
   '/:salaryInfo_id',
-  validateSalaryId,
+  [validateSalaryId, validateEmployeeId],
   controller.getSalaryInformation.bind(controller),
 );
 log.info('GET /salaryInformation/:employee_id set');
@@ -54,7 +54,7 @@ log.info('PUT /salaryInformation/:personalInfo_id set');
 
 salaryInformationRoute.delete(
   '/:salaryInfo_id',
-  validateSalaryId,
+  [validateSalaryId, validateEmployeeId],
   controller.deleteSalaryInformation.bind(controller),
 );
 log.info('DELETE /salaryInformation/:personalInfo_id set');

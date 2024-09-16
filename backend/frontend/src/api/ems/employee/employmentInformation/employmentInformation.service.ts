@@ -9,23 +9,25 @@ export class EmploymentInformationService {
     this.db = db;
   }
 
-  async getEmploymentInformation(paramsId: number, queryId: number) {
-    if (!isNaN(queryId)) {
+  async getEmploymentInformation(employmentID: number, employeeID: number) {
+    if (!isNaN(employeeID)) {
       const result = await this.db
         .select()
         .from(employmentInformation)
         .where(
           and(
-            eq(employmentInformation.employee_id, queryId),
+            eq(employmentInformation.employee_id, employeeID),
             isNull(employmentInformation.deleted_at),
           ),
         );
       return result;
-    } else if (!isNaN(paramsId)) {
+    } else if (!isNaN(employmentID)) {
       const result = await this.db
         .select()
         .from(employmentInformation)
-        .where(eq(employmentInformation.employment_information_id, paramsId));
+        .where(
+          eq(employmentInformation.employment_information_id, employmentID),
+        );
       return result;
     } else {
       const result = await this.db

@@ -22,6 +22,7 @@ log.info('GET /employeeInformation/ set');
 financiallInformationRoute.get(
   '/:financial_id',
   validateFinancialId,
+  validateEmployeeId,
   controller.getFinancialInformation.bind(controller),
 );
 log.info('GET /employeeInformation/:financial_id set');
@@ -32,6 +33,7 @@ financiallInformationRoute.post(
     validateRequest({
       body: FinancialInformation,
     }),
+    validateEmployeeId,
     validateEmployeeId,
   ],
   controller.createFinancialInformation.bind(controller),
@@ -54,6 +56,7 @@ log.info('PUT /employeeInformation/:financial_id set');
 financiallInformationRoute.delete(
   '/:financial_id',
   validateFinancialId,
+  validateEmployeeId,
   controller.deleteEmploymentInformation.bind(controller),
 );
 

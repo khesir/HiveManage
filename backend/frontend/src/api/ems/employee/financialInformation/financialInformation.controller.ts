@@ -18,7 +18,7 @@ export class FinancialInformationController {
   ) {
     try {
       const { financial_id } = req.params;
-      const { employee_id } = req.query;
+      const { employee_id } = req.params;
       const result =
         await this.financialInformationService.getFinancialInformation(
           Number(financial_id),
@@ -56,7 +56,7 @@ export class FinancialInformationController {
         bank_account_number,
       });
       res.status(HttpStatus.OK.code).json({
-        message: 'Financial Information Updated succesfully',
+        message: 'Financial Information Created succesfully',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
