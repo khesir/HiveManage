@@ -13,9 +13,25 @@ export class EmployeeController {
 
   async getAllEmployee(req: Request, res: Response, next: NextFunction) {
     const status = (req.query.status as string) || undefined;
+    const sort = (req.query.sort as string) || 'asc';
+    const limit = Number(req.query.limit) || 10;
+    const offset = Number(req.query.offset) || 0;
+    const fullname = (req.query.fullname as string) || undefined;
     try {
-      const data = await this.employeeService.getAllEmployee(status);
-      res.status(HttpStatus.OK.code).json({ data: data });
+      const data = await this.employeeService.getAllEmployee(
+        limit,
+        sort,
+        offset,
+        status,
+        fullname,
+      );
+      res.status(HttpStatus.OK.code).json({
+        status: HttpStatus.OK.status,
+        limit: limit,
+        offset: offset,
+        total_data: data.totalData,
+        data: data.result,
+      });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

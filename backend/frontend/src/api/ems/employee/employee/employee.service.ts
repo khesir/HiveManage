@@ -1,4 +1,4 @@
-import { eq, isNull, and } from 'drizzle-orm';
+import { asc, desc, eq, isNull, and, sql, like, or } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { employee } from '../../../../../drizzle/drizzle.schema';
 
@@ -8,23 +8,54 @@ export class EmployeeService {
   constructor(db: MySql2Database) {
     this.db = db;
   }
+  async getAllEmployee(
+    limit: number,
+    sort: string,
+    offset: number,
+    status: string | undefined,
+    fullname: string | undefined,
+  ) {
+    const conditions = [isNull(employee.deleted_at)];
 
-  async getAllEmployee(status: string | undefined) {
     if (status) {
-      const result = await this.db
-        .select()
-        .from(employee)
-        .where(
-          and(
-            eq(employee.status, status),
-            isNull(employee.deleted_at)
-          )
-        );
-      return result;
-    } else {
-      const result = await this.db.select().from(employee).where(isNull(employee.deleted_at));
-      return result;
+      conditions.push(eq(employee.status, status));
     }
+
+    if (fullname) {
+      const likeFullname = `%${fullname}%`; // Partial match
+      const nameConditions = or(
+        like(employee.firstname, likeFullname),
+        like(employee.middlename, likeFullname),
+        like(employee.lastname, likeFullname),
+      );
+      if (nameConditions) {
+        conditions.push(nameConditions);
+      }
+    }
+
+    const totalCountQuery = await this.db
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(employee)
+      .where(and(...conditions));
+
+    const totalData = totalCountQuery[0].count;
+
+    const result = await this.db
+      .select()
+      .from(employee)
+      .where(and(...conditions))
+      .orderBy(
+        sort === 'asc' ? asc(employee.created_at) : desc(employee.created_at),
+      )
+      .limit(limit)
+      .offset(offset);
+
+    return {
+      totalData,
+      result,
+    };
   }
 
   async createEmployee(data: object): Promise<void> {

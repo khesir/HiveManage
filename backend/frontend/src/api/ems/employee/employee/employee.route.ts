@@ -10,11 +10,6 @@ import { validateEmployeeId } from './employee.middlewares';
 import personalInformationRoute from '../personal_information/personalInformation.route';
 import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
 
-// import employmentInformationRoute from '../employment_information/employment-information.route';
-// import salaryInformationRouter from '../salary_information/salary_information.route';
-// import personalInformationRouter from '../personal_information/personal-information.route';
-// import identificationFinancialInformationRouter from '../identification_financial_information/identification-financial-information.route';
-
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);
 
