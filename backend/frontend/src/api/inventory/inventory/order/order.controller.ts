@@ -12,21 +12,24 @@ export class OrderController {
   }
 
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
+    const id = (req.query.id as string) || undefined;
     const limit = Number(req.query.limit) || 10; // Default limit to 10
-    const sort = (req.query.sort as string) || 'asc'; // Default sort to 'asc'
-    const page = Number(req.query.page) || 1;
+    const offset = Number(req.query.offset) || 0;
+
     try {
-      const Orders = await this.orderService.getAllOrder({
-        limit,
-        sort,
-        page,
+      const data = await this.orderService.getAllOrder(id, limit, offset);
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Data retrieved successfully',
+        total_data: data?.length,
+        limit: limit,
+        offset: offset,
+        data: data,
       });
-      res.status(200).json({ data: Orders });
     } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
-        message: 'Internal Server Error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
-      });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ message: 'Internal Server Error ' });
       next(error);
     }
   }
@@ -35,9 +38,10 @@ export class OrderController {
     try {
       const { order_id } = req.params;
       const data = await this.orderService.getOrderById(Number(order_id));
-      res.status(200).json({ message: data });
+      res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        status: 'Error',
         message: 'Internal Server Error',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
       });
@@ -57,9 +61,10 @@ export class OrderController {
       });
       res
         .status(HttpStatus.CREATED.code)
-        .json({ message: 'Successfully Created Supplier' });
+        .json({ status: 'Success', message: 'Successfully Created Supplier' });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        status: 'Error',
         message: 'Internal Server Error ',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
       });
@@ -78,11 +83,11 @@ export class OrderController {
       );
       res
         .status(HttpStatus.OK.code)
-        .json({ message: 'Supplier Updated Successfully' });
+        .json({ status: 'Success', message: 'Supplier Updated Successfully' });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
-        .json({ message: 'Internal Server Error ' });
+        .json({ status: 'Error', message: 'Internal Server Error ' });
       next(error);
     }
   }
@@ -92,12 +97,13 @@ export class OrderController {
       const { order_id } = req.params;
       await this.orderService.deleteOrder(Number(order_id));
       res.status(200).json({
+        status: 'Success',
         message: `Supplier ID:${order_id} is deleted Successfully`,
       });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
-        .json({ message: 'Internal Server Error ' });
+        .json({ status: 'Error', message: 'Internal Server Error ' });
       next(error);
     }
   }

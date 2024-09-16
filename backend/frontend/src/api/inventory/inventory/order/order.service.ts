@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { asc, desc, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { order } from '../../../../../drizzle/drizzle.schema';
 
 export class OrderService {
@@ -13,16 +13,34 @@ export class OrderService {
     await this.db.insert(order).values(data);
   }
 
-  async getAllOrder({ limit = 10, sort = 'asc', page = 1 }) {
-    const offset = (page - 1) * limit;
-    const result = await this.db
-      .select()
-      .from(order)
-      .where(isNull(order.deleted_at))
-      .orderBy(sort === 'asc' ? asc(order.created_at) : desc(order.created_at))
-      .limit(limit)
-      .offset(offset);
-    return result;
+  async getAllOrder(
+    orderId: string | undefined,
+    limit: number,
+    offset: number,
+  ) {
+    try {
+      if (orderId) {
+        const result = await this.db
+          .select()
+          .from(order)
+          .where(
+            and(eq(order.order_id, Number(orderId)), isNull(order.deleted_at)),
+          )
+          .limit(limit)
+          .offset(offset);
+        return result;
+      } else {
+        const result = await this.db
+          .select()
+          .from(order)
+          .where(isNull(order.deleted_at))
+          .limit(limit)
+          .offset(offset);
+        return result;
+      }
+    } catch (error) {
+      console.error('Error fetching Order: ', error);
+    }
   }
 
   async getOrderById(paramsId: number) {
