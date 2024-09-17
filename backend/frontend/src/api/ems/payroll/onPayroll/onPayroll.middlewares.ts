@@ -3,22 +3,22 @@ import { eq, and } from 'drizzle-orm';
 
 import { db } from '../../../../../mysql/mysql.pool';
 import log from '../../../../../lib/logger';
-import { onPayroll } from '../../../../../drizzle/drizzle.schema';
+import { payroll } from '../../../../../drizzle/drizzle.schema';
 
-export async function captureQuery(
+export async function validatePayrollId(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { payroll_id } = req.query;
+  const { payroll_id } = req.params;
 
   try {
     const data = await db
       .select()
-      .from(onPayroll)
-      .where(and(eq(onPayroll.payroll_id, Number(payroll_id))));
+      .from(payroll)
+      .where(and(eq(payroll.payroll_id, Number(payroll_id))));
     if (!data[0]) {
-      return res.status(404).json({ message: `Payroll not found` });
+      return res.status(404).json({ message: `Payroll Not found` });
     }
     next();
   } catch (error) {

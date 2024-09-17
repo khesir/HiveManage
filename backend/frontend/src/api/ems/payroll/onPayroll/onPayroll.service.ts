@@ -1,12 +1,28 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { OnPayroll } from './onPayroll.model';
-import { employee, onPayroll } from '../../../../../drizzle/drizzle.schema';
+import {
+  employee,
+  onPayroll,
+  payrollApproval,
+} from '../../../../../drizzle/drizzle.schema';
 import { inArray, eq, and, isNull } from 'drizzle-orm';
 export class OnPayrollService {
   private db: MySql2Database;
 
   constructor(db: MySql2Database) {
     this.db = db;
+  }
+  async getAllOnPayroll(payroll_id: number) {
+    const result = await this.db
+      .select()
+      .from(onPayroll)
+      .leftJoin(employee, eq(onPayroll.employee_id, employee.employee_id))
+      .leftJoin(
+        payrollApproval,
+        eq(onPayroll.on_payroll_id, payrollApproval.on_payroll_id),
+      )
+      .where(and(eq(onPayroll.payroll_id, payroll_id)));
+    return result;
   }
 
   async createOnPayroll(employees: OnPayroll[], payroll_id: number) {

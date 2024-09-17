@@ -6,6 +6,7 @@ import log from '../../../../../lib/logger';
 import { validatePayrollId } from './payroll.middlewares';
 import { validateRequest } from '../../../../../src/middlewares';
 import { CreatePayroll, UpdatePayroll } from './payroll.model';
+import onPayrollRoute from '../onPayroll/onPayroll.route';
 
 const payrollRoute = Router({ mergeParams: true });
 const payrollController = new PayrollController(db);
@@ -40,5 +41,7 @@ payrollRoute.delete(
   payrollController.deletePayrollById.bind(payrollController),
 );
 log.info('DELETE /payroll/:payroll_id set');
+
+payrollRoute.use('/:payroll_id/onPayroll', onPayrollRoute);
 
 export default payrollRoute;
