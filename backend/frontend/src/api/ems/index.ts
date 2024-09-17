@@ -9,7 +9,6 @@ import leaveLimitRoute from './company/leaveLimit/leaveLimit.route';
 import leaveRequestRoute from './company/leaveRequest/leaveRequest.route';
 import employeeRoute from './employee/employee/employee.route';
 import signatoryRoute from './payroll/signatory/signatory.route';
-import onPayrollRoute from './payroll/onPayroll/onPayroll.route';
 import payrollApprovalRoute from './payroll/payroll_approval/payrollApproval.route';
 import benefitRoute from './fees/benefits/benefits.route';
 import deductionRoute from './fees/deductions/deductions.route';
@@ -42,9 +41,6 @@ log.info('ROUTe /employee set');
 
 emsRoute.use('/signatory', signatoryRoute);
 log.info('ROUTE /signatory set');
-
-emsRoute.use('/onPayroll', onPayrollRoute);
-log.info('ROUTE /onPayroll set');
 
 emsRoute.use('/payrollApproval', payrollApprovalRoute);
 log.info('ROUTE /payrollApproval set');

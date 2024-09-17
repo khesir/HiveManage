@@ -2,26 +2,26 @@ import { Request, Response, NextFunction } from 'express';
 
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '../../../../../lib/HttpStatus';
-import { SupplierService } from './supplier.service';
+import { OrderService } from './order.service';
 
-export class SupplierController {
-  private supplierService: SupplierService;
+export class OrderController {
+  private orderService: OrderService;
 
   constructor(pool: MySql2Database) {
-    this.supplierService = new SupplierService(pool);
+    this.orderService = new OrderService(pool);
   }
 
-  async getAllSupplier(req: Request, res: Response, next: NextFunction) {
+  async getAllOrders(req: Request, res: Response, next: NextFunction) {
     const id = (req.query.id as string) || undefined;
-    const limit = parseInt(req.query.limit as string) || 10; // default limit value
-    const offset = parseInt(req.query.offset as string) || 0; // default offset value
+    const limit = Number(req.query.limit) || 10; // Default limit to 10
+    const offset = Number(req.query.offset) || 0;
+
     try {
-      // Fetch data count from the database
-      const data = await this.supplierService.getAllSupplier(id, limit, offset);
+      const data = await this.orderService.getAllOrder(id, limit, offset);
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data retrieved successfully',
-        total_data: data.length,
+        total_data: data?.length,
         limit: limit,
         offset: offset,
         data: data,
@@ -34,30 +34,30 @@ export class SupplierController {
     }
   }
 
-  async getSupplierById(req: Request, res: Response, next: NextFunction) {
+  async getOrderById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id } = req.params;
-      const data = await this.supplierService.getSupplierById(
-        Number(supplier_id),
-      );
-      res.status(200).json({ message: data });
+      const { order_id } = req.params;
+      const data = await this.orderService.getOrderById(Number(order_id));
+      res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
-        message: 'Internal Server Error ',
+        status: 'Error',
+        message: 'Internal Server Error',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
       });
       next(error);
     }
   }
 
-  async createSupplier(req: Request, res: Response, next: NextFunction) {
+  async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, contact_number, remarks } = req.body;
+      const { product_id, items_ordered, expected_arrival, status } = req.body;
 
-      await this.supplierService.createSupplier({
-        name,
-        contact_number,
-        remarks,
+      await this.orderService.createOrder({
+        product_id,
+        items_ordered,
+        expected_arrival,
+        status,
       });
       res
         .status(HttpStatus.CREATED.code)
@@ -72,14 +72,14 @@ export class SupplierController {
     }
   }
 
-  async updateSupplier(req: Request, res: Response, next: NextFunction) {
+  async updateOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id } = req.params;
-      const { name, contact_number, remarks } = req.body;
+      const { order_id } = req.params;
+      const { product_id, items_ordered, expected_arrival, status } = req.body;
 
-      await this.supplierService.updateSupplier(
-        { name, contact_number, remarks },
-        Number(supplier_id),
+      await this.orderService.updateOrder(
+        { product_id, items_ordered, expected_arrival, status },
+        Number(order_id),
       );
       res
         .status(HttpStatus.OK.code)
@@ -92,13 +92,13 @@ export class SupplierController {
     }
   }
 
-  async deleteSupplierById(req: Request, res: Response, next: NextFunction) {
+  async deleteOrderById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id } = req.params;
-      await this.supplierService.deleteSupplier(Number(supplier_id));
+      const { order_id } = req.params;
+      await this.orderService.deleteOrder(Number(order_id));
       res.status(200).json({
         status: 'Success',
-        message: `Supplier ID:${supplier_id} is deleted Successfully`,
+        message: `Supplier ID:${order_id} is deleted Successfully`,
       });
     } catch (error) {
       res
