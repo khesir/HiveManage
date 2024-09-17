@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import productRoute from './inventory/product/product.route';
+import log from '../../../lib/logger';
 
 import categoryRoute from './inventory/category/category.route';
 import log from '../../../lib/logger';
@@ -16,6 +18,9 @@ imsRoute.use('/supplier', supplierRoute);
 imsRoute.use('/order', orderRoute);
 // imsRoute.use('/inventory', itemRoute);
 // imsRoute.use('/tag-items', tagitemRoute);
+imsRoute.use('/product', productRoute);
+log.info('ROUTE /product set');
+
 imsRoute.use('/category', categoryRoute);
 log.info('ROUTE category set');
 
