@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import arriveitemsRoute from './inventory/arriveItem/arriveItem.route';
+import log from '../../../lib/logger';
 
 import log from '../../../lib/logger';
 import itemsRoute from './inventory/item/item.route';
@@ -22,6 +24,9 @@ imsRoute.use('/supplier', supplierRoute);
 imsRoute.use('/order', orderRoute);
 // imsRoute.use('/inventory', itemRoute);
 // imsRoute.use('/tag-items', tagitemRoute);
+imsRoute.use('/arriveItems', arriveitemsRoute);
+log.info('ROUTE arriveItems set ');
+
 imsRoute.use('/item', itemsRoute);
 log.info('ROUTE /item set');
 

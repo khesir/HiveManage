@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d385e470-c8a4-4167-9a47-b81437ee9736",
+  "id": "b4857127-0c53-4cf0-9de9-6857c1f4a036",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "activity_log": {
@@ -258,6 +258,13 @@
     "arrived_Items": {
       "name": "arrived_Items",
       "columns": {
+        "arrived_Items_id": {
+          "name": "arrived_Items_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
         "order_id": {
           "name": "order_id",
           "type": "int",
@@ -313,7 +320,14 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "arrived_Items_arrived_Items_id": {
+          "name": "arrived_Items_arrived_Items_id",
+          "columns": [
+            "arrived_Items_id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "attendance": {
