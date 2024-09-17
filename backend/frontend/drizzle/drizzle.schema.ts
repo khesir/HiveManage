@@ -355,6 +355,9 @@ export const category = mysqlTable('category', {
   category_id: int('category_id').primaryKey().autoincrement(), // Primary key with auto-increment
   name: varchar('name', { length: 255 }), // Category name, up to 255 characters
   content: varchar('content', { length: 255 }), // Additional information about the category, up to 255 characters
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 //Supplier
