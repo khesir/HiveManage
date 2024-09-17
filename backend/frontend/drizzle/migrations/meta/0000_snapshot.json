@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "b7b0a7a3-36b4-4db5-97ef-0c19d049ffa6",
+  "id": "7a49baff-cd16-4f55-9f52-083f4519c4f3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "activity_log": {
@@ -363,7 +363,7 @@
         },
         "attendance_status": {
           "name": "attendance_status",
-          "type": "enum('Present','Absent','Late','Early_Leave','Paid_Leave')",
+          "type": "enum('Present','Absent','Late','Early Leave','Paid Leave')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1214,7 +1214,7 @@
         },
         "leaveType": {
           "name": "leaveType",
-          "type": "enum('Sick_Leave','Vacation_Leave','Personal_Leave')",
+          "type": "enum('Sick Leave','Vacation Leave','Personal Leave')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1331,7 +1331,7 @@
         },
         "leaveType": {
           "name": "leaveType",
-          "type": "enum('Sick_Leave','Vacation_Leave','Personal_Leave')",
+          "type": "enum('Sick Leave','Vacation Leave','Personal Leave')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2103,7 +2103,7 @@
         },
         "payroll_frequency": {
           "name": "payroll_frequency",
-          "type": "enum('Daily','Weekly','BiWeekly','SemiMonthly','Monthly')",
+          "type": "enum('Daily','Weekly','Bi Weekly','Semi Monthly','Monthly')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

@@ -99,10 +99,10 @@ async function seedSalaryInformations() {
   const allowedFrequencies: (
     | 'Daily'
     | 'Weekly'
-    | 'BiWeekly'
-    | 'SemiMonthly'
+    | 'Bi Weekly'
+    | 'Semi Monthly'
     | 'Monthly'
-  )[] = ['Daily', 'Weekly', 'BiWeekly', 'SemiMonthly', 'Monthly'];
+  )[] = ['Daily', 'Weekly', 'Bi Weekly', 'Semi Monthly', 'Monthly'];
   const employees = await db.select().from(employee);
 
   const salaryInfos = Array.from({ length: 50 }).map(() => ({
@@ -205,10 +205,10 @@ async function seedActivityLogs() {
 
 async function seedLeaveLimits() {
   const employees = await db.select().from(employee);
-  const leaveTypes: ('Sick_Leave' | 'Vacation_Leave' | 'Personal_Leave')[] = [
-    'Sick_Leave',
-    'Vacation_Leave',
-    'Personal_Leave',
+  const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
+    'Sick Leave',
+    'Vacation Leave',
+    'Personal Leave',
   ];
   const leaveLimits = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -223,10 +223,10 @@ async function seedLeaveLimits() {
 }
 
 async function seedLeaveRequests() {
-  const leaveTypes: ('Sick_Leave' | 'Vacation_Leave' | 'Personal_Leave')[] = [
-    'Sick_Leave',
-    'Vacation_Leave',
-    'Personal_Leave',
+  const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
+    'Sick Leave',
+    'Vacation Leave',
+    'Personal Leave',
   ];
   const statuses: ('Pending' | 'Approved' | 'Rejected')[] = [
     'Pending',
@@ -417,9 +417,9 @@ async function seedAttendance() {
     | 'Present'
     | 'Absent'
     | 'Late'
-    | 'Early_Leave'
-    | 'Paid_Leave'
-  )[] = ['Present', 'Absent', 'Late', 'Early_Leave', 'Paid_Leave'];
+    | 'Early Leave'
+    | 'Paid Leave'
+  )[] = ['Present', 'Absent', 'Late', 'Early Leave', 'Paid Leave'];
 
   const attendanceRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
