@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { payroll } from '../../../../../drizzle/drizzle.schema';
-import { eq,and,isNull } from 'drizzle-orm';
+import { eq, and, isNull, sql, asc, desc } from 'drizzle-orm';
 
 export class PayrollService {
   private db: MySql2Database;
@@ -20,28 +20,47 @@ export class PayrollService {
       .where(eq(payroll.payroll_id, paramsId));
   }
 
-  async getAllPayroll(approvalStatus: string | undefined) {
+  async getAllPayroll(
+    limit: number,
+    sort: string,
+    offset: number,
+    approvalStatus: string | undefined,
+  ) {
+    const conditions = [isNull(payroll.deleted_at)];
+
     if (
       approvalStatus &&
       ['active', 'inactive', 'inprogress'].includes(approvalStatus)
     ) {
-      const result = await this.db
-        .select()
-        .from(payroll)
-        .where(
-          and(
-            eq(
-              payroll.status,
-              approvalStatus as 'active' | 'inactive' | 'inprogress',
-            ),
-            isNull(payroll.deleted_at)
-          )
-        );
-      return result;
-    } else {
-      const result = await this.db.select().from(payroll);
-      return result;
+      conditions.push(
+        eq(
+          payroll.status,
+          approvalStatus as 'active' | 'inactive' | 'inprogress',
+        ),
+      );
     }
+    const totalCountQuery = await this.db
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(payroll)
+      .where(and(...conditions));
+    const totalData = totalCountQuery[0].count;
+
+    const result = await this.db
+      .select()
+      .from(payroll)
+      .where(and(...conditions))
+      .orderBy(
+        sort === 'asc' ? asc(payroll.created_at) : desc(payroll.created_at),
+      )
+      .limit(limit)
+      .offset(offset);
+
+    return {
+      totalData,
+      result,
+    };
   }
 
   async getPayrollById(paramsId: number) {
