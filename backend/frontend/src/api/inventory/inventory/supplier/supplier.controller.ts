@@ -1,69 +1,110 @@
-import { Request, Response as ExpressResponse } from 'express';
-import { Pool } from 'mysql2/promise';
+import { Request, Response, NextFunction } from 'express';
 
-import { SupplierModel } from './supplier.model';
-import Response from '../../../../lib/response';
-import { HttpStatus } from '../../../../../lib/config';
+import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { HttpStatus } from '../../../../../lib/HttpStatus';
+import { SupplierService } from './supplier.service';
 
 export class SupplierController {
-  private supplierModel: SupplierModel;
+  private supplierService: SupplierService;
 
-  constructor(pool: Pool) {
-    this.supplierModel = new SupplierModel(pool);
+  constructor(pool: MySql2Database) {
+    this.supplierService = new SupplierService(pool);
   }
 
-  async getAllSupplier(req: Request, res: ExpressResponse): Promise<void> {
+  async getAllSupplier(req: Request, res: Response, next: NextFunction) {
+    const id = (req.query.id as string) || undefined;
+    const limit = parseInt(req.query.limit as string) || 10; // default limit value
+    const offset = parseInt(req.query.offset as string) || 0; // default offset value
     try {
-      const supplier = await this.supplierModel.getAllSupplier();
-      const response = new Response(
-        HttpStatus.OK.code,
-        HttpStatus.OK.status,
-        'Supplier retrieved successfully',
-        supplier,
-      );
-      res.status(HttpStatus.OK.code).send(response);
-    } catch {
-      const response = new Response(
-        HttpStatus.INTERNAL_SERVER_ERROR.code,
-        HttpStatus.INTERNAL_SERVER_ERROR.status,
-        'Failed to retrieve supplier',
-        null,
-      );
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).send(response);
+      // Fetch data count from the database
+      const data = await this.supplierService.getAllSupplier(id, limit, offset);
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Data retrieved successfully',
+        total_data: data.length,
+        limit: limit,
+        offset: offset,
+        data: data,
+      });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ message: 'Internal Server Error ' });
+      next(error);
     }
   }
 
-  async getSupplierById(req: Request, res: ExpressResponse): Promise<void> {
+  async getSupplierById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplierId } = req.params;
-      const supplier = await this.supplierModel.getSupplierById(
-        Number(supplierId),
+      const { supplier_id } = req.params;
+      const data = await this.supplierService.getSupplierById(
+        Number(supplier_id),
       );
-      if (supplier) {
-        const response = new Response(
-          HttpStatus.OK.code,
-          HttpStatus.OK.status,
-          'Supplier retrieved successfully',
-          supplier,
-        );
-        res.status(HttpStatus.OK.code).send(response);
-      } else {
-        const response = new Response(
-          HttpStatus.NOT_FOUND.code,
-          HttpStatus.NOT_FOUND.status,
-          'Supplier not found',
-          null,
-        );
-        res.status(HttpStatus.NOT_FOUND.code).send(response);
-      }
-    } catch {
-      const response = new Response(
-        HttpStatus.INTERNAL_SERVER_ERROR.code,
-        HttpStatus.INTERNAL_SERVER_ERROR.status,
-        'Failed to retrieved Supplier',
-        null,
+      res.status(200).json({ message: data });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error ',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
+      next(error);
+    }
+  }
+
+  async createSupplier(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { name, contact_number, remarks } = req.body;
+
+      await this.supplierService.createSupplier({
+        name,
+        contact_number,
+        remarks,
+      });
+      res
+        .status(HttpStatus.CREATED.code)
+        .json({ status: 'Success', message: 'Successfully Created Supplier' });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        status: 'Error',
+        message: 'Internal Server Error ',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
+      next(error);
+    }
+  }
+
+  async updateSupplier(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { supplier_id } = req.params;
+      const { name, contact_number, remarks } = req.body;
+
+      await this.supplierService.updateSupplier(
+        { name, contact_number, remarks },
+        Number(supplier_id),
       );
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).send(response);
+      res
+        .status(HttpStatus.OK.code)
+        .json({ status: 'Success', message: 'Supplier Updated Successfully' });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
+
+  async deleteSupplierById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { supplier_id } = req.params;
+      await this.supplierService.deleteSupplier(Number(supplier_id));
+      res.status(200).json({
+        status: 'Success',
+        message: `Supplier ID:${supplier_id} is deleted Successfully`,
+      });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error ' });
+      next(error);
     }
   }
 }
