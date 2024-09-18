@@ -10,6 +10,31 @@ export class OnPayrollController {
     this.onPayrollService = new OnPayrollService(pool);
   }
 
+  async getAllOnPayroll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payroll_id } = req.params;
+
+      const result = await this.onPayrollService.getAllOnPayroll(
+        Number(payroll_id),
+      );
+      res.status(HttpStatus.OK.code).json({
+        status: HttpStatus.OK.code,
+        data: result,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(HttpStatus.BAD_REQUEST.code).json({
+          message: error.message,
+        });
+      } else {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+          message: 'Internal Server Error',
+        });
+        next(error);
+      }
+    }
+  }
+
   async createOnPayroll(req: Request, res: Response, next: NextFunction) {
     try {
       const { employees } = req.body;

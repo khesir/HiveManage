@@ -355,6 +355,9 @@ export const category = mysqlTable('category', {
   category_id: int('category_id').primaryKey().autoincrement(), // Primary key with auto-increment
   name: varchar('name', { length: 255 }), // Category name, up to 255 characters
   content: varchar('content', { length: 255 }), // Additional information about the category, up to 255 characters
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
 });
 
 //Supplier
@@ -390,6 +393,7 @@ export const order = mysqlTable('order', {
 
 //Arrived_Items
 export const arrived_Items = mysqlTable('arrived_Items', {
+  arrived_Items_id: int('arrived_Items_id').primaryKey().autoincrement(),
   order_id: int('order_id').references(() => order.order_id), // Foreign key reference to the order table
   filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
