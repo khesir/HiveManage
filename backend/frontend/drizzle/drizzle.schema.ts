@@ -7,6 +7,7 @@ import {
   date,
   float,
   decimal,
+  boolean,
 } from 'drizzle-orm/mysql-core';
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = mysqlTable('employee', {
@@ -318,11 +319,162 @@ export const attendance = mysqlTable('attendance', {
   deleted_at: timestamp('deleted_at'),
 });
 //  =======================================================================================
-// ===================================== SALES ======================================
+// ===================================== JOB ORDER ======================================
+
+//JobOrder
+export const jobOrder = mysqlTable('joborder', {
+  job_order_id: int('job_order_id').primaryKey().autoincrement(),
+  employee_id: int('employee_id').references(() => employee.employee_id),
+  service_id: int('service_id').references(() => service.service_id),
+  steps: varchar('steps', { length: 255 }),
+  required_items: varchar('required_items', { length: 255 }),
+  status: mysqlEnum('status', [
+    'Pending',
+    'In Progress',
+    'Completed',
+    'On Hold',
+    'Cancelled',
+    'Awaiting Approval',
+    'Approved',
+    'Rejected',
+    'Closed',
+  ]),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Reports
+export const reports = mysqlTable('reports', {
+  reports_id: int('reports_id').primaryKey().autoincrement(),
+  job_order_id: int('job_order_id').references(() => jobOrder.job_order_id),
+  remarks: varchar('remarks', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+//  =======================================================================================
+// ==================================== SERVICE ======================================
+
+//Reserve
+export const reserve = mysqlTable('reserve', {
+  reserve_id: int('reserve_id').primaryKey().autoincrement(),
+  sales_id: int('sales_id').references(() => sales.sales_id),
+  service_id: int('service_id').references(() => service.service_id),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Borrow
+export const borrow = mysqlTable('borrow', {
+  borrow_id: int('borrow_id').primaryKey().autoincrement(),
+  sales_id: int('sales_id').references(() => sales.sales_id),
+  service_id: int('service_id').references(() => service.service_id),
+  item_id: int('item_id').references(() => item.item_id),
+  borrow_date: date('borrow_date'),
+  return_data: date('return_date'),
+  status: mysqlEnum('status', [
+    'Requested',
+    'Approved',
+    'Borrowed',
+    'Returned',
+    'Overdue',
+    'Rejected',
+    'Cancelled',
+    'Lost',
+    'Damaged',
+  ]),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Service
+export const service = mysqlTable('service', {
+  service_id: int('service_id').primaryKey().autoincrement(),
+  sales_id: int('sales_id').references(() => sales.sales_id),
+  service_title: varchar('service_title', { length: 255 }),
+  service_type: mysqlEnum('service_type', [
+    'Repair',
+    'Sell',
+    'Buy',
+    'Borrow',
+    'Return',
+    'Exchange',
+  ]),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
 
 //  =======================================================================================
-// ==================================== SERVICES ======================================
+// ==================================== SALES ======================================
 
+//SalesItems
+export const sales_items = mysqlTable('sales_items', {
+  sales_items_id: int('sales_item_id').primaryKey().autoincrement(),
+  sales_id: int('sales_id').references(() => sales.sales_id),
+  item_id: int('item_id').references(() => item.item_id),
+  quantity: int('quantity'),
+  is_service_item: boolean('is_service_item'),
+  total_price: decimal('total_price', { precision: 50, scale: 2 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Sales
+export const sales = mysqlTable('sales', {
+  sales_id: int('sales_id').primaryKey().autoincrement(),
+  employee_id: int('employee_id').references(() => employee.employee_id),
+  customer_id: int('customer_id').references(() => customer.customer_id),
+  total_amount: decimal('total_price', { precision: 50, scale: 2 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Payment
+
+export const payment = mysqlTable('payment', {
+  payment_id: int('payment_id').primaryKey().autoincrement(),
+  sales_id: int('sales_id').references(() => sales.sales_id),
+  amount: decimal('total_price', { precision: 50, scale: 2 }),
+  payment_date: date('payment_date'),
+  payment_method: mysqlEnum('payment_method', [
+    'Cash',
+    'Card',
+    'Online Payment',
+  ]),
+  payment_status: mysqlEnum('payment_status', [
+    'Pending',
+    'Completed',
+    'Failed',
+    'Cancelled',
+    'Refunded',
+    'Partially Refunded',
+    'Overdue',
+    'Processing',
+    'Declined',
+    'Authorized',
+  ]),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Receipt
+export const receipt = mysqlTable('receipt', {
+  receipt_id: int('receipt_id').primaryKey().autoincrement(),
+  sales_id: int('sales_id').references(() => sales.sales_id),
+  payment_id: int('payment_id').references(() => payment.payment_id),
+  issued_date: date('issued_data'),
+  total_amount: decimal('total_price', { precision: 50, scale: 2 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
@@ -401,10 +553,95 @@ export const arrived_Items = mysqlTable('arrived_Items', {
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 //  =======================================================================================
-// =================================== PARTORDER ==========================================
+// =================================== Service ==========================================
 
 //  =======================================================================================
-// =================================== PARTORDER ==========================================
+// =================================== Customer ==========================================
 
+//Channel Participants
+export const participants = mysqlTable('participants', {
+  participants_id: int('participants_id').primaryKey().autoincrement(),
+  employee_id: int('employee_id').references(() => employee.employee_id),
+  channel_id: int('channel_id').references(() => channel.channel_id),
+  is_private: boolean('is_private'),
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
+
+//Channel
+export const channel = mysqlTable('channel', {
+  channel_id: int('channel_id').primaryKey().autoincrement(),
+  inquiry_id: int('inquiry_id').references(() => inquiry.inquiry_id),
+  channel_name: varchar('channel_name', { length: 255 }),
+  is_private: boolean('is_private'),
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
+
+//Message
+export const message = mysqlTable('message', {
+  message_id: int('message_id').primaryKey().autoincrement(),
+  inquiry_id: int('inquiry_id').references(() => inquiry.inquiry_id),
+  sender_id: int('sender_id'),
+  sender_type: mysqlEnum('sender_type', [
+    'User',
+    'Admin',
+    'Customer Support',
+    'Supplier',
+    'Employee',
+    'Manager',
+  ]),
+  content: varchar('content', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
+
+//Inquiry
+export const inquiry = mysqlTable('inquiry', {
+  inquiry_id: int('inquiry_id').primaryKey().autoincrement(),
+  customer_id: int('customer_id').references(() => customer.customer_id),
+  inquiryTitle: varchar('inquiryTitle', { length: 255 }),
+  inquiry_type: mysqlEnum('sender_type', [
+    'Product',
+    'Pricing',
+    'Order Status',
+    'Technical Support',
+    'Billing',
+    'Complaint',
+    'Feedback',
+    'Return/Refund',
+  ]),
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
+
+//Customer
+export const customer = mysqlTable('customer', {
+  customer_id: int('customer_id').primaryKey().autoincrement(),
+  firstname: varchar('firstname', { length: 255 }),
+  lastname: varchar('lastname', { length: 255 }),
+  contact_phone: varchar('contact_phone', { length: 255 }),
+  socials: varchar('socials', { length: 255 }),
+  address_line: varchar('address_line', { length: 255 }),
+  barangay: varchar('barangay', { length: 255 }),
+  province: varchar('province', { length: 255 }),
+  standing: mysqlEnum('standing', [
+    'Active',
+    'Inactive',
+    'Pending',
+    'Suspended',
+    'Banned',
+    'VIP',
+    'Delinquent',
+    'Prospect',
+  ]),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  deleted_at: timestamp('deleted_at'),
+});
 //  =======================================================================================
 // =================================== PARTORDER ==========================================
