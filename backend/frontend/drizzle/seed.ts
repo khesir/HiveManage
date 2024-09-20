@@ -27,6 +27,20 @@ import {
   order,
   arrived_Items,
   item,
+  sales_items,
+  sales,
+  payment,
+  receipt,
+  service,
+  reserve,
+  borrow,
+  jobOrder,
+  reports,
+  participants,
+  channel,
+  inquiry,
+  message,
+  customer,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -435,13 +449,365 @@ async function seedAttendance() {
 
   log.info('Attendance records seeded successfully.');
 }
+//  =======================================================================================
+// ===================================== CUSTOMER ======================================
+async function seedParticipants() {
+  const employeeIDs = await db.select().from(employee);
+  const channelIDs = await db.select().from(channel);
+
+  const participantsRecords = Array.from({ length: 70 }).map(() => ({
+    employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    channel_id: faker.helpers.arrayElement(channelIDs).channel_id,
+    is_private: faker.datatype.boolean(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(participants).values(participantsRecords);
+  log.info('Participant records seeded successfully');
+}
+
+async function seedChannel() {
+  const inquiryIDs = await db.select().from(inquiry);
+
+  const channelRecords = Array.from({ length: 70 }).map(() => ({
+    inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
+    channel_name: faker.person.jobTitle(),
+    is_private: faker.datatype.boolean(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(channel).values(channelRecords);
+  log.info('Channel records seeded successfully');
+}
+
+async function seedMessage() {
+  const inquiryIDs = await db.select().from(inquiry);
+
+  const status = [
+    'User',
+    'Admin',
+    'Customer Support',
+    'Employee',
+    'Manager',
+  ] as const;
+
+  const messageRecords = Array.from({ length: 70 }).map(() => ({
+    inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
+    sender_id: faker.number.int({ min: 1, max: 12 }),
+    content: faker.lorem.sentence(),
+    sender_type: faker.helpers.arrayElement(status),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(message).values(messageRecords);
+  log.info('Message records seeded successfully');
+}
+
+async function seedInquiry() {
+  const customerIDs = await db.select().from(customer);
+
+  const status = [
+    'Product',
+    'Pricing',
+    'Order Status',
+    'Technical Support',
+    'Billing',
+    'Complaint',
+    'Feedback',
+    'Return/Refund',
+  ] as const; // Use 'as const' to infer a tuple type for strict typing
+
+  const inquiryRecords = Array.from({ length: 70 }).map(() => ({
+    customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
+    inquiryTitle: faker.commerce.productName(),
+    inquiry_type: faker.helpers.arrayElement(status),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(inquiry).values(inquiryRecords);
+  log.info('Inquiry records seeded successfully');
+}
+
+async function seedCustomer() {
+  const status = [
+    'Active',
+    'Inactive', // This status was missing in your original list
+    'Pending',
+    'Suspended',
+    'Banned',
+    'VIP',
+    'Delinquent',
+    'Prospect',
+  ] as const;
+
+  const customerRecords = Array.from({ length: 70 }).map(() => ({
+    firstname: faker.person.firstName(),
+    lastname: faker.person.lastName(),
+    contact_phone: faker.phone.number(),
+    socials: faker.internet.email(),
+    address_line: faker.location.city(),
+    barangay: faker.location.city(),
+    province: faker.location.city(),
+    standing: faker.helpers.arrayElement(status),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(customer).values(customerRecords);
+  log.info('Customer records seeded successfully');
+}
 
 //  =======================================================================================
 // ===================================== SALES ======================================
 
+async function seedSalesItem() {
+  const salesIDs = await db.select().from(sales);
+  const itemIDs = await db.select().from(item);
+
+  const salesItemRecords = Array.from({ length: 70 }).map(() => ({
+    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
+    item_id: faker.helpers.arrayElement(itemIDs).item_id,
+    quantity: faker.number.int({ min: 1, max: 100 }), // Adjust max as needed
+    is_service_item: faker.datatype.boolean(), // Changed to boolean
+    total_price: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(sales_items).values(salesItemRecords);
+
+  log.info('Sales Items records seeded successfully');
+}
+
+async function seedSales() {
+  const employeeIDs = await db.select().from(employee);
+  const customerIDs = await db.select().from(customer);
+
+  const salesRecords = Array.from({ length: 70 }).map(() => ({
+    employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
+    total_amount: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(sales).values(salesRecords);
+
+  log.info('Sales records seeded successfully');
+}
+
+async function seedPayment() {
+  const salesIDs = await db.select().from(sales);
+
+  const statuses: ('Cash' | 'Card' | 'Online Payment')[] = [
+    'Cash',
+    'Card',
+    'Online Payment',
+  ];
+  const status: (
+    | 'Pending'
+    | 'Completed'
+    | 'Failed'
+    | 'Cancelled'
+    | 'Refunded'
+    | 'Partially Refunded'
+    | 'Overdue'
+    | 'Processing'
+    | 'Declined'
+    | 'Authorized'
+  )[] = [
+    'Pending',
+    'Completed',
+    'Failed',
+    'Cancelled',
+    'Refunded',
+    'Partially Refunded',
+    'Overdue',
+    'Processing',
+    'Declined',
+    'Authorized',
+  ];
+
+  const paymentRecords = Array.from({ length: 70 }).map(() => ({
+    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
+    amount: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    payment_date: faker.date.past(),
+    payment_method: faker.helpers.arrayElement(statuses),
+    payment_status: faker.helpers.arrayElement(status),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(payment).values(paymentRecords);
+
+  log.info('Payment records seeded successfully');
+}
+
+async function seedReceipt() {
+  const salesIDs = await db.select().from(sales);
+  const paymentIDs = await db.select().from(payment);
+
+  const receiptRecords = Array.from({ length: 70 }).map(() => ({
+    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
+    payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
+    issued_date: faker.date.past(),
+    total_amount: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(receipt).values(receiptRecords);
+
+  log.info('Receipt records seeded successfully');
+}
 //  =======================================================================================
 // ==================================== SERVICES ======================================
 
+async function seedReserve() {
+  const salesIDs = await db.select().from(sales);
+  const serviceIDs = await db.select().from(service);
+
+  const reserveRecords = Array.from({ length: 70 }).map(() => ({
+    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
+    service_id: faker.helpers.arrayElement(serviceIDs).service_id,
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(reserve).values(reserveRecords);
+
+  log.info('Reserve records seeded successfully');
+}
+
+async function seedBorrow() {
+  const salesIDs = await db.select().from(sales);
+  const serviceIDs = await db.select().from(service);
+  const itemIDs = await db.select().from(item);
+
+  const statuses: (
+    | 'Requested'
+    | 'Approved'
+    | 'Borrowed'
+    | 'Returned'
+    | 'Overdue'
+    | 'Rejected'
+    | 'Cancelled'
+    | 'Lost'
+    | 'Damaged'
+  )[] = [
+    'Requested',
+    'Approved',
+    'Borrowed',
+    'Returned',
+    'Overdue',
+    'Rejected',
+    'Cancelled',
+    'Lost',
+    'Damaged',
+  ];
+
+  const borrowRecords = Array.from({ length: 70 }).map(() => ({
+    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
+    service_id: faker.helpers.arrayElement(serviceIDs).service_id,
+    item_id: faker.helpers.arrayElement(itemIDs).item_id,
+    borrow_date: faker.date.past(),
+    return_date: faker.date.future(),
+    status: faker.helpers.arrayElement(statuses),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(borrow).values(borrowRecords);
+
+  log.info('Borrow records seeded successfully');
+}
+
+async function seedService() {
+  const salesIDs = await db.select().from(sales);
+
+  const statuses: (
+    | 'Repair'
+    | 'Sell'
+    | 'Buy'
+    | 'Borrow'
+    | 'Return'
+    | 'Exchange'
+  )[] = ['Repair', 'Sell', 'Buy', 'Borrow', 'Return', 'Exchange'];
+
+  const serviceRecords = Array.from({ length: 70 }).map(() => ({
+    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
+    service_title: faker.person.jobTitle(),
+    service_type: faker.helpers.arrayElement(statuses),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(service).values(serviceRecords);
+
+  log.info('Service records seeded successfully');
+}
+//  =======================================================================================
+// =================================== JOB ORDER ==========================================
+
+async function seedJobOrder() {
+  const employeeIDs = await db.select().from(employee);
+  const serviceIDs = await db.select().from(service);
+
+  const statuses: (
+    | 'Pending'
+    | 'In Progress'
+    | 'Completed'
+    | 'On Hold'
+    | 'Cancelled'
+    | 'Awaiting Approval'
+    | 'Approved'
+    | 'Rejected'
+    | 'Closed'
+  )[] = [
+    'Pending',
+    'In Progress',
+    'Completed',
+    'On Hold',
+    'Cancelled',
+    'Awaiting Approval',
+    'Approved',
+    'Rejected',
+    'Closed',
+  ];
+
+  const joborderRecords = Array.from({ length: 70 }).map(() => ({
+    employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    service_id: faker.helpers.arrayElement(serviceIDs).service_id,
+    steps: faker.lorem.paragraph(),
+    required_items: faker.lorem.paragraph(),
+    status: faker.helpers.arrayElement(statuses),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(jobOrder).values(joborderRecords);
+
+  log.info('Job Order records seeded successfully');
+}
+
+async function seedReports() {
+  const joborderIDs = await db.select().from(jobOrder);
+
+  const reportsRecords = Array.from({ length: 70 }).map(() => ({
+    job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
+    remarks: faker.lorem.sentence(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(reports).values(reportsRecords);
+
+  log.info('Report records seeded successfully');
+}
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
@@ -450,8 +816,8 @@ async function seedItem() {
 
   const itemRecords = Array.from({ length: 50 }).map(() => ({
     product_id: faker.helpers.arrayElement(productIDs).product_id,
-    stock: faker.datatype.number({ min: 100, max: 500 }),
-    re_order_level: faker.datatype.number({ min: 100, max: 500 }),
+    stock: faker.number.int({ min: 100, max: 500 }),
+    re_order_level: faker.number.int({ min: 100, max: 500 }),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -589,6 +955,26 @@ async function main() {
   await seedOrder();
   await seedArrivedItems();
   await seedItem();
+
+  // Participants and related data
+  await seedCustomer();
+  await seedInquiry();
+  await seedMessage();
+  await seedChannel();
+  await seedParticipants();
+
+  // Sales and related data
+  await seedSales();
+  await seedSalesItem();
+  await seedPayment();
+  await seedReceipt();
+  await seedService();
+  await seedReserve();
+  await seedBorrow();
+
+  // Job Order and related data
+  await seedJobOrder();
+  await seedReports();
   log.info('Generating Dummy Data Completed');
 }
 
