@@ -6,6 +6,7 @@ import emsRoute from './ems/index';
 import imsRoute from './inventory/inventory.route';
 
 import log from '../../lib/logger';
+import smsRoute from './sales/sales.route';
 
 const baseRoute = express.Router({ mergeParams: true });
 
@@ -15,6 +16,9 @@ log.info('ROUTE /ems route set');
 // Inventory Management System API
 baseRoute.use('/ims', imsRoute);
 log.info('ROUTE /ims route set');
+// Sales Management System API
+baseRoute.use('/sms', smsRoute);
+log.info('ROUTE /sms route set');
 
 baseRoute.get('/', (req, res) => {
   res.send({

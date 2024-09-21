@@ -30,12 +30,12 @@ export class PayrollService {
 
     if (
       approvalStatus &&
-      ['active', 'inactive', 'inprogress'].includes(approvalStatus)
+      ['Active', 'Inactive', 'Inprogress'].includes(approvalStatus)
     ) {
       conditions.push(
         eq(
           payroll.status,
-          approvalStatus as 'active' | 'inactive' | 'inprogress',
+          approvalStatus as 'Active' | 'Inactive' | 'Inprogress',
         ),
       );
     }
