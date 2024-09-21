@@ -2,6 +2,7 @@ import { Router } from 'express';
 import salesRoute from './sales/sales.route';
 import log from '../../../lib/logger';
 import salesitemRoute from './salesItem/salesItem.route';
+import paymentRoute from './payment/payment.route';
 
 const smsRoute = Router({ mergeParams: true });
 
@@ -10,5 +11,8 @@ log.info('ROUTE sales set ');
 
 smsRoute.use('/salesitem', salesitemRoute);
 log.info('ROUTE salesitem set');
+
+smsRoute.use('/payment', paymentRoute);
+log.info('ROUTE payment set');
 
 export default smsRoute;
