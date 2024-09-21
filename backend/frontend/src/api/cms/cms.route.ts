@@ -2,6 +2,7 @@ import { Router } from 'express';
 import log from '../../../lib/logger';
 import customerRoute from './customer/customer.route';
 import inquiryRoute from './inquiry/inquiry.route';
+import messageRoute from './message/message.route';
 
 const cmsRoute = Router({ mergeParams: true });
 
@@ -10,5 +11,8 @@ log.info('ROUTE customer set ');
 
 cmsRoute.use('/inquiry', inquiryRoute);
 log.info('ROUTE inquiry set');
+
+cmsRoute.use('/message', messageRoute);
+log.info('ROUTE message set');
 
 export default cmsRoute;
