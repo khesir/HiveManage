@@ -1,0 +1,110 @@
+import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { HttpStatus } from '../../../../lib/HttpStatus';
+import { Request, Response, NextFunction } from 'express';
+import { PaymentService } from './payment.service';
+
+export class PaymentController {
+  private paymentService: PaymentService;
+
+  constructor(pool: MySql2Database) {
+    this.paymentService = new PaymentService(pool);
+  }
+
+  async getAllPayment(req: Request, res: Response, next: NextFunction) {
+    const id = (req.query.id as string) || undefined;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+
+    try {
+      const data = await this.paymentService.getAllPayment(id, limit, offset);
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Data Retrieved Successfully',
+        total_data: data.length,
+        limit: limit,
+        offset: offset,
+        data: data,
+      });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
+
+  async getPaymentById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payment_id } = req.params;
+      const data = await this.paymentService.getPaymentById(Number(payment_id));
+      res.status(200).json({ message: data });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
+
+  async createPayment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { sales_id, amount, payment_date, payment_method, payment_status } =
+        req.body;
+
+      await this.paymentService.createPayment({
+        sales_id,
+        amount,
+        payment_date,
+        payment_method,
+        payment_status,
+      });
+      res
+        .status(HttpStatus.CREATED.code)
+        .json({ status: 'Success', message: 'Successfully Created Payment ' });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        status: 'Error ',
+        message: 'Internal Server Error',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
+      next(error);
+    }
+  }
+
+  async updatePayment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payment_id } = req.params;
+      const { sales_id, amount, payment_date, payment_method, payment_status } =
+        req.body;
+
+      await this.paymentService.updatePayment(
+        { sales_id, amount, payment_date, payment_method, payment_status },
+        Number(payment_id),
+      );
+      res
+        .status(HttpStatus.OK.code)
+        .json({ status: 'Success', message: 'Payment Updated Successfully ' });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
+
+  async deletePayment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { payment_id } = req.params;
+      await this.paymentService.deletePayment(Number(payment_id));
+      res.status(200).json({
+        status: 'Success',
+        message: `Payment ID:${payment_id} is deleted Successfully`,
+      });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error' });
+      next(error);
+    }
+  }
+}
