@@ -4,7 +4,7 @@ import {
   department,
   designation,
   employmentInformation,
-} from '../../../../../drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.schema';
 
 export class EmploymentInformationService {
   private db: MySql2Database;

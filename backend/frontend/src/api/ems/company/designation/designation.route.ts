@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { DesignationController } from './designation.controller';
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
-import { validateRequest } from '../../../../middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { validateRequest } from '@/src/middlewares';
 import { CreateDesignation, UpdateDesignation } from './designation.model';
 import { validateDesignationID } from './designation.middlewares';
 

@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { Request, Response, NextFunction } from 'express';
-import { HttpStatus } from '../../../../lib/HttpStatus';
+import { HttpStatus } from '@/lib/HttpStatus';
 import { SalesItemService } from './salesItem.service';
 
 export class SalesItemController {

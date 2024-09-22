@@ -1,10 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { OnPayroll } from './onPayroll.model';
-import {
-  employee,
-  onPayroll,
-  payrollApproval,
-} from '../../../../../drizzle/drizzle.schema';
+import { employee, onPayroll, payrollApproval } from '@/drizzle/drizzle.schema';
 import { inArray, eq, and, isNull } from 'drizzle-orm';
 export class OnPayrollService {
   private db: MySql2Database;

@@ -1,8 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import {
-  onPayroll,
-  payrollReports,
-} from '../../../../../drizzle/drizzle.schema';
+import { onPayroll, payrollReports } from '@/drizzle/drizzle.schema';
 import { eq } from 'drizzle-orm';
 
 export class PayrollReportsService {

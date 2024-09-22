@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import log from '../../../../lib/logger';
-import { db } from '../../../../mysql/mysql.pool';
-import { validateRequest } from '../../../../src/middlewares';
+import log from '@/lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import { validateRequest } from '@/src/middlewares';
 import { SalesItemController } from './salesItem.controller';
 import { validateSalesItemID } from './salesItem.middleware';
 import { CreateSalesItem, UpdateSalesItem } from './salesItem.model';

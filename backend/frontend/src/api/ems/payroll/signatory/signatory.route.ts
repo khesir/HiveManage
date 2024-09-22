@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { SignatoryController } from './signatory.controller';
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
-import { validateRequest } from '../../../../middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { validateRequest } from '@/src/middlewares';
 import { CreateSignatory, UpdateSignatory } from './signatory.model';
 import {
   validateSignatoryId,

@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { EmploymentInformationController } from './employmentInformation.controller';
-import { db } from '../../../../../mysql/mysql.pool';
+import { db } from '@/mysql/mysql.pool';
 import {
   validateEmployeeId,
   validateEmploymentId,
 } from './employmentInformation.middlewares';
-import { validateRequest } from '../../../../middlewares';
+import { validateRequest } from '@/src/middlewares';
 import { EmploymentInformation } from './employmentInformation.model';
-import log from '../../../../../lib/logger';
+import log from '@/lib/logger';
 
 const employmentInformationRoute = Router({ mergeParams: true });
 const controller = new EmploymentInformationController(db);

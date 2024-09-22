@@ -4,9 +4,9 @@ import { DepartmentController } from './department.controller';
 import { CreateDepartment, UpdateDepartment } from './department.model';
 import { validateDepartmentID } from './department.middleware';
 
-import log from '../../../../../lib/logger';
-import { db } from '../../../../../mysql/mysql.pool';
-import { validateRequest } from '../../../../middlewares';
+import log from '@/lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import { validateRequest } from '@/src/middlewares';
 
 const departmentRoute = Router({ mergeParams: true });
 const departmentController = new DepartmentController(db);

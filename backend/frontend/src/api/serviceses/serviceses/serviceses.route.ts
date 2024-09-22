@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { validateRequest } from '../../../../src/middlewares';
-import { db } from '../../../../mysql/mysql.pool';
-import log from '../../../../lib/logger';
+import { validateRequest } from '@/src/middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 import { ServiceController } from './serviceses.controller';
 import { validateServiceID } from './serviceses.middleware';
 import { CreateService, UpdateService } from './serviceses.model';

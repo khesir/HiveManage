@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { HttpStatus } from '../../../../lib/HttpStatus';
+import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ChannelService } from './channel.service';
 

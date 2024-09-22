@@ -1,13 +1,12 @@
 {
   "name": "pcbeebackend",
   "version": "1.0.0",
-  "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "nodemon src/index.ts",
-    "prod": "node src/index.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
+    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/src/index.js",
     "test": "jest",
-    "build": "node build",
+    "build": "tsc",
     "db:migrate:seed": "npx tsx drizzle/migrate && tsx ./drizzle/seed.ts",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
@@ -24,7 +23,7 @@
   "keywords": [
     "NodeJs",
     "Express",
-    "prisma",
+    "drizzle",
     "API"
   ],
   "author": "Khesir",
@@ -70,6 +69,7 @@
     "pino-pretty": "11.2.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.0",
     "zod": "^3.23.8"
   },

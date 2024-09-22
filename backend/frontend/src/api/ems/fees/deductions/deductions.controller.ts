@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 
-import { HttpStatus } from '../../../../../lib/config';
+import { HttpStatus } from '@/lib/config';
 import { DeductionsService } from './deductions.service';
 
 export class DeductionsController {

@@ -1,6 +1,6 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { leaveRequest } from '../../../../../drizzle/drizzle.schema';
+import { leaveRequest } from '@/drizzle/drizzle.schema';
 
 export class LeaveRequestService {
   private db: MySql2Database;
@@ -17,12 +17,15 @@ export class LeaveRequestService {
         .where(
           and(
             eq(leaveRequest.employee_id, employee_id),
-            isNull(leaveRequest.deleted_at)
-          )
+            isNull(leaveRequest.deleted_at),
+          ),
         );
       return result;
     } else {
-      const result = await this.db.select().from(leaveRequest).where(isNull(leaveRequest.deleted_at));
+      const result = await this.db
+        .select()
+        .from(leaveRequest)
+        .where(isNull(leaveRequest.deleted_at));
       return result;
     }
   }
@@ -38,8 +41,8 @@ export class LeaveRequestService {
       .where(
         and(
           eq(leaveRequest.leave_request_id, paramsId),
-          isNull(leaveRequest.deleted_at)
-        )
+          isNull(leaveRequest.deleted_at),
+        ),
       );
     return result;
   }

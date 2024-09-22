@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { eq, and, isNull } from 'drizzle-orm';
-import { deductions } from '../../../../../drizzle/drizzle.schema';
+import { deductions } from '@/drizzle/drizzle.schema';
 
 export class DeductionsService {
   private db: MySql2Database;

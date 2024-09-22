@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { db } from '../../../../mysql/mysql.pool';
-import log from '../../../../lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 import { SalesController } from './sales.controller';
 import { CreateSales, UpdateSales } from './sales.model';
 import { validateSalesID } from './sales.middleware';
-import { validateRequest } from '../../../../src/middlewares';
+import { validateRequest } from '@/src/middlewares';
 
 const salesRoute = Router({ mergeParams: true });
 const salesController = new SalesController(db);

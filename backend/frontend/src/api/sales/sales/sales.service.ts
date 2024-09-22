@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
-import { sales } from '../../../../drizzle/drizzle.schema';
+import { sales } from '@/drizzle/drizzle.schema';
 
 export class SalesService {
   private db: MySql2Database;

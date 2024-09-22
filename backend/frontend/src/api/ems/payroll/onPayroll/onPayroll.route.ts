@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 import { OnPayrollController } from './onPayroll.controller';
-import { validateRequest } from '../../../../middlewares';
+import { validateRequest } from '@/src/middlewares';
 import { CreateOnPayrollArray, UpadteOnPayrollArray } from './onPayroll.model';
 import { validatePayrollId } from './onPayroll.middlewares';
 

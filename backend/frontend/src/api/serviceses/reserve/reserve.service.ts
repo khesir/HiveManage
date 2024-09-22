@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
-import { reserve } from '../../../../drizzle/drizzle.schema';
+import { reserve } from '@/drizzle/drizzle.schema';
 
 export class ReserveService {
   private db: MySql2Database;

@@ -1,6 +1,6 @@
 import { asc, desc, eq, isNull, and, sql, like, or } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { employee } from '../../../../../drizzle/drizzle.schema';
+import { employee } from '@/drizzle/drizzle.schema';
 
 export class EmployeeService {
   private db: MySql2Database;

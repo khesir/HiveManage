@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { signatory } from '../../../../../drizzle/drizzle.schema';
+import { signatory } from '@/drizzle/drizzle.schema';
 import { eq, and, isNull } from 'drizzle-orm';
 
 export class SignatoryService {
@@ -18,7 +18,9 @@ export class SignatoryService {
       const result = await this.db
         .select()
         .from(signatory)
-        .where(and(eq(signatory.employee_id, queryId),isNull(signatory.deleted_at)));
+        .where(
+          and(eq(signatory.employee_id, queryId), isNull(signatory.deleted_at)),
+        );
       return result;
     } else if (!isNaN(paramsId)) {
       const result = await this.db
@@ -27,7 +29,10 @@ export class SignatoryService {
         .where(eq(signatory.signatory_id, paramsId));
       return result;
     } else {
-      const result = await this.db.select().from(signatory).where(isNull(signatory.deleted_at));
+      const result = await this.db
+        .select()
+        .from(signatory)
+        .where(isNull(signatory.deleted_at));
       return result;
     }
   }
@@ -40,8 +45,8 @@ export class SignatoryService {
         .where(
           and(
             eq(signatory.employee_id, employee_id),
-            isNull(signatory.deleted_at)
-          )
+            isNull(signatory.deleted_at),
+          ),
         );
       return result;
     } else {

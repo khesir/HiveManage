@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { eq, and } from 'drizzle-orm';
 
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
-import { payroll } from '../../../../../drizzle/drizzle.schema';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { payroll } from '@/drizzle/drizzle.schema';
 
 export async function validatePayrollId(
   req: Request,

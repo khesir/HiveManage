@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 import { AdjustmentsController } from './adjustments.controller';
-import { validateRequest } from '../../../../../src/middlewares';
+import { validateRequest } from '@/src/middlewares';
 import { CreateAdjustments, UpdateAdjustments } from './adjustments.model';
 import {
   validateAdjustmentsByEmployeeId,

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { OnPayrollService } from './onPayroll.service';
-import { HttpStatus } from '../../../../../lib/config';
+import { HttpStatus } from '@/lib/config';
 
 export class OnPayrollController {
   private onPayrollService: OnPayrollService;

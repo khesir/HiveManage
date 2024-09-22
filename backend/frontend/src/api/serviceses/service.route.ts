@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import log from '../../../lib/logger';
+import log from '@/lib/logger';
 import serviceRoute from './serviceses/serviceses.route';
 import reserveRoute from './reserve/reserve.route';
 import borrowRoute from './borrow/borrow.route';

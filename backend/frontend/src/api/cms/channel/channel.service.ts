@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
-import { channel } from '../../../../drizzle/drizzle.schema';
+import { channel } from '@/drizzle/drizzle.schema';
 
 export class ChannelService {
   private db: MySql2Database;
