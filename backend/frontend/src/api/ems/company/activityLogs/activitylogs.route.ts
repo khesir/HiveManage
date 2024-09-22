@@ -6,9 +6,9 @@ import {
   validateActivityEmployeeID,
   validateActivityID,
 } from './activitylogs.middleware';
-import { validateRequest } from '../../../../middlewares';
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
+import { validateRequest } from '@/src/middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 const activityRoute = Router({ mergeParams: true });
 const activityLogsController = new ActivityLogController(db);
 

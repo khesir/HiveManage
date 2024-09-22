@@ -1,7 +1,7 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { asc, desc, eq, isNull } from 'drizzle-orm';
 
-import { activityLog } from '../../../../../drizzle/drizzle.schema';
+import { activityLog } from '@/drizzle/drizzle.schema';
 
 export class ActivityLogService {
   private db: MySql2Database;

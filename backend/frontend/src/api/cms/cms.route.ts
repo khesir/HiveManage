@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import log from '../../../lib/logger';
+import log from '@/lib/logger';
 import customerRoute from './customer/customer.route';
 import inquiryRoute from './inquiry/inquiry.route';
 import messageRoute from './message/message.route';

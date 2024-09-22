@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { HttpStatus } from '../../../../../lib/config';
+import { HttpStatus } from '@/lib/config';
 import { DesignationService } from './designation.service';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 

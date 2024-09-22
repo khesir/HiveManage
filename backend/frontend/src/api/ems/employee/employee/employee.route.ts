@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import log from '../../../../../lib/logger';
-import { db } from '../../../../../mysql/mysql.pool';
-import { validateRequest } from '../../../../middlewares';
+import log from '@/lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import { validateRequest } from '@/src/middlewares';
 
 import { EmployeeController } from './employee.controller';
 import { Employee, UpdateEmployee } from './employee.model';

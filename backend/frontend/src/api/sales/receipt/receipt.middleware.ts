@@ -1,9 +1,9 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
-import log from '../../../../lib/logger';
-import { db } from '../../../../mysql/mysql.pool';
-import { receipt } from '../../../../drizzle/drizzle.schema';
+import log from '@/lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import { receipt } from '@/drizzle/drizzle.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation

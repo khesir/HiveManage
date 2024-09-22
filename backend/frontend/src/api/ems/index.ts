@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import activityLogRoute from './company/activityLogs/activitylogs.route';
-import log from '../../../lib/logger';
+import log from '@/lib/logger';
 import departmentRoute from './company/department/department.route';
 import designationRoute from './company/designation/designation.route';
 import payrollRoute from './payroll/payroll/payroll.route';

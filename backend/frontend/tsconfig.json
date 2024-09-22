@@ -3,16 +3,16 @@
 
     "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
   
-    "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "target": "ESNext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
   
-    "module": "commonjs",                                /* Specify what module code is generated. */
-    "rootDir": "./",                                  /* Specify the root folder within your source files. */
-    "baseUrl": "./",
-    // "paths": {
-    //   "@/*" : [
-    //     "./*"
-    //   ]
-    // },                                    
+    "module": "CommonJS",                                /* Specify what module code is generated. */
+    "rootDir": ".",                                  /* Specify the root folder within your source files. */
+    "baseUrl": ".",
+    "paths": {
+      "@/*" : [
+        "./*"
+      ],
+    },                                    
     
     "types": ["@types/jest"],                                     
     "resolveJsonModule": true,                        /* Enable importing .json files. */
@@ -32,9 +32,10 @@
   
     "noFallthroughCasesInSwitch": true,               /* Enable error reporting for fallthrough cases in switch statements. */
   
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
+    "moduleResolution": "Node",
   },
-  "include": ["src/**/*", "mysql", "lib", "mysql", "docs/swaggerDocs.ts"],
+  "include": ["./src/**/*", "mysql", "lib", "drizzle", "docs/swaggerDocs.ts"],
   "exclude": ["node_modules", "**/*.test.ts"]
 
 }

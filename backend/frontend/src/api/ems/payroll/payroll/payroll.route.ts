@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { PayrollController } from './payroll.controller';
 
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 import { validatePayrollId } from './payroll.middlewares';
-import { validateRequest } from '../../../../../src/middlewares';
+import { validateRequest } from '@/src/middlewares';
 import { CreatePayroll, UpdatePayroll } from './payroll.model';
 import onPayrollRoute from '../onPayroll/onPayroll.route';
 

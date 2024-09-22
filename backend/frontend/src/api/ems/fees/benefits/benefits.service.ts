@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { benefits } from '../../../../../drizzle/drizzle.schema';
+import { benefits } from '@/drizzle/drizzle.schema';
 import { eq } from 'drizzle-orm';
 
 export class BenefitsService {

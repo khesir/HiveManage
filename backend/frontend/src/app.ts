@@ -6,15 +6,12 @@ import baseRoute from './api';
 import * as middlewares from './middlewares';
 import MessageResponse from './interfaces/MessageResponse';
 import log from '../lib/logger';
-import swaggerDocs from '../docs/swaggerDocs';
 
 dotenv.config();
 const app = express();
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
-
-swaggerDocs(app);
 
 app.use('/api/v1', baseRoute);
 log.info('Api base route set');

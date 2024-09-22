@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { validateRequest } from '../../../../src/middlewares';
-import { db } from '../../../../mysql/mysql.pool';
-import log from '../../../../lib/logger';
+import { validateRequest } from '@/src/middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 import { BorrowController } from './borrow.controller';
 import { validateBorrowID } from './borrow.middleware';
 import { CreateBorrow, UpdateBorrow } from './borrow.model';

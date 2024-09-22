@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import salesRoute from './sales/sales.route';
-import log from '../../../lib/logger';
+import log from '@/lib/logger';
 import salesitemRoute from './salesItem/salesItem.route';
 import paymentRoute from './payment/payment.route';
 import receiptRoute from './receipt/receipt.route';

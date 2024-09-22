@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { ActivityLogService } from './activitylogs.service';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { HttpStatus } from '../../../../../lib/HttpStatus';
+import { HttpStatus } from '@/lib/HttpStatus';
 
 export class ActivityLogController {
   private activityLogService: ActivityLogService;

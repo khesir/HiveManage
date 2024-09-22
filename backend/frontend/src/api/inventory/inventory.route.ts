@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import arriveitemsRoute from './inventory/arriveItem/arriveItem.route';
-import log from '../../../lib/logger';
-import itemsRoute from './inventory/item/item.route';
-import productRoute from './inventory/product/product.route';
-import categoryRoute from './inventory/category/category.route';
-import supplierRoute from './inventory/supplier/supplier.route';
-import orderRoute from './inventory/order/order.route';
+import log from '@/lib/logger';
+import productRoute from './product/product.route';
+import categoryRoute from './category/category.route';
+import supplierRoute from './supplier/supplier.route';
+import orderRoute from './order/order.route';
+import arriveitemsRoute from './arriveItem/arriveItem.route';
+import itemsRoute from './item/item.route';
 
 const imsRoute = Router({ mergeParams: true });
 

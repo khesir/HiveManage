@@ -1,6 +1,6 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { personalInformation } from '../../../../../drizzle/drizzle.schema';
+import { personalInformation } from '@/drizzle/drizzle.schema';
 
 export class PersonalInformationService {
   private db: MySql2Database;

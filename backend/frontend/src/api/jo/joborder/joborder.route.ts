@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { db } from '../../../../mysql/mysql.pool';
-import log from '../../../../lib/logger';
-import { validateRequest } from '../../../../src/middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { validateRequest } from '@/src/middlewares';
 import { JobOrderController } from './joborder.controller';
 import { validateJobOrderID } from './joborder.middleware';
 import { CreateJobOrder, UpdateJobOrder } from './joborder.model';

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { db } from '../../../../mysql/mysql.pool';
-import log from '../../../../lib/logger';
-import { validateRequest } from '../../../../src/middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { validateRequest } from '@/src/middlewares';
 import { ChannelController } from './channel.controller';
 import { validateChannelID } from './channel.middleware';
 import { CreateChannel, UpdateChannel } from './channel.model';

@@ -1,6 +1,6 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { payrollApproval } from '../../../../../drizzle/drizzle.schema';
+import { payrollApproval } from '@/drizzle/drizzle.schema';
 
 export class PayrollApprovalService {
   private db: MySql2Database;
@@ -18,7 +18,12 @@ export class PayrollApprovalService {
       const result = await this.db
         .select()
         .from(payrollApproval)
-        .where(and(eq(payrollApproval.on_payroll_id, queryId),isNull(payrollApproval.deleted_at)));
+        .where(
+          and(
+            eq(payrollApproval.on_payroll_id, queryId),
+            isNull(payrollApproval.deleted_at),
+          ),
+        );
       return result;
     } else if (!isNaN(paramsId)) {
       const result = await this.db
@@ -27,7 +32,10 @@ export class PayrollApprovalService {
         .where(eq(payrollApproval.payroll_approval_id, paramsId));
       return result;
     } else {
-      const result = await this.db.select().from(payrollApproval).where(isNull(payrollApproval.deleted_at));
+      const result = await this.db
+        .select()
+        .from(payrollApproval)
+        .where(isNull(payrollApproval.deleted_at));
       return result;
     }
   }
@@ -37,10 +45,18 @@ export class PayrollApprovalService {
       const result = await this.db
         .select()
         .from(payrollApproval)
-        .where(and(eq(payrollApproval.on_payroll_id, on_payroll_id),isNull(payrollApproval.deleted_at)));
+        .where(
+          and(
+            eq(payrollApproval.on_payroll_id, on_payroll_id),
+            isNull(payrollApproval.deleted_at),
+          ),
+        );
       return result;
     } else {
-      const result = await this.db.select().from(payrollApproval).where(isNull(payrollApproval.deleted_at));
+      const result = await this.db
+        .select()
+        .from(payrollApproval)
+        .where(isNull(payrollApproval.deleted_at));
       return result;
     }
   }

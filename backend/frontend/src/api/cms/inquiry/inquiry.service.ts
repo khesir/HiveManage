@@ -1,6 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
-import { inquiry } from '../../../../drizzle/drizzle.schema';
+import { inquiry } from '@/drizzle/drizzle.schema';
 
 export class InquiryService {
   private db: MySql2Database;

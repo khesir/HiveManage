@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
 import { PayrollReportsController } from './payrollReports.controller';
 
 const payrollReportRoute = Router({ mergeParams: true });

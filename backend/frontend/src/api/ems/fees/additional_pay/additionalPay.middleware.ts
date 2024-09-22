@@ -1,10 +1,10 @@
 import { eq, and } from 'drizzle-orm';
 import { NextFunction, Response, Request } from 'express';
 
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
-import { HttpStatus } from '../../../../../lib/config';
-import { additionalPay, employee } from '../../../../../drizzle/drizzle.schema';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { HttpStatus } from '@/lib/config';
+import { additionalPay, employee } from '@/drizzle/drizzle.schema';
 
 export async function validateAdditionalPayId(
   req: Request,

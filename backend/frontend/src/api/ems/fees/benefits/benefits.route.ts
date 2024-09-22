@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { db } from '../../../../../mysql/mysql.pool';
-import log from '../../../../../lib/logger';
-import { validateRequest } from '../../../../../src/middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { validateRequest } from '@/src/middlewares';
 import { BenefitsController } from './benefits.controller';
 import { CreateBenefits, UpdateBenefits } from './benefits.model';
 import {

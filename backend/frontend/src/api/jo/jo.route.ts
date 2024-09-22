@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import log from '../../../lib/logger';
+import log from '@/lib/logger';
 import joborderRoute from './joborder/joborder.route';
 import reportsRoute from './reports/reports.route';
 

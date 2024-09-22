@@ -1,5 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { adjustments } from '../../../../../drizzle/drizzle.schema';
+import { adjustments } from '@/drizzle/drizzle.schema';
 import { eq, isNull, and } from 'drizzle-orm';
 
 export class AdjustmentsService {

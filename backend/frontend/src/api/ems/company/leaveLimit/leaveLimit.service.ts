@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2/driver';
-import { leaveLimit } from '../../../../../drizzle/drizzle.schema';
+import { leaveLimit } from '@/drizzle/drizzle.schema';
 
 export class LeaveLimitService {
   private db: MySql2Database;

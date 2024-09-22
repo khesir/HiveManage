@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { db } from '../../../../mysql/mysql.pool';
-import log from '../../../../lib/logger';
-import { validateRequest } from '../../../../src/middlewares';
+import { db } from '@/mysql/mysql.pool';
+import log from '@/lib/logger';
+import { validateRequest } from '@/src/middlewares';
 import { ParticipantsController } from './participants.controller';
 import { validateParticipantsID } from './participants.middleware';
 import { CreateParticipants, UpdateParticipants } from './participants.model';

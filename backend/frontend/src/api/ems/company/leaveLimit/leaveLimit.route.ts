@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { db } from '../../../../../mysql/mysql.pool';
-import { validateRequest } from '../../../../middlewares';
-import log from '../../../../../lib/logger';
+import { db } from '@/mysql/mysql.pool';
+import { validateRequest } from '@/src/middlewares';
+import log from '@/lib/logger';
 
 import { CreateLeaveLimit, UpdateLeaveLimit } from './leaveLimit.model';
 import {
