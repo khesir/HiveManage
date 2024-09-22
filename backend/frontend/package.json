@@ -1,11 +1,13 @@
 {
   "name": "pcbeebackend",
   "version": "1.0.0",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "prod": "node src/index.ts",
     "test": "jest",
+    "build": "node build",
     "db:migrate:seed": "npx tsx drizzle/migrate && tsx ./drizzle/seed.ts",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",

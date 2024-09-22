@@ -2,7 +2,7 @@ import { Request, Response as ExpressResponse } from 'express';
 import { Pool } from 'mysql2/promise';
 
 import { HttpStatus } from '../../../../lib/config';
-import Response from '../../../lib/response';
+import Response from '../../../../lib/response';
 import { ItemModel } from './inventory.query';
 
 export class ItemController {
