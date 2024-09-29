@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { db, pool } from '../mysql/mysql.pool';
 import {
   employee,
   personalInformation,
@@ -44,10 +43,12 @@ import {
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
+import Database from './pool';
+import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 
-async function seedEmployees() {
+async function seedEmployees(db: PostgresJsDatabase) {
   const employeeStatus: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
   const employees = Array.from({ length: 50 }).map(() => ({
     uuid: faker.string.uuid(),
@@ -61,7 +62,7 @@ async function seedEmployees() {
   log.info('Employee records seeded successfully.');
 }
 
-async function seedPersonalInformations() {
+async function seedPersonalInformations(db: PostgresJsDatabase) {
   const allowedGenders: ('Male' | 'Female' | 'Others')[] = [
     'Male',
     'Female',
@@ -93,7 +94,7 @@ async function seedPersonalInformations() {
   await db.insert(personalInformation).values(personalInfos);
 }
 
-async function seedFinancialInformations() {
+async function seedFinancialInformations(db: PostgresJsDatabase) {
   const employees = await db.select().from(employee);
 
   const financialInfos = Array.from({ length: 50 }).map(() => ({
@@ -109,7 +110,7 @@ async function seedFinancialInformations() {
   log.info('Financial Information records seeded successfully.');
 }
 
-async function seedSalaryInformations() {
+async function seedSalaryInformations(db: PostgresJsDatabase) {
   const allowedFrequencies: (
     | 'Daily'
     | 'Weekly'
@@ -129,7 +130,7 @@ async function seedSalaryInformations() {
   log.info('Salary Information records seeded successfully.');
 }
 
-async function seedEmploymentInformations() {
+async function seedEmploymentInformations(db: PostgresJsDatabase) {
   const allowedEmployeeTypes: (
     | 'Regular'
     | 'Probationary'
@@ -174,7 +175,7 @@ async function seedEmploymentInformations() {
 //  =======================================================================================
 // =============================== COMPANY FEATURES ======================================
 
-async function seedDepartments() {
+async function seedDepartments(db: PostgresJsDatabase) {
   const departmentStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
 
   const departments = Array.from({ length: 10 }).map(() => ({
@@ -186,7 +187,7 @@ async function seedDepartments() {
   log.info('Department records seeded successfully.');
 }
 
-async function seedDesignations() {
+async function seedDesignations(db: PostgresJsDatabase) {
   const designationStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
 
   const designations = Array.from({ length: 10 }).map(() => ({
@@ -198,7 +199,7 @@ async function seedDesignations() {
   log.info('Designations records seeded successfully.');
 }
 
-async function seedActivityLogs() {
+async function seedActivityLogs(db: PostgresJsDatabase) {
   const employees = await db.select().from(employee);
 
   const actions: ('Hired' | 'Promoted' | 'Terminated' | 'Resigned')[] = [
@@ -217,7 +218,7 @@ async function seedActivityLogs() {
   log.info('Activity Logs records seeded successfully.');
 }
 
-async function seedLeaveLimits() {
+async function seedLeaveLimits(db: PostgresJsDatabase) {
   const employees = await db.select().from(employee);
   const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
     'Sick Leave',
@@ -226,7 +227,7 @@ async function seedLeaveLimits() {
   ];
   const leaveLimits = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employees).employee_id,
-    limit_count: faker.number.float(),
+    limit_count: faker.number.float({ min: 0, max: 100, multipleOf: 0.01 }),
     leaveType: faker.helpers.arrayElement(leaveTypes),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -236,7 +237,7 @@ async function seedLeaveLimits() {
   log.info('Leave Limit records seeded successfully.');
 }
 
-async function seedLeaveRequests() {
+async function seedLeaveRequests(db: PostgresJsDatabase) {
   const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
     'Sick Leave',
     'Vacation Leave',
@@ -253,8 +254,8 @@ async function seedLeaveRequests() {
     employee_id: faker.helpers.arrayElement(employees).employee_id,
     title: faker.lorem.sentence(),
     content: faker.lorem.paragraph(),
-    date_of_leave: faker.date.past(),
-    date_of_return: faker.date.future(),
+    date_of_leave: faker.date.past().toISOString(),
+    date_of_return: faker.date.future().toISOString(),
     status: faker.helpers.arrayElement(statuses),
     comment: faker.lorem.sentence(),
     leaveType: faker.helpers.arrayElement(leaveTypes),
@@ -267,7 +268,7 @@ async function seedLeaveRequests() {
 //  =======================================================================================
 // ==================================== PAYROLL ===========================================
 
-async function seedPayrolls() {
+async function seedPayrolls(db: PostgresJsDatabase) {
   const statuses: ('Active' | 'Inactive' | 'Inprogress')[] = [
     'Active',
     'Inactive',
@@ -275,9 +276,9 @@ async function seedPayrolls() {
   ];
 
   const payrolls = Array.from({ length: 50 }).map(() => ({
-    start: faker.date.past(),
-    end: faker.date.future(),
-    pay_date: faker.date.future(),
+    start: faker.date.past().toISOString(),
+    end: faker.date.future().toISOString(),
+    pay_date: faker.date.future().toISOString(),
     status: faker.helpers.arrayElement(statuses),
   }));
 
@@ -286,7 +287,7 @@ async function seedPayrolls() {
   log.info('Payroll records seeded successfully.');
 }
 
-async function seedOnPayrolls() {
+async function seedOnPayrolls(db: PostgresJsDatabase) {
   const payrollIDs = await db
     .select({ payroll_id: payroll.payroll_id })
     .from(payroll);
@@ -304,7 +305,7 @@ async function seedOnPayrolls() {
   log.info('On Payroll records seeded successfully.');
 }
 
-async function seedSignatory() {
+async function seedSignatory(db: PostgresJsDatabase) {
   const employees = await db.select().from(employee);
 
   const signatoryRecords = Array.from({ length: 10 }).map(() => ({
@@ -318,7 +319,7 @@ async function seedSignatory() {
   log.info('Signatory records seeded successfully.');
 }
 
-async function seedPayrollApprovals() {
+async function seedPayrollApprovals(db: PostgresJsDatabase) {
   const onPayrolls = await db.select().from(onPayroll);
   const signatories = await db.select().from(signatory);
   const approvalStatuses: ('Approved' | 'Pending' | 'Rejected')[] = [
@@ -330,14 +331,14 @@ async function seedPayrollApprovals() {
     on_payroll_id: faker.helpers.arrayElement(onPayrolls).on_payroll_id,
     signatory_id: faker.helpers.arrayElement(signatories).signatory_id,
     approval_status: faker.helpers.arrayElement(approvalStatuses),
-    approval_date: faker.date.past(),
+    approval_date: faker.date.past().toISOString(),
   }));
 
   await db.insert(payrollApproval).values(payrollApprovalRecords);
   log.info('Payroll approval records seeded successfully.');
 }
 
-async function seedPayrollReportRecords() {
+async function seedPayrollReportRecords(db: PostgresJsDatabase) {
   const onpayrolls = await db.select().from(onPayroll);
 
   const payrollReportRecords = Array.from({ length: 50 }).map(() => ({
@@ -361,13 +362,13 @@ async function seedPayrollReportRecords() {
 
 //  =======================================================================================
 // =============================== EMPLOYEE PERFORMANCE ===================================
-async function seedDeductions() {
+async function seedDeductions(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
 
   const deductionRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-    start: faker.date.past(),
-    end: faker.date.future(),
+    start: faker.date.past().toISOString(),
+    end: faker.date.future().toISOString(),
     deduction_type: faker.commerce.productMaterial(),
     amount: parseFloat(faker.finance.amount({ min: 100, max: 1000, dec: 2 })),
     description: faker.lorem.sentence(),
@@ -377,13 +378,13 @@ async function seedDeductions() {
 
   log.info('Deductions records seeded successfully.');
 }
-async function seedBenefits() {
+async function seedBenefits(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
 
   const benefitRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-    start: faker.date.past(),
-    end: faker.date.future(),
+    start: faker.date.past().toISOString(),
+    end: faker.date.future().toISOString(),
     benefits_type: faker.commerce.product(),
     amount: parseFloat(faker.finance.amount({ min: 100, max: 1000, dec: 2 })),
     description: faker.lorem.sentence(),
@@ -394,7 +395,7 @@ async function seedBenefits() {
   log.info('Benefits records seeded successfully.');
 }
 
-async function seedAdjustments() {
+async function seedAdjustments(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
 
   const adjustmentRecords = Array.from({ length: 50 }).map(() => ({
@@ -410,12 +411,19 @@ async function seedAdjustments() {
   log.info('Adjustments records seeded successfully.');
 }
 
-async function seedAdditionalPay() {
+async function seedAdditionalPay(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
+
+  const allowedAdditionalPayTypes: (
+    | 'Bonus'
+    | 'Comission'
+    | 'Overtime'
+    | 'Other'
+  )[] = ['Bonus', 'Comission', 'Overtime', 'Other'];
 
   const additionalPayRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-    additional_pay_type: faker.commerce.product(),
+    additional_pay_type: faker.helpers.arrayElement(allowedAdditionalPayTypes),
     amount: parseFloat(faker.finance.amount({ min: 100, max: 1000, dec: 2 })),
     description: faker.lorem.sentence(),
   }));
@@ -425,7 +433,7 @@ async function seedAdditionalPay() {
   log.info('Additional pay records seeded successfully.');
 }
 
-async function seedAttendance() {
+async function seedAttendance(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
   const attendanceStatuses: (
     | 'Present'
@@ -437,10 +445,10 @@ async function seedAttendance() {
 
   const attendanceRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-    date: faker.date.recent(),
-    clock_in: faker.date.recent(),
-    clock_out: faker.date.future(),
-    hoursWorked: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    date: faker.date.recent().toISOString(),
+    clock_in: faker.date.recent().toISOString(),
+    clock_out: faker.date.future().toISOString(),
+    hoursWorked: parseFloat(faker.finance.amount({ min: 1, max: 12, dec: 2 })),
     status: faker.helpers.arrayElement(attendanceStatuses),
     description: faker.lorem.sentence(),
   }));
@@ -451,7 +459,7 @@ async function seedAttendance() {
 }
 //  =======================================================================================
 // ===================================== CUSTOMER ======================================
-async function seedParticipants() {
+async function seedParticipants(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
   const channelIDs = await db.select().from(channel);
 
@@ -467,7 +475,7 @@ async function seedParticipants() {
   log.info('Participant records seeded successfully');
 }
 
-async function seedChannel() {
+async function seedChannel(db: PostgresJsDatabase) {
   const inquiryIDs = await db.select().from(inquiry);
 
   const channelRecords = Array.from({ length: 70 }).map(() => ({
@@ -482,7 +490,7 @@ async function seedChannel() {
   log.info('Channel records seeded successfully');
 }
 
-async function seedMessage() {
+async function seedMessage(db: PostgresJsDatabase) {
   const inquiryIDs = await db.select().from(inquiry);
 
   const status = [
@@ -506,7 +514,7 @@ async function seedMessage() {
   log.info('Message records seeded successfully');
 }
 
-async function seedInquiry() {
+async function seedInquiry(db: PostgresJsDatabase) {
   const customerIDs = await db.select().from(customer);
 
   const status = [
@@ -515,7 +523,7 @@ async function seedInquiry() {
     'Order Status',
     'Technical Support',
     'Billing',
-    'Complaint',
+    'Complaint', // Corrected to match the expected type
     'Feedback',
     'Return/Refund',
   ] as const; // Use 'as const' to infer a tuple type for strict typing
@@ -532,7 +540,7 @@ async function seedInquiry() {
   log.info('Inquiry records seeded successfully');
 }
 
-async function seedCustomer() {
+async function seedCustomer(db: PostgresJsDatabase) {
   const status = [
     'Active',
     'Inactive', // This status was missing in your original list
@@ -564,7 +572,7 @@ async function seedCustomer() {
 //  =======================================================================================
 // ===================================== SALES ======================================
 
-async function seedSalesItem() {
+async function seedSalesItem(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
   const itemIDs = await db.select().from(item);
 
@@ -583,14 +591,14 @@ async function seedSalesItem() {
   log.info('Sales Items records seeded successfully');
 }
 
-async function seedSales() {
+async function seedSales(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
   const customerIDs = await db.select().from(customer);
 
   const salesRecords = Array.from({ length: 70 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
     customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-    total_amount: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    total_amount: parseFloat(faker.finance.amount({ min: 1, max: 12, dec: 2 })),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -600,7 +608,7 @@ async function seedSales() {
   log.info('Sales records seeded successfully');
 }
 
-async function seedPayment() {
+async function seedPayment(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
 
   const statuses: ('Cash' | 'Card' | 'Online Payment')[] = [
@@ -634,8 +642,8 @@ async function seedPayment() {
 
   const paymentRecords = Array.from({ length: 70 }).map(() => ({
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-    amount: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
-    payment_date: faker.date.past(),
+    amount: parseFloat(faker.finance.amount({ min: 1, max: 12, dec: 2 })),
+    payment_date: faker.date.past().toISOString(),
     payment_method: faker.helpers.arrayElement(statuses),
     payment_status: faker.helpers.arrayElement(status),
     created_at: faker.date.recent(),
@@ -647,15 +655,15 @@ async function seedPayment() {
   log.info('Payment records seeded successfully');
 }
 
-async function seedReceipt() {
+async function seedReceipt(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
   const paymentIDs = await db.select().from(payment);
 
   const receiptRecords = Array.from({ length: 70 }).map(() => ({
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
-    issued_date: faker.date.past(),
-    total_amount: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    issued_date: faker.date.past().toISOString(),
+    total_amount: parseFloat(faker.finance.amount({ min: 1, max: 12, dec: 2 })),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -667,7 +675,7 @@ async function seedReceipt() {
 //  =======================================================================================
 // ==================================== SERVICES ======================================
 
-async function seedReserve() {
+async function seedReserve(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
   const serviceIDs = await db.select().from(service);
 
@@ -683,7 +691,7 @@ async function seedReserve() {
   log.info('Reserve records seeded successfully');
 }
 
-async function seedBorrow() {
+async function seedBorrow(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
   const serviceIDs = await db.select().from(service);
   const itemIDs = await db.select().from(item);
@@ -714,8 +722,8 @@ async function seedBorrow() {
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
     item_id: faker.helpers.arrayElement(itemIDs).item_id,
-    borrow_date: faker.date.past(),
-    return_date: faker.date.future(),
+    borrow_date: faker.date.past().toISOString(),
+    return_date: faker.date.future().toISOString(),
     status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -726,7 +734,7 @@ async function seedBorrow() {
   log.info('Borrow records seeded successfully');
 }
 
-async function seedService() {
+async function seedService(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
 
   const statuses: (
@@ -753,7 +761,7 @@ async function seedService() {
 //  =======================================================================================
 // =================================== JOB ORDER ==========================================
 
-async function seedJobOrder() {
+async function seedJobOrder(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
   const serviceIDs = await db.select().from(service);
 
@@ -794,7 +802,7 @@ async function seedJobOrder() {
   log.info('Job Order records seeded successfully');
 }
 
-async function seedReports() {
+async function seedReports(db: PostgresJsDatabase) {
   const joborderIDs = await db.select().from(jobOrder);
 
   const reportsRecords = Array.from({ length: 70 }).map(() => ({
@@ -811,7 +819,7 @@ async function seedReports() {
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
-async function seedItem() {
+async function seedItem(db: PostgresJsDatabase) {
   const productIDs = await db.select().from(product);
 
   const itemRecords = Array.from({ length: 50 }).map(() => ({
@@ -827,7 +835,7 @@ async function seedItem() {
   log.info('Item records seeded successfully');
 }
 
-async function seedProduct() {
+async function seedProduct(db: PostgresJsDatabase) {
   const categoryIDs = await db.select().from(category);
   const supplierIDs = await db.select().from(supplier);
 
@@ -836,7 +844,7 @@ async function seedProduct() {
     supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
     name: faker.commerce.productName(),
     description: faker.lorem.sentence(),
-    price: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    price: parseFloat(faker.finance.amount({ min: 1, max: 12, dec: 2 })),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -846,7 +854,7 @@ async function seedProduct() {
   log.info('Product records seeded successfully');
 }
 
-async function seedCategory() {
+async function seedCategory(db: PostgresJsDatabase) {
   const categoryRecords = Array.from({ length: 25 }).map(() => ({
     name: faker.commerce.department(),
     content: faker.lorem.paragraph(),
@@ -857,7 +865,7 @@ async function seedCategory() {
   log.info('Category records seeded successfully');
 }
 
-async function seedSupplier() {
+async function seedSupplier(db: PostgresJsDatabase) {
   const supplierRecords = Array.from({ length: 25 }).map(() => ({
     name: faker.commerce.productName(),
     contact_number: faker.phone.number(),
@@ -871,7 +879,7 @@ async function seedSupplier() {
   log.info('Supplier records seeded successfully');
 }
 
-async function seedOrder() {
+async function seedOrder(db: PostgresJsDatabase) {
   const productIDs = await db.select().from(product);
 
   const statuses: (
@@ -893,7 +901,7 @@ async function seedOrder() {
   const orderRecords = Array.from({ length: 50 }).map(() => ({
     product_id: faker.helpers.arrayElement(productIDs).product_id,
     items_ordered: Number(faker.finance.amount({ min: 1, max: 12, dec: 0 })),
-    expected_arrival: faker.date.future(),
+    expected_arrival: faker.date.future().toISOString(),
     status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -904,7 +912,7 @@ async function seedOrder() {
   log.info('Order records seeded successfully');
 }
 
-async function seedArrivedItems() {
+async function seedArrivedItems(db: PostgresJsDatabase) {
   const orderIDs = await db.select().from(order);
 
   const arrivedItemsRecords = Array.from({ length: 50 }).map(() => ({
@@ -922,68 +930,71 @@ async function seedArrivedItems() {
 // =================================== PARTORDER ==========================================
 
 async function main() {
-  await seedDepartments();
-  await seedDesignations();
-  await seedEmployees();
+  const pool = Database.getInstance();
+  const db = await pool.connect();
+  try {
+    await seedDepartments(db);
+    await seedDesignations(db);
+    await seedEmployees(db);
 
-  await seedActivityLogs();
-  await seedPersonalInformations();
-  await seedFinancialInformations();
-  await seedSalaryInformations();
-  await seedEmploymentInformations();
-  await seedLeaveLimits();
+    await seedActivityLogs(db);
+    await seedPersonalInformations(db);
+    await seedFinancialInformations(db);
+    await seedSalaryInformations(db);
+    await seedEmploymentInformations(db);
+    await seedLeaveLimits(db);
 
-  await seedLeaveRequests();
+    await seedLeaveRequests(db);
 
-  await seedPayrolls();
-  await seedOnPayrolls();
-  await seedSignatory();
-  await seedPayrollApprovals();
-  await seedPayrollReportRecords();
+    await seedPayrolls(db);
+    await seedOnPayrolls(db);
+    await seedSignatory(db);
+    await seedPayrollApprovals(db);
+    await seedPayrollReportRecords(db);
 
-  await seedBenefits();
-  await seedDeductions();
-  await seedAdditionalPay();
-  await seedAdjustments();
-  await seedAttendance();
+    await seedBenefits(db);
+    await seedDeductions(db);
+    await seedAdditionalPay(db);
+    await seedAdjustments(db);
+    await seedAttendance(db);
 
-  //Inventory
+    //Inventory
 
-  await seedCategory();
-  await seedSupplier();
-  await seedProduct();
-  await seedOrder();
-  await seedArrivedItems();
-  await seedItem();
+    await seedCategory(db);
+    await seedSupplier(db);
+    await seedProduct(db);
+    await seedOrder(db);
+    await seedArrivedItems(db);
+    await seedItem(db);
 
-  // Participants and related data
-  await seedCustomer();
-  await seedInquiry();
-  await seedMessage();
-  await seedChannel();
-  await seedParticipants();
+    // Participants and related data
+    await seedCustomer(db);
+    await seedInquiry(db);
+    await seedMessage(db);
+    await seedChannel(db);
+    await seedParticipants(db);
 
-  // Sales and related data
-  await seedSales();
-  await seedSalesItem();
-  await seedPayment();
-  await seedReceipt();
-  await seedService();
-  await seedReserve();
-  await seedBorrow();
+    // Sales and related data
+    await seedSales(db);
+    await seedSalesItem(db);
+    await seedPayment(db);
+    await seedReceipt(db);
+    await seedService(db);
+    await seedReserve(db);
+    await seedBorrow(db);
 
-  // Job Order and related data
-  await seedJobOrder();
-  await seedReports();
+    // Job Order and related data
+    await seedJobOrder(db);
+    await seedReports(db);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    pool.disconnect();
+  }
   log.info('Generating Dummy Data Completed');
 }
 
-main()
-  .then(async () => {
-    await pool.end();
-  })
-  .catch(async (e) => {
-    log.error(e);
-    await pool.end();
-    process.exit(1);
-  });
+main().catch((error) => {
+  log.error('An unexpected error occurred:', error);
+  process.exit(1);
+});

@@ -1,35 +1,187 @@
 import {
-  mysqlTable,
-  int,
-  varchar,
-  timestamp,
-  mysqlEnum,
-  date,
-  float,
-  decimal,
   boolean,
-} from 'drizzle-orm/mysql-core';
+  date,
+  decimal,
+  integer,
+  pgEnum,
+  pgTable,
+  real,
+  serial,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/pg-core';
+
+//=========================================================================================
+//========================================= ENUMS =======================================
+export const payrollFrequencyEnum = pgEnum('payroll_frequency', [
+  'Daily',
+  'Weekly',
+  'Bi Weekly',
+  'Semi Monthly',
+  'Monthly',
+]);
+export const employeeTypeEnum = pgEnum('employee_type', [
+  'Regular',
+  'Probationary',
+  'Contractual',
+  'Seasonal',
+  'Temporary',
+]);
+export const employeeStatusEnum = pgEnum('employee_status', [
+  'Active',
+  'OnLeave',
+  'Terminated',
+  'Resigned',
+  'Suspended',
+  'Retired',
+  'Inactive',
+]);
+export const leaveRequestTypeEnum = pgEnum('leave_request_type', [
+  'Sick Leave',
+  'Vacation Leave',
+  'Personal Leave',
+]);
+
+export const leaveLimitTypeEnum = pgEnum('leave_limit_type', [
+  'Sick Leave',
+  'Vacation Leave',
+  'Personal Leave',
+]);
+export const payrollStatusEnum = pgEnum('payroll_status', [
+  'Active',
+  'Inactive',
+  'Inprogress',
+]);
+
+export const approvalStatusEnum = pgEnum('approval_status', [
+  'Approved',
+  'Pending',
+  'Rejected',
+]);
+
+export const additionalPayTypeEnum = pgEnum('additional_pay_type', [
+  'Bonus',
+  'Comission',
+  'Overtime',
+  'Other',
+]);
+
+export const attendanceStatusEnum = pgEnum('attendance_status', [
+  'Present',
+  'Absent',
+  'Late',
+  'Early Leave',
+  'Paid Leave',
+]);
+
+export const jobOrderStatusEnum = pgEnum('joborder_status', [
+  'Pending',
+  'In Progress',
+  'Completed',
+  'On Hold',
+  'Cancelled',
+  'Awaiting Approval',
+  'Approved',
+  'Rejected',
+  'Closed',
+]);
+
+export const borrowStatusEnum = pgEnum('borrow_status', [
+  'Requested',
+  'Approved',
+  'Borrowed',
+  'Returned',
+  'Overdue',
+  'Rejected',
+  'Cancelled',
+  'Lost',
+  'Damaged',
+]);
+
+export const serviceTypeEnum = pgEnum('service_type', [
+  'Repair',
+  'Sell',
+  'Buy',
+  'Borrow',
+  'Return',
+  'Exchange',
+]);
+export const paymentStatusEnum = pgEnum('payment_status', [
+  'Pending',
+  'Completed',
+  'Failed',
+  'Cancelled',
+  'Refunded',
+  'Partially Refunded',
+  'Overdue',
+  'Processing',
+  'Declined',
+  'Authorized',
+]);
+export const orderStatusEnum = pgEnum('order_status', [
+  'Pending',
+  'Processing',
+  'Delivered',
+  'Cancelled',
+  'Return',
+  'Shipped',
+]);
+export const paymentMethodEnum = pgEnum('payment_method', [
+  'Cash',
+  'Card',
+  'Online Payment',
+]);
+export const senderTypeEnum = pgEnum('sender_type', [
+  'User',
+  'Admin',
+  'Customer Support',
+  'Supplier',
+  'Employee',
+  'Manager',
+]);
+export const inquiryTypeEnum = pgEnum('inquiry_type', [
+  'Product',
+  'Pricing',
+  'Order Status',
+  'Technical Support',
+  'Billing',
+  'Complaint',
+  'Feedback',
+  'Return/Refund',
+]);
+export const customerStandingEnum = pgEnum('standing', [
+  'Active',
+  'Inactive',
+  'Pending',
+  'Suspended',
+  'Banned',
+  'VIP',
+  'Delinquent',
+  'Prospect',
+]);
+export const genderEnum = pgEnum('gender', ['Male', 'Female', 'Others']);
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
-export const employee = mysqlTable('employee', {
-  employee_id: int('employee_id').primaryKey().autoincrement(),
+export const employee = pgTable('employee', {
+  employee_id: serial('employee_id').primaryKey(),
   uuid: varchar('uuid', { length: 255 }),
   firstname: varchar('firstname', { length: 255 }),
   middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
   status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Personal Information Table
-export const personalInformation = mysqlTable('personal_info', {
-  personal_information_id: int('personal_information_id')
-    .primaryKey()
-    .autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const personalInformation = pgTable('personal_info', {
+  personal_information_id: serial('personal_information_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   birthday: varchar('birthday', { length: 255 }),
-  gender: mysqlEnum('gender', ['Male', 'Female', 'Others']),
+  gender: genderEnum('gender'),
   phone: varchar('phone', { length: 255 }),
   email: varchar('email', { length: 255 }),
   address_line: varchar('address_line', { length: 255 }),
@@ -40,74 +192,62 @@ export const personalInformation = mysqlTable('personal_info', {
     length: 255,
   }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Identification Financial Information Table
-export const financialInformation = mysqlTable('financial_info', {
-  financial_id: int('financial_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const financialInformation = pgTable('financial_info', {
+  financial_id: serial('financial_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   pag_ibig_id: varchar('pag_ibig_id', { length: 255 }),
   sss_id: varchar('sss_id', { length: 255 }),
   philhealth_id: varchar('philhealth_id', { length: 255 }),
   tin: varchar('tin', { length: 255 }),
   bank_account_number: varchar('bank_account_number', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Salary Information Table
-export const salaryInformation = mysqlTable('salary_info', {
-  salary_information_id: int('salary_information_id')
-    .primaryKey()
-    .autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  payroll_frequency: mysqlEnum('payroll_frequency', [
-    'Daily',
-    'Weekly',
-    'Bi Weekly',
-    'Semi Monthly',
-    'Monthly',
-  ]),
-  base_salary: int('base_salary'),
+export const salaryInformation = pgTable('salary_info', {
+  salary_information_id: serial('salary_information_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  payroll_frequency: payrollFrequencyEnum('payroll_frequency').notNull(),
+  base_salary: integer('base_salary'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Employment Information Table
-export const employmentInformation = mysqlTable('employment_info', {
-  employment_information_id: int('employment_information_id')
-    .primaryKey()
-    .autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const employmentInformation = pgTable('employment_info', {
+  employment_information_id: serial('employment_information_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   hireDate: timestamp('hireDate').defaultNow(),
-  department_id: int('department_id').references(
+  department_id: integer('department_id').references(
     () => department.department_id,
   ),
-  designation_id: int('designation_id').references(
+  designation_id: integer('designation_id').references(
     () => designation.designation_id,
   ),
-  employee_type: mysqlEnum('employee_type', [
-    'Regular',
-    'Probationary',
-    'Contractual',
-    'Seasonal',
-    'Temporary',
-  ]),
-  employee_status: mysqlEnum('employee_status', [
-    'Active',
-    'OnLeave',
-    'Terminated',
-    'Resigned',
-    'Suspended',
-    'Retired',
-    'Inactive',
-  ]),
+  employee_type: employeeTypeEnum('employee_type').notNull(),
+  employee_status: employeeStatusEnum('employee_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
@@ -115,130 +255,151 @@ export const employmentInformation = mysqlTable('employment_info', {
 // =============================== COMPANY FEATURES ======================================
 
 // Department Table
-export const department = mysqlTable('department', {
-  department_id: int('department_id').primaryKey().autoincrement(),
+export const department = pgTable('department', {
+  department_id: serial('department_id').primaryKey(),
   name: varchar('name', { length: 255 }),
   status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Designation Table
-export const designation = mysqlTable('designation', {
-  designation_id: int('designation_id').primaryKey().autoincrement(),
+export const designation = pgTable('designation', {
+  designation_id: serial('designation_id').primaryKey(),
   title: varchar('title', { length: 255 }),
   status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Activity Log Table
-export const activityLog = mysqlTable('activity_log', {
-  activity_id: int('activity_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const activityLog = pgTable('activity_log', {
+  activity_id: serial('activity_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   action: varchar('action', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   deleted_at: timestamp('deleted_at'),
 });
 
-export const leaveRequest = mysqlTable('leave_request', {
-  leave_request_id: int('leave_request_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const leaveRequest = pgTable('leave_request', {
+  leave_request_id: serial('leave_request_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   title: varchar('title', { length: 255 }),
   content: varchar('content', { length: 255 }),
-  date_of_leave: date('date_of_leave'),
-  date_of_return: date('date_of_return'),
+  date_of_leave: varchar('date_of_leave'),
+  date_of_return: varchar('date_of_return'),
   status: varchar('status', { length: 255 }),
   comment: varchar('comment', { length: 255 }),
-  leaveType: mysqlEnum('leaveType', [
-    'Sick Leave',
-    'Vacation Leave',
-    'Personal Leave',
-  ]),
+  leaveType: leaveRequestTypeEnum('leave_request_type').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
-export const leaveLimit = mysqlTable('leave_limit', {
-  leave_limit_id: int('leave_limit_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  limit_count: int('limit_count'),
-  leaveType: mysqlEnum('leaveType', [
-    'Sick Leave',
-    'Vacation Leave',
-    'Personal Leave',
-  ]),
+export const leaveLimit = pgTable('leave_limit', {
+  leave_limit_id: serial('leave_limit_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  limit_count: real('limit_count').default(10.1),
+  leaveType: leaveLimitTypeEnum('leave_limit_type').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //  =======================================================================================
 // ==================================== PAYROLL ===========================================
 
-export const payroll = mysqlTable('payroll', {
-  payroll_id: int('payroll_id').primaryKey().autoincrement(),
-  start: date('start'),
-  end: date('end'),
-  pay_date: date('pay_date'),
-  payroll_finished: date('payroll_finished'),
-  status: mysqlEnum('approvalStatus', ['Active', 'Inactive', 'Inprogress']),
+export const payroll = pgTable('payroll', {
+  payroll_id: serial('payroll_id').primaryKey(),
+  start: varchar('start'),
+  end: varchar('end'),
+  pay_date: varchar('pay_date'),
+  payroll_finished: varchar('payroll_finished'),
+  status: payrollStatusEnum('payroll_status'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // On Payroll Table
-export const onPayroll = mysqlTable('on_payroll', {
-  on_payroll_id: int('on_payroll_id').primaryKey().autoincrement(),
-  payroll_id: int('payroll_id').references(() => payroll.payroll_id),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const onPayroll = pgTable('on_payroll', {
+  on_payroll_id: serial('on_payroll_id').primaryKey(),
+  payroll_id: integer('payroll_id').references(() => payroll.payroll_id),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Payroll Approval Table
-export const payrollApproval = mysqlTable('payroll_approval', {
-  payroll_approval_id: int('payroll_approval_id').primaryKey().autoincrement(),
-  on_payroll_id: int('on_payroll_id').references(() => onPayroll.on_payroll_id),
-  signatory_id: int('signatory_id').references(() => signatory.signatory_id),
-  approval_status: mysqlEnum('approvalstatus', [
-    'Approved',
-    'Pending',
-    'Rejected',
-  ]),
-  approval_date: date('approval_date'),
+export const payrollApproval = pgTable('payroll_approval', {
+  payroll_approval_id: serial('payroll_approval_id').primaryKey(),
+  on_payroll_id: integer('on_payroll_id').references(
+    () => onPayroll.on_payroll_id,
+  ),
+  signatory_id: integer('signatory_id').references(
+    () => signatory.signatory_id,
+  ),
+  approval_status: approvalStatusEnum('approval_status').notNull(),
+  approval_date: varchar('approval_date'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Payroll Reports Table
-export const payrollReports = mysqlTable('payroll_reports', {
-  payroll_report: int('payroll_report').primaryKey().autoincrement(),
-  on_payroll_id: int('on_payroll_id').references(() => onPayroll.on_payroll_id),
-  netpay: float('netpay'),
-  grosspay: float('grosspay'),
-  total_deductions: float('total_deductions'),
-  total_benefits: float('total_benefits'),
+export const payrollReports = pgTable('payroll_reports', {
+  payroll_report: serial('payroll_report').primaryKey(),
+  on_payroll_id: integer('on_payroll_id').references(
+    () => onPayroll.on_payroll_id,
+  ),
+  netpay: real('netpay'),
+  grosspay: real('grosspay'),
+  total_deductions: real('total_deductions'),
+  total_benefits: real('total_benefits'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Signatory Table
-export const signatory = mysqlTable('signatory', {
-  signatory_id: int('signatory_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const signatory = pgTable('signatory', {
+  signatory_id: serial('signatory_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   signatory_name: varchar('signatory_name', { length: 255 }),
   role: varchar('role', { length: 255 }),
-  permission_level: int('permission_level'),
+  permission_level: integer('permission_level'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
@@ -246,165 +407,162 @@ export const signatory = mysqlTable('signatory', {
 // =============================== EMPLOYEE PERFORMANCE ===================================
 
 // Deductions Table
-export const deductions = mysqlTable('deductions', {
-  deduction_id: int('deduction_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  start: date('start'),
-  end: date('end'),
+export const deductions = pgTable('deductions', {
+  deduction_id: serial('deduction_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  start: varchar('start'),
+  end: varchar('end'),
   deduction_type: varchar('deduction_type', { length: 255 }),
-  amount: float('amount'),
+  amount: real('amount'),
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Benefits Table
-export const benefits = mysqlTable('benefits', {
-  benefits_id: int('benefits_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const benefits = pgTable('benefits', {
+  benefits_id: serial('benefits_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   start: date('start'),
   end: date('end'),
   benefits_type: varchar('benefits_type', { length: 255 }),
-  amount: float('amount'),
+  amount: real('amount'),
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Adjustments Table
-export const adjustments = mysqlTable('adjustments', {
-  adjustments_id: int('adjustments_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
+export const adjustments = pgTable('adjustments', {
+  adjustments_id: serial('adjustments_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   remarks: varchar('remarks', { length: 255 }),
   adjustments_type: varchar('adjustments_type', { length: 255 }),
-  amount: float('amount'),
+  amount: real('amount'),
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Additional Pay Table
-export const additionalPay = mysqlTable('additional_pay', {
-  additional_pay_id: int('additional_pay_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  additional_pay_type: varchar('additional_pay_type', { length: 255 }),
-  amount: float('amount'),
+export const additionalPay = pgTable('additional_pay', {
+  additional_pay_id: serial('additional_pay_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  additional_pay_type: additionalPayTypeEnum('additional_pay_type'),
+  amount: real('amount'),
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 // Attendance Table
-export const attendance = mysqlTable('attendance', {
-  attendance_id: int('attendance_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  date: date('date'),
-  clock_in: date('clock_in'),
-  clock_out: date('clock_out'),
-  hoursWorked: decimal('hoursWorked', { precision: 10, scale: 2 }),
-  status: mysqlEnum('attendance_status', [
-    'Present',
-    'Absent',
-    'Late',
-    'Early Leave',
-    'Paid Leave',
-  ]),
+export const attendance = pgTable('attendance', {
+  attendance_id: serial('attendance_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  date: varchar('date'),
+  clock_in: varchar('clock_in'),
+  clock_out: varchar('clock_out'),
+  hoursWorked: real('hoursWorked'),
+  status: attendanceStatusEnum('attendance_status').notNull(),
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 //  =======================================================================================
 // ===================================== JOB ORDER ======================================
 
 //JobOrder
-export const jobOrder = mysqlTable('joborder', {
-  job_order_id: int('job_order_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  service_id: int('service_id').references(() => service.service_id),
+export const jobOrder = pgTable('joborder', {
+  job_order_id: serial('job_order_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  service_id: integer('service_id').references(() => service.service_id),
   steps: varchar('steps', { length: 255 }),
   required_items: varchar('required_items', { length: 255 }),
-  status: mysqlEnum('status', [
-    'Pending',
-    'In Progress',
-    'Completed',
-    'On Hold',
-    'Cancelled',
-    'Awaiting Approval',
-    'Approved',
-    'Rejected',
-    'Closed',
-  ]),
+  status: jobOrderStatusEnum('joborder_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Reports
-export const reports = mysqlTable('reports', {
-  reports_id: int('reports_id').primaryKey().autoincrement(),
-  job_order_id: int('job_order_id').references(() => jobOrder.job_order_id),
+export const reports = pgTable('reports', {
+  reports_id: serial('reports_id').primaryKey(),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
   remarks: varchar('remarks', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 //  =======================================================================================
 // ==================================== SERVICE ======================================
 
 //Reserve
-export const reserve = mysqlTable('reserve', {
-  reserve_id: int('reserve_id').primaryKey().autoincrement(),
-  sales_id: int('sales_id').references(() => sales.sales_id),
-  service_id: int('service_id').references(() => service.service_id),
+export const reserve = pgTable('reserve', {
+  reserve_id: serial('reserve_id').primaryKey(),
+  sales_id: integer('sales_id').references(() => sales.sales_id),
+  service_id: integer('service_id').references(() => service.service_id),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Borrow
-export const borrow = mysqlTable('borrow', {
-  borrow_id: int('borrow_id').primaryKey().autoincrement(),
-  sales_id: int('sales_id').references(() => sales.sales_id),
-  service_id: int('service_id').references(() => service.service_id),
-  item_id: int('item_id').references(() => item.item_id),
-  borrow_date: date('borrow_date'),
-  return_data: date('return_date'),
-  status: mysqlEnum('status', [
-    'Requested',
-    'Approved',
-    'Borrowed',
-    'Returned',
-    'Overdue',
-    'Rejected',
-    'Cancelled',
-    'Lost',
-    'Damaged',
-  ]),
+export const borrow = pgTable('borrow', {
+  borrow_id: serial('borrow_id').primaryKey(),
+  sales_id: integer('sales_id').references(() => sales.sales_id),
+  service_id: integer('service_id').references(() => service.service_id),
+  item_id: integer('item_id').references(() => item.item_id),
+  borrow_date: varchar('borrow_date'),
+  return_data: varchar('return_date'),
+  status: borrowStatusEnum('borrow_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Service
-export const service = mysqlTable('service', {
-  service_id: int('service_id').primaryKey().autoincrement(),
-  sales_id: int('sales_id').references(() => sales.sales_id),
+export const service = pgTable('service', {
+  service_id: serial('service_id').primaryKey(),
+  sales_id: integer('sales_id').references(() => sales.sales_id),
   service_title: varchar('service_title', { length: 255 }),
-  service_type: mysqlEnum('service_type', [
-    'Repair',
-    'Sell',
-    'Buy',
-    'Borrow',
-    'Return',
-    'Exchange',
-  ]),
+  service_type: serviceTypeEnum('service_type').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
@@ -412,144 +570,150 @@ export const service = mysqlTable('service', {
 // ==================================== SALES ======================================
 
 //SalesItems
-export const sales_items = mysqlTable('sales_items', {
-  sales_items_id: int('sales_item_id').primaryKey().autoincrement(),
-  sales_id: int('sales_id').references(() => sales.sales_id),
-  item_id: int('item_id').references(() => item.item_id),
-  quantity: int('quantity'),
+export const sales_items = pgTable('sales_items', {
+  sales_items_id: serial('sales_item_id').primaryKey(),
+  sales_id: integer('sales_id').references(() => sales.sales_id),
+  item_id: integer('item_id').references(() => item.item_id),
+  quantity: integer('quantity'),
   is_service_item: boolean('is_service_item'),
   total_price: decimal('total_price', { precision: 50, scale: 2 }),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Sales
-export const sales = mysqlTable('sales', {
-  sales_id: int('sales_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  customer_id: int('customer_id').references(() => customer.customer_id),
-  total_amount: decimal('total_price', { precision: 50, scale: 2 }),
+export const sales = pgTable('sales', {
+  sales_id: serial('sales_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  customer_id: integer('customer_id').references(() => customer.customer_id),
+  total_amount: real('total_price'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Payment
-
-export const payment = mysqlTable('payment', {
-  payment_id: int('payment_id').primaryKey().autoincrement(),
-  sales_id: int('sales_id').references(() => sales.sales_id),
-  amount: decimal('total_price', { precision: 50, scale: 2 }),
-  payment_date: date('payment_date'),
-  payment_method: mysqlEnum('payment_method', [
-    'Cash',
-    'Card',
-    'Online Payment',
-  ]),
-  payment_status: mysqlEnum('payment_status', [
-    'Pending',
-    'Completed',
-    'Failed',
-    'Cancelled',
-    'Refunded',
-    'Partially Refunded',
-    'Overdue',
-    'Processing',
-    'Declined',
-    'Authorized',
-  ]),
+export const payment = pgTable('payment', {
+  payment_id: serial('payment_id').primaryKey(),
+  sales_id: integer('sales_id').references(() => sales.sales_id),
+  amount: real('total_price'),
+  payment_date: varchar('payment_date'),
+  payment_method: paymentMethodEnum('payment_method').notNull(),
+  payment_status: paymentStatusEnum('payment_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Receipt
-export const receipt = mysqlTable('receipt', {
-  receipt_id: int('receipt_id').primaryKey().autoincrement(),
-  sales_id: int('sales_id').references(() => sales.sales_id),
-  payment_id: int('payment_id').references(() => payment.payment_id),
-  issued_date: date('issued_data'),
-  total_amount: decimal('total_price', { precision: 50, scale: 2 }),
+export const receipt = pgTable('receipt', {
+  receipt_id: serial('receipt_id').primaryKey(),
+  sales_id: integer('sales_id').references(() => sales.sales_id),
+  payment_id: integer('payment_id').references(() => payment.payment_id),
+  issued_date: varchar('issued_data'),
+  total_amount: real('total_price'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
 //Item
-export const item = mysqlTable('item', {
-  item_id: int('item_id').primaryKey().autoincrement(),
-  product_id: int('product_id').references(() => product.product_id),
-  stock: float('stock'),
-  re_order_level: float('re_order_level'),
+export const item = pgTable('item', {
+  item_id: serial('item_id').primaryKey(),
+  product_id: integer('product_id').references(() => product.product_id),
+  stock: integer('stock'),
+  re_order_level: integer('re_order_level'),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Product
-export const product = mysqlTable('product', {
-  product_id: int('product_id').primaryKey().autoincrement(),
-  category_id: int('category_id').references(() => category.category_id), // Ensure category.category_id exists
-  supplier_id: int('supplier_id').references(() => supplier.supplier_id), // Ensure supplier.supplier_id exists
+export const product = pgTable('product', {
+  product_id: serial('product_id').primaryKey(),
+  category_id: integer('category_id').references(() => category.category_id), // Ensure category.category_id exists
+  supplier_id: integer('supplier_id').references(() => supplier.supplier_id), // Ensure supplier.supplier_id exists
   name: varchar('name', { length: 255 }),
   description: varchar('description', { length: 255 }),
-  price: decimal('price', { precision: 10, scale: 2 }), // Ensure scale is defined if needed
+  price: real('price'), // Ensure scale is defined if needed
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Category
-export const category = mysqlTable('category', {
-  category_id: int('category_id').primaryKey().autoincrement(), // Primary key with auto-increment
+export const category = pgTable('category', {
+  category_id: serial('category_id').primaryKey(), // Primary key with auto-increment
   name: varchar('name', { length: 255 }), // Category name, up to 255 characters
   content: varchar('content', { length: 255 }), // Additional information about the category, up to 255 characters
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
 
 //Supplier
-export const supplier = mysqlTable('supplier', {
-  supplier_id: int('supplier_id').primaryKey().autoincrement(), // Primary key with auto-increment
+export const supplier = pgTable('supplier', {
+  supplier_id: serial('supplier_id').primaryKey(), // Primary key with auto-increment
   name: varchar('name', { length: 255 }), // Supplier name, up to 255 characters
   contact_number: varchar('contact_number', { length: 255 }), // Supplier contact number, up to 255 characters
   remarks: varchar('remarks', { length: 255 }), // Additional remarks, up to 255 characters
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
 //Order
-export const order = mysqlTable('order', {
-  order_id: int('order_id').primaryKey().autoincrement(), // Primary key with auto-increment
-  product_id: int('product_id').references(() => product.product_id), // Foreign key reference to the product table
-  items_ordered: int('items_ordered'), // Number of items ordered
-  expected_arrival: date('expected_arrival'), // Expected arrival date
-  status: mysqlEnum('status', [
-    // Enum for order status
-    'Pending',
-    'Processing',
-    'Delivered',
-    'Cancelled',
-    'Return',
-    'Shipped',
-  ]),
+export const order = pgTable('order', {
+  order_id: serial('order_id').primaryKey(), // Primary key with auto-increment
+  product_id: integer('product_id').references(() => product.product_id), // Foreign key reference to the product table
+  items_ordered: integer('items_ordered'), // Number of items ordered
+  expected_arrival: varchar('expected_arrival'), // Expected arrival date
+  status: orderStatusEnum('order_status').notNull(),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
 //Arrived_Items
-export const arrived_Items = mysqlTable('arrived_Items', {
-  arrived_Items_id: int('arrived_Items_id').primaryKey().autoincrement(),
-  order_id: int('order_id').references(() => order.order_id), // Foreign key reference to the order table
+export const arrived_Items = pgTable('arrived_Items', {
+  arrived_Items_id: serial('arrived_Items_id').primaryKey(),
+  order_id: integer('order_id').references(() => order.order_id), // Foreign key reference to the order table
   filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 //  =======================================================================================
@@ -559,69 +723,65 @@ export const arrived_Items = mysqlTable('arrived_Items', {
 // =================================== Customer ==========================================
 
 //Channel Participants
-export const participants = mysqlTable('participants', {
-  participants_id: int('participants_id').primaryKey().autoincrement(),
-  employee_id: int('employee_id').references(() => employee.employee_id),
-  channel_id: int('channel_id').references(() => channel.channel_id),
+export const participants = pgTable('participants', {
+  participants_id: serial('participants_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  channel_id: integer('channel_id').references(() => channel.channel_id),
   is_private: boolean('is_private'),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
 //Channel
-export const channel = mysqlTable('channel', {
-  channel_id: int('channel_id').primaryKey().autoincrement(),
-  inquiry_id: int('inquiry_id').references(() => inquiry.inquiry_id),
+export const channel = pgTable('channel', {
+  channel_id: serial('channel_id').primaryKey(),
+  inquiry_id: integer('inquiry_id').references(() => inquiry.inquiry_id),
   channel_name: varchar('channel_name', { length: 255 }),
   is_private: boolean('is_private'),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
 //Message
-export const message = mysqlTable('message', {
-  message_id: int('message_id').primaryKey().autoincrement(),
-  inquiry_id: int('inquiry_id').references(() => inquiry.inquiry_id),
-  sender_id: int('sender_id'),
-  sender_type: mysqlEnum('sender_type', [
-    'User',
-    'Admin',
-    'Customer Support',
-    'Supplier',
-    'Employee',
-    'Manager',
-  ]),
+export const message = pgTable('message', {
+  message_id: serial('message_id').primaryKey(),
+  inquiry_id: integer('inquiry_id').references(() => inquiry.inquiry_id),
+  sender_id: integer('sender_id'),
+  sender_type: senderTypeEnum('sender_type').notNull(),
   content: varchar('content', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
 //Inquiry
-export const inquiry = mysqlTable('inquiry', {
-  inquiry_id: int('inquiry_id').primaryKey().autoincrement(),
-  customer_id: int('customer_id').references(() => customer.customer_id),
+export const inquiry = pgTable('inquiry', {
+  inquiry_id: serial('inquiry_id').primaryKey(),
+  customer_id: integer('customer_id').references(() => customer.customer_id),
   inquiryTitle: varchar('inquiryTitle', { length: 255 }),
-  inquiry_type: mysqlEnum('sender_type', [
-    'Product',
-    'Pricing',
-    'Order Status',
-    'Technical Support',
-    'Billing',
-    'Complaint',
-    'Feedback',
-    'Return/Refund',
-  ]),
+  inquiry_type: inquiryTypeEnum('inquiry_type').notNull(),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(), // Timestamp for last update
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
 //Customer
-export const customer = mysqlTable('customer', {
-  customer_id: int('customer_id').primaryKey().autoincrement(),
+export const customer = pgTable('customer', {
+  customer_id: serial('customer_id').primaryKey(),
   firstname: varchar('firstname', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
   contact_phone: varchar('contact_phone', { length: 255 }),
@@ -629,19 +789,14 @@ export const customer = mysqlTable('customer', {
   address_line: varchar('address_line', { length: 255 }),
   barangay: varchar('barangay', { length: 255 }),
   province: varchar('province', { length: 255 }),
-  standing: mysqlEnum('standing', [
-    'Active',
-    'Inactive',
-    'Pending',
-    'Suspended',
-    'Banned',
-    'VIP',
-    'Delinquent',
-    'Prospect',
-  ]),
+  standing: customerStandingEnum('standing').notNull(),
   created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated').defaultNow().onUpdateNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
+
 //  =======================================================================================
 // =================================== PARTORDER ==========================================

@@ -1,14 +1,20 @@
+import { config } from 'dotenv';
 import { defineConfig } from 'drizzle-kit';
+
+config({ path: '.env' });
+
+// Validate DATABASE_URL
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    'DATABASE_URL is not defined. Please set it in your .env file.',
+  );
+}
+
 export default defineConfig({
   schema: './drizzle/drizzle.schema.ts',
   out: './drizzle/migrations',
-  dialect: 'mysql',
+  dialect: 'postgresql',
   dbCredentials: {
-    host: process.env.DB_HOST as string,
-    user: process.env.DB_USER as string,
-    password: process.env.DB_PASSWORD as string,
-    database: process.env.DB_NAME as string,
+    url: process.env.DATABASE_URL!,
   },
-  verbose: true,
-  strict: true,
 });
