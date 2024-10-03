@@ -50,10 +50,20 @@ export class ChannelController {
     try {
       const { inquiry_id, channel_name, is_private } = req.body;
 
+      // Check if is_private is a boolean and convert to 1(true) or 0(false)
+      if (typeof is_private !== 'boolean') {
+        return res.status(HttpStatus.BAD_REQUEST.code).json({
+          status: 'Error',
+          message: 'is_private must be a boolean (true or false)',
+          statusCode: HttpStatus.BAD_REQUEST.code,
+        });
+      }
+
+      const isPrivateValue = is_private ? 1 : 0;
       await this.channelService.createChannel({
         inquiry_id,
         channel_name,
-        is_private,
+        is_private: isPrivateValue, // Convert true/false to 1/0 before passing to the service
       });
       res
         .status(HttpStatus.CREATED.code)
