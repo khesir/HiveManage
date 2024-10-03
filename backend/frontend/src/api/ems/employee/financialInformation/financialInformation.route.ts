@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { FinancialInformationController } from './financialInformation.controller';
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import { validateRequest } from '@/src/middlewares';
 import { FinancialInformation } from './financialInformation.model';
 import {

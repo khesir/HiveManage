@@ -1,7 +1,6 @@
 import { Router } from 'express';
 
 import log from '@/lib/logger';
-import { db } from '@/mysql/mysql.pool';
 import { validateRequest } from '@/src/middlewares';
 
 import { EmployeeController } from './employee.controller';
@@ -11,6 +10,7 @@ import personalInformationRoute from '../personal_information/personalInformatio
 import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
 import financiallInformationRoute from '../financialInformation/financialInformation.route';
 import salaryInformationRoute from '../salary_information/salaryInformation.route';
+import { db } from '@/drizzle/pool';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);

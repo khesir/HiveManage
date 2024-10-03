@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { EmploymentInformationController } from './employmentInformation.controller';
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import {
   validateEmployeeId,
   validateEmploymentId,

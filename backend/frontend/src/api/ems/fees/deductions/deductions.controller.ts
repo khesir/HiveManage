@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { DeductionsService } from './deductions.service';
@@ -7,7 +7,7 @@ import { DeductionsService } from './deductions.service';
 export class DeductionsController {
   private deductionsService: DeductionsService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.deductionsService = new DeductionsService(pool);
   }
 

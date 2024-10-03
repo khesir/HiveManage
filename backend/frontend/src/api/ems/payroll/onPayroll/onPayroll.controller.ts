@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { OnPayrollService } from './onPayroll.service';
 import { HttpStatus } from '@/lib/config';
 
 export class OnPayrollController {
   private onPayrollService: OnPayrollService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.onPayrollService = new OnPayrollService(pool);
   }
 

@@ -1,7 +1,7 @@
 import { eq, and } from 'drizzle-orm';
 import { NextFunction, Response, Request } from 'express';
 
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import log from '@/lib/logger';
 import { benefits, employee } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/config';

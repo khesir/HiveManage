@@ -2,9 +2,9 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
-import { db } from '@/mysql/mysql.pool';
 import { employee, personalInformation } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/HttpStatus';
+import { db } from '@/drizzle/pool';
 
 export async function validatePersonalId(
   req: Request,

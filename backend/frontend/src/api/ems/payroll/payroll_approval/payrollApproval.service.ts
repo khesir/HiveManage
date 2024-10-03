@@ -1,15 +1,16 @@
 import { eq, isNull, and } from 'drizzle-orm';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { payrollApproval } from '@/drizzle/drizzle.schema';
+import { CreatePayrollApprovalData } from './payrollApproval.model';
 
 export class PayrollApprovalService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
-  async createPayrollApproval(data: object) {
+  async createPayrollApproval(data: CreatePayrollApprovalData) {
     await this.db.insert(payrollApproval).values(data);
   }
 

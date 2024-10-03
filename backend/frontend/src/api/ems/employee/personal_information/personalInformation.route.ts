@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { db } from '@/mysql/mysql.pool';
 import { validateRequest } from '@/src/middlewares';
 import log from '@/lib/logger';
 import { PersonalInformationController } from './personalInformation.controller';
@@ -8,6 +7,7 @@ import {
   validateEmployeeId,
   validatePersonalId,
 } from './personalInformation.middlewares';
+import { db } from '@/drizzle/pool';
 
 const personalInformationRoute = Router({ mergeParams: true });
 const controller = new PersonalInformationController(db);
