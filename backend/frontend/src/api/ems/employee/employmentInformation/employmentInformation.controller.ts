@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { EmploymentInformationService } from './employmentInformation.service';
@@ -7,7 +7,7 @@ import { EmploymentInformationService } from './employmentInformation.service';
 export class EmploymentInformationController {
   private employmentInformationService: EmploymentInformationService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.employmentInformationService = new EmploymentInformationService(pool);
   }
 

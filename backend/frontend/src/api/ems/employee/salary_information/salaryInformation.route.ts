@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import { validateRequest } from '@/src/middlewares';
 import log from '@/lib/logger';
 

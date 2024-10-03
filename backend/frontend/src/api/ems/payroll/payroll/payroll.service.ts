@@ -1,11 +1,11 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { payroll } from '@/drizzle/drizzle.schema';
 import { eq, and, isNull, sql, asc, desc } from 'drizzle-orm';
 
 export class PayrollService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 

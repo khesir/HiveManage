@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PayrollController } from './payroll.controller';
 
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import log from '@/lib/logger';
 import { validatePayrollId } from './payroll.middlewares';
 import { validateRequest } from '@/src/middlewares';

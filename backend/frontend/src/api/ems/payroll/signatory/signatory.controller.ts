@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { SignatoryService } from './signatory.service';
@@ -7,7 +7,7 @@ import { SignatoryService } from './signatory.service';
 export class SignatoryController {
   private signatoryService: SignatoryService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.signatoryService = new SignatoryService(pool);
   }
 
