@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { db } from '@/mysql/mysql.pool';
 import { validateRequest } from '@/src/middlewares';
 import log from '@/lib/logger';
 
@@ -9,6 +8,7 @@ import {
   validateLeaveLimitID,
 } from './leaveLimit.middlewares';
 import { LeaveLimitController } from './leaveLimit.controller';
+import { db } from '@/drizzle/pool';
 
 const leaveLimitRoute = Router({ mergeParams: true });
 const controller = new LeaveLimitController(db);

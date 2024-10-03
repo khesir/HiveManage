@@ -2,9 +2,9 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
-import { db } from '@/mysql/mysql.pool';
 import { activityLog, employee } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/HttpStatus';
+import { db } from '@/drizzle/pool';
 
 // There's a globally used
 // middlewere like error handling and schema validation
@@ -15,7 +15,6 @@ export async function validateActivityID(
   next: NextFunction,
 ) {
   const { activity_id } = req.params;
-
   try {
     const activity = await db
       .select()
@@ -43,6 +42,7 @@ export async function validateActivityEmployeeID(
   next: NextFunction,
 ) {
   const { employee_id } = req.body;
+
   try {
     const data = await db
       .select()

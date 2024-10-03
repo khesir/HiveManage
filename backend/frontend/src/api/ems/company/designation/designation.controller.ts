@@ -2,12 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 
 import { HttpStatus } from '@/lib/config';
 import { DesignationService } from './designation.service';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 export class DesignationController {
   private designationService: DesignationService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.designationService = new DesignationService(pool);
   }
 

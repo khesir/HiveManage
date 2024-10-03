@@ -2,9 +2,9 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
-import { db } from '@/mysql/mysql.pool';
 import { department } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/HttpStatus';
+import { db } from '@/drizzle/pool';
 
 export async function validateDepartmentID(
   req: Request,

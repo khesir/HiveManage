@@ -7,9 +7,11 @@ import {
   validateActivityID,
 } from './activitylogs.middleware';
 import { validateRequest } from '@/src/middlewares';
-import { db } from '@/mysql/mysql.pool';
 import log from '@/lib/logger';
+import { db } from '@/drizzle/pool';
+
 const activityRoute = Router({ mergeParams: true });
+
 const activityLogsController = new ActivityLogController(db);
 
 activityRoute.get(

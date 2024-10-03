@@ -43,7 +43,7 @@ import {
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
-import Database from './pool';
+import { db, pool } from './pool';
 import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
@@ -930,8 +930,6 @@ async function seedArrivedItems(db: PostgresJsDatabase) {
 // =================================== PARTORDER ==========================================
 
 async function main() {
-  const pool = Database.getInstance();
-  const db = await pool.connect();
   try {
     await seedDepartments(db);
     await seedDesignations(db);
@@ -989,7 +987,7 @@ async function main() {
   } catch (error) {
     console.log(error);
   } finally {
-    pool.disconnect();
+    pool.end();
   }
   log.info('Generating Dummy Data Completed');
 }

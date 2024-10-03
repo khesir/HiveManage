@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { LeaveLimitService } from './leaveLimit.service';
@@ -7,7 +7,7 @@ import { LeaveLimitService } from './leaveLimit.service';
 export class LeaveLimitController {
   private leaveLimitService: LeaveLimitService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.leaveLimitService = new LeaveLimitService(pool);
   }
 
@@ -44,9 +44,9 @@ export class LeaveLimitController {
     try {
       const { employee_id, limit_count, leaveType } = req.body;
       await this.leaveLimitService.createLeaveLimit({
-        employee_id,
-        limit_count,
-        leaveType,
+        employee_id: employee_id!,
+        limit_count: limit_count!,
+        leaveType: leaveType!,
       });
       res.status(HttpStatus.CREATED.code).json({
         message: 'Leave Limit Created successfully',

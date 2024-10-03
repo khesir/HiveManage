@@ -1,11 +1,12 @@
 import { eq } from 'drizzle-orm';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { leaveLimit } from '@/drizzle/drizzle.schema';
+import { CreateLeaveLimit } from './leaveLimit.model';
 
 export class LeaveLimitService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
@@ -22,7 +23,7 @@ export class LeaveLimitService {
     }
   }
 
-  async createLeaveLimit(data: object) {
+  async createLeaveLimit(data: CreateLeaveLimit) {
     await this.db.insert(leaveLimit).values(data);
   }
 

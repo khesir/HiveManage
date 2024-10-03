@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { LeaveRequestService } from './leaveRequest.service';
@@ -7,7 +7,7 @@ import { LeaveRequestService } from './leaveRequest.service';
 export class LeaveRequestController {
   private leaveRequestService: LeaveRequestService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.leaveRequestService = new LeaveRequestService(pool);
   }
 
@@ -43,10 +43,24 @@ export class LeaveRequestController {
 
   async createleaveRequest(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, Request_count, leaveType } = req.body;
+      const {
+        employee_id,
+        title,
+        content,
+        date_of_leave,
+        date_of_return,
+        status,
+        comment,
+        leaveType,
+      } = req.body;
       await this.leaveRequestService.createLeaveRequest({
         employee_id,
-        Request_count,
+        title,
+        content,
+        date_of_leave,
+        date_of_return,
+        status,
+        comment,
         leaveType,
       });
       res.status(HttpStatus.CREATED.code).json({

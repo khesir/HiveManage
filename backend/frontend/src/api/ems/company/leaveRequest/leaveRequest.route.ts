@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { db } from '@/mysql/mysql.pool';
 import { validateRequest } from '@/src/middlewares';
 import log from '@/lib/logger';
 
@@ -9,6 +8,7 @@ import {
   validateLeaveRequestId,
 } from './leaveRequest.middlewares';
 import { LeaveRequestController } from './leaveRequest.controller';
+import { db } from '@/drizzle/pool';
 
 const leaveRequestRoute = Router({ mergeParams: true });
 const controller = new LeaveRequestController(db);

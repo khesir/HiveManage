@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { ActivityLogService } from './activitylogs.service';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 export class ActivityLogController {
   private activityLogService: ActivityLogService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.activityLogService = new ActivityLogService(pool);
   }
 

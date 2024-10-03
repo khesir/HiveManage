@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { DepartmentService } from './department.service';
@@ -7,7 +7,7 @@ import { DepartmentService } from './department.service';
 export class DepartmentController {
   private departmentService: DepartmentService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.departmentService = new DepartmentService(pool);
   }
 

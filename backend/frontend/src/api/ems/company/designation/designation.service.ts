@@ -1,10 +1,11 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { designation } from '@/drizzle/drizzle.schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+
 import { eq, and, isNull } from 'drizzle-orm';
 export class DesignationService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 

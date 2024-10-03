@@ -1,11 +1,12 @@
 import { eq, isNull, and } from 'drizzle-orm';
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { leaveRequest } from '@/drizzle/drizzle.schema';
+import { LeaveRequest } from './leaveRequest.model';
 
 export class LeaveRequestService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
@@ -30,7 +31,7 @@ export class LeaveRequestService {
     }
   }
 
-  async createLeaveRequest(data: object) {
+  async createLeaveRequest(data: LeaveRequest) {
     await this.db.insert(leaveRequest).values(data);
   }
 
