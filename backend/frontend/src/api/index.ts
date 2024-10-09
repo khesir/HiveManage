@@ -23,8 +23,8 @@ log.info('ROUTE /ems route set');
 // log.info('ROUTE /ims route set');
 
 // // Sales Management System API
-// baseRoute.use('/sms', smsRoute);
-// log.info('ROUTE /sms route set');
+baseRoute.use('/sms', smsRoute);
+log.info('ROUTE /sms route set');
 
 // // Service Management System API
 // baseRoute.use('/srms', srmsRoute);

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import log from '@/lib/logger';
 import { SalesController } from './sales.controller';
 import { CreateSales, UpdateSales } from './sales.model';

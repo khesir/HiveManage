@@ -1,15 +1,16 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
 import { payment } from '@/drizzle/drizzle.schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import { CreatePayment } from './payment.model';
 
 export class PaymentService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
-  async createPayment(data: object) {
+  async createPayment(data: CreatePayment) {
     await this.db.insert(payment).values(data);
   }
 
