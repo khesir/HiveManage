@@ -1,12 +1,12 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { JobOrderService } from './joborder.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class JobOrderController {
   private joborderService: JobOrderService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.joborderService = new JobOrderService(pool);
   }
 
