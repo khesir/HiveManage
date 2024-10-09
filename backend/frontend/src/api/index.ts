@@ -19,8 +19,8 @@ baseRoute.use('/ems', emsRoute);
 log.info('ROUTE /ems route set');
 
 // // Inventory Management System API
-// baseRoute.use('/ims', imsRoute);
-// log.info('ROUTE /ims route set');
+baseRoute.use('/ims', imsRoute);
+log.info('ROUTE /ims route set');
 
 // // Sales Management System API
 // baseRoute.use('/sms', smsRoute);

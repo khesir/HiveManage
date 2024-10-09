@@ -1,25 +1,20 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
 import { product } from '@/drizzle/drizzle.schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateProduct } from './product.model';
 
 export class ProductService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
-  async createProduct(data: {
-    category_id: number;
-    supplier_id: number;
-    name: string;
-    description: string;
-    price: number;
-  }) {
+  async createProduct(data: CreateProduct) {
     // Ensure the data passed matches expected schema and format
     await this.db.insert(product).values({
       ...data,
-      price: data.price.toFixed(2), // Example to handle decimal precision
+      price: parseFloat(data.price.toFixed(2)), // Example to handle decimal precision
     });
   }
 

@@ -1,11 +1,11 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
 import { arrived_Items } from '@/drizzle/drizzle.schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ArriveItemsService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
