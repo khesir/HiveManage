@@ -10,7 +10,17 @@ export const CreateBorrow = z.object({
   return_data: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  status: z.string().min(1),
+  status: z.enum([
+    'Requested',
+    'Approved',
+    'Borrowed',
+    'Returned',
+    'Overdue',
+    'Rejected',
+    'Cancelled',
+    'Lost',
+    'Damaged',
+  ]),
 });
 
 export const UpdateBorrow = z.object({
@@ -23,7 +33,17 @@ export const UpdateBorrow = z.object({
   return_data: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  status: z.string().min(1),
+  status: z.enum([
+    'Requested',
+    'Approved',
+    'Borrowed',
+    'Returned',
+    'Overdue',
+    'Rejected',
+    'Cancelled',
+    'Lost',
+    'Damaged',
+  ]),
 });
 
 export type CreateBorrow = z.infer<typeof CreateBorrow>;

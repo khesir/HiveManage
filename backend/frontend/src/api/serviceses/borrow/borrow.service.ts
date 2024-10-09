@@ -1,15 +1,16 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
 import { borrow } from '@/drizzle/drizzle.schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateBorrow } from './borrow.model';
 
 export class BorrowService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
-  async createBorrow(data: object) {
+  async createBorrow(data: CreateBorrow) {
     await this.db.insert(borrow).values(data);
   }
 

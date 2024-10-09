@@ -3,13 +3,27 @@ import { z } from 'zod';
 export const CreateService = z.object({
   sales_id: z.number().min(1),
   service_title: z.string().min(1),
-  service_type: z.string().min(1),
+  service_type: z.enum([
+    'Repair',
+    'Sell',
+    'Buy',
+    'Borrow',
+    'Return',
+    'Exchange',
+  ]),
 });
 
 export const UpdateService = z.object({
   sales_id: z.number().min(1),
   service_title: z.string().min(1),
-  service_type: z.string().min(1),
+  service_type: z.enum([
+    'Repair',
+    'Sell',
+    'Buy',
+    'Borrow',
+    'Return',
+    'Exchange',
+  ]),
 });
 
 export type CreateService = z.infer<typeof CreateService>;
