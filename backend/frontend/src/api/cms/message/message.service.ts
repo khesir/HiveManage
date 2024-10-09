@@ -1,15 +1,16 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
 import { message } from '@/drizzle/drizzle.schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateMessage } from './message.model';
 
 export class MessageService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
-  async createMessage(data: object) {
+  async createMessage(data: CreateMessage) {
     await this.db.insert(message).values(data);
   }
 

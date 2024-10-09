@@ -1,12 +1,12 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { MessageService } from './message.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class MessageController {
   private messageService: MessageService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.messageService = new MessageService(pool);
   }
 

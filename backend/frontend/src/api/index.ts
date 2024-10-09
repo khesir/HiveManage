@@ -35,8 +35,8 @@ log.info('ROUTE /ems route set');
 // log.info('ROUTE /joms route set');
 
 // // Customer Management System API
-// baseRoute.use('/cms', cmsRoute);
-// log.info('ROUTE /cms set');
+baseRoute.use('/cms', cmsRoute);
+log.info('ROUTE /cms set');
 
 baseRoute.get('/', (req, res) => {
   res.send({
