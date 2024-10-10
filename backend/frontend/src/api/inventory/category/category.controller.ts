@@ -1,12 +1,12 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { CategoryService } from './category.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class CategoryController {
   private categoryService: CategoryService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.categoryService = new CategoryService(pool);
   }
 

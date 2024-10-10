@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { OrderService } from './order.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class OrderController {
   private orderService: OrderService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.orderService = new OrderService(pool);
   }
 

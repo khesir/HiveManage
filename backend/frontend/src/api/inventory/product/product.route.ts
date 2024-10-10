@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import log from '@/lib/logger';
 import { ProductController } from './product.controller';
 import { validateProductID } from './product.middleware';

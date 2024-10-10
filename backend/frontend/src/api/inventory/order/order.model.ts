@@ -7,7 +7,14 @@ export const CreateOrder = z.object({
   expected_arrival: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  status: z.string().min(1),
+  status: z.enum([
+    'Pending',
+    'Processing',
+    'Delivered',
+    'Cancelled',
+    'Return',
+    'Shipped',
+  ]),
 });
 export const UpdateOrder = z.object({
   product_id: z.number().min(1),
@@ -15,7 +22,14 @@ export const UpdateOrder = z.object({
   expected_arrival: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  status: z.string().min(1),
+  status: z.enum([
+    'Pending',
+    'Processing',
+    'Delivered',
+    'Cancelled',
+    'Return',
+    'Shipped',
+  ]),
 });
 
 export type CreateOrder = z.infer<typeof CreateOrder>;
