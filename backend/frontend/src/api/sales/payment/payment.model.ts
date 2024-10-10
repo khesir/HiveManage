@@ -6,8 +6,19 @@ export const CreatePayment = z.object({
   payment_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  payment_method: z.string().min(1),
-  payment_status: z.string().min(1),
+  payment_method: z.enum(['Cash', 'Card', 'Online Payment']),
+  payment_status: z.enum([
+    'Pending',
+    'Completed',
+    'Failed',
+    'Cancelled',
+    'Refunded',
+    'Partially Refunded',
+    'Overdue',
+    'Processing',
+    'Declined',
+    'Authorized',
+  ]),
 });
 
 export const UpdatePayment = z.object({
@@ -16,8 +27,19 @@ export const UpdatePayment = z.object({
   payment_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  payment_method: z.string().min(1),
-  payment_status: z.string().min(1),
+  payment_method: z.enum(['Cash', 'Card', 'Online Payment']),
+  payment_status: z.enum([
+    'Pending',
+    'Completed',
+    'Failed',
+    'Cancelled',
+    'Refunded',
+    'Partially Refunded',
+    'Overdue',
+    'Processing',
+    'Declined',
+    'Authorized',
+  ]),
 });
 
 export type CreatePayment = z.infer<typeof CreatePayment>;

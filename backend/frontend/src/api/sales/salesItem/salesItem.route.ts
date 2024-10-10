@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import log from '@/lib/logger';
-import { db } from '@/mysql/mysql.pool';
+import { db } from '@/drizzle/pool';
 import { validateRequest } from '@/src/middlewares';
 import { SalesItemController } from './salesItem.controller';
 import { validateSalesItemID } from './salesItem.middleware';
