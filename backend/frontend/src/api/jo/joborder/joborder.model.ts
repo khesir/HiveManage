@@ -5,7 +5,17 @@ export const CreateJobOrder = z.object({
   service_id: z.number().min(1),
   steps: z.string().min(1),
   required_items: z.string().min(1),
-  status: z.string().min(1),
+  status: z.enum([
+    'Pending',
+    'In Progress',
+    'Completed',
+    'On Hold',
+    'Cancelled',
+    'Awaiting Approval',
+    'Approved',
+    'Rejected',
+    'Closed',
+  ]),
 });
 
 export const UpdateJobOrder = z.object({
@@ -13,7 +23,17 @@ export const UpdateJobOrder = z.object({
   service_id: z.number().min(1),
   steps: z.string().min(1),
   required_items: z.string().min(1),
-  status: z.string().min(1),
+  status: z.enum([
+    'Pending',
+    'In Progress',
+    'Completed',
+    'On Hold',
+    'Cancelled',
+    'Awaiting Approval',
+    'Approved',
+    'Rejected',
+    'Closed',
+  ]),
 });
 
 export type CreateJobOrder = z.infer<typeof CreateJobOrder>;

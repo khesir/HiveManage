@@ -1,12 +1,12 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ReportsService } from './reports.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ReportsController {
   private reportsService: ReportsService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.reportsService = new ReportsService(pool);
   }
 
