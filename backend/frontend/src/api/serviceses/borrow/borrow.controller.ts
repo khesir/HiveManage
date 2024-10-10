@@ -1,12 +1,12 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { BorrowService } from './borrow.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class BorrowController {
   private borrowService: BorrowService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.borrowService = new BorrowService(pool);
   }
 

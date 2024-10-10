@@ -27,8 +27,8 @@ log.info('ROUTE /ems route set');
 // log.info('ROUTE /sms route set');
 
 // // Service Management System API
-// baseRoute.use('/srms', srmsRoute);
-// log.info('ROUTE /srms');
+baseRoute.use('/srms', srmsRoute);
+log.info('ROUTE /srms');
 
 // // Job Order Management System API
 baseRoute.use('/joms', jomsRoute);
