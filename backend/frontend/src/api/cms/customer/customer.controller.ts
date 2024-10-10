@@ -1,12 +1,12 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { CustomerService } from './customer.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class CustomerController {
   private customerService: CustomerService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.customerService = new CustomerService(pool);
   }
 

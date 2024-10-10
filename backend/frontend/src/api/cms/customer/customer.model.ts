@@ -3,12 +3,21 @@ import { z } from 'zod';
 export const CreateCustomer = z.object({
   firstname: z.string().min(1),
   lastname: z.string().min(1),
-  contact_phone: z.number().min(1),
+  contact_phone: z.string().min(1),
   socials: z.string().min(1),
   address_line: z.string().min(1),
   barangay: z.string().min(1),
   province: z.string().min(1),
-  standing: z.string().min(1),
+  standing: z.enum([
+    'Active',
+    'Inactive',
+    'Pending',
+    'Suspended',
+    'Banned',
+    'VIP',
+    'Delinquent',
+    'Prospect',
+  ]),
 });
 
 export const UpdateCustomer = z.object({
@@ -19,7 +28,16 @@ export const UpdateCustomer = z.object({
   address_line: z.string().min(1),
   barangay: z.string().min(1),
   province: z.string().min(1),
-  standing: z.string().min(1),
+  standing: z.enum([
+    'Active',
+    'Inactive',
+    'Pending',
+    'Suspended',
+    'Banned',
+    'VIP',
+    'Delinquent',
+    'Prospect',
+  ]),
 });
 
 export type CreateCustomer = z.infer<typeof CreateCustomer>;

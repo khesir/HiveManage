@@ -1,12 +1,12 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ChannelService } from './channel.service';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ChannelController {
   private channelService: ChannelService;
 
-  constructor(pool: MySql2Database) {
+  constructor(pool: PostgresJsDatabase) {
     this.channelService = new ChannelService(pool);
   }
 

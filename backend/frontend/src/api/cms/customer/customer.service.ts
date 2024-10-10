@@ -1,15 +1,16 @@
-import { MySql2Database } from 'drizzle-orm/mysql2/driver';
 import { and, eq, isNull } from 'drizzle-orm';
 import { customer } from '@/drizzle/drizzle.schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateCustomer } from './customer.model';
 
 export class CustomerService {
-  private db: MySql2Database;
+  private db: PostgresJsDatabase;
 
-  constructor(db: MySql2Database) {
+  constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
-  async createCustomer(data: object) {
+  async createCustomer(data: CreateCustomer) {
     await this.db.insert(customer).values(data);
   }
 
