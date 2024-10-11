@@ -4,12 +4,14 @@ export const CreateItem = z.object({
   product_id: z.number().min(1),
   stock: z.number().min(1),
   re_order_level: z.number().min(1),
+  tag: z.enum(['New', 'Used', 'Broken']),
 });
 
 export const UpdateItem = z.object({
   product_id: z.number().min(1),
   stock: z.number().min(1),
   re_order_level: z.number().min(1),
+  tag: z.enum(['New', 'Used', 'Broken']),
 });
 
 export type CreateItem = z.infer<typeof CreateItem>;

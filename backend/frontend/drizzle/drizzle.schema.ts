@@ -160,6 +160,9 @@ export const customerStandingEnum = pgEnum('standing', [
   'Prospect',
 ]);
 export const genderEnum = pgEnum('gender', ['Male', 'Female', 'Others']);
+
+export const TagItemEnu = pgEnum('tag_item', ['New', 'Used', 'Broken']);
+
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
@@ -638,6 +641,7 @@ export const item = pgTable('item', {
   product_id: integer('product_id').references(() => product.product_id),
   stock: integer('stock'),
   re_order_level: integer('re_order_level'),
+  tag: TagItemEnu('tag'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -654,6 +658,7 @@ export const product = pgTable('product', {
   name: varchar('name', { length: 255 }),
   description: varchar('description', { length: 255 }),
   price: real('price'), // Ensure scale is defined if needed
+  img_url: varchar('img_url'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

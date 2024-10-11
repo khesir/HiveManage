@@ -821,11 +821,12 @@ async function seedReports(db: PostgresJsDatabase) {
 
 async function seedItem(db: PostgresJsDatabase) {
   const productIDs = await db.select().from(product);
-
+  const tag_status: ('New' | 'Used' | 'Broken')[] = ['New', 'Used', 'Broken'];
   const itemRecords = Array.from({ length: 50 }).map(() => ({
     product_id: faker.helpers.arrayElement(productIDs).product_id,
     stock: faker.number.int({ min: 100, max: 500 }),
     re_order_level: faker.number.int({ min: 100, max: 500 }),
+    tag: faker.helpers.arrayElement(tag_status),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));

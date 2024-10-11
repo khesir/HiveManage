@@ -48,9 +48,15 @@ export class ItemsController {
 
   async createItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, stock, re_order_level } = req.body;
+      const { product_id, stock, re_order_level, tag } = req.body;
 
-      await this.itemService.createItem({ product_id, stock, re_order_level });
+      await this.itemService.createItem({
+        product_id,
+        stock,
+        re_order_level,
+        tag,
+      });
+
       res
         .status(HttpStatus.CREATED.code)
         .json({ status: 'Success', message: 'Successfully Created Item ' });
@@ -67,10 +73,10 @@ export class ItemsController {
   async updateItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { item_id } = req.params;
-      const { product_id, stock, re_order_level } = req.body;
+      const { product_id, stock, re_order_level, tag } = req.body;
 
       await this.itemService.updateItem(
-        { product_id, stock, re_order_level },
+        { product_id, stock, re_order_level, tag },
         Number(item_id),
       );
       res

@@ -6,6 +6,7 @@ export const CreateProduct = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().multipleOf(0.01),
+  img_url: z.string().optional(),
 });
 
 export const UpdateProduct = z.object({
@@ -14,6 +15,7 @@ export const UpdateProduct = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().multipleOf(0.01),
+  img_url: z.string().optional(),
 });
 
 export type CreateProduct = z.infer<typeof CreateProduct>;
