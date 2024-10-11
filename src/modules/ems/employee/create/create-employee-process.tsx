@@ -1,7 +1,8 @@
+import {ApiRequest, request} from '@/api/axios';
+import useConfirmStore from '@/components/hooks/use-confirm-store';
+import useEmployeeFormStore from '@/components/hooks/use-create-employee-view';
 import {Button} from '@/components/ui/button';
-import useConfirmStore from '@/hooks/use-confirm-store';
-import useEmployeeFormStore from '@/hooks/use-create-employee-view';
-import {request} from '@/lib/api/axios';
+import {EmployeeBasicInformation} from '@/lib/zod-schema';
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 
@@ -16,50 +17,87 @@ export function CreateEmployeeProcess() {
 		const processEmployeeData = async () => {
 			try {
 				// 1. Create Employee
-				console.log(data?.basicInformation);
 				await sleep(3000);
-				// await request('POST', '/api/v1/ems/employee', data?.basicInformation);
-				setMessage('Employee created successfully.');
+				await request(
+					'POST',
+					'/api/v1/ems/employees',
+					data?.employeeBasicInformation,
+				);
+				console.log('Employee Creation Passed');
 
 				// Fetch new Created Employee
 				await sleep(3000);
+				setMessage('Employee created successfully.');
+				const response = await request<ApiRequest<EmployeeBasicInformation>>(
+					'GET',
+					'/api/v1/ems/employees?sort=desc&limit=1',
+				);
 				setMessage('Fetching new Created employee');
+				console.log('Fetching employee Passed');
 
 				// 2. Create Personal Information
-				console.log(data?.personalInformation);
 				await sleep(3000);
-				// await request(
-				// 	'POST',
-				// 	'/api/v1/ems/{}/personalInformation',
-				// 	data?.personalInformation,
-				// );
+				await request(
+					'POST',
+					`/api/v1/ems/employees/${(response.data as EmployeeBasicInformation[])[0].employee_id}/personalInformation`,
+					data?.personalInformation,
+				);
 				setMessage('Personal Information created successfully.');
+				console.log('Personal Information Creation Passed');
 
 				// 3. Create Employment Information
-				console.log(data?.employmentInformation);
 				await sleep(3000);
-				// await request(
-				// 	'POST',
-				// 	'/api/v1/ems/financialInformation',
-				// 	data?.employmentInformation,
-				// );
+				await request(
+					'POST',
+					`/api/v1/ems/employees/${(response.data as EmployeeBasicInformation[])[0].employee_id}/employmentInformation`,
+					{
+						department_id: Number(data?.employmentInformation.department_id),
+						designation_id: Number(data?.employmentInformation.designation_id),
+						employee_type: data?.employmentInformation.employee_type,
+						employee_status: data?.employmentInformation.employee_status,
+					},
+				);
 				setMessage('Employment Information created successfully.');
+				console.log('Employment Information Creation Passed');
 
 				// 4. Create Salary Information
 				console.log(data?.salaryInformation);
 				await sleep(3000);
-				// await request('POST', '/api/v1/ems/financialInformation');
+				await request(
+					'POST',
+					`/api/v1/ems/employees/${(response.data as EmployeeBasicInformation[])[0].employee_id}/salaryInformation`,
+					{
+						payroll_frequency: data?.salaryInformation.payroll_frequency,
+						base_salary: Number(data?.salaryInformation.base_salary),
+					},
+				);
 				setMessage('Salary Information created successfully.');
+				console.log('Salary Information Creation Passed');
 
-				// await request('POST', '/api/v1/ems/financialInformation');
+				// 5. Create Financial Information
 				console.log(data?.financialInformation);
 				await sleep(3000);
+				await request(
+					'POST',
+					`/api/v1/ems/employees/${(response.data as EmployeeBasicInformation[])[0].employee_id}/financialInformation`,
+					data?.financialInformation,
+				);
 				setMessage('Financial Information created successfully.');
+				console.log('Financial Information Creation Passed');
+
+				await sleep(5000);
+				setMessage('Sucessfully Creating Employee');
 				setView(true);
 				setMessage('Press Continue to proceed');
 			} catch (error) {
-				setMessage('An error occurred while processing employee data.');
-				console.error(error);
+				console.log(error);
+				if (error instanceof Error) {
+					setMessage(error.message);
+				} else {
+					setMessage('An unknown error occurred');
+				}
+			} finally {
+				setStatus(true);
 			}
 		};
 
@@ -69,7 +107,7 @@ export function CreateEmployeeProcess() {
 	}, [status, data, setStatus]);
 	const handleClick = async () => {
 		setStatus(false);
-		navigate('/ems/employees');
+		navigate('/admin/ems/overview');
 	};
 	return (
 		<>

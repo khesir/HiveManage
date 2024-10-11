@@ -35,8 +35,9 @@ import {Button, buttonVariants} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {cn} from '@/lib/util/utils';
-import {useEmployeeStore} from '@/hooks/use-employee-story';
-import {Employee} from '@/components/types';
+import {EmployeeBasicInformation} from '@/lib/zod-schema';
+import {useEmployeeStore} from '@/components/hooks/use-employee-story';
+
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
@@ -50,7 +51,7 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function EmployeeTable<TData extends Employee, TValue>({
+export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 	columns,
 	data,
 	pageNo,
@@ -62,7 +63,6 @@ export function EmployeeTable<TData extends Employee, TValue>({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [searchParams] = useSearchParams();
-
 	// Search Params
 	const page = searchParams.get('page') || '1';
 	const pageAsNumber = Number(page);
@@ -177,7 +177,7 @@ export function EmployeeTable<TData extends Employee, TValue>({
 	// This handles the employee viewing by click
 	const handleRowClick = (row: Row<TData>) => {
 		// Access the data of the clicked row
-		const rowData: Employee = row.original;
+		const rowData: EmployeeBasicInformation = row.original;
 
 		// Do something with the row data
 		console.log('Clicked row data:', rowData);
@@ -197,7 +197,7 @@ export function EmployeeTable<TData extends Employee, TValue>({
 					className="w-full md:max-w-sm"
 				/>
 				<Link
-					to={'/ems/employees/create'}
+					to={'create'}
 					className={cn(buttonVariants({variant: 'default'}))}
 				>
 					<Plus className="mr-2 h-4 w-4" /> Add New

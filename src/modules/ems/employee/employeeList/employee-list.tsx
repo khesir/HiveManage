@@ -1,15 +1,15 @@
-import {Employee} from '@/components/types';
 import {useState, useEffect} from 'react';
 import {EmployeeTable} from './employee-table';
 import {columns} from './columns';
-import {PaginationResponse, request} from '@/lib/api/axios';
+import {EmployeeBasicInformation} from '@/lib/zod-schema';
+import {PaginationResponse, request} from '@/api/axios';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;
 };
 
 export default function EmployeeList({searchParams}: paramsProps) {
-	const [employees, setEmployees] = useState<Employee[]>([]);
+	const [employees, setEmployees] = useState<EmployeeBasicInformation[]>([]);
 	const [totalUsers, setTotalUsers] = useState<number>(0);
 	const [pageCount, setPageCount] = useState<number>(0);
 
@@ -21,7 +21,7 @@ export default function EmployeeList({searchParams}: paramsProps) {
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
-			const res = await request<PaginationResponse<Employee>>(
+			const res = await request<PaginationResponse<EmployeeBasicInformation>>(
 				'GET',
 				`/api/v1/ems/employees?limit=${pageLimit}&offset=${offset}` +
 					(status ? `&status=${status}` : '') +

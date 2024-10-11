@@ -1,11 +1,5 @@
-import {ApiRequest, request} from '@/lib/api/axios';
-import {
-	EmployementLeftJoin,
-	EmploymentInformation,
-	FinancialInformation,
-	PersonalInformation,
-	SalaryInformation,
-} from '@/components/types';
+import {ApiRequest, request} from '@/api/axios';
+import {useEmployeeStore} from '@/components/hooks/use-employee-story';
 import {Button} from '@/components/ui/button';
 import {
 	Card,
@@ -27,8 +21,13 @@ import {
 	PaginationItem,
 } from '@/components/ui/pagination';
 import {Separator} from '@/components/ui/separator';
-import {useEmployeeStore} from '@/hooks/use-employee-story';
 import {dateParser} from '@/lib/util/utils';
+import {
+	EmploymentInformationNestedForeignKey,
+	FinancialInformation,
+	PersonalInformation,
+	SalaryInformation,
+} from '@/lib/zod-schema';
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -42,7 +41,7 @@ export function EmployeeProfile() {
 	const {selectedEmployee} = useEmployeeStore();
 
 	const [employmentInfo, setEmploymentInfo] =
-		useState<EmployementLeftJoin | null>(null);
+		useState<EmploymentInformationNestedForeignKey | null>(null);
 
 	const [financialInfo, setFinancialInfo] =
 		useState<FinancialInformation | null>(null);
@@ -61,7 +60,7 @@ export function EmployeeProfile() {
 				if (selectedEmployee?.employee_id) {
 					const [employmentRes, financialRes, personalRes, salaryRes] =
 						await Promise.all([
-							request<ApiRequest<EmployementLeftJoin[]>>(
+							request<ApiRequest<EmploymentInformationNestedForeignKey[]>>(
 								'GET',
 								`api/v1/ems/employees/${selectedEmployee.employee_id}/employmentInformation`,
 							),
@@ -81,7 +80,9 @@ export function EmployeeProfile() {
 
 					// Extract the first item from the array if available
 					setEmploymentInfo(
-						(employmentRes.data as EmployementLeftJoin[])[0] || null,
+						(
+							employmentRes.data as EmploymentInformationNestedForeignKey[]
+						)[0] || null,
 					);
 					setFinancialInfo(
 						(financialRes.data as FinancialInformation[])[0] || null,
@@ -211,11 +212,11 @@ export function EmployeeProfile() {
 									</div>
 									<div className="flex items-center justify-between">
 										<dt className="text-muted-foreground">Employee Type</dt>
-										<dd>{employmentInfo.employment_info.employee_type}</dd>
+										<dd>{employmentInfo.employee_type}</dd>
 									</div>
 									<div className="flex items-center justify-between">
 										<dt className="text-muted-foreground">Employee Status</dt>
-										<dd>{employmentInfo.employment_info.employee_status}</dd>
+										<dd>{employmentInfo.employee_status}</dd>
 									</div>
 								</dl>
 							</div>

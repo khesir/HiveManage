@@ -6,6 +6,11 @@ import MainLayout from './components/layout/main-layout';
 import AuthenticationPage from './pages/_auth/login';
 // Admin
 import DashboardPage from './pages/admin/dashboard';
+import EmployeeOverviewPage from './pages/admin/systems/ems/overview-page';
+import EmployeePage from './pages/admin/systems/ems/employee-page';
+import EmployeeCreatePage from './pages/admin/systems/ems/employee-create-page';
+import EmployeeUpdatePage from './pages/admin/systems/ems/employee-update-page';
+import EmployeeViewPage from './pages/admin/systems/ems/employee-view-page';
 
 function App() {
 	return (
@@ -18,10 +23,14 @@ function App() {
 					<Route path="dashboard" element={<DashboardPage />} />
 
 					<Route path="ems">
-						<Route path="overview" />
+						<Route path="overview" element={<EmployeeOverviewPage />} />
 
-						<Route path="employees" />
-						<Route path="employees/create" />
+						<Route path="employees">
+							<Route index element={<EmployeePage />} />
+							<Route path="create" element={<EmployeeCreatePage />} />
+							<Route path="update" element={<EmployeeUpdatePage />} />
+							<Route path="view" element={<EmployeeViewPage />} />
+						</Route>
 
 						<Route path="payroll" />
 						<Route path="payroll/:id/details" />

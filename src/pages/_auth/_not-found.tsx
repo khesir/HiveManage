@@ -1,8 +1,10 @@
 import {Button} from '@/components/ui/button';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 export default function NotFound() {
 	const navigate = useNavigate();
+	const location = useLocation();
+	console.log(location.pathname);
 	return (
 		<div className="absolute left-1/2 top-1/2 mb-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center text-center">
 			<span className="bg-gradient-to-b from-foreground to-transparent bg-clip-text text-[10rem] font-extrabold leading-none text-transparent">

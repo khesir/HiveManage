@@ -16,14 +16,15 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
-import useEmployeeFormStore from '@/hooks/use-create-employee-view';
-import {ApiRequest, request} from '@/lib/api/axios';
+
 import {employeeFormSchema, EmployeeFormSchema} from '@/lib/custom-form-schema';
 import {Department, Designation} from '@/lib/zod-schema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';
 import {SubmitHandler, useForm} from 'react-hook-form';
 import {CreateEmployeeProcess} from './create-employee-process';
+import useEmployeeFormStore from '@/components/hooks/use-create-employee-view';
+import {ApiRequest, request} from '@/api/axios';
 
 export function CreateEmployeeForm() {
 	const [previousStep, setPreviousStep] = useState(0);
@@ -33,7 +34,7 @@ export function CreateEmployeeForm() {
 	const [data, setData] = useState({});
 	const {setEmployeeFormData} = useEmployeeFormStore();
 	const defaultValues = {
-		basicInformation: {
+		EmployeeBasicInformation: {
 			firstname: '',
 			middlename: '',
 			lastname: '',
@@ -47,15 +48,15 @@ export function CreateEmployeeForm() {
 			postal_code: '',
 		},
 		employmentInformation: {
-			department: '',
-			designation: '',
-			employee_type: 'full-time' as
+			department_id: '',
+			designation_id: '',
+			employee_type: 'Regular' as
 				| 'Regular'
 				| 'Probationary'
 				| 'Contractual'
 				| 'Seasonal'
 				| 'Temporary',
-			employment_status: 'Active' as
+			employee_status: 'Active' as
 				| 'Active'
 				| 'Terminated'
 				| 'OnLeave'
@@ -93,9 +94,9 @@ export function CreateEmployeeForm() {
 			id: 'Step 1',
 			name: 'Basic Information',
 			fields: [
-				'basicInformation.firstname',
-				'basicInformation.middlename',
-				'basicInformation.lastname',
+				'EmployeeBasicInformation.firstname',
+				'EmployeeBasicInformation.middlename',
+				'EmployeeBasicInformation.lastname',
 			],
 		},
 		{
@@ -117,7 +118,7 @@ export function CreateEmployeeForm() {
 				'employmentInformation.department',
 				'employmentInformation.designation',
 				'employmentInformation.employee_type',
-				'employmentInformation.employment_status',
+				'employmentInformation.employee_status',
 			],
 		},
 		{
@@ -144,8 +145,6 @@ export function CreateEmployeeForm() {
 
 	const processForm: SubmitHandler<EmployeeFormSchema> = (data) => {
 		console.log('data ==>', data);
-		// api call and reset
-		// form.reset();
 	};
 
 	type FieldName = keyof EmployeeFormSchema;
@@ -160,10 +159,10 @@ export function CreateEmployeeForm() {
 		if (!output) return;
 
 		const organizedData = {
-			basicInformation: {
-				firstname: form.getValues('basicInformation.firstname'),
-				middlename: form.getValues('basicInformation.middlename'),
-				lastname: form.getValues('basicInformation.lastname'),
+			employeeBasicInformation: {
+				firstname: form.getValues('employeeBasicInformation.firstname'),
+				middlename: form.getValues('employeeBasicInformation.middlename'),
+				lastname: form.getValues('employeeBasicInformation.lastname'),
 			},
 			personalInformation: {
 				birthday: form.getValues('personalInformation.birthday'),
@@ -174,11 +173,11 @@ export function CreateEmployeeForm() {
 				postal_code: form.getValues('personalInformation.postal_code'),
 			},
 			employmentInformation: {
-				department: form.getValues('employmentInformation.department'),
-				designation: form.getValues('employmentInformation.designation'),
+				department_id: form.getValues('employmentInformation.department_id'),
+				designation_id: form.getValues('employmentInformation.designation_id'),
 				employee_type: form.getValues('employmentInformation.employee_type'),
-				employment_status: form.getValues(
-					'employmentInformation.employment_status',
+				employee_status: form.getValues(
+					'employmentInformation.employee_status',
 				),
 			},
 			salaryInformation: {
@@ -221,8 +220,8 @@ export function CreateEmployeeForm() {
 		const fetchData = async () => {
 			try {
 				const [departmentResponse, designationResponse] = await Promise.all([
-					request<ApiRequest<Department>>('GET', '/api/v1/ems/department'),
-					request<ApiRequest<Designation>>('GET', '/api/v1/ems/designation'),
+					request<ApiRequest<Department>>('GET', '/api/v1/ems/departments'),
+					request<ApiRequest<Designation>>('GET', '/api/v1/ems/designations'),
 				]);
 				setDepartment(
 					Array.isArray(departmentResponse.data)
@@ -263,7 +262,7 @@ export function CreateEmployeeForm() {
 		{id: 5, name: 'Temporary'},
 	];
 
-	const employment_status = [
+	const employee_status = [
 		{id: 1, name: 'Active'},
 		{id: 2, name: 'Terminated'},
 		{id: 3, name: 'On Leave'},
@@ -332,7 +331,7 @@ export function CreateEmployeeForm() {
 							<>
 								<FormField
 									control={form.control}
-									name="basicInformation.firstname"
+									name="employeeBasicInformation.firstname"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>First Name</FormLabel>
@@ -349,7 +348,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="basicInformation.middlename"
+									name="employeeBasicInformation.middlename"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Middle Name</FormLabel>
@@ -366,7 +365,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="basicInformation.lastname"
+									name="employeeBasicInformation.lastname"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Last Name</FormLabel>
@@ -499,7 +498,7 @@ export function CreateEmployeeForm() {
 							<>
 								<FormField
 									control={form.control}
-									name="employmentInformation.department"
+									name="employmentInformation.department_id"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Department</FormLabel>
@@ -513,7 +512,7 @@ export function CreateEmployeeForm() {
 													<SelectTrigger>
 														<SelectValue
 															defaultValue={field.value}
-															placeholder="Select a country"
+															placeholder="Select a Department"
 														/>
 													</SelectTrigger>
 												</FormControl>
@@ -521,7 +520,7 @@ export function CreateEmployeeForm() {
 													{department.map((department, key) => (
 														<SelectItem
 															key={key}
-															value={department.department_id?.toString() || ''}
+															value={department.department_id?.toString() ?? ''}
 														>
 															{department.name}
 														</SelectItem>
@@ -534,7 +533,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="employmentInformation.designation"
+									name="employmentInformation.designation_id"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Designation</FormLabel>
@@ -548,7 +547,7 @@ export function CreateEmployeeForm() {
 													<SelectTrigger>
 														<SelectValue
 															defaultValue={field.value}
-															placeholder="Select a country"
+															placeholder="Select a Designation"
 														/>
 													</SelectTrigger>
 												</FormControl>
@@ -557,7 +556,7 @@ export function CreateEmployeeForm() {
 														<SelectItem
 															key={index}
 															value={
-																designation.designation_id?.toString() || ''
+																designation.designation_id?.toString() ?? ''
 															}
 														>
 															{designation.title}
@@ -606,7 +605,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="employmentInformation.employment_status"
+									name="employmentInformation.employee_status"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Employment Status</FormLabel>
@@ -625,12 +624,12 @@ export function CreateEmployeeForm() {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													{employment_status.map((employment_status) => (
+													{employee_status.map((employee_status) => (
 														<SelectItem
-															key={employment_status.id}
-															value={employment_status.name}
+															key={employee_status.id}
+															value={employee_status.name}
 														>
-															{employment_status.name}
+															{employee_status.name}
 														</SelectItem>
 													))}
 												</SelectContent>

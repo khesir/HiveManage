@@ -1,6 +1,6 @@
 import {z} from 'zod';
 
-export const basicInformationSchema = z.object({
+export const EmployeeBasicInformation = z.object({
 	employee_id: z.number().optional(),
 	firstname: z.string().min(1, 'First name is required'), // Validate that it's a non-empty string
 	middlename: z.string().optional(), // Optional middlename
@@ -9,7 +9,7 @@ export const basicInformationSchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
-export type BasicInformation = z.infer<typeof basicInformationSchema>;
+export type EmployeeBasicInformation = z.infer<typeof EmployeeBasicInformation>;
 
 export const personalInformationSchema = z.object({
 	personal_information_id: z.number().optional(),
@@ -27,8 +27,8 @@ export type PersonalInformation = z.infer<typeof personalInformationSchema>;
 
 export const employmentInformationSchema = z.object({
 	employment_information_id: z.number().optional(),
-	department: z.string().min(1, 'Department is required'),
-	designation: z.string().min(1, 'Designation is required'),
+	department_id: z.string().min(1, 'Department is required'),
+	designation_id: z.string().min(1, 'Designation is required'),
 	employee_type: z.enum([
 		'Regular',
 		'Probationary',
@@ -36,7 +36,7 @@ export const employmentInformationSchema = z.object({
 		'Seasonal',
 		'Temporary',
 	]), // Enum for employment type
-	employment_status: z.enum([
+	employee_status: z.enum([
 		'Active',
 		'OnLeave',
 		'Terminated',
@@ -50,6 +50,19 @@ export const employmentInformationSchema = z.object({
 	deleted_at: z.string().optional(),
 });
 export type EmploymentInformation = z.infer<typeof employmentInformationSchema>;
+
+export type EmploymentInformationNestedForeignKey = {
+	employment_information_id: number;
+	employee_id: number;
+	hireDate: string;
+	department: Department;
+	designation: Designation;
+	employee_type: string;
+	employee_status: string;
+	created_at: string;
+	last_updated: string;
+	deleted_at?: string;
+};
 
 export const salaryInformationSchema = z.object({
 	salary_information_id: z.number().optional(),

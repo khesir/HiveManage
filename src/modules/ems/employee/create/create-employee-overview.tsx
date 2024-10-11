@@ -1,3 +1,5 @@
+import useConfirmStore from '@/components/hooks/use-confirm-store';
+import useEmployeeFormStore from '@/components/hooks/use-create-employee-view';
 import {Button} from '@/components/ui/button';
 import {
 	Card,
@@ -14,8 +16,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
-import useConfirmStore from '@/hooks/use-confirm-store';
-import useEmployeeFormStore from '@/hooks/use-create-employee-view';
+
 import {dateParser} from '@/lib/util/utils';
 import {CreditCard, MoreVertical} from 'lucide-react';
 
@@ -29,8 +30,8 @@ export function CreateEmployeeOverview() {
 				<CardHeader className="flex flex-row items-start bg-muted/50">
 					<div className="grid gap-0.5">
 						<CardTitle className="group flex items-center gap-2 text-lg">
-							{data?.basicInformation.lastname},{' '}
-							{data?.basicInformation.firstname}
+							{data?.employeeBasicInformation.lastname},{' '}
+							{data?.employeeBasicInformation.firstname}
 						</CardTitle>
 						<CardDescription>
 							Hired date: {dateParser(new Date().toISOString())}
@@ -89,11 +90,11 @@ export function CreateEmployeeOverview() {
 						<dl className="grid gap-3">
 							<div className="flex items-center justify-between">
 								<dt className="text-muted-foreground">Department</dt>
-								<dd>{data?.employmentInformation.department}</dd>
+								<dd>{data?.employmentInformation.department_id}</dd>
 							</div>
 							<div className="flex items-center justify-between">
 								<dt className="text-muted-foreground">Designation</dt>
-								<dd>{data?.employmentInformation.designation}</dd>
+								<dd>{data?.employmentInformation.designation_id}</dd>
 							</div>
 							<div className="flex items-center justify-between">
 								<dt className="text-muted-foreground">Employee Type</dt>
@@ -101,7 +102,7 @@ export function CreateEmployeeOverview() {
 							</div>
 							<div className="flex items-center justify-between">
 								<dt className="text-muted-foreground">Employee Status</dt>
-								<dd>{data?.employmentInformation.employment_status}</dd>
+								<dd>{data?.employmentInformation.employee_status}</dd>
 							</div>
 						</dl>
 					</div>

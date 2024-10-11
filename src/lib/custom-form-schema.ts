@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {
-	basicInformationSchema,
+	EmployeeBasicInformation,
 	personalInformationSchema,
 	employmentInformationSchema,
 	salaryInformationSchema,
@@ -9,7 +9,7 @@ import {
 
 // Used on Create Employee Form
 const employeeFormSchema = z.object({
-	basicInformation: basicInformationSchema,
+	employeeBasicInformation: EmployeeBasicInformation,
 	personalInformation: personalInformationSchema,
 	employmentInformation: employmentInformationSchema,
 	salaryInformation: salaryInformationSchema,
