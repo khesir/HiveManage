@@ -1,20 +1,11 @@
 import {Routes as Router, Route, BrowserRouter} from 'react-router-dom';
-import AdminPanelLayout from './app/_components/layout/admin/admin-panel-layout';
-import AuthenticationPage from './app/authentication/page';
-import CreateEmployeePage from './app/ems/employee/create/create-employee-page';
-import EmployeePage from './app/ems/employee/employeeList/employees-page';
-import LeavePage from './app/ems/leave/leave';
-import EMSPage from './app/ems/page';
-import PayrollCreatePage from './app/ems/payroll/create/payroll-create';
-import PayrollOverview from './app/ems/payroll/details/onpayroll-details-page';
-import PayrollPage from './app/ems/payroll/payroll-page';
-import ItemPage from './app/inventory/items';
-import OrderPage from './app/inventory/orders';
-import InventoryPage from './app/inventory/overview';
-import NotFound from './app/_not-found';
-import DashboardPage from './app/page';
-import ServicePage from './app/sales/service/service';
-import SalesPage from './app/sales/sales';
+import NotFound from './pages/_auth/_not-found';
+// Layouts
+import MainLayout from './components/layout/main-layout';
+// Authentication
+import AuthenticationPage from './pages/_auth/login';
+// Admin
+import DashboardPage from './pages/admin/dashboard';
 
 function App() {
 	return (
@@ -22,37 +13,47 @@ function App() {
 			<Router>
 				<Route index path="/" element={<AuthenticationPage />} />
 
-				{/* Admin Dashboard */}
-				<Route element={<AdminPanelLayout />}>
+				{/* Admin Layout */}
+				<Route path="admin" element={<MainLayout userType={'admin'} />}>
 					<Route path="dashboard" element={<DashboardPage />} />
 
 					<Route path="ems">
-						<Route path="overview" element={<EMSPage />} />
+						<Route path="overview" />
 
-						<Route path="employees" element={<EmployeePage />} />
-						<Route path="employees/create" element={<CreateEmployeePage />} />
+						<Route path="employees" />
+						<Route path="employees/create" />
 
-						<Route path="payroll" element={<PayrollPage />} />
-						<Route path="payroll/:id/details" element={<PayrollOverview />} />
-						<Route path="payroll/:id/create/" element={<PayrollCreatePage />} />
+						<Route path="payroll" />
+						<Route path="payroll/:id/details" />
+						<Route path="payroll/:id/create/" />
 
-						<Route path="leave" element={<LeavePage />} />
+						<Route path="leave" />
 					</Route>
 
 					<Route path="sales">
-						<Route path="overview" element={<SalesPage />} />
-						<Route path="services" element={<ServicePage />} />
+						<Route path="overview" />
+						<Route path="services" />
 					</Route>
 
 					<Route path="inventory">
-						<Route path="overview" element={<InventoryPage />} />
-						<Route path="items" element={<ItemPage />} />
-						<Route path="orders" element={<OrderPage />} />
+						<Route path="overview" />
+						<Route path="items" />
+						<Route path="orders" />
 					</Route>
 				</Route>
 
 				{/* TODO: Technical Layout */}
+				<Route path="tech" element={<MainLayout userType={'tech'} />}>
+					<Route path="dashboard" element={<DashboardPage />} />
+				</Route>
+
 				{/* TODO: Sales Layout */}
+				<Route path="sales" element={<MainLayout userType={'sales'} />}>
+					<Route path="dashboard" element={<DashboardPage />} />
+					<Route path="in-house" element={<DashboardPage />} />
+					<Route path="history" element={<DashboardPage />} />
+					<Route path="customer" element={<DashboardPage />} />
+				</Route>
 				<Route path="*" element={<NotFound />} />
 			</Router>
 		</BrowserRouter>
