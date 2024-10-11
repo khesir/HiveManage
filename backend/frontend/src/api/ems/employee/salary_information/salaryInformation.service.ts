@@ -10,44 +10,44 @@ export class SalaryInformationService {
     this.db = db;
   }
 
-  async getSalaryInformation(paramsId: number, queryId: number) {
-    if (!isNaN(queryId)) {
-      const result = await this.db
-        .select()
-        .from(salaryInformation)
-        .where(
-          and(
-            eq(salaryInformation.employee_id, queryId),
-            isNull(salaryInformation.deleted_at),
-          ),
-        );
-      return result;
-    } else if (!isNaN(paramsId)) {
-      const result = await this.db
-        .select()
-        .from(salaryInformation)
-        .where(
-          and(
-            eq(salaryInformation.salary_information_id, paramsId),
-            isNull(salaryInformation.deleted_at),
-          ),
-        );
-      return result;
-    } else {
-      const result = await this.db
-        .select()
-        .from(salaryInformation)
-        .where(isNull(salaryInformation.deleted_at));
-      return result;
+  async getSalaryInformation(employeeID: number, salaryInfo_id: number) {
+    const conditions = [isNull(salaryInformation.deleted_at)];
+
+    if (!isNaN(employeeID) && !isNaN(salaryInfo_id)) {
+      conditions.push(
+        eq(salaryInformation.employee_id, employeeID),
+        eq(salaryInformation.salary_information_id, salaryInfo_id),
+      );
+    } else if (!isNaN(salaryInfo_id)) {
+      conditions.push(
+        eq(salaryInformation.salary_information_id, salaryInfo_id),
+      );
+    } else if (!isNaN(employeeID)) {
+      conditions.push(eq(salaryInformation.employee_id, employeeID));
     }
+    const result = await this.db
+      .select()
+      .from(salaryInformation)
+      .where(and(...conditions));
+    return result;
   }
-  async createSalaryInformation(data: SalaryInformation) {
-    await this.db.insert(salaryInformation).values(data);
+
+  async createSalaryInformation(employee_id: number, data: SalaryInformation) {
+    await this.db
+      .insert(salaryInformation)
+      .values({ employee_id: employee_id, ...data });
   }
-  async updateSalaryInformation(data: SalaryInformation, paramsId: number) {
+  async updateSalaryInformation(
+    employee_id: number,
+    paramsId: number,
+    data: SalaryInformation,
+  ) {
     await this.db
       .update(salaryInformation)
-      .set(data)
+      .set({
+        employee_id: employee_id,
+        ...data,
+      })
       .where(eq(salaryInformation.salary_information_id, paramsId));
   }
 

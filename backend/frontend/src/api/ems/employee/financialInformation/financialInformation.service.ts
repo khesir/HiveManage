@@ -8,32 +8,27 @@ export class FinancialInformationService {
   constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
-  async getFinancialInformation(paramsId: number, queryId: number) {
-    if (!isNaN(queryId)) {
-      const result = await this.db
-        .select()
-        .from(financialInformation)
-        .where(
-          and(
-            eq(financialInformation.employee_id, queryId),
-            isNull(financialInformation.deleted_at),
-          ),
-        );
-      return result;
-    } else if (!isNaN(paramsId)) {
-      const result = await this.db
-        .select()
-        .from(financialInformation)
-        .where(eq(financialInformation.financial_id, paramsId));
-      return result;
-    } else {
-      const result = await this.db
-        .select()
-        .from(financialInformation)
-        .where(isNull(financialInformation.deleted_at));
-      return result;
+  async getFinancialInformation(financial_id: number, employee_id: number) {
+    const conditions = [isNull(financialInformation.deleted_at)];
+
+    if (!isNaN(employee_id) && !isNaN(financial_id)) {
+      conditions.push(
+        eq(financialInformation.employee_id, employee_id),
+        eq(financialInformation.financial_id, financial_id),
+      );
+    } else if (!isNaN(financial_id)) {
+      conditions.push(eq(financialInformation.financial_id, financial_id));
+    } else if (!isNaN(employee_id)) {
+      conditions.push(eq(financialInformation.employee_id, employee_id));
     }
+    const result = await this.db
+      .select()
+      .from(financialInformation)
+      .where(and(...conditions));
+
+    return result;
   }
+
   async createFinancialInformation(data: object) {
     await this.db.insert(financialInformation).values(data);
   }

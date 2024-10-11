@@ -17,8 +17,7 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const { employment_id } = req.params;
-      const { employee_id } = req.params;
+      const { employment_id, employee_id } = req.params;
       const result =
         await this.employmentInformationService.getEmploymentInformation(
           Number(employment_id),
@@ -42,20 +41,19 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const {
-        employee_id,
-        department_id,
-        designation_id,
-        employee_type,
-        employee_status,
-      } = req.body;
-      await this.employmentInformationService.createEmploymentInformation({
-        employee_id,
-        department_id,
-        designation_id,
-        employee_type,
-        employee_status,
-      });
+      const { department_id, designation_id, employee_type, employee_status } =
+        req.body;
+      const { employee_id } = req.params;
+
+      await this.employmentInformationService.createEmploymentInformation(
+        Number(employee_id),
+        {
+          department_id,
+          designation_id,
+          employee_type,
+          employee_status,
+        },
+      );
       res.status(HttpStatus.OK.code).json({
         message: 'Employment Information created succesfully',
       });
@@ -72,23 +70,18 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const { employment_id } = req.params;
-      const {
-        employee_id,
-        department_id,
-        designation_id,
-        employee_type,
-        employee_status,
-      } = req.body;
+      const { employment_id, employee_id } = req.params;
+      const { department_id, designation_id, employee_type, employee_status } =
+        req.body;
       await this.employmentInformationService.updateEmploymentInformation(
+        Number(employee_id),
+        Number(employment_id),
         {
-          employee_id,
           department_id,
           designation_id,
           employee_type,
           employee_status,
         },
-        Number(employment_id),
       );
       res.status(HttpStatus.OK.code).json({
         message: 'Employment Information Updated succesfully',

@@ -43,7 +43,6 @@ export class PersonalInformationController {
   ) {
     try {
       const {
-        employee_id,
         birthday,
         gender,
         phone,
@@ -54,18 +53,22 @@ export class PersonalInformationController {
         emergency_contact_phone,
         emergency_contact_relationship,
       } = req.body;
-      await this.personalInformationService.createPersonalInformation({
-        employee_id,
-        birthday,
-        gender,
-        phone,
-        email,
-        address_line,
-        postal_code,
-        emergency_contact_name,
-        emergency_contact_phone,
-        emergency_contact_relationship,
-      });
+      const { employee_id } = req.params;
+
+      await this.personalInformationService.createPersonalInformation(
+        Number(employee_id),
+        {
+          birthday,
+          gender,
+          phone,
+          email,
+          address_line,
+          postal_code,
+          emergency_contact_name,
+          emergency_contact_phone,
+          emergency_contact_relationship,
+        },
+      );
       res.status(HttpStatus.OK.code).json({
         message: 'Personal Information Created succesfully',
       });
@@ -83,9 +86,8 @@ export class PersonalInformationController {
     next: NextFunction,
   ) {
     try {
-      const { personalInfo_id } = req.params;
+      const { personalInfo_id, employee_id } = req.params;
       const {
-        employee_id,
         birthday,
         gender,
         phone,

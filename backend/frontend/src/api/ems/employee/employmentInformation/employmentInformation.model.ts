@@ -1,7 +1,6 @@
 import z from 'zod';
 
 export const EmploymentInformation = z.object({
-  employee_id: z.number().min(1),
   department_id: z.number().min(1),
   designation_id: z.number().min(1),
   employee_type: z.enum([

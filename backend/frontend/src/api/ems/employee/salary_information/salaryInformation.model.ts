@@ -1,7 +1,6 @@
 import z from 'zod';
 
 export const SalaryInformation = z.object({
-  employee_id: z.number().min(1),
   payroll_frequency: z.enum([
     'Daily',
     'Weekly',

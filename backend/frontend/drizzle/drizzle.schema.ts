@@ -332,6 +332,9 @@ export const payroll = pgTable('payroll', {
   end: varchar('end'),
   pay_date: varchar('pay_date'),
   payroll_finished: varchar('payroll_finished'),
+  signatory_id: integer('signatory_id').references(
+    () => signatory.signatory_id,
+  ),
   status: payrollStatusEnum('payroll_status'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -359,9 +362,6 @@ export const payrollApproval = pgTable('payroll_approval', {
   payroll_approval_id: serial('payroll_approval_id').primaryKey(),
   on_payroll_id: integer('on_payroll_id').references(
     () => onPayroll.on_payroll_id,
-  ),
-  signatory_id: integer('signatory_id').references(
-    () => signatory.signatory_id,
   ),
   approval_status: approvalStatusEnum('approval_status').notNull(),
   approval_date: varchar('approval_date'),

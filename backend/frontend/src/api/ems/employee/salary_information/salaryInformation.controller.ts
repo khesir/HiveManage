@@ -13,11 +13,10 @@ export class SalaryInformationController {
 
   async getSalaryInformation(req: Request, res: Response, next: NextFunction) {
     try {
-      const { salaryInfo_id } = req.params;
-      const { employee_id } = req.params;
+      const { salaryInfo_id, employee_id } = req.params;
       const result = await this.salaryInformationService.getSalaryInformation(
-        Number(salaryInfo_id),
         Number(employee_id),
+        Number(salaryInfo_id),
       );
 
       res.status(HttpStatus.OK.code).json({ data: result });
@@ -34,12 +33,15 @@ export class SalaryInformationController {
     next: NextFunction,
   ) {
     try {
-      const { employee_id, payroll_frequency, base_salary } = req.body;
-      await this.salaryInformationService.createSalaryInformation({
-        employee_id,
-        payroll_frequency,
-        base_salary,
-      });
+      const { employee_id } = req.params;
+      const { payroll_frequency, base_salary } = req.body;
+      await this.salaryInformationService.createSalaryInformation(
+        Number(employee_id),
+        {
+          payroll_frequency,
+          base_salary,
+        },
+      );
       res.status(HttpStatus.OK.code).json({
         message: 'Salary Information Created succesfully',
       });
@@ -56,15 +58,15 @@ export class SalaryInformationController {
     next: NextFunction,
   ) {
     try {
-      const { salaryInfo_id } = req.params;
-      const { employee_id, payroll_frequency, base_salary } = req.body;
+      const { salaryInfo_id, employee_id } = req.params;
+      const { payroll_frequency, base_salary } = req.body;
       await this.salaryInformationService.updateSalaryInformation(
+        Number(employee_id),
+        Number(salaryInfo_id),
         {
-          employee_id,
           payroll_frequency,
           base_salary,
         },
-        Number(salaryInfo_id),
       );
       res.status(HttpStatus.OK.code).json({
         message: 'Salary Information Updated succesfully',

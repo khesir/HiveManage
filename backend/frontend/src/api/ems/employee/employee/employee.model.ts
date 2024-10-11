@@ -1,11 +1,11 @@
 import z from 'zod';
 
 export const Employee = z.object({
-  uuid: z.string().min(1),
+  uuid: z.string().min(1).optional(),
   firstname: z.string().min(1),
-  middlename: z.string().min(1),
+  middlename: z.string().min(1).optional(),
   lastname: z.string().min(1),
-  status: z.string().min(1),
+  status: z.string().min(1).optional(),
 });
 
 export type Employee = z.infer<typeof Employee>;

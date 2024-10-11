@@ -1,6 +1,7 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { personalInformation } from '@/drizzle/drizzle.schema';
+import { PersonalInformation } from './personalInformation.model';
 
 export class PersonalInformationService {
   private db: PostgresJsDatabase;
@@ -10,34 +11,35 @@ export class PersonalInformationService {
   }
 
   async getPersonalInformation(personalID: number, employeeID: number) {
-    if (!isNaN(employeeID)) {
-      const result = await this.db
-        .select()
-        .from(personalInformation)
-        .where(
-          and(
-            eq(personalInformation.employee_id, employeeID),
-            isNull(personalInformation.deleted_at),
-          ),
-        );
-      return result;
+    const conditions = [isNull(personalInformation.deleted_at)];
+
+    if (!isNaN(employeeID) && !isNaN(personalID)) {
+      conditions.push(
+        eq(personalInformation.employee_id, employeeID),
+        eq(personalInformation.personal_information_id, personalID),
+      );
     } else if (!isNaN(personalID)) {
-      const result = await this.db
-        .select()
-        .from(personalInformation)
-        .where(eq(personalInformation.personal_information_id, personalID));
-      return result;
-    } else {
-      const result = await this.db
-        .select()
-        .from(personalInformation)
-        .where(isNull(personalInformation.deleted_at));
-      return result;
+      conditions.push(
+        eq(personalInformation.personal_information_id, personalID),
+      );
+    } else if (!isNaN(employeeID)) {
+      conditions.push(eq(personalInformation.employee_id, employeeID));
     }
+    const result = await this.db
+      .select()
+      .from(personalInformation)
+      .where(and(...conditions));
+
+    return result;
   }
 
-  async createPersonalInformation(data: object) {
-    await this.db.insert(personalInformation).values(data);
+  async createPersonalInformation(
+    employee_id: number,
+    data: PersonalInformation,
+  ) {
+    await this.db
+      .insert(personalInformation)
+      .values({ employee_id: employee_id, ...data });
   }
 
   async updatePersonalInformation(data: object, paramsId: number) {

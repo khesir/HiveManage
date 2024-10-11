@@ -21,28 +21,28 @@ const emsRoute = Router({ mergeParams: true });
 emsRoute.use('/activityLogs', activityLogRoute);
 log.info('ROUTE /activityLogs set');
 
-emsRoute.use('/department', departmentRoute);
+emsRoute.use('/departments', departmentRoute);
 log.info('ROUTE /department set');
 
-emsRoute.use('/designation', designationRoute);
+emsRoute.use('/designations', designationRoute);
 log.info('ROUTE /designation set');
 
-emsRoute.use('/payroll', payrollRoute);
+emsRoute.use('/payrolls', payrollRoute);
 log.info('ROUTE /payroll set');
 
-emsRoute.use('/leaveLimit', leaveLimitRoute);
+emsRoute.use('/leaveLimits', leaveLimitRoute);
 log.info('ROUTE /leaveLimit set');
 
-emsRoute.use('/leaveRequest', leaveRequestRoute);
+emsRoute.use('/leaveRequests', leaveRequestRoute);
 log.info('ROUTE /leaveRequest set');
 
 emsRoute.use('/employees', employeeRoute);
 log.info('ROUTe /employee set');
 
-emsRoute.use('/signatory', signatoryRoute);
+emsRoute.use('/signatories', signatoryRoute);
 log.info('ROUTE /signatory set');
 
-emsRoute.use('/payrollApproval', payrollApprovalRoute);
+emsRoute.use('/payrollApprovals', payrollApprovalRoute);
 log.info('ROUTE /payrollApproval set');
 
 emsRoute.use('/benefits', benefitRoute);
@@ -51,10 +51,10 @@ log.info('ROUTE /benefit set');
 emsRoute.use('/deductions', deductionRoute);
 log.info('ROUTE /deductions set');
 
-emsRoute.use('/payrollReport', payrollReportRoute);
+emsRoute.use('/payrollReports', payrollReportRoute);
 log.info('ROUTE /payrollReports set');
 
-emsRoute.use('/additionalPay', additionalPayRoute);
+emsRoute.use('/additionalPays', additionalPayRoute);
 log.info('ROUTE /additionalPay');
 
 emsRoute.use('/adjustments', adjustmentsRoute);

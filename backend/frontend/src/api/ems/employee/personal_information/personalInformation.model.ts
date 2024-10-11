@@ -1,9 +1,8 @@
 import z from 'zod';
 
 export const PersonalInformation = z.object({
-  employee_id: z.number().min(1),
   birthday: z.string().min(1),
-  gender: z.string().min(1),
+  gender: z.enum(['Male', 'Female', 'Others']),
   phone: z.string().min(1),
   email: z.string().min(1),
   address_line: z.string().min(1),
