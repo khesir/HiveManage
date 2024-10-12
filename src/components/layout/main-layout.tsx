@@ -15,6 +15,7 @@ import {SheetMenu} from './components/sheet-menu';
 import {ModeToggle} from '../providers/mode-toggle';
 import {UserNav} from './components/user-nav';
 import useHeaderTitle from '../hooks/use-head-title';
+import {Toaster} from '../ui/sonner';
 
 export default function MainLayout({userType}: {userType: string}) {
 	const sidebar = useStore(useSidebarToggle, (state) => state);
@@ -61,6 +62,7 @@ export default function MainLayout({userType}: {userType: string}) {
 				</header>
 				<Outlet />
 			</main>
+			<Toaster />
 		</>
 	);
 }

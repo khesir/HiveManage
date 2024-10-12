@@ -123,7 +123,7 @@ export function EmployeeProfile() {
 							{selectedEmployee.lastname}, {selectedEmployee.firstname}
 						</CardTitle>
 						<CardDescription>
-							Hired date: {dateParser(selectedEmployee.created_at)}
+							Hired date: {dateParser(selectedEmployee.created_at ?? '')}
 						</CardDescription>
 					</div>
 					<div className="ml-auto flex items-center gap-1">

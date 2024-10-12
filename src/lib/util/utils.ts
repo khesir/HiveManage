@@ -52,3 +52,10 @@ export function dateParser(isoString: string): string {
 		return 'Invalid Date';
 	}
 }
+export const formatDate = (date: string) => {
+	const d = new Date(date);
+	const year = d.getFullYear();
+	const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+	const day = String(d.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+};

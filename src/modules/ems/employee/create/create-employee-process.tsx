@@ -61,7 +61,6 @@ export function CreateEmployeeProcess() {
 				console.log('Employment Information Creation Passed');
 
 				// 4. Create Salary Information
-				console.log(data?.salaryInformation);
 				await sleep(3000);
 				await request(
 					'POST',
@@ -75,7 +74,6 @@ export function CreateEmployeeProcess() {
 				console.log('Salary Information Creation Passed');
 
 				// 5. Create Financial Information
-				console.log(data?.financialInformation);
 				await sleep(3000);
 				await request(
 					'POST',

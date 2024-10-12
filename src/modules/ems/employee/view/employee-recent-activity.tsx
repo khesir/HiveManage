@@ -20,6 +20,10 @@ export function EmployeeRecentActivity() {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [activityLogs, setActivityLogs] = useState<ActivityLogsJoin[]>([]);
 	useEffect(() => {
+		if (!selectedEmployee) {
+			setres('No employee selected');
+			return;
+		}
 		setLoading(true);
 		const fetchActivity = async () => {
 			try {
@@ -48,7 +52,6 @@ export function EmployeeRecentActivity() {
 	if (loading) {
 		return <div>Fetching activity logs ...</div>;
 	}
-	console.log(activityLogs);
 	return (
 		<div className="flex flex-col gap-5">
 			<Card x-chunk="dashboard-05-chunk-1">
@@ -70,7 +73,7 @@ export function EmployeeRecentActivity() {
 				<CardHeader>
 					<CardTitle>Recent Activities</CardTitle>
 				</CardHeader>
-				<CardContent className="grid gap-8">
+				<CardContent className="grid gap-4">
 					{activityLogs.map((data) => (
 						<div className="flex items-center gap-4" key={data.activity_id}>
 							<Avatar className="hidden h-9 w-9 sm:flex">
@@ -81,14 +84,14 @@ export function EmployeeRecentActivity() {
 								</AvatarFallback>
 							</Avatar>
 							<div className="grid gap-1">
-								<p className="text-sm font-medium leading-none">
+								<p className="text-md font-medium leading-none">
 									{data.action}
 								</p>
 								{/* <p className="text-sm text-muted-foreground">
 									olivia.martin@email.com
 								</p> */}
 							</div>
-							<div className="ml-auto text-muted-foreground">
+							<div className="ml-auto text-sm text-muted-foreground">
 								{dateParser(data.created_at ?? '')}
 							</div>
 						</div>

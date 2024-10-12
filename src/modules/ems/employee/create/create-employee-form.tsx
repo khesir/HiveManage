@@ -31,7 +31,6 @@ export function CreateEmployeeForm() {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
-	const [data, setData] = useState({});
 	const {setEmployeeFormData} = useEmployeeFormStore();
 	const defaultValues = {
 		employeeBasicInformation: {
@@ -233,8 +232,6 @@ export function CreateEmployeeForm() {
 						? designationResponse.data
 						: [designationResponse.data],
 				);
-				console.log(department);
-				console.log(designation);
 			} catch (e) {
 				console.log(e);
 				if (e instanceof Error) {

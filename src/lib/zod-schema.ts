@@ -83,7 +83,7 @@ export const salaryInformationSchema = z.object({
 export type SalaryInformation = z.infer<typeof salaryInformationSchema>;
 
 export const financialInformationSchema = z.object({
-	financial_information_id: z.number().optional(),
+	financial_id: z.number().optional(),
 	pag_ibig_id: z.string().min(1, 'Pag-IBIG ID is required'),
 	sss_id: z.string().min(1, 'SSS ID is required'),
 	philhealth_id: z.string().min(1, 'Philhealth ID is required'),
