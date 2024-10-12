@@ -1,3 +1,4 @@
+import {usePayrollStore} from '@/components/hooks/use-payroll-store';
 import {Button} from '@/components/ui/button';
 import {
 	Card,
@@ -6,7 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {usePayrollStore} from '@/hooks/use-payroll-store';
 import {dateParser} from '@/lib/util/utils';
 import {File} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';

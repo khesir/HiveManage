@@ -34,7 +34,7 @@ export function CreateEmployeeForm() {
 	const [data, setData] = useState({});
 	const {setEmployeeFormData} = useEmployeeFormStore();
 	const defaultValues = {
-		EmployeeBasicInformation: {
+		employeeBasicInformation: {
 			firstname: '',
 			middlename: '',
 			lastname: '',
@@ -94,9 +94,9 @@ export function CreateEmployeeForm() {
 			id: 'Step 1',
 			name: 'Basic Information',
 			fields: [
-				'EmployeeBasicInformation.firstname',
-				'EmployeeBasicInformation.middlename',
-				'EmployeeBasicInformation.lastname',
+				'employeeBasicInformation.firstname',
+				'employeeBasicInformation.middlename',
+				'employeeBasicInformation.lastname',
 			],
 		},
 		{
@@ -155,7 +155,7 @@ export function CreateEmployeeForm() {
 		const output = await form.trigger(fields as FieldName[], {
 			shouldFocus: true,
 		});
-
+		console.log(output);
 		if (!output) return;
 
 		const organizedData = {

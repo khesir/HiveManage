@@ -1,4 +1,4 @@
-import {Payroll} from '@/components/types';
+import {usePayrollStore} from '@/components/hooks/use-payroll-store';
 import {Button, buttonVariants} from '@/components/ui/button';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
@@ -16,8 +16,8 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import {usePayrollStore} from '@/hooks/use-payroll-store';
 import {cn} from '@/lib/util/utils';
+import {Payroll} from '@/lib/zod-schema';
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,

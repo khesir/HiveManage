@@ -36,9 +36,11 @@ import {
 	MoreVertical,
 } from 'lucide-react';
 import {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 export function EmployeeProfile() {
 	const {selectedEmployee} = useEmployeeStore();
+	const navigate = useNavigate();
 
 	const [employmentInfo, setEmploymentInfo] =
 		useState<EmploymentInformationNestedForeignKey | null>(null);
@@ -125,7 +127,14 @@ export function EmployeeProfile() {
 						</CardDescription>
 					</div>
 					<div className="ml-auto flex items-center gap-1">
-						<Button size="sm" variant="outline" className="h-8 gap-1">
+						<Button
+							size="sm"
+							variant="outline"
+							className="h-8 gap-1"
+							onClick={() => {
+								navigate(`view/${selectedEmployee?.employee_id}`);
+							}}
+						>
 							<File className="h-3.5 w-3.5" />
 							<span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
 								View More

@@ -1,6 +1,6 @@
 import {z} from 'zod';
 
-export const EmployeeBasicInformation = z.object({
+export const employeeBasicInformationSchema = z.object({
 	employee_id: z.number().optional(),
 	firstname: z.string().min(1, 'First name is required'), // Validate that it's a non-empty string
 	middlename: z.string().optional(), // Optional middlename
@@ -9,7 +9,9 @@ export const EmployeeBasicInformation = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
-export type EmployeeBasicInformation = z.infer<typeof EmployeeBasicInformation>;
+export type EmployeeBasicInformation = z.infer<
+	typeof employeeBasicInformationSchema
+>;
 
 export const personalInformationSchema = z.object({
 	personal_information_id: z.number().optional(),
@@ -112,3 +114,46 @@ export const DesignationSchema = z.object({
 	deleted_at: z.string().optional(),
 });
 export type Designation = z.infer<typeof DesignationSchema>;
+
+export const PayrollSchema = z.object({
+	payroll_id: z.number().optional(),
+	start: z.string().min(1),
+	end: z.string().min(1),
+	pay_date: z.string().min(1),
+	payroll_finished: z.string().optional(),
+	status: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type Payroll = z.infer<typeof PayrollSchema>;
+
+export const OnPayrollSchema = z.object({
+	on_payroll_id: z.number().optional(),
+	payroll_id: z.number().min(1),
+	employee_id: z.number().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type OnPayroll = z.infer<typeof OnPayrollSchema>;
+
+export const PayollApprovalSchema = z.object({
+	payroll_approval_id: z.number().optional(),
+	on_payroll_id: z.number().min(1),
+	signatory_id: z.number().min(1),
+	approval_status: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type PayrollApproval = z.infer<typeof PayollApprovalSchema>;
+
+export const activityLogsSchema = z.object({
+	activity_id: z.number().optional(),
+	employee_id: z.number().min(1),
+	action: z.string().min(1),
+	created_at: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type ActivityLogs = z.infer<typeof activityLogsSchema>;

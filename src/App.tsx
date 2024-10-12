@@ -11,6 +11,7 @@ import EmployeePage from './pages/admin/systems/ems/employee-page';
 import EmployeeCreatePage from './pages/admin/systems/ems/employee-create-page';
 import EmployeeUpdatePage from './pages/admin/systems/ems/employee-update-page';
 import EmployeeViewPage from './pages/admin/systems/ems/employee-view-page';
+import EmployeePayrollPage from './pages/admin/systems/ems/payroll-page';
 
 function App() {
 	return (
@@ -29,12 +30,14 @@ function App() {
 							<Route index element={<EmployeePage />} />
 							<Route path="create" element={<EmployeeCreatePage />} />
 							<Route path="update" element={<EmployeeUpdatePage />} />
-							<Route path="view" element={<EmployeeViewPage />} />
+							<Route path="view/:id" element={<EmployeeViewPage />} />
 						</Route>
 
-						<Route path="payroll" />
-						<Route path="payroll/:id/details" />
-						<Route path="payroll/:id/create/" />
+						<Route path="payroll">
+							<Route index element={<EmployeePayrollPage />} />
+							<Route path="payroll/:id/details" />
+							<Route path="payroll/:id/create/" />
+						</Route>
 
 						<Route path="leave" />
 					</Route>

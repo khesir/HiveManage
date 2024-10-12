@@ -1,8 +1,8 @@
 import {Separator} from '@/components/ui/separator';
 import {Heading} from '@/components/ui/heading';
-import PayrollList from './payroll-list';
-import {PayrollProfile} from './payroll-profile';
-import {PayrollEmployeeList} from './payroll-employee-list';
+import PayrollList from '../payroll/payroll-list';
+import {PayrollProfile} from '../payroll/payroll-profile';
+import {PayrollEmployeeList} from '../payroll/payroll-employee-list';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;

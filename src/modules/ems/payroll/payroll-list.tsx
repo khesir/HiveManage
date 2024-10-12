@@ -1,8 +1,8 @@
-import {PaginationResponse, request} from '@/lib/api/axios';
-import {Payroll} from '@/components/types';
 import {useEffect, useState} from 'react';
 import {PayrollTable} from './payroll-table';
 import {payrollColumn} from './columns';
+import {PaginationResponse, request} from '@/api/axios';
+import {Payroll} from '@/lib/zod-schema';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;
@@ -23,7 +23,7 @@ export default function PayrollList({searchParams}: paramsProps) {
 		const fetchPayrollData = async () => {
 			const res = await request<PaginationResponse<Payroll>>(
 				'GET',
-				`/api/v1/ems/payroll?limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/ems/payrolls?limit=${pageLimit}&offset=${offset}` +
 					(status ? `&status=${status}` : '') +
 					(sort ? `&sort=${sort}` : ''),
 			);

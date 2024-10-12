@@ -1,9 +1,10 @@
-import {usePayrollStore} from '@/hooks/use-payroll-store';
 import {useEffect, useState} from 'react';
-import {ApiRequest, request} from '@/lib/api/axios';
-import {OnPayrollJoin} from '@/components/types';
+
 import {PayrollEmployeeTable} from './payroll-employee-table';
 import {ColumnDef} from '@tanstack/react-table';
+import {OnPayrollJoin} from '@/lib/custom-form-schema';
+import {usePayrollStore} from '@/components/hooks/use-payroll-store';
+import {ApiRequest, request} from '@/api/axios';
 
 export const payrollColumn: ColumnDef<OnPayrollJoin>[] = [
 	{
@@ -35,7 +36,7 @@ export function PayrollEmployeeList() {
 			try {
 				const data = await request<ApiRequest<OnPayrollJoin[]>>(
 					'GET',
-					`/api/v1/ems/payroll/${selectedPayroll?.payroll_id}/onPayroll`,
+					`/api/v1/ems/payrolls/${selectedPayroll?.payroll_id}/onPayroll`,
 				);
 				console.log(data);
 				setOnPayroll((data.data as OnPayrollJoin[]) || null);
