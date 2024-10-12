@@ -12,16 +12,24 @@ export class ActivityLogController {
   }
 
   async getAllActivityLogs(req: Request, res: Response, next: NextFunction) {
-    const limit = Number(req.query.limit) || 10; // Default limit to 10
-    const sort = (req.query.sort as string) || 'asc'; // Default sort to 'asc'
-    const page = Number(req.query.page) || 1;
+    const sort = (req.query.sort as string) || 'asc';
+    const limit = Number(req.query.limit) || 10;
+    const offset = Number(req.query.offset) || 0;
+    const employee_id = Number(req.query.employee_id) || undefined;
     try {
-      const activityLogs = await this.activityLogService.getAllActivityLogs({
+      const data = await this.activityLogService.getAllActivityLogs(
+        employee_id,
         limit,
         sort,
-        page,
+        offset,
+      );
+      res.status(200).json({
+        status: HttpStatus.OK.status,
+        limit: limit,
+        offset: offset,
+        total_data: data.totalData,
+        data: data.dataWithDetails,
       });
-      res.status(200).json({ data: activityLogs });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         message: 'Internal Server Error',

@@ -57,7 +57,7 @@ export class EmploymentInformationService {
       },
       designation: {
         department_id: row.designation?.designation_id,
-        name: row.designation?.title,
+        title: row.designation?.title,
         status: row.designation?.status,
         created_at: row.designation?.created_at,
         last_updated: row.designation?.last_updated,
