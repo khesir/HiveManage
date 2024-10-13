@@ -351,7 +351,7 @@ export function EmployeePersonalInformationCard() {
 									handleEdit();
 								}}
 							>
-								Add Employment Data
+								Add Personal Info Data
 							</Button>
 						</div>
 					) : (

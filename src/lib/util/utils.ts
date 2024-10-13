@@ -52,6 +52,7 @@ export function dateParser(isoString: string): string {
 		return 'Invalid Date';
 	}
 }
+
 export const formatDate = (date: string) => {
 	const d = new Date(date);
 	const year = d.getFullYear();

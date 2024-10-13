@@ -310,7 +310,7 @@ export function EmployeeFinancialInformationCard() {
 									handleEdit();
 								}}
 							>
-								Add Employment Data
+								Add Financial Info Data
 							</Button>
 						</div>
 					) : (

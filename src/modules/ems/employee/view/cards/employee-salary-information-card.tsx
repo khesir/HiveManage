@@ -294,7 +294,7 @@ export function EmployeeSalaryInformationCard() {
 									handleEdit();
 								}}
 							>
-								Add Employment Data
+								Add Salara Info Data
 							</Button>
 						</div>
 					) : (
