@@ -22,6 +22,20 @@
       "when": 1728670427388,
       "tag": "0002_lying_demogoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1728807480971,
+      "tag": "0003_melodic_wind_dancer",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1728905529494,
+      "tag": "0004_lowly_groot",
+      "breakpoints": true
     }
   ]
 }

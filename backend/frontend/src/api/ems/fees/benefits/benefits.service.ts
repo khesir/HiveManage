@@ -1,6 +1,6 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { benefits } from '@/drizzle/drizzle.schema';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 export class BenefitsService {
   private db: PostgresJsDatabase;
@@ -20,70 +20,25 @@ export class BenefitsService {
       .where(eq(benefits.benefits_id, paramsId));
   }
 
-  async getAllBenefits(benefitTypes: string | undefined) {
-    if (
-      benefitTypes &&
-      [
-        'Table',
-        'Shirt',
-        'Mouse',
-        'Salad',
-        'Bacon',
-        'Computer',
-        'Keyboard',
-        'Car',
-        'Chicken',
-        'Gloves',
-        'Shoes',
-        'Towels',
-        'Tuna',
-        'Pants',
-        'Shorts',
-        'Fish',
-        'Salad',
-        'Soap',
-        'Chips',
-        'Pizza',
-        'Hat',
-        'Ball',
-      ].includes(benefitTypes)
-    ) {
-      const result = await this.db
-        .select()
-        .from(benefits)
-        .where(
-          eq(
-            benefits.benefits_type,
-            benefitTypes as
-              | 'Table'
-              | 'Shirt'
-              | 'Mouse'
-              | 'Salad'
-              | 'Bacon'
-              | 'Computer'
-              | 'Keyboard'
-              | 'Car'
-              | 'Chicken'
-              | 'Gloves'
-              | 'Shoes'
-              | 'Towels'
-              | 'Tuna'
-              | 'Pants'
-              | 'Shorts'
-              | 'Fish'
-              | 'Salad'
-              | 'Soap'
-              | 'Chips'
-              | 'Pizza'
-              | 'Hat'
-              | 'Ball',
-          ),
-        );
-      return result;
-    } else {
-      const result = await this.db.select().from(benefits);
-      return result;
+  async getAllBenefits(
+    benefitTypes: string | undefined,
+    employee_id: string | undefined,
+  ) {
+    const conditions = [isNull(benefits.deleted_at)];
+
+    if (benefitTypes) {
+      conditions.push(eq(benefits.benefits_type, benefitTypes));
     }
+
+    if (employee_id) {
+      conditions.push(eq(benefits.employee_id, Number(employee_id)));
+    }
+
+    const result = await this.db
+      .select()
+      .from(benefits)
+      .where(and(...conditions));
+    return result;
   }
 
   async getBenefitsById(paramsId: number) {

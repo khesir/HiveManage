@@ -59,13 +59,6 @@ export const approvalStatusEnum = pgEnum('approval_status', [
   'Rejected',
 ]);
 
-export const additionalPayTypeEnum = pgEnum('additional_pay_type', [
-  'Bonus',
-  'Comission',
-  'Overtime',
-  'Other',
-]);
-
 export const attendanceStatusEnum = pgEnum('attendance_status', [
   'Present',
   'Absent',
@@ -413,8 +406,10 @@ export const signatory = pgTable('signatory', {
 export const deductions = pgTable('deductions', {
   deduction_id: serial('deduction_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
+  name: varchar('name', { length: 255 }),
   start: varchar('start'),
   end: varchar('end'),
+  frequency: varchar('frequency'),
   deduction_type: varchar('deduction_type', { length: 255 }),
   amount: real('amount'),
   description: varchar('description', { length: 255 }),
@@ -430,8 +425,10 @@ export const deductions = pgTable('deductions', {
 export const benefits = pgTable('benefits', {
   benefits_id: serial('benefits_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
+  name: varchar('name', { length: 255 }),
   start: date('start'),
   end: date('end'),
+  frequency: varchar('frequency'),
   benefits_type: varchar('benefits_type', { length: 255 }),
   amount: real('amount'),
   description: varchar('description', { length: 255 }),
@@ -447,6 +444,7 @@ export const benefits = pgTable('benefits', {
 export const adjustments = pgTable('adjustments', {
   adjustments_id: serial('adjustments_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
+  name: varchar('name', { length: 255 }),
   remarks: varchar('remarks', { length: 255 }),
   adjustments_type: varchar('adjustments_type', { length: 255 }),
   amount: real('amount'),
@@ -463,7 +461,8 @@ export const adjustments = pgTable('adjustments', {
 export const additionalPay = pgTable('additional_pay', {
   additional_pay_id: serial('additional_pay_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
-  additional_pay_type: additionalPayTypeEnum('additional_pay_type'),
+  name: varchar('name', { length: 255 }),
+  additional_pay_type: varchar('additional_pay_type', { length: 255 }),
   amount: real('amount'),
   description: varchar('description', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),

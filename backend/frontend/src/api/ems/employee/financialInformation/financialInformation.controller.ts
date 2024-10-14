@@ -39,14 +39,9 @@ export class FinancialInformationController {
     next: NextFunction,
   ) {
     try {
-      const {
-        employee_id,
-        pag_ibig_id,
-        sss_id,
-        philhealth_id,
-        tin,
-        bank_account_number,
-      } = req.body;
+      const { employee_id } = req.params;
+      const { pag_ibig_id, sss_id, philhealth_id, tin, bank_account_number } =
+        req.body;
       await this.financialInformationService.createFinancialInformation({
         employee_id,
         pag_ibig_id,
@@ -71,15 +66,9 @@ export class FinancialInformationController {
     next: NextFunction,
   ) {
     try {
-      const { financial_id } = req.params;
-      const {
-        employee_id,
-        pag_ibig_id,
-        sss_id,
-        philhealth_id,
-        tin,
-        bank_account_number,
-      } = req.body;
+      const { financial_id, employee_id } = req.params;
+      const { pag_ibig_id, sss_id, philhealth_id, tin, bank_account_number } =
+        req.body;
       await this.financialInformationService.updateFinancialInformation(
         {
           employee_id,

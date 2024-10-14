@@ -66,8 +66,12 @@ export class BenefitsController {
 
   async getAllBenefits(req: Request, res: Response, next: NextFunction) {
     const benefitTypes = (req.query.benefits_type as string) || undefined;
+    const employee_id = (req.query.employee_id as string) || undefined;
     try {
-      const data = await this.benefitService.getAllBenefits(benefitTypes);
+      const data = await this.benefitService.getAllBenefits(
+        benefitTypes,
+        employee_id,
+      );
       res.status(HttpStatus.OK.code).json({ data: data });
     } catch (error) {
       res

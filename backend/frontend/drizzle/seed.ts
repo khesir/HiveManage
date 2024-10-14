@@ -364,12 +364,28 @@ async function seedPayrollReportRecords(db: PostgresJsDatabase) {
 // =============================== EMPLOYEE PERFORMANCE ===================================
 async function seedDeductions(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
+  const allowedFrequencies: (
+    | 'Daily'
+    | 'Weekly'
+    | 'Bi Weekly'
+    | 'Semi Monthly'
+    | 'Monthly'
+  )[] = ['Daily', 'Weekly', 'Bi Weekly', 'Semi Monthly', 'Monthly'];
 
+  const deductionTypes: ('Bonus' | 'Comission' | 'Overtime' | 'Other')[] = [
+    'Bonus',
+    'Comission',
+    'Overtime',
+    'Other',
+  ];
   const deductionRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    name: faker.finance.accountName(),
     start: faker.date.past().toISOString(),
     end: faker.date.future().toISOString(),
-    deduction_type: faker.commerce.productMaterial(),
+    frequency: faker.helpers.arrayElement(allowedFrequencies),
+
+    deduction_type: faker.helpers.arrayElement(deductionTypes),
     amount: parseFloat(faker.finance.amount({ min: 100, max: 1000, dec: 2 })),
     description: faker.lorem.sentence(),
   }));
@@ -380,12 +396,27 @@ async function seedDeductions(db: PostgresJsDatabase) {
 }
 async function seedBenefits(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
+  const allowedFrequencies: (
+    | 'Daily'
+    | 'Weekly'
+    | 'Bi Weekly'
+    | 'Semi Monthly'
+    | 'Monthly'
+  )[] = ['Daily', 'Weekly', 'Bi Weekly', 'Semi Monthly', 'Monthly'];
 
+  const benefitsTypes: ('Bonus' | 'Comission' | 'Overtime' | 'Other')[] = [
+    'Bonus',
+    'Comission',
+    'Overtime',
+    'Other',
+  ];
   const benefitRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    name: faker.finance.accountName(),
     start: faker.date.past().toISOString(),
     end: faker.date.future().toISOString(),
-    benefits_type: faker.commerce.product(),
+    frequency: faker.helpers.arrayElement(allowedFrequencies),
+    benefits_type: faker.helpers.arrayElement(benefitsTypes),
     amount: parseFloat(faker.finance.amount({ min: 100, max: 1000, dec: 2 })),
     description: faker.lorem.sentence(),
   }));
@@ -398,10 +429,17 @@ async function seedBenefits(db: PostgresJsDatabase) {
 async function seedAdjustments(db: PostgresJsDatabase) {
   const employeeIDs = await db.select().from(employee);
 
+  const adjustmentType: ('Bonus' | 'Comission' | 'Overtime' | 'Other')[] = [
+    'Bonus',
+    'Comission',
+    'Overtime',
+    'Other',
+  ];
   const adjustmentRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    name: faker.finance.accountName(),
     remarks: faker.lorem.sentence(),
-    adjustments_type: faker.commerce.productMaterial(),
+    adjustments_type: faker.helpers.arrayElement(adjustmentType),
     amount: parseFloat(faker.finance.amount({ min: 100, max: 1000, dec: 2 })),
     description: faker.lorem.sentence(),
   }));
@@ -423,6 +461,7 @@ async function seedAdditionalPay(db: PostgresJsDatabase) {
 
   const additionalPayRecords = Array.from({ length: 50 }).map(() => ({
     employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    name: faker.finance.accountName(),
     additional_pay_type: faker.helpers.arrayElement(allowedAdditionalPayTypes),
     amount: parseFloat(faker.finance.amount({ min: 100, max: 1000, dec: 2 })),
     description: faker.lorem.sentence(),
