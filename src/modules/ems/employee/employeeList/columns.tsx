@@ -1,11 +1,11 @@
 'use client';
 import {Checkbox} from '@/components/ui/checkbox';
 import {ColumnDef} from '@tanstack/react-table';
-import {Employee} from '@/components/types';
 import {CellAction} from './cel-action';
 import {dateParser} from '@/lib/util/utils';
+import {EmployeeBasicInformation} from '@/lib/zod-schema';
 
-export const columns: ColumnDef<Employee>[] = [
+export const columns: ColumnDef<EmployeeBasicInformation>[] = [
 	{
 		id: 'select',
 		header: ({table}) => (

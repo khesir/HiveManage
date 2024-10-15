@@ -15,7 +15,10 @@ export function EmployeeOtherCard() {
 					Overall collective employee information
 				</CardDescription>
 			</CardHeader>
-			<CardContent>Payroll Information</CardContent>
+			<CardContent>
+				Extra informations. e.g.. Access Acount, Leave limits, filters and other
+				personal informations
+			</CardContent>
 		</Card>
 	);
 }

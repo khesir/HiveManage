@@ -38,3 +38,35 @@ export const activityLogEmployeeSchema = z.object({
 	deleted_at: z.string().optional(),
 });
 export type ActivityLogsJoin = z.infer<typeof activityLogEmployeeSchema>;
+
+export const benefitAddMoreSchema = z.object({
+	benefits: z.array(
+		z.object({
+			benefits_id: z.number().optional(),
+			name: z.string().min(1, 'name is required'),
+			start: z.string().min(1, 'start date is required'),
+			end: z.string().min(1, 'end date is required'),
+			frequency: z.string().min(1, 'frequency is required'),
+			benefits_type: z.string().min(1, 'benefits type is required'),
+			amount: z.string().min(1, 'amount is required'),
+			description: z.string().optional(),
+		}),
+	),
+});
+export type BenefitAddMore = z.infer<typeof benefitAddMoreSchema>;
+
+export const deductionAddmoreSchema = z.object({
+	deductions: z.array(
+		z.object({
+			deduction_id: z.number().optional(),
+			name: z.string().min(1, 'name is required'),
+			start: z.string().min(1, 'start date is required'),
+			end: z.string().min(1, 'end date is required'),
+			frequency: z.string().min(1, 'frequency is required'),
+			deduction_type: z.string().min(1, 'benefits type is required'),
+			amount: z.string().min(1, 'amount is required'),
+			description: z.string().optional(),
+		}),
+	),
+});
+export type DeductionAddMore = z.infer<typeof deductionAddmoreSchema>;

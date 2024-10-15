@@ -157,3 +157,65 @@ export const activityLogsSchema = z.object({
 	deleted_at: z.string().optional(),
 });
 export type ActivityLogs = z.infer<typeof activityLogsSchema>;
+
+export const deductionsSchema = z.object({
+	deduction_id: z.number().optional(),
+	employee_id: z.number().optional(),
+	name: z.string().min(1),
+	start: z.string().min(1),
+	end: z.string().min(1),
+	frequency: z.string().min(1),
+	deduction_type: z.string().min(1),
+	amount: z.string().min(1),
+	description: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type Deductions = z.infer<typeof deductionsSchema>;
+
+export const benefitsSchema = z.object({
+	benefits_id: z.number().optional(),
+	employee_id: z.number().optional(),
+	name: z.string().min(1),
+	start: z.string().min(1),
+	end: z.string().min(1),
+	benefits_type: z.string().min(1),
+	amount: z.string().min(1),
+	description: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type Benefits = z.infer<typeof benefitsSchema>;
+
+export const adjustmentSchema = z.object({
+	adjustments_id: z.number().optional(),
+	employee_id: z.number().optional(),
+	name: z.string().min(1),
+	remarks: z.string().min(1),
+	adjustments_type: z.string().min(1),
+	amount: z.string().min(1),
+	description: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type Adjustment = z.infer<typeof adjustmentSchema>;
+
+export const additionalPaySchema = z.object({
+	additional_pay_id: z.number().optional(),
+	name: z.string().min(1),
+	remarks: z.string().min(1),
+	addittional_pay_type: z.enum(['Bonus', 'Comission', 'Overtime', 'Other']),
+	amount: z.string().min(1),
+	description: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type AdditionalPay = z.infer<typeof additionalPaySchema>;

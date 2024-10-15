@@ -10,7 +10,6 @@ export type paramsProps = {
 
 export default function EmployeeList({searchParams}: paramsProps) {
 	const [employees, setEmployees] = useState<EmployeeBasicInformation[]>([]);
-	const [totalUsers, setTotalUsers] = useState<number>(0);
 	const [pageCount, setPageCount] = useState<number>(0);
 
 	const page = Number(searchParams.get('page')) || 1;
@@ -28,7 +27,6 @@ export default function EmployeeList({searchParams}: paramsProps) {
 					(sort ? `&sort=${sort}` : ''),
 			);
 			setEmployees(res.data);
-			setTotalUsers(res.total_data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));
 		};
 
@@ -38,9 +36,7 @@ export default function EmployeeList({searchParams}: paramsProps) {
 	return (
 		<EmployeeTable
 			searchKey="fullname"
-			pageNo={page}
 			columns={columns} // Define your `columns` somewhere in the component or import them
-			totalUsers={totalUsers}
 			data={employees}
 			pageCount={pageCount}
 		/>

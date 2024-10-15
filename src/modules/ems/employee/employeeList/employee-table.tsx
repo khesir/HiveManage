@@ -42,8 +42,6 @@ interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	searchKey: string;
-	pageNo: number;
-	totalUsers: number;
 	pageSizeOptions?: number[];
 	pageCount: number;
 	searchParams?: {
@@ -54,9 +52,7 @@ interface DataTableProps<TData, TValue> {
 export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 	columns,
 	data,
-	pageNo,
 	searchKey,
-	totalUsers,
 	pageCount,
 	pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
