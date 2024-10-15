@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import log from '@/lib/logger';
+import { db } from '@/drizzle/pool';
 import { validateRequest } from '@/src/middlewares';
 
 import { EmployeeController } from './employee.controller';
@@ -10,7 +11,10 @@ import personalInformationRoute from '../personal_information/personalInformatio
 import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
 import financiallInformationRoute from '../financialInformation/financialInformation.route';
 import salaryInformationRoute from '../salary_information/salaryInformation.route';
-import { db } from '@/drizzle/pool';
+import benefitRoute from '../benefits/benefits.route';
+import deductionRoute from '../deductions/deductions.route';
+import additionalPayRoute from '../additional_pay/additionalPay.route';
+import adjustmentsRoute from '../adjustments/adjustments.route';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);
@@ -83,5 +87,9 @@ employeeRoute.use(
 );
 
 employeeRoute.use('/:employee_id/salaryInformation', salaryInformationRoute);
+employeeRoute.use('/:employee_id/benefits', benefitRoute);
+employeeRoute.use('/:employee_id/deductions', deductionRoute);
+employeeRoute.use('/:employee_id/additionalPays', additionalPayRoute);
+employeeRoute.use('/:employee_id/adjustments', adjustmentsRoute);
 
 export default employeeRoute;

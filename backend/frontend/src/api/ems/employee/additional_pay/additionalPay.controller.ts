@@ -13,10 +13,11 @@ export class AdditionalPayController {
 
   async createAdditionalPay(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, additional_pay_type, amount, description } =
-        req.body;
+      const employee_id = Number(req.params.employee_id);
+      const { name, additional_pay_type, amount, description } = req.body;
       await this.additionalPayService.createAdditionalPay({
         employee_id,
+        name,
         additional_pay_type,
         amount,
         description,
@@ -35,12 +36,9 @@ export class AdditionalPayController {
 
   async getAdditionalPay(req: Request, res: Response, next: NextFunction) {
     try {
-      const { additional_pay_id } = req.params;
-      const { employee_id } = req.query;
-      const result = await this.additionalPayService.getAllAdditionalPay(
-        Number(additional_pay_id),
-        Number(employee_id),
-      );
+      const { employee_id } = req.params;
+      const result =
+        await this.additionalPayService.getAllAdditionalPay(employee_id);
       res.status(HttpStatus.OK.code).json({ data: result });
     } catch (error) {
       res
@@ -52,9 +50,10 @@ export class AdditionalPayController {
 
   async getAdditionalPayById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { additional_pay_id } = req.params;
+      const { additional_pay_id, employee_id } = req.params;
       const data = await this.additionalPayService.getAdditionalPayById(
-        Number(additional_pay_id),
+        employee_id,
+        additional_pay_id,
       );
       res.status(200).json({ message: data });
     } catch (error) {
@@ -68,12 +67,12 @@ export class AdditionalPayController {
 
   async updateAdditionalPay(req: Request, res: Response, next: NextFunction) {
     try {
-      const { additional_pay_id } = req.params;
-      const { employee_id, additional_pay_type, amount, description } =
-        req.body;
+      const { additional_pay_id, employee_id } = req.params;
+      const { name, additional_pay_type, amount, description } = req.body;
       await this.additionalPayService.updateAdditionalPay(
-        { employee_id, additional_pay_type, amount, description },
-        Number(additional_pay_id),
+        { name, additional_pay_type, amount, description },
+        employee_id,
+        additional_pay_id,
       );
       res
         .status(HttpStatus.OK.code)
@@ -92,9 +91,10 @@ export class AdditionalPayController {
     next: NextFunction,
   ) {
     try {
-      const { additional_pay_id } = req.params;
+      const { additional_pay_id, employee_id } = req.params;
       await this.additionalPayService.deleteAdditionalPay(
-        Number(additional_pay_id),
+        employee_id,
+        additional_pay_id,
       );
       res.status(200).json({
         message: `Additional Pay ID:${additional_pay_id} is deleted successfully`,

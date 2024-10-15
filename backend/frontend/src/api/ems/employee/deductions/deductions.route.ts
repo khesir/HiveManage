@@ -29,13 +29,14 @@ log.info('PATCH /deductions/deduction_id set');
 
 deductionRoute.get(
   '/',
+  validateDeductionsByEmployeeId,
   deductionsController.getDeductions.bind(deductionsController),
 );
 log.info('GET /benefit set');
 
 deductionRoute.get(
   '/:deduction_id',
-  validateDeductionsId,
+  [validateDeductionsByEmployeeId, validateDeductionsId],
   deductionsController.getDeductionsById.bind(deductionsController),
 );
 log.info('GET /deductions/:deduction_id set');

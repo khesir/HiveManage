@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const CreateAdjustments = z.object({
   employee_id: z.number().min(1),
+  name: z.string().min(1),
   remarks: z.string().min(1),
   adjustment_type: z.string().min(1),
   amount: z.number().min(1),
@@ -9,7 +10,7 @@ export const CreateAdjustments = z.object({
 });
 
 export const UpdateAdjustments = z.object({
-  employee_id: z.number().min(1),
+  name: z.string().min(1),
   remarks: z.string().min(1),
   adjustment_type: z.string().min(1),
   amount: z.number().min(1),

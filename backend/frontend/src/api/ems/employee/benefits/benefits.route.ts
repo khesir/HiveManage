@@ -32,14 +32,14 @@ log.info('GET /benefits set');
 
 benefitRoute.get(
   '/:benefits_id',
-  validateBenefitId,
+  [validateBenefitId, validateBenefitByEmployeeId],
   benefitController.getBenefitsById.bind(benefitController),
 );
 log.info('GET /benefits/:benefits_id set ');
 
 benefitRoute.delete(
   '/:benefits_id',
-  validateBenefitId,
+  [validateBenefitId, validateBenefitByEmployeeId],
   benefitController.deleteBenefitsById.bind(benefitController),
 );
 log.info('DELETE /payroll/:payroll_id set');

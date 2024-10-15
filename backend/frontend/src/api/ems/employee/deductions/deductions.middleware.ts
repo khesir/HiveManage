@@ -1,26 +1,31 @@
-import { eq, and } from 'drizzle-orm';
+import { eq, and, isNull } from 'drizzle-orm';
 import { NextFunction, Response, Request } from 'express';
 
 import { db } from '@/drizzle/pool';
 import log from '@/lib/logger';
-import { benefits, employee } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/config';
+import { deductions, employee } from '@/drizzle/drizzle.schema';
 
-export async function validateBenefitId(
+export async function validateDeductionsId(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { benefits_id } = req.params;
+  const { deduction_id } = req.params;
 
   try {
-    const beneFits = await db
+    const deducTions = await db
       .select()
-      .from(benefits)
-      .where(and(eq(benefits.benefits_id, Number(benefits_id))));
-    console.log(beneFits);
-    if (!beneFits[0]) {
-      return res.status(404).json({ message: 'Benefit not found' });
+      .from(deductions)
+      .where(
+        and(
+          eq(deductions.deduction_id, Number(deduction_id)),
+          isNull(deductions.deleted_at),
+        ),
+      );
+    console.log(deducTions);
+    if (!deducTions[0]) {
+      return res.status(404).json({ message: 'Deduction not found' });
     }
     next();
   } catch (error) {
@@ -29,18 +34,23 @@ export async function validateBenefitId(
   }
 }
 
-export async function validateBenefitByEmployeeId(
+export async function validateDeductionsByEmployeeId(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { employee_id } = req.body;
+  const { employee_id } = req.params;
 
   try {
     const data = await db
       .select()
       .from(employee)
-      .where(and(eq(employee.employee_id, Number(employee_id))));
+      .where(
+        and(
+          eq(employee.employee_id, Number(employee_id)),
+          isNull(employee.deleted_at),
+        ),
+      );
     console.log(data);
     if (!data[0]) {
       return res

@@ -1,30 +1,33 @@
 import { z } from 'zod';
 
-export const CreateDeductions = z.object({
+export const CreateBenefits = z.object({
   employee_id: z.number().min(1),
+  name: z.string().min(1),
   start: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
   end: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  deduction_type: z.string().min(1),
+  benefits_type: z.string().min(1),
+  frequency: z.string().min(1),
   amount: z.number().min(1),
   description: z.string().min(1),
 });
 
-export const UpdateDeductions = z.object({
-  employee_id: z.number().min(1),
+export const UpdateBenefits = z.object({
+  name: z.string().min(1),
   start: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
   end: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  deduction_type: z.string().min(1),
+  benefits_type: z.string().min(1),
+  frequency: z.string().min(1),
   amount: z.number().min(1),
   description: z.string().min(1),
 });
 
-export type CreateDeductions = z.infer<typeof CreateDeductions>;
-export type UpdateDeductions = z.infer<typeof UpdateDeductions>;
+export type CreateBenefits = z.infer<typeof CreateBenefits>;
+export type UpdateBenefits = z.infer<typeof UpdateBenefits>;

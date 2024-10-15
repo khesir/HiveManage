@@ -25,27 +25,32 @@ log.info('POST /adjustments/ set');
 
 adjustmentsRoute.put(
   '/:adjustments_id',
-  [validateRequest({ body: UpdateAdjustments }), validateAdjustmentsId],
+  [
+    validateRequest({ body: UpdateAdjustments }),
+    validateAdjustmentsId,
+    validateAdjustmentsByEmployeeId,
+  ],
   adjustmentsController.updateAdjustments.bind(adjustmentsController),
 );
 log.info('PUT /adjustments/adjustments_id set');
 
 adjustmentsRoute.get(
   '/',
+  validateAdjustmentsByEmployeeId,
   adjustmentsController.getAllAdjustments.bind(adjustmentsController),
 );
 log.info('GET /adjustments set');
 
 adjustmentsRoute.get(
   '/:adjustments_id',
-  validateAdjustmentsId,
+  [validateAdjustmentsId, validateAdjustmentsByEmployeeId],
   adjustmentsController.getAdjustmentsById.bind(adjustmentsController),
 );
 log.info('GET /adjustments/:adjustments_id set');
 
 adjustmentsRoute.delete(
   '/:adjustments_id',
-  validateAdjustmentsId,
+  [validateAdjustmentsId, validateAdjustmentsByEmployeeId],
   adjustmentsController.deleteAdjustmentsById.bind(adjustmentsController),
 );
 log.info('DELETE /adjustments/:adjustments_id set');

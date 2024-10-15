@@ -10,11 +10,7 @@ import leaveRequestRoute from './company/leaveRequest/leaveRequest.route';
 import employeeRoute from './employee/employee/employee.route';
 import signatoryRoute from './payroll/signatory/signatory.route';
 import payrollApprovalRoute from './payroll/payroll_approval/payrollApproval.route';
-import benefitRoute from './fees/benefits/benefits.route';
-import deductionRoute from './fees/deductions/deductions.route';
 import payrollReportRoute from './payroll/payroll_reports/payrollReports.route';
-import additionalPayRoute from './fees/additional_pay/additionalPay.route';
-import adjustmentsRoute from './fees/adjustments/adjustments.route';
 
 const emsRoute = Router({ mergeParams: true });
 
@@ -45,19 +41,7 @@ log.info('ROUTE /signatory set');
 emsRoute.use('/payrollApprovals', payrollApprovalRoute);
 log.info('ROUTE /payrollApproval set');
 
-emsRoute.use('/benefits', benefitRoute);
-log.info('ROUTE /benefit set');
-
-emsRoute.use('/deductions', deductionRoute);
-log.info('ROUTE /deductions set');
-
 emsRoute.use('/payrollReports', payrollReportRoute);
 log.info('ROUTE /payrollReports set');
-
-emsRoute.use('/additionalPays', additionalPayRoute);
-log.info('ROUTE /additionalPay');
-
-emsRoute.use('/adjustments', adjustmentsRoute);
-log.info('ROUTE /adjustments set');
 
 export default emsRoute;

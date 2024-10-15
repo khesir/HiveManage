@@ -13,11 +13,12 @@ export class AdjustmentsController {
 
   async createAdjustments(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, remarks, adjustment_type, amount, description } =
-        req.body;
+      const { name, remarks, adjustment_type, amount, description } = req.body;
+      const employee_id = Number(req.params.employee_id);
 
       await this.adjustmentsService.createAdjustments({
         employee_id,
+        name,
         remarks,
         adjustment_type,
         amount,
@@ -37,19 +38,19 @@ export class AdjustmentsController {
 
   async updateAdjustments(req: Request, res: Response, next: NextFunction) {
     try {
-      const { adjustments_id } = req.params;
-      const { employee_id, remarks, adjustment_type, amount, description } =
-        req.body;
+      const { adjustments_id, employee_id } = req.params;
+      const { name, remarks, adjustment_type, amount, description } = req.body;
 
       await this.adjustmentsService.updateAdjustments(
         {
-          employee_id,
+          name,
           remarks,
           adjustment_type,
           amount,
           description,
         },
-        Number(adjustments_id),
+        employee_id,
+        adjustments_id,
       );
       res
         .status(HttpStatus.OK.code)
@@ -64,12 +65,9 @@ export class AdjustmentsController {
 
   async getAllAdjustments(req: Request, res: Response, next: NextFunction) {
     try {
-      const { additional_pay_id } = req.params;
-      const { employee_id } = req.query;
-      const result = await this.adjustmentsService.getAllAdjustments(
-        Number(additional_pay_id),
-        Number(employee_id),
-      );
+      const { employee_id } = req.params;
+      const result =
+        await this.adjustmentsService.getAllAdjustments(employee_id);
       res.status(HttpStatus.OK.code).json({ data: result });
     } catch (error) {
       res
@@ -81,9 +79,10 @@ export class AdjustmentsController {
 
   async getAdjustmentsById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { adjustments_id } = req.params;
+      const { adjustments_id, employee_id } = req.params;
       const data = await this.adjustmentsService.getAdjustmentsById(
-        Number(adjustments_id),
+        adjustments_id,
+        employee_id,
       );
       res.status(200).json({ message: data });
     } catch (error) {
@@ -97,8 +96,11 @@ export class AdjustmentsController {
 
   async deleteAdjustmentsById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { adjustments_id } = req.params;
-      await this.adjustmentsService.deleteAdjustments(Number(adjustments_id));
+      const { adjustments_id, employee_id } = req.params;
+      await this.adjustmentsService.deleteAdjustments(
+        adjustments_id,
+        employee_id,
+      );
       res.status(200).json({
         message: `Adjustments ID:${adjustments_id} is deleted successfully`,
       });

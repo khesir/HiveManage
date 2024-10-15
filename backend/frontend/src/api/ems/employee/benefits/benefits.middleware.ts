@@ -3,38 +3,38 @@ import { NextFunction, Response, Request } from 'express';
 
 import { db } from '@/drizzle/pool';
 import log from '@/lib/logger';
+import { benefits, employee } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/config';
-import { adjustments, employee } from '@/drizzle/drizzle.schema';
 
-export async function validateAdjustmentsId(
+export async function validateBenefitId(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { adjustments_id } = req.params;
+  const { benefits_id } = req.params;
 
   try {
-    const Adjustments = await db
+    const beneFits = await db
       .select()
-      .from(adjustments)
-      .where(and(eq(adjustments.adjustments_id, Number(adjustments_id))));
-    console.log(Adjustments);
-    if (!Adjustments[0]) {
-      return res.status(404).json({ message: 'Adjustment not found ' });
+      .from(benefits)
+      .where(and(eq(benefits.benefits_id, Number(benefits_id))));
+    console.log(beneFits);
+    if (!beneFits[0]) {
+      return res.status(404).json({ message: 'Benefit not found' });
     }
     next();
   } catch (error) {
     log.error(error);
-    res.status(500).json({ message: 'Internal Server Error ' });
+    res.status(500).json({ message: 'Internal server error ' });
   }
 }
 
-export async function validateAdjustmentsByEmployeeId(
+export async function validateBenefitByEmployeeId(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { employee_id } = req.body;
+  const { employee_id } = req.params;
 
   try {
     const data = await db
@@ -53,6 +53,6 @@ export async function validateAdjustmentsByEmployeeId(
     log.error(error);
     res
       .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
-      .json({ message: 'Internal Server Error ' });
+      .json({ message: 'Internal server error ' });
   }
 }

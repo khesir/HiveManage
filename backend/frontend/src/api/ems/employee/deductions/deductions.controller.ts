@@ -13,11 +13,11 @@ export class DeductionsController {
 
   async getDeductions(req: Request, res: Response, next: NextFunction) {
     try {
-      const { deduction_id } = req.params;
-      const { employee_id } = req.query;
+      const deductionsTypes = (req.query.benefits_type as string) || undefined;
+      const employee_id = req.params.employee_id as string;
       const result = await this.deductionsService.getAllDeductions(
-        Number(deduction_id),
-        Number(employee_id),
+        deductionsTypes,
+        employee_id,
       );
       res.status(HttpStatus.OK.code).json({ data: result });
     } catch (error) {
@@ -30,9 +30,10 @@ export class DeductionsController {
 
   async getDeductionsById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { deduction_id } = req.params;
+      const { employee_id, deduction_id } = req.params;
       const data = await this.deductionsService.getDeductionsById(
-        Number(deduction_id),
+        deduction_id,
+        employee_id,
       );
       res.status(200).json({ message: data });
     } catch (error) {
@@ -46,13 +47,23 @@ export class DeductionsController {
 
   async createDeductions(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, start, end, deduction_type, amount, description } =
-        req.body;
+      const employee_id = Number(req.params.employee_id);
+      const {
+        name,
+        start,
+        end,
+        frequency,
+        deduction_type,
+        amount,
+        description,
+      } = req.body;
       await this.deductionsService.createDeductions({
         employee_id,
+        name,
         start,
         end,
         deduction_type,
+        frequency,
         amount,
         description,
       });
@@ -70,12 +81,20 @@ export class DeductionsController {
 
   async updateDeductions(req: Request, res: Response, next: NextFunction) {
     try {
-      const { deduction_id } = req.params;
-      const { employee_id, start, end, deduction_type, amount, description } =
-        req.body;
+      const { deduction_id, employee_id } = req.params;
+      const {
+        name,
+        start,
+        end,
+        frequency,
+        deduction_type,
+        amount,
+        description,
+      } = req.body;
       await this.deductionsService.updateDeductions(
-        { employee_id, start, end, deduction_type, amount, description },
-        Number(deduction_id),
+        { name, start, end, deduction_type, frequency, amount, description },
+        deduction_id,
+        employee_id,
       );
       res
         .status(HttpStatus.OK.code)
@@ -90,8 +109,8 @@ export class DeductionsController {
 
   async deleteDeductionsById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { deduction_id } = req.params;
-      await this.deductionsService.deleteDeductions(Number(deduction_id));
+      const { deduction_id, employee_id } = req.params;
+      await this.deductionsService.deleteDeductions(deduction_id, employee_id);
       res.status(200).json({
         message: `Deduction ID:${deduction_id} is deleted successfully`,
       });
