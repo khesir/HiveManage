@@ -20,12 +20,12 @@ benefitRoute.post(
 );
 log.info('POST /benefits/ set');
 
-benefitRoute.patch(
+benefitRoute.put(
   '/:benefits_id',
   [validateRequest({ body: UpdateBenefits }), validateBenefitByEmployeeId],
   benefitController.updateBenefit.bind(benefitController),
 );
-log.info('PATCH /benefits/benefits_id set');
+log.info('PUT /benefits/benefits_id set');
 
 benefitRoute.get('/', benefitController.getAllBenefits.bind(benefitController));
 log.info('GET /benefits set');

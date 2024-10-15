@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CreateDeductions = z.object({
-  employee_id: z.number().min(1),
+  employee_id: z.number().optional(),
   name: z.string().min(1),
   start: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',

@@ -20,12 +20,12 @@ deductionRoute.post(
 );
 log.info('POST /deductions/ set');
 
-deductionRoute.patch(
+deductionRoute.put(
   '/:deduction_id',
   [validateRequest({ body: UpdateDeductions }), validateDeductionsId],
   deductionsController.updateDeductions.bind(deductionsController),
 );
-log.info('PATCH /deductions/deduction_id set');
+log.info('PUT /deductions/deduction_id set');
 
 deductionRoute.get(
   '/',
