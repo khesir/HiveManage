@@ -6,6 +6,7 @@ import supplierRoute from './supplier/supplier.route';
 import orderRoute from './order/order.route';
 import arriveitemsRoute from './arriveItem/arriveItem.route';
 import itemsRoute from './item/item.route';
+import stockLogsRoute from './stocksLogs/stockslogs.route';
 
 const imsRoute = Router({ mergeParams: true });
 
@@ -23,5 +24,8 @@ log.info('ROUTE /product set');
 
 imsRoute.use('/category', categoryRoute);
 log.info('ROUTE category set');
+
+imsRoute.use('/stockLogs', stockLogsRoute);
+log.info('ROUTE StockLogs set');
 
 export default imsRoute;

@@ -20,10 +20,10 @@ export class ItemsController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.itemsWithDetails,
       });
     } catch (error) {
       res
@@ -36,7 +36,7 @@ export class ItemsController {
   async getItemById(req: Request, res: Response, next: NextFunction) {
     try {
       const { item_id } = req.params;
-      const data = await this.itemService.getItemById(Number(item_id));
+      const data = await this.itemService.getItemById(item_id);
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res

@@ -1,28 +1,28 @@
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { item } from '@/drizzle/drizzle.schema';
+import { stocksLogs } from '@/drizzle/drizzle.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
 
-export async function validateItemID(
+export async function validateStockLogsID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { item_id } = req.params;
+  const { stock_id } = req.params;
 
   try {
-    const Item = await db
+    const stocks = await db
       .select()
-      .from(item)
-      .where(and(eq(item.item_id, Number(item_id)), isNull(item.deleted_at)));
-
-    if (!Item[0]) {
-      return res.status(404).json({ message: 'Item not found' });
+      .from(stocksLogs)
+      .where(eq(stocksLogs.stock_log_id, Number(stock_id)));
+    console.log(stocks);
+    if (!stocks[0]) {
+      return res.status(404).json({ message: 'Stocklogs not found' });
     }
     next();
   } catch (error) {

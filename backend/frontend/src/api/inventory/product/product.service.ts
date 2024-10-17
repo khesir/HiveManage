@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { product } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateProduct } from './product.model';
@@ -23,35 +23,31 @@ export class ProductService {
     limit: number,
     offset: number,
   ) {
-    try {
-      if (product_id) {
-        // Query by supplierId with limit and offset
-        const result = await this.db
-          .select()
-          .from(product)
-          .where(
-            and(
-              eq(product.product_id, Number(product_id)),
-              isNull(product.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        //Query all suppliers with limit and offset
-        const result = await this.db
-          .select()
-          .from(product)
-          .where(isNull(product.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching suppliers: ', error);
-      throw new Error('Error fetching suppliers');
+    const conditions = [isNull(product.deleted_at)];
+
+    if (product_id) {
+      conditions.push(eq(product.product_id, Number(product_id)));
     }
+
+    const totalCountQuery = await this.db
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(product)
+      .where(and(...conditions));
+
+    const totalData = totalCountQuery[0].count;
+
+    const result = await this.db
+      .select()
+      .from(product)
+      .where(and(isNull(product.deleted_at)))
+      .limit(limit)
+      .offset(offset);
+    return {
+      totalData,
+      result,
+    };
   }
 
   async getProductById(paramsId: number) {

@@ -40,6 +40,7 @@ import {
   inquiry,
   message,
   customer,
+  stocksLogs,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -952,6 +953,19 @@ async function seedOrder(db: PostgresJsDatabase) {
   log.info('Order records seeded successfully');
 }
 
+async function seedStockLogs(db: PostgresJsDatabase) {
+  const itemdata = await db.select().from(item);
+  const movement: ('Stock In' | 'Stock Out')[] = ['Stock In', 'Stock Out'];
+  const stockRecord = Array.from({ length: 50 }).map(() => ({
+    item_id: faker.helpers.arrayElement(itemdata).item_id,
+    quantity: faker.number.int({ min: 1, max: 30 }),
+    movement_type: faker.helpers.arrayElement(movement),
+    created_at: faker.date.recent(),
+  }));
+  await db.insert(stocksLogs).values(stockRecord);
+  log.info('Stock Logs records seeded successfully');
+}
+
 async function seedArrivedItems(db: PostgresJsDatabase) {
   const orderIDs = await db.select().from(order);
 
@@ -1004,6 +1018,7 @@ async function main() {
     await seedOrder(db);
     await seedArrivedItems(db);
     await seedItem(db);
+    await seedStockLogs(db);
 
     // Participants and related data
     await seedCustomer(db);

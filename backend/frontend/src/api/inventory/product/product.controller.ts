@@ -20,10 +20,10 @@ export class ProductController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.result,
       });
     } catch (error) {
       res
@@ -37,7 +37,7 @@ export class ProductController {
     try {
       const { product_id } = req.params;
       const data = await this.productService.getProductById(Number(product_id));
-      res.status(200).json({ message: data });
+      res.status(200).json({ data: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

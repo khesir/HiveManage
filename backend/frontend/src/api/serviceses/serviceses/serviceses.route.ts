@@ -5,6 +5,9 @@ import log from '@/lib/logger';
 import { ServiceController } from './serviceses.controller';
 import { validateServiceID } from './serviceses.middleware';
 import { CreateService, UpdateService } from './serviceses.model';
+import joborderRoute from '../joborder/joborder.route';
+import borrowRoute from '../borrow/borrow.route';
+import reserveRoute from '../reserve/reserve.route';
 
 const serviceRoute = Router({ mergeParams: true });
 const serviceController = new ServiceController(db);
@@ -39,5 +42,9 @@ serviceRoute.delete(
   serviceController.deleteService.bind(serviceController),
 );
 log.info('DELETE /service/:service_id set');
+
+serviceRoute.use('/:service_id/joborder', joborderRoute);
+serviceRoute.use('/:service_id/borrow', borrowRoute);
+serviceRoute.use('/:service_id/reserve', reserveRoute);
 
 export default serviceRoute;

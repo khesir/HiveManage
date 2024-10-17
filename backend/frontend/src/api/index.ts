@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import express from 'express';
 
 import { HttpStatus } from '@/lib/config';
@@ -8,7 +7,6 @@ import imsRoute from './inventory/inventory.route';
 
 import log from '@/lib/logger';
 import srmsRoute from './serviceses/service.route';
-import jomsRoute from './jo/jo.route';
 import cmsRoute from './cms/cms.route';
 import smsRoute from './sales/sales.route';
 
@@ -29,10 +27,6 @@ log.info('ROUTE /sms route set');
 // // Service Management System API
 baseRoute.use('/srms', srmsRoute);
 log.info('ROUTE /srms');
-
-// // Job Order Management System API
-baseRoute.use('/joms', jomsRoute);
-log.info('ROUTE /joms route set');
 
 // // Customer Management System API
 baseRoute.use('/cms', cmsRoute);

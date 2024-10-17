@@ -1,5 +1,5 @@
-import { and, eq, isNull } from 'drizzle-orm';
-import { service } from '@/drizzle/drizzle.schema';
+import { eq, isNull } from 'drizzle-orm';
+import { sales, service } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateService } from './serviceses.model';
 
@@ -19,33 +19,18 @@ export class ServicesService {
     limit: number,
     offset: number,
   ) {
-    try {
-      if (service_id) {
-        const result = await this.db
-          .select()
-          .from(service)
-          .where(
-            and(
-              eq(service.service_id, Number(service_id)),
-              isNull(service.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        const result = await this.db
-          .select()
-          .from(service)
-          .where(isNull(service.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching services: ', error);
-      throw new Error('Error fetching services');
+    const conditions = [isNull(service.deleted_at)];
+    if (service_id) {
+      conditions.push(eq(service.service_id, Number(service_id)));
     }
+    const result = await this.db
+      .select()
+      .from(service)
+      .leftJoin(sales, eq(sales.sales_id, service.sales_id))
+      .where(isNull(service.deleted_at))
+      .limit(limit)
+      .offset(offset);
+    return result;
   }
 
   async getServicesById(paramsId: number) {

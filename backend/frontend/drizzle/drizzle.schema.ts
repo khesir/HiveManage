@@ -649,6 +649,15 @@ export const item = pgTable('item', {
   deleted_at: timestamp('deleted_at'),
 });
 
+export const stocksLogs = pgTable('stock_logs', {
+  stock_log_id: serial('stock_logs_id').primaryKey(),
+  item_id: integer('item_id').references(() => item.item_id),
+  quantity: integer('quantity'),
+  movement_type: varchar('movement_type'),
+  action: varchar('action'),
+  created_at: timestamp('created_at').defaultNow(),
+});
+
 //Product
 export const product = pgTable('product', {
   product_id: serial('product_id').primaryKey(),
@@ -709,7 +718,7 @@ export const order = pgTable('order', {
 });
 
 //Arrived_Items
-export const arrived_Items = pgTable('arrived_Items', {
+export const arrived_Items = pgTable('arrived_items', {
   arrived_Items_id: serial('arrived_Items_id').primaryKey(),
   order_id: integer('order_id').references(() => order.order_id), // Foreign key reference to the order table
   filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
