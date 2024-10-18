@@ -41,6 +41,9 @@ import {
   message,
   customer,
   stocksLogs,
+  assignedemployees,
+  remarktickets,
+  joborderitems,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -52,7 +55,6 @@ import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 async function seedEmployees(db: PostgresJsDatabase) {
   const employeeStatus: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
   const employees = Array.from({ length: 50 }).map(() => ({
-    uuid: faker.string.uuid(),
     firstname: faker.person.firstName(),
     middlename: faker.person.firstName(),
     lastname: faker.person.lastName(),
@@ -620,7 +622,6 @@ async function seedSalesItem(db: PostgresJsDatabase) {
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     item_id: faker.helpers.arrayElement(itemIDs).item_id,
     quantity: faker.number.int({ min: 1, max: 100 }), // Adjust max as needed
-    is_service_item: faker.datatype.boolean(), // Changed to boolean
     total_price: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -798,6 +799,73 @@ async function seedService(db: PostgresJsDatabase) {
 
   log.info('Service records seeded successfully');
 }
+
+async function seedAssignedEmployees(db: PostgresJsDatabase) {
+  const jobOrders = await db.select().from(jobOrder);
+  const employees = await db.select().from(employee); // Assuming you're also fetching employees here
+
+  // Check if jobOrders or employees are empty
+  if (jobOrders.length === 0) {
+    log.warn('No job orders found. Skipping assigned employees seeding.');
+    return; // Skip seeding if there are no job orders
+  }
+
+  if (employees.length === 0) {
+    log.warn('No employees found. Skipping assigned employees seeding.');
+    return; // Skip seeding if there are no employees
+  }
+
+  const assignedEmployeesRecords = Array.from({ length: 70 }).map(() => ({
+    job_order_id: faker.helpers.arrayElement(jobOrders).job_order_id,
+    employee_id: faker.helpers.arrayElement(employees).employee_id,
+    assigned_by: faker.person.fullName(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(assignedemployees).values(assignedEmployeesRecords);
+
+  log.info('Assigned Employees seeded successfully');
+}
+
+async function seedRemarkTickets(db: PostgresJsDatabase) {
+  const jobOrders = await db.select().from(jobOrder);
+
+  // Check if jobOrders array is empty
+  if (jobOrders.length === 0) {
+    log.warn('No job orders found. Skipping remark tickets seeding.');
+    return; // Skip seeding if there are no job orders
+  }
+
+  const remarkTypes: (
+    | 'General'
+    | 'Urgent'
+    | 'Follow-up'
+    | 'Resolved'
+    | 'On-Hold'
+    | 'Information'
+  )[] = [
+    'General',
+    'Urgent',
+    'Follow-up',
+    'Resolved',
+    'On-Hold',
+    'Information',
+  ];
+
+  // Ensure to reference job_order_id correctly
+  const remarkticketsRecords = Array.from({ length: 70 }).map(() => ({
+    job_order_id: faker.helpers.arrayElement(jobOrders).job_order_id, // Accessing job_order_id safely
+    remark_type: faker.helpers.arrayElement(remarkTypes),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(remarktickets).values(remarkticketsRecords);
+
+  log.info('Remark Tickets seeded successfully');
+}
+
 //  =======================================================================================
 // =================================== JOB ORDER ==========================================
 
@@ -856,6 +924,23 @@ async function seedReports(db: PostgresJsDatabase) {
 
   log.info('Report records seeded successfully');
 }
+
+async function seedJobOrderItems(db: PostgresJsDatabase) {
+  const itemIDs = await db.select().from(item);
+  const joborderIDs = await db.select().from(jobOrder);
+
+  const joborderitemsRecords = Array.from({ length: 70 }).map(() => ({
+    item_id: faker.helpers.arrayElement(itemIDs).item_id,
+    job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
+    remarks: faker.lorem.sentence(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(joborderitems).values(joborderitemsRecords);
+
+  log.info('Job Order Items seeded successfully');
+}
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
@@ -865,6 +950,7 @@ async function seedItem(db: PostgresJsDatabase) {
   const itemRecords = Array.from({ length: 50 }).map(() => ({
     product_id: faker.helpers.arrayElement(productIDs).product_id,
     stock: faker.number.int({ min: 100, max: 500 }),
+    on_listing: faker.datatype.boolean(),
     re_order_level: faker.number.int({ min: 100, max: 500 }),
     tag: faker.helpers.arrayElement(tag_status),
     created_at: faker.date.recent(),
@@ -1039,6 +1125,9 @@ async function main() {
     // Job Order and related data
     await seedJobOrder(db);
     await seedReports(db);
+    await seedAssignedEmployees(db);
+    await seedRemarkTickets(db);
+    await seedJobOrderItems(db);
   } catch (error) {
     console.log(error);
   } finally {

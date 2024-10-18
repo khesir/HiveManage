@@ -156,10 +156,18 @@ export const genderEnum = pgEnum('gender', ['Male', 'Female', 'Others']);
 
 export const TagItemEnu = pgEnum('tag_item', ['New', 'Used', 'Broken']);
 
+export const remarkTypeEnum = pgEnum('remark_type_enum', [
+  'General',
+  'Urgent',
+  'Follow-up', // Updated to match the seed data
+  'Resolved',
+  'On-Hold',
+  'Information',
+]);
+
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
-  uuid: varchar('uuid', { length: 255 }),
   firstname: varchar('firstname', { length: 255 }),
   middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
@@ -496,10 +504,7 @@ export const attendance = pgTable('attendance', {
 //JobOrder
 export const jobOrder = pgTable('joborder', {
   job_order_id: serial('job_order_id').primaryKey(),
-  employee_id: integer('employee_id').references(() => employee.employee_id),
   service_id: integer('service_id').references(() => service.service_id),
-  steps: varchar('steps', { length: 255 }),
-  required_items: varchar('required_items', { length: 255 }),
   status: jobOrderStatusEnum('joborder_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -514,6 +519,20 @@ export const reports = pgTable('reports', {
   reports_id: serial('reports_id').primaryKey(),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
   remarks: varchar('remarks', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+// Job Order Items
+export const joborderitems = pgTable('joborderitems', {
+  joborderitems_id: serial('joborderitems_id').primaryKey(),
+  item_id: integer('item_id').references(() => item.item_id),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  quantity: integer('quantity'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -568,6 +587,33 @@ export const service = pgTable('service', {
   deleted_at: timestamp('deleted_at'),
 });
 
+// Assigned Employees
+export const assignedemployees = pgTable('assignedemployees', {
+  assigned_employee_id: serial('assigned_employee_id').primaryKey(),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  assigned_by: varchar('assigned_by', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Remark Tickets
+export const remarktickets = pgTable('remarktickets', {
+  remark_id: serial('remark_id').primaryKey(),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  remark_type: remarkTypeEnum('remark_type').notNull(),
+  created_by: integer('created_by').references(() => employee.employee_id),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
 //  =======================================================================================
 // ==================================== SALES ======================================
 
@@ -577,7 +623,6 @@ export const sales_items = pgTable('sales_items', {
   sales_id: integer('sales_id').references(() => sales.sales_id),
   item_id: integer('item_id').references(() => item.item_id),
   quantity: integer('quantity'),
-  is_service_item: boolean('is_service_item'),
   total_price: decimal('total_price', { precision: 50, scale: 2 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -639,6 +684,7 @@ export const item = pgTable('item', {
   item_id: serial('item_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
   stock: integer('stock'),
+  on_listing: boolean('on_listing'),
   re_order_level: integer('re_order_level'),
   tag: TagItemEnu('tag'),
   created_at: timestamp('created_at').defaultNow(),
