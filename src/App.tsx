@@ -13,6 +13,12 @@ import EmployeeUpdatePage from './pages/admin/systems/ems/employee-update-page';
 import EmployeeViewPage from './pages/admin/systems/ems/employee-view-page';
 import EmployeePayrollPage from './pages/admin/systems/ems/payroll-page';
 
+import SalesDashboardPage from './pages/sales/dashboard';
+import CustomerDatabasePage from './pages/sales/systems/customer-page';
+import ServicePages from './pages/sales/systems/service-page';
+import SalesPage from './pages/sales/systems/sales-page';
+import OverviewPage from './pages/sales/systems/overview-page';
+
 function App() {
 	return (
 		<BrowserRouter>
@@ -22,6 +28,9 @@ function App() {
 				{/* Admin Layout */}
 				<Route path="admin" element={<MainLayout userType={'admin'} />}>
 					<Route path="dashboard" element={<DashboardPage />} />
+					<Route path="chat" />
+					<Route path="settings" />
+					<Route path="terminal" />
 
 					<Route path="ems">
 						<Route path="overview" element={<EmployeeOverviewPage />} />
@@ -57,14 +66,23 @@ function App() {
 				{/* TODO: Technical Layout */}
 				<Route path="tech" element={<MainLayout userType={'tech'} />}>
 					<Route path="dashboard" element={<DashboardPage />} />
+					<Route path="chat" />
+					<Route path="settings" />
+					<Route path="terminal" />
 				</Route>
 
 				{/* TODO: Sales Layout */}
 				<Route path="sales" element={<MainLayout userType={'sales'} />}>
-					<Route path="dashboard" element={<DashboardPage />} />
-					<Route path="in-house" element={<DashboardPage />} />
-					<Route path="history" element={<DashboardPage />} />
-					<Route path="customer" element={<DashboardPage />} />
+					<Route index element={<DashboardPage />} />
+					<Route path="chat" />
+					<Route path="settings" />
+					<Route path="terminal" />
+					{/* Systems */}
+					<Route path="dashboard" element={<SalesDashboardPage />} />
+					<Route path="overview" element={<OverviewPage />} />
+					<Route path="sales-list" element={<SalesPage />} />
+					<Route path="services-list" element={<ServicePages />} />
+					<Route path="customer" element={<CustomerDatabasePage />} />
 				</Route>
 				<Route path="*" element={<NotFound />} />
 			</Router>

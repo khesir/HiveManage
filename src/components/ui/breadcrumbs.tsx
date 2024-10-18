@@ -16,7 +16,7 @@ type BreadcrumbItemProps = {
 
 export function Breadcrumbs({items}: {items: BreadcrumbItemProps[]}) {
 	return (
-		<Breadcrumb>
+		<Breadcrumb className="mb-2">
 			<BreadcrumbList>
 				{items.map((item, index) => (
 					<Fragment key={item.title}>

@@ -7,6 +7,8 @@ import {
 	PackageOpenIcon,
 	Terminal,
 	Network,
+	LayoutPanelLeft,
+	MessageSquare,
 } from 'lucide-react';
 
 type Submenu = {
@@ -143,16 +145,16 @@ export function getAdminMenuList(pathname: string): Group[] {
 			groupLabel: 'Settings',
 			menus: [
 				{
-					href: '/admin/terminal',
+					href: '/terminal',
 					label: 'Terminal',
-					active: pathname.includes('/admin/terminal'),
+					active: pathname.includes('/terminal'),
 					icon: Terminal,
 					submenus: [],
 				},
 				{
-					href: '/admin/setting',
+					href: '/setting',
 					label: 'Settings',
-					active: pathname.includes('/admin/settings'),
+					active: pathname.includes('/settings'),
 					icon: Settings,
 					submenus: [],
 				},
@@ -174,27 +176,11 @@ export function getSalesMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/sales/activity',
-					label: 'Activity',
-					active: pathname.includes('/activity'),
-					icon: Network,
-					submenus: [
-						{
-							href: '/sales/activity/overview',
-							label: 'Overview',
-							active: pathname === '/sales/activity/overview',
-						},
-						{
-							href: '/sales/activity/attendance',
-							label: 'Attendance',
-							active: pathname === '/sales/activity/attendance',
-						},
-						{
-							href: '/sales/activity/interchat',
-							label: 'Chat',
-							active: pathname === '/activity/chat',
-						},
-					],
+					href: '/sales/activity/interchat',
+					label: 'Chat',
+					active: pathname === '/activity/chat',
+					icon: MessageSquare,
+					submenus: [],
 				},
 			],
 		},
@@ -202,27 +188,32 @@ export function getSalesMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
-					href: '/sales/sales',
+					href: '/sales',
+					label: 'Overview',
+					active: pathname === '/sales',
+					icon: LayoutPanelLeft,
+					submenus: [],
+				},
+				{
+					href: '/sales/sales-list',
 					label: 'Sales',
-					active: pathname.includes('/sales/sales'),
+					active: pathname.includes('/sales/sales-list'),
 					icon: PackageOpenIcon,
-					submenus: [
-						{
-							href: '/sales/in-house',
-							label: 'In House',
-							active: pathname === '/sales/in-house',
-						},
-						{
-							href: '/sales/history',
-							label: 'History',
-							active: pathname === '/sales/history',
-						},
-						{
-							href: '/sales/customer',
-							label: 'Customer',
-							active: pathname === '/sales/customer',
-						},
-					],
+					submenus: [],
+				},
+				{
+					href: '/sales/services-list',
+					label: 'Service',
+					active: pathname.includes('/sales/services-list'),
+					icon: PackageOpenIcon,
+					submenus: [],
+				},
+				{
+					href: '/sales/customer',
+					label: 'Customer Database',
+					active: pathname.includes('/sales/customer'),
+					icon: Users,
+					submenus: [],
 				},
 			],
 		},
@@ -230,16 +221,16 @@ export function getSalesMenuList(pathname: string): Group[] {
 			groupLabel: 'Settings',
 			menus: [
 				{
-					href: '/admin/terminal',
+					href: '/sales/terminal',
 					label: 'Terminal',
-					active: pathname.includes('/admin/terminal'),
+					active: pathname.includes('/sales/terminal'),
 					icon: Terminal,
 					submenus: [],
 				},
 				{
-					href: '/admin/setting',
+					href: '/sales/setting',
 					label: 'Settings',
-					active: pathname.includes('/admin/settings'),
+					active: pathname.includes('/sales/settings'),
 					icon: Settings,
 					submenus: [],
 				},
@@ -254,7 +245,7 @@ export function getTechMenuList(pathname: string): Group[] {
 			groupLabel: '',
 			menus: [
 				{
-					href: '/admin/dashboard',
+					href: '/tech/dashboard',
 					label: 'Dashboard',
 					active: pathname.includes('/admin/dashboard'),
 					icon: LayoutGrid,
@@ -317,16 +308,16 @@ export function getTechMenuList(pathname: string): Group[] {
 			groupLabel: 'Settings',
 			menus: [
 				{
-					href: '/admin/terminal',
+					href: '/tech/terminal',
 					label: 'Terminal',
-					active: pathname.includes('/admin/terminal'),
+					active: pathname.includes('/terminal'),
 					icon: Terminal,
 					submenus: [],
 				},
 				{
-					href: '/admin/setting',
+					href: '/tech/setting',
 					label: 'Settings',
-					active: pathname.includes('/admin/settings'),
+					active: pathname.includes('/settings'),
 					icon: Settings,
 					submenus: [],
 				},
