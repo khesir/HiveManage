@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { sales_items } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
@@ -18,33 +18,28 @@ export class SalesItemService {
     limit: number,
     offset: number,
   ) {
-    try {
-      if (sales_item_id) {
-        const result = await this.db
-          .select()
-          .from(sales_items)
-          .where(
-            and(
-              eq(sales_items.sales_items_id, Number(sales_item_id)),
-              isNull(sales_items.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        const result = await this.db
-          .select()
-          .from(sales_items)
-          .where(isNull(sales_items.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching sales item: ', error);
-      throw new Error('Error fetching sales item');
+    const conditions = [isNull(sales_items.deleted_at)];
+
+    if (sales_item_id) {
+      conditions.push(eq(sales_items.sales_items_id, Number(sales_item_id)));
     }
+
+    const totalCountQuery = await this.db
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(sales_items)
+      .where(and(...conditions));
+
+    const totalData = totalCountQuery[0].count;
+
+    const result = await this.db
+      .select()
+      .from(sales_items)
+      .where(and(...conditions))
+      .limit(limit)
+      .offset(offset);
+    return { totalData, result };
   }
 
   async getSalesItemById(paramsId: number) {

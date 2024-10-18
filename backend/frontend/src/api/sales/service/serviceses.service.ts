@@ -1,47 +1,50 @@
 import { and, eq, isNull, sql } from 'drizzle-orm';
-import { customer, employee, sales } from '@/drizzle/drizzle.schema';
+import { customer, employee, sales, service } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateService } from './serviceses.model';
 
-export class SalesService {
+export class ServicesService {
   private db: PostgresJsDatabase;
 
   constructor(db: PostgresJsDatabase) {
     this.db = db;
   }
 
-  async createSales(data: object) {
-    await this.db.insert(sales).values(data);
+  async createServices(data: CreateService) {
+    await this.db.insert(service).values(data);
   }
 
-  async getAllSales(
-    sales_id: string | undefined,
+  async getAllServices(
+    service_id: string | undefined,
     limit: number,
     offset: number,
   ) {
-    const conditions = [isNull(sales.deleted_at)];
-
-    if (sales_id) {
-      conditions.push(eq(sales.sales_id, Number(sales_id)));
+    const conditions = [isNull(service.deleted_at)];
+    if (service_id) {
+      conditions.push(eq(service.service_id, Number(service_id)));
     }
+
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(sales)
+      .from(service)
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
 
     const result = await this.db
       .select()
-      .from(sales)
-      .leftJoin(employee, eq(sales.employee_id, employee.employee_id))
+      .from(service)
+      .leftJoin(sales, eq(sales.sales_id, service.sales_id))
+      .leftJoin(employee, eq(employee.employee_id, sales.employee_id))
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
-      .where(and(...conditions))
+      .where(isNull(service.deleted_at))
       .limit(limit)
       .offset(offset);
 
-    const salesWihDetails = result.map((row) => ({
+    const itemswithDetials = result.map((row) => ({
+      service_id: row.service.service_id,
       sales: {
         sales_id: row.sales?.sales_id,
         employee: {
@@ -70,19 +73,26 @@ export class SalesService {
         last_updated: row.sales?.last_updated,
         deleted_at: row.sales?.deleted_at,
       },
+      service_title: row.service.service_title,
+      service_type: row.service.service_type,
+      created_at: row.service.created_at,
+      last_updated: row.service.last_updated,
+      deleted_at: row.service.deleted_at,
     }));
-    return { totalData, salesWihDetails };
+    return { totalData, itemswithDetials };
   }
 
-  async getSalesById(sales_id: string) {
+  async getServicesById(service_id: string) {
     const result = await this.db
       .select()
-      .from(sales)
-      .leftJoin(employee, eq(sales.employee_id, employee.employee_id))
+      .from(service)
+      .leftJoin(sales, eq(sales.sales_id, service.sales_id))
+      .leftJoin(employee, eq(employee.employee_id, sales.employee_id))
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
-      .where(eq(sales.sales_id, Number(sales_id)));
+      .where(eq(service.service_id, Number(service_id)));
 
-    const salesWihDetails = result.map((row) => ({
+    const itemswithDetials = result.map((row) => ({
+      service_id: row.service.service_id,
       sales: {
         sales_id: row.sales?.sales_id,
         employee: {
@@ -111,18 +121,26 @@ export class SalesService {
         last_updated: row.sales?.last_updated,
         deleted_at: row.sales?.deleted_at,
       },
+      service_title: row.service.service_title,
+      service_type: row.service.service_type,
+      created_at: row.service.created_at,
+      last_updated: row.service.last_updated,
+      deleted_at: row.service.deleted_at,
     }));
-    return salesWihDetails;
+    return itemswithDetials;
   }
 
-  async updateSales(data: object, paramsId: number) {
-    await this.db.update(sales).set(data).where(eq(sales.sales_id, paramsId));
-  }
-
-  async deleteSales(paramsId: number): Promise<void> {
+  async updateServices(data: object, paramsId: number) {
     await this.db
-      .update(sales)
+      .update(service)
+      .set(data)
+      .where(eq(service.service_id, paramsId));
+  }
+
+  async deleteServices(paramsId: number): Promise<void> {
+    await this.db
+      .update(service)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(sales.sales_id, paramsId));
+      .where(eq(service.service_id, paramsId));
   }
 }

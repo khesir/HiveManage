@@ -2,8 +2,7 @@ import { Router } from 'express';
 import salesRoute from './sales/sales.route';
 import log from '@/lib/logger';
 import salesitemRoute from './salesItem/salesItem.route';
-import paymentRoute from './payment/payment.route';
-import receiptRoute from './receipt/receipt.route';
+import serviceRoute from './service/serviceses.route';
 
 const smsRoute = Router({ mergeParams: true });
 
@@ -13,10 +12,7 @@ log.info('ROUTE sales set ');
 smsRoute.use('/salesitem', salesitemRoute);
 log.info('ROUTE salesitem set');
 
-smsRoute.use('/payment', paymentRoute);
-log.info('ROUTE payment set');
-
-smsRoute.use('/receipt', receiptRoute);
-log.info('ROUTE receipt set');
+smsRoute.use('/service', serviceRoute);
+log.info('ROUTE service set');
 
 export default smsRoute;

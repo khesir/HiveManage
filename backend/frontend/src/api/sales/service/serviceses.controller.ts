@@ -1,7 +1,7 @@
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
-import { ServicesService } from './serviceses.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { ServicesService } from './serviceses.service';
 
 export class ServiceController {
   private serviceService: ServicesService;
@@ -20,10 +20,10 @@ export class ServiceController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.itemswithDetials,
       });
     } catch (error) {
       res
@@ -36,9 +36,7 @@ export class ServiceController {
   async getServiceById(req: Request, res: Response, next: NextFunction) {
     try {
       const { service_id } = req.params;
-      const data = await this.serviceService.getServicesById(
-        Number(service_id),
-      );
+      const data = await this.serviceService.getServicesById(service_id);
       res.status(200).json({ message: data });
     } catch (error) {
       res
