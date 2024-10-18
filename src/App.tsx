@@ -5,19 +5,23 @@ import MainLayout from './components/layout/main-layout';
 // Authentication
 import AuthenticationPage from './pages/_auth/login';
 // Admin
-import DashboardPage from './pages/admin/dashboard';
-import EmployeeOverviewPage from './pages/admin/systems/ems/overview-page';
-import EmployeePage from './pages/admin/systems/ems/employee-page';
-import EmployeeCreatePage from './pages/admin/systems/ems/employee-create-page';
-import EmployeeUpdatePage from './pages/admin/systems/ems/employee-update-page';
-import EmployeeViewPage from './pages/admin/systems/ems/employee-view-page';
-import EmployeePayrollPage from './pages/admin/systems/ems/payroll-page';
+import {
+	DashboardPage,
+	EmployeeCreatePage,
+	EmployeeOverviewPage,
+	EmployeePage,
+	EmployeePayrollPage,
+	EmployeeUpdatePage,
+	EmployeeViewPage,
+} from './pages/admin';
 
-import SalesDashboardPage from './pages/sales/dashboard';
-import CustomerDatabasePage from './pages/sales/systems/customer-page';
-import ServicePages from './pages/sales/systems/service-page';
-import SalesPage from './pages/sales/systems/sales-page';
-import OverviewPage from './pages/sales/systems/overview-page';
+import {
+	CustomerDatabasePage,
+	OverviewPage,
+	SalesDashboardPage,
+	SalesPage,
+	ServicePages,
+} from './pages/sales';
 
 function App() {
 	return (
