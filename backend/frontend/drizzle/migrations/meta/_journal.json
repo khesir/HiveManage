@@ -43,6 +43,13 @@
       "when": 1729188374731,
       "tag": "0005_fearless_rocket_raccoon",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1729244948141,
+      "tag": "0006_spooky_franklin_richards",
+      "breakpoints": true
     }
   ]
 }
