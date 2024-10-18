@@ -6,7 +6,6 @@ import emsRoute from './ems/index';
 import imsRoute from './inventory/inventory.route';
 
 import log from '@/lib/logger';
-import srmsRoute from './serviceses/service.route';
 import cmsRoute from './cms/cms.route';
 import smsRoute from './sales/sales.route';
 
@@ -23,10 +22,6 @@ log.info('ROUTE /ims route set');
 // // Sales Management System API
 baseRoute.use('/sms', smsRoute);
 log.info('ROUTE /sms route set');
-
-// // Service Management System API
-baseRoute.use('/srms', srmsRoute);
-log.info('ROUTE /srms');
 
 // // Customer Management System API
 baseRoute.use('/cms', cmsRoute);

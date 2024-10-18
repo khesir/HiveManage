@@ -20,10 +20,10 @@ export class SalesController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.salesWihDetails,
       });
     } catch (error) {
       res
@@ -36,7 +36,7 @@ export class SalesController {
   async getSalesById(req: Request, res: Response, next: NextFunction) {
     try {
       const { sales_id } = req.params;
-      const data = await this.salesService.getSalesById(Number(sales_id));
+      const data = await this.salesService.getSalesById(sales_id);
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res

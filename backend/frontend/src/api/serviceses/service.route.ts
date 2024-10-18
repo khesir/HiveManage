@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import log from '@/lib/logger';
-import serviceRoute from './serviceses/serviceses.route';
 import assignedEmployeeRoute from './assignedemployees/assignedemployees.route';
 import remarkTicketsRoute from './remarktickets/remarkticket.route';
 import joborderItemsRoute from '../sales/joborderitem/joborderitem.route';
+import serviceRoute from '../sales/service/serviceses.route';
 
 const srmsRoute = Router({ mergeParams: true });
 
