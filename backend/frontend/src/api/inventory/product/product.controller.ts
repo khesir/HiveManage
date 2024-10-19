@@ -12,18 +12,24 @@ export class ProductController {
 
   async getAllProduct(req: Request, res: Response, next: NextFunction) {
     const id = (req.query.id as string) || undefined;
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.productService.getAllProduct(id, limit, offset);
+      const data = await this.productService.getAllProduct(
+        id,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.result,
+        data: data.productWithDetails,
       });
     } catch (error) {
       res

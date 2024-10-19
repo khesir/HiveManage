@@ -15,6 +15,7 @@ export class SalesService {
 
   async getAllSales(
     sales_id: string | undefined,
+    sort: string,
     limit: number,
     offset: number,
   ) {
