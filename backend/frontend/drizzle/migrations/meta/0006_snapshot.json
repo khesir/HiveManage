@@ -1,5 +1,5 @@
 {
-  "id": "8c0e41c4-38c3-450c-a2b6-08af60f4bcdb",
+  "id": "4ca1c9dc-5e1f-4ece-9bf3-f32bb37ad144",
   "prevId": "392f0cd0-e60d-43bd-bab3-58200d09be6f",
   "version": "7",
   "dialect": "postgresql",
@@ -581,8 +581,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "item_id": {
-          "name": "item_id",
+        "sales_item_id": {
+          "name": "sales_item_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -596,6 +596,12 @@
         "return_date": {
           "name": "return_date",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fee": {
+          "name": "fee",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -655,15 +661,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "borrow_item_id_item_item_id_fk": {
-          "name": "borrow_item_id_item_item_id_fk",
+        "borrow_sales_item_id_sales_items_sales_item_id_fk": {
+          "name": "borrow_sales_item_id_sales_items_sales_item_id_fk",
           "tableFrom": "borrow",
-          "tableTo": "item",
+          "tableTo": "sales_items",
           "columnsFrom": [
-            "item_id"
+            "sales_item_id"
           ],
           "columnsTo": [
-            "item_id"
+            "sales_item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -804,6 +810,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "middlename": {
+          "name": "middlename",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "lastname": {
           "name": "lastname",
           "type": "varchar(255)",
@@ -818,7 +830,7 @@
         },
         "socials": {
           "name": "socials",
-          "type": "varchar(255)",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
@@ -836,6 +848,12 @@
         },
         "province": {
           "name": "province",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
@@ -1488,8 +1506,26 @@
           "primaryKey": true,
           "notNull": true
         },
+        "joborder_type_id": {
+          "name": "joborder_type_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "service_id": {
           "name": "service_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fee": {
+          "name": "fee",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1524,6 +1560,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "joborder_joborder_type_id_jobordertype_joborder_type_id_fk": {
+          "name": "joborder_joborder_type_id_jobordertype_joborder_type_id_fk",
+          "tableFrom": "joborder",
+          "tableTo": "jobordertype",
+          "columnsFrom": [
+            "joborder_type_id"
+          ],
+          "columnsTo": [
+            "joborder_type_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "joborder_service_id_service_service_id_fk": {
           "name": "joborder_service_id_service_service_id_fk",
           "tableFrom": "joborder",
@@ -1541,33 +1590,34 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.joborderitems": {
-      "name": "joborderitems",
+    "public.jobordertype": {
+      "name": "jobordertype",
       "schema": "",
       "columns": {
-        "joborderitems_id": {
-          "name": "joborderitems_id",
+        "joborder_type_id": {
+          "name": "joborder_type_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "item_id": {
-          "name": "item_id",
-          "type": "integer",
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "job_order_id": {
-          "name": "job_order_id",
-          "type": "integer",
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "quantity": {
-          "name": "quantity",
-          "type": "integer",
+        "joborder_types_status": {
+          "name": "joborder_types_status",
+          "type": "joborderTypeStatusEnum",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -1591,34 +1641,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "joborderitems_item_id_item_item_id_fk": {
-          "name": "joborderitems_item_id_item_item_id_fk",
-          "tableFrom": "joborderitems",
-          "tableTo": "item",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "item_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "joborderitems_job_order_id_joborder_job_order_id_fk": {
-          "name": "joborderitems_job_order_id_joborder_job_order_id_fk",
-          "tableFrom": "joborderitems",
-          "tableTo": "joborder",
-          "columnsFrom": [
-            "job_order_id"
-          ],
-          "columnsTo": [
-            "job_order_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -2728,6 +2751,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "created_by": {
+          "name": "created_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "remark_type": {
           "name": "remark_type",
           "type": "remark_type_enum",
@@ -2735,11 +2764,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "created_by": {
-          "name": "created_by",
-          "type": "integer",
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
+        },
+        "remarktickets_status": {
+          "name": "remarktickets_status",
+          "type": "remarktickets_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -2804,9 +2840,21 @@
           "primaryKey": true,
           "notNull": true
         },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "job_order_id": {
           "name": "job_order_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reports_title": {
+          "name": "reports_title",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -2839,6 +2887,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "reports_customer_id_customer_customer_id_fk": {
+          "name": "reports_customer_id_customer_customer_id_fk",
+          "tableFrom": "reports",
+          "tableTo": "customer",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "customer_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "reports_job_order_id_joborder_job_order_id_fk": {
           "name": "reports_job_order_id_joborder_job_order_id_fk",
           "tableFrom": "reports",
@@ -2877,6 +2938,19 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "item_id": {
+          "name": "item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reserve_status": {
+          "name": "reserve_status",
+          "type": "reserveStatusEnum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -2923,6 +2997,19 @@
           ],
           "columnsTo": [
             "service_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reserve_item_id_item_item_id_fk": {
+          "name": "reserve_item_id_item_item_id_fk",
+          "tableFrom": "reserve",
+          "tableTo": "item",
+          "columnsFrom": [
+            "item_id"
+          ],
+          "columnsTo": [
+            "item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3091,14 +3178,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "sales_id": {
-          "name": "sales_id",
+        "item_id": {
+          "name": "item_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "item_id": {
-          "name": "item_id",
+        "service_id": {
+          "name": "service_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -3108,6 +3195,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "sales_item_type": {
+          "name": "sales_item_type",
+          "type": "salesitemTypeEnum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
         },
         "total_price": {
           "name": "total_price",
@@ -3138,19 +3232,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "sales_items_sales_id_sales_sales_id_fk": {
-          "name": "sales_items_sales_id_sales_sales_id_fk",
-          "tableFrom": "sales_items",
-          "tableTo": "sales",
-          "columnsFrom": [
-            "sales_id"
-          ],
-          "columnsTo": [
-            "sales_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "sales_items_item_id_item_item_id_fk": {
           "name": "sales_items_item_id_item_item_id_fk",
           "tableFrom": "sales_items",
@@ -3160,6 +3241,19 @@
           ],
           "columnsTo": [
             "item_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_items_service_id_service_service_id_fk": {
+          "name": "sales_items_service_id_service_service_id_fk",
+          "tableFrom": "sales_items",
+          "tableTo": "service",
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "service_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3196,6 +3290,24 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "has_sales_item": {
+          "name": "has_sales_item",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "has_borrow": {
+          "name": "has_borrow",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "has_job_order": {
+          "name": "has_job_order",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -3548,6 +3660,14 @@
         "Closed"
       ]
     },
+    "public.joborderTypeStatusEnum": {
+      "name": "joborderTypeStatusEnum",
+      "schema": "public",
+      "values": [
+        "Available",
+        "Not Available"
+      ]
+    },
     "public.leave_limit_type": {
       "name": "leave_limit_type",
       "schema": "public",
@@ -3633,6 +3753,56 @@
         "Resolved",
         "On-Hold",
         "Information"
+      ]
+    },
+    "public.remarktickets_status": {
+      "name": "remarktickets_status",
+      "schema": "public",
+      "values": [
+        "Open",
+        "In Progress",
+        "Resolved",
+        "Closed",
+        "Pending",
+        "Rejected"
+      ]
+    },
+    "public.reserveStatusEnum": {
+      "name": "reserveStatusEnum",
+      "schema": "public",
+      "values": [
+        "Reserved",
+        "Confirmed",
+        "Cancelled",
+        "Pending",
+        "Completed"
+      ]
+    },
+    "public.salesItemStatusEnum": {
+      "name": "salesItemStatusEnum",
+      "schema": "public",
+      "values": [
+        "Available",
+        "Out of Stock",
+        "Discontinued",
+        "Pending",
+        "Sold"
+      ]
+    },
+    "public.salesitemTypeEnum": {
+      "name": "salesitemTypeEnum",
+      "schema": "public",
+      "values": [
+        "Electronics",
+        "Furniture",
+        "Clothing",
+        "Toys",
+        "Books",
+        "Appliances",
+        "Sporting Goods",
+        "Groceries",
+        "Beauty Products",
+        "Office Supplies"
       ]
     },
     "public.sender_type": {

@@ -3,6 +3,7 @@ import {
   date,
   decimal,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   real,
@@ -163,6 +164,49 @@ export const remarkTypeEnum = pgEnum('remark_type_enum', [
   'Resolved',
   'On-Hold',
   'Information',
+]);
+
+export const remarktickets_status = pgEnum('remarktickets_status', [
+  'Open',
+  'In Progress',
+  'Resolved',
+  'Closed',
+  'Pending',
+  'Rejected',
+]);
+
+export const salesitemTypeEnum = pgEnum('salesitemTypeEnum', [
+  'Electronics',
+  'Furniture',
+  'Clothing',
+  'Toys',
+  'Books',
+  'Appliances',
+  'Sporting Goods',
+  'Groceries',
+  'Beauty Products',
+  'Office Supplies',
+]);
+
+export const joborderTypeStatusEnum = pgEnum('joborderTypeStatusEnum', [
+  'Available',
+  'Not Available',
+]);
+
+export const reserveStatusEnum = pgEnum('reserveStatusEnum', [
+  'Reserved',
+  'Confirmed',
+  'Cancelled',
+  'Pending',
+  'Completed',
+]);
+
+export const salesItemStatusEnum = pgEnum('salesItemStatusEnum', [
+  'Available',
+  'Out of Stock',
+  'Discontinued',
+  'Pending',
+  'Sold',
 ]);
 
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
@@ -504,7 +548,12 @@ export const attendance = pgTable('attendance', {
 //JobOrder
 export const jobOrder = pgTable('joborder', {
   job_order_id: serial('job_order_id').primaryKey(),
+  joborder_type_id: integer('joborder_type_id').references(
+    () => jobordertype.joborder_type_id,
+  ),
   service_id: integer('service_id').references(() => service.service_id),
+  uuid: integer('uuid'),
+  fee: integer('fee'),
   status: jobOrderStatusEnum('joborder_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -517,7 +566,9 @@ export const jobOrder = pgTable('joborder', {
 //Reports
 export const reports = pgTable('reports', {
   reports_id: serial('reports_id').primaryKey(),
+  customer_id: integer('customer_id').references(() => customer.customer_id),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  reports_title: varchar('reports_title', { length: 255 }),
   remarks: varchar('remarks', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -527,12 +578,14 @@ export const reports = pgTable('reports', {
   deleted_at: timestamp('deleted_at'),
 });
 
-// Job Order Items
-export const joborderitems = pgTable('joborderitems', {
-  joborderitems_id: serial('joborderitems_id').primaryKey(),
-  item_id: integer('item_id').references(() => item.item_id),
-  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
-  quantity: integer('quantity'),
+//Job Order Type
+export const jobordertype = pgTable('jobordertype', {
+  joborder_type_id: serial('joborder_type_id').primaryKey(),
+  name: varchar('name', { length: 255 }),
+  description: varchar('description', { length: 255 }),
+  joborder_types_status: joborderTypeStatusEnum(
+    'joborder_types_status',
+  ).notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -548,6 +601,8 @@ export const reserve = pgTable('reserve', {
   reserve_id: serial('reserve_id').primaryKey(),
   sales_id: integer('sales_id').references(() => sales.sales_id),
   service_id: integer('service_id').references(() => service.service_id),
+  item_id: integer('item_id').references(() => item.item_id),
+  reserve_status: reserveStatusEnum('reserve_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -561,9 +616,12 @@ export const borrow = pgTable('borrow', {
   borrow_id: serial('borrow_id').primaryKey(),
   sales_id: integer('sales_id').references(() => sales.sales_id),
   service_id: integer('service_id').references(() => service.service_id),
-  item_id: integer('item_id').references(() => item.item_id),
+  sales_item_id: integer('sales_item_id').references(
+    () => sales_items.sales_items_id,
+  ),
   borrow_date: varchar('borrow_date'),
-  return_data: varchar('return_date'),
+  return_date: varchar('return_date'),
+  fee: integer('fee'),
   status: borrowStatusEnum('borrow_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -579,6 +637,9 @@ export const service = pgTable('service', {
   sales_id: integer('sales_id').references(() => sales.sales_id),
   service_title: varchar('service_title', { length: 255 }),
   service_type: serviceTypeEnum('service_type').notNull(),
+  has_sales_item: boolean('has_sales_item'),
+  has_borrow: boolean('has_borrow'),
+  has_job_order: boolean('has_job_order'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -605,8 +666,10 @@ export const assignedemployees = pgTable('assignedemployees', {
 export const remarktickets = pgTable('remarktickets', {
   remark_id: serial('remark_id').primaryKey(),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
-  remark_type: remarkTypeEnum('remark_type').notNull(),
   created_by: integer('created_by').references(() => employee.employee_id),
+  remark_type: remarkTypeEnum('remark_type').notNull(),
+  description: varchar('description', { length: 255 }),
+  remarktickets_status: remarktickets_status('remarktickets_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -620,9 +683,10 @@ export const remarktickets = pgTable('remarktickets', {
 //SalesItems
 export const sales_items = pgTable('sales_items', {
   sales_items_id: serial('sales_item_id').primaryKey(),
-  sales_id: integer('sales_id').references(() => sales.sales_id),
   item_id: integer('item_id').references(() => item.item_id),
+  service_id: integer('service_id').references(() => service.service_id),
   quantity: integer('quantity'),
+  sales_item_type: salesitemTypeEnum('sales_item_type').notNull(),
   total_price: decimal('total_price', { precision: 50, scale: 2 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -835,19 +899,21 @@ export const inquiry = pgTable('inquiry', {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()), // Timestamp for last update
-  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+  deleted_at: timestamp('deleted_at'), //111111111111111111111111111111 Timestamp for deletion, nullable
 });
 
 //Customer
 export const customer = pgTable('customer', {
   customer_id: serial('customer_id').primaryKey(),
   firstname: varchar('firstname', { length: 255 }),
+  middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
   contact_phone: varchar('contact_phone', { length: 255 }),
-  socials: varchar('socials', { length: 255 }),
+  socials: jsonb('socials'),
   address_line: varchar('address_line', { length: 255 }),
   barangay: varchar('barangay', { length: 255 }),
   province: varchar('province', { length: 255 }),
+  email: varchar('email', { length: 255 }),
   standing: customerStandingEnum('standing').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
