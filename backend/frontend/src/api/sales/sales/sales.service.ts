@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { and, eq, isNull, sql, desc, asc } from 'drizzle-orm';
 import { customer, employee, sales } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
@@ -13,16 +13,9 @@ export class SalesService {
     await this.db.insert(sales).values(data);
   }
 
-  async getAllSales(
-    sales_id: string | undefined,
-    limit: number,
-    offset: number,
-  ) {
+  async getAllSales(sort: string, limit: number, offset: number) {
     const conditions = [isNull(sales.deleted_at)];
 
-    if (sales_id) {
-      conditions.push(eq(sales.sales_id, Number(sales_id)));
-    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -38,6 +31,7 @@ export class SalesService {
       .leftJoin(employee, eq(sales.employee_id, employee.employee_id))
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
       .where(and(...conditions))
+      .orderBy(sort === 'asc' ? asc(sales.created_at) : desc(sales.created_at))
       .limit(limit)
       .offset(offset);
 

@@ -43,7 +43,7 @@ salesRoute.delete(
 log.info('DELETE /sales/:sales_id set');
 
 salesRoute.use('/:sales_id/payment', validateSalesID, paymentRoute);
-log.info('ROUTE Sales paymet set');
+log.info('ROUTE Sales payment set');
 
 salesRoute.use('/:sales_id/receipt', validateSalesID, receiptRoute);
 log.info('ROUTE Sales Receipt set');
