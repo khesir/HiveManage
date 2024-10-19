@@ -11,6 +11,9 @@ export const CreateService = z.object({
     'Return',
     'Exchange',
   ]),
+  has_sales_item: z.boolean(),
+  has_borrow: z.boolean(),
+  has_job_order: z.boolean(),
 });
 
 export const UpdateService = z.object({
@@ -24,6 +27,9 @@ export const UpdateService = z.object({
     'Return',
     'Exchange',
   ]),
+  has_sales_item: z.boolean(),
+  has_borrow: z.boolean(),
+  has_job_order: z.boolean(),
 });
 
 export type CreateService = z.infer<typeof CreateService>;

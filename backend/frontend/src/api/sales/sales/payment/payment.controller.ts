@@ -11,16 +11,24 @@ export class PaymentController {
   }
 
   async getAllPayment(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
+    const payment_status = (req.query.payment_status as string) || 'false';
+    const payment_method = (req.query.payment_method as string) || 'false';
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.paymentService.getAllPayment(id, limit, offset);
+      const data = await this.paymentService.getAllPayment(
+        payment_method,
+        payment_status,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.paymentWithDetails,
         limit: limit,
         offset: offset,
         data: data,

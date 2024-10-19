@@ -701,7 +701,7 @@ export const sales = pgTable('sales', {
   sales_id: serial('sales_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
   customer_id: integer('customer_id').references(() => customer.customer_id),
-  total_amount: real('total_price'),
+  total_amount: real('total_amount'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

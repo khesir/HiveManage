@@ -23,7 +23,7 @@ export class SalesController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.salesWihDetails,
+        data: data.salesWithDetails,
       });
     } catch (error) {
       res

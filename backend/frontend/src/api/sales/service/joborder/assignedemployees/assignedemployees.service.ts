@@ -1,5 +1,10 @@
-import { assignedemployees, jobOrder, service } from '@/drizzle/drizzle.schema';
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import {
+  assignedemployees,
+  borrow,
+  employee,
+  jobOrder,
+} from '@/drizzle/drizzle.schema';
+import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class AssignedEmployeeService {
@@ -13,21 +18,9 @@ export class AssignedEmployeeService {
     await this.db.insert(assignedemployees).values(data);
   }
 
-  async getAllAssignedEmployee(
-    assigned_employee_id: string | undefined,
-    limit: number,
-    offset: number,
-  ) {
+  async getAllAssignedEmployee(sort: string, limit: number, offset: number) {
     const conditions = [isNull(assignedemployees.deleted_at)];
 
-    if (assigned_employee_id) {
-      conditions.push(
-        eq(
-          assignedemployees.assigned_employee_id,
-          Number(assigned_employee_id),
-        ),
-      );
-    }
     const totalCountQuery = await this.db
       .select({ count: sql<number>`COUNT(*)` })
       .from(assignedemployees)
@@ -42,8 +35,11 @@ export class AssignedEmployeeService {
         jobOrder,
         eq(assignedemployees.job_order_id, jobOrder.job_order_id),
       )
-      .leftJoin(service, eq(jobOrder.service_id, service.service_id))
+      .leftJoin(employee, eq(jobOrder.service_id, employee.employee_id))
       .where(and(...conditions))
+      .orderBy(
+        sort === 'asc' ? asc(borrow.created_at) : desc(borrow.created_at),
+      )
       .limit(limit)
       .offset(offset);
 
@@ -51,20 +47,25 @@ export class AssignedEmployeeService {
       assigned_employee_id: row.assignedemployees.assigned_employee_id,
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
-        service: {
-          service_id: row.service?.service_id,
-          sales_id: row.service?.sales_id,
-          service_title: row.service?.service_title,
-          service_type: row.service?.service_type,
-          created_at: row.service?.created_at,
-          last_updated: row.service?.last_updated,
-          deleted_at: row.service?.deleted_at,
+        employee: {
+          employee_id: row.employee?.employee_id,
+          firstname: row.employee?.firstname,
+          middlename: row.employee?.middlename,
+          lastname: row.employee?.lastname,
+          status: row.employee?.status,
+          created_at: row.employee?.created_at,
+          last_updated: row.employee?.last_updated,
+          deleted_at: row.employee?.deleted_at,
         },
+        joborder_type_id: row.joborder?.joborder_type_id,
+        service_id: row.joborder?.service_id,
+        uuid: row.joborder?.uuid,
+        fee: row.joborder?.fee,
+        status: row.joborder?.status,
         created_at: row.joborder?.created_at,
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,
       },
-      employee_id: row.assignedemployees.employee_id,
       assigned_by: row.assignedemployees.assigned_by,
       created_at: row.assignedemployees.created_at,
       last_updated: row.assignedemployees.last_updated,
@@ -82,7 +83,7 @@ export class AssignedEmployeeService {
         jobOrder,
         eq(assignedemployees.job_order_id, jobOrder.job_order_id),
       )
-      .leftJoin(service, eq(jobOrder.service_id, service.service_id))
+      .leftJoin(employee, eq(jobOrder.service_id, employee.employee_id))
       .where(
         eq(
           assignedemployees.assigned_employee_id,
@@ -94,25 +95,31 @@ export class AssignedEmployeeService {
       assigned_employee_id: row.assignedemployees.assigned_employee_id,
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
-        service: {
-          service_id: row.service?.service_id,
-          sales_id: row.service?.sales_id,
-          service_title: row.service?.service_title,
-          service_type: row.service?.service_type,
-          created_at: row.service?.created_at,
-          last_updated: row.service?.last_updated,
-          deleted_at: row.service?.deleted_at,
+        employee: {
+          employee_id: row.employee?.employee_id,
+          firstname: row.employee?.firstname,
+          middlename: row.employee?.middlename,
+          lastname: row.employee?.lastname,
+          status: row.employee?.status,
+          created_at: row.employee?.created_at,
+          last_updated: row.employee?.last_updated,
+          deleted_at: row.employee?.deleted_at,
         },
+        joborder_type_id: row.joborder?.joborder_type_id,
+        service_id: row.joborder?.service_id,
+        uuid: row.joborder?.uuid,
+        fee: row.joborder?.fee,
+        status: row.joborder?.status,
         created_at: row.joborder?.created_at,
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,
       },
-      employee_id: row.assignedemployees.employee_id,
       assigned_by: row.assignedemployees.assigned_by,
       created_at: row.assignedemployees.created_at,
       last_updated: row.assignedemployees.last_updated,
       deleted_at: row.assignedemployees.deleted_at,
     }));
+
     return AssignedEmployeeDetails;
   }
 

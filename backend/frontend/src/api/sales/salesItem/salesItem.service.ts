@@ -1,6 +1,8 @@
-import { and, eq, isNull, sql } from 'drizzle-orm';
-import { sales_items } from '@/drizzle/drizzle.schema';
+import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
+import { item, sales_items, service } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateSalesItem } from './salesItem.model';
+import { z } from 'zod';
 
 export class SalesItemService {
   private db: PostgresJsDatabase;
@@ -9,19 +11,53 @@ export class SalesItemService {
     this.db = db;
   }
 
-  async createSalesItem(data: object) {
-    await this.db.insert(sales_items).values(data);
+  // Create Sales Item function
+  async createSalesItem(data: z.infer<typeof CreateSalesItem>) {
+    // Convert total_price to string for the database
+    const salesItemData = {
+      ...data,
+      total_price: data.total_price.toString(), // Convert number to string
+    };
+
+    await this.db.insert(sales_items).values(salesItemData);
   }
 
   async getAllSalesItem(
-    sales_item_id: string | undefined,
+    sales_item_type: string,
+    sort: string,
     limit: number,
     offset: number,
   ) {
     const conditions = [isNull(sales_items.deleted_at)];
 
-    if (sales_item_id) {
-      conditions.push(eq(sales_items.sales_items_id, Number(sales_item_id)));
+    if (sales_item_type) {
+      // Define valid statuses as a string union type
+      const validStatuses = [
+        'Electronics',
+        'Furniture',
+        'Clothing',
+        'Toys',
+        'Books',
+        'Appliances',
+        'Sporting Goods',
+        'Groceries',
+        'Beauty Products',
+        'Office Supplies',
+      ] as const; // 'as const' infers a readonly tuple of strings
+      if (
+        validStatuses.includes(
+          sales_item_type as (typeof validStatuses)[number],
+        )
+      ) {
+        conditions.push(
+          eq(
+            sales_items.sales_item_type,
+            sales_item_type as (typeof validStatuses)[number],
+          ),
+        );
+      } else {
+        throw new Error(`Invalid payment status: ${sales_item_type}`);
+      }
     }
 
     const totalCountQuery = await this.db
@@ -36,18 +72,97 @@ export class SalesItemService {
     const result = await this.db
       .select()
       .from(sales_items)
+      .leftJoin(item, eq(sales_items.item_id, item.item_id))
+      .leftJoin(service, eq(service.service_id, sales_items.service_id))
       .where(and(...conditions))
+      .orderBy(
+        sort === 'asc'
+          ? asc(sales_items.created_at)
+          : desc(sales_items.created_at),
+      )
       .limit(limit)
       .offset(offset);
-    return { totalData, result };
+
+    const salesitemWithDetails = result.map((row) => ({
+      sales_item: {
+        sales_item_id: row.sales_items.sales_items_id,
+        item: {
+          item_id: row.item?.item_id,
+          product_id: row.item?.product_id,
+          stock: row.item?.stock,
+          on_listing: row.item?.on_listing,
+          tag: row.item?.tag,
+          created_at: row.item?.created_at,
+          last_updated: row.item?.last_updated,
+          deleted_at: row.item?.deleted_at,
+        },
+        service: {
+          service_id: row.service?.service_id,
+          sales_id: row.service?.sales_id,
+          service_title: row.service?.service_title,
+          service_type: row.service?.service_type,
+          has_sales_item: row.service?.has_sales_item,
+          has_borrow: row.service?.has_borrow,
+          has_job_order: row.service?.has_job_order,
+          created_at: row.service?.created_at,
+          last_updated: row.service?.last_updated,
+          deleted_at: row.service?.deleted_at,
+        },
+      },
+      quantity: row.sales_items?.quantity,
+      sales_item_type: row.sales_items?.sales_item_type,
+      total_price: row.sales_items?.total_price,
+      created_at: row.sales_items?.created_at,
+      last_updated: row.sales_items?.last_updated,
+      deleted_at: row.sales_items?.deleted_at,
+    }));
+
+    return { totalData, salesitemWithDetails };
   }
 
-  async getSalesItemById(paramsId: number) {
+  async getSalesItemById(sales_item_id: number) {
     const result = await this.db
       .select()
       .from(sales_items)
-      .where(eq(sales_items.sales_items_id, paramsId));
-    return result[0];
+      .leftJoin(item, eq(sales_items.item_id, item.item_id))
+      .leftJoin(service, eq(service.service_id, sales_items.service_id))
+      .where(eq(sales_items.sales_items_id, Number(sales_item_id)));
+
+    const salesitemWithDetails = result.map((row) => ({
+      sales_item: {
+        sales_item_id: row.sales_items.sales_items_id,
+        item: {
+          item_id: row.item?.item_id,
+          product_id: row.item?.product_id,
+          stock: row.item?.stock,
+          on_listing: row.item?.on_listing,
+          tag: row.item?.tag,
+          created_at: row.item?.created_at,
+          last_updated: row.item?.last_updated,
+          deleted_at: row.item?.deleted_at,
+        },
+        service: {
+          service_id: row.service?.service_id,
+          sales_id: row.service?.sales_id,
+          service_title: row.service?.service_title,
+          service_type: row.service?.service_type,
+          has_sales_item: row.service?.has_sales_item,
+          has_borrow: row.service?.has_borrow,
+          has_job_order: row.service?.has_job_order,
+          created_at: row.service?.created_at,
+          last_updated: row.service?.last_updated,
+          deleted_at: row.service?.deleted_at,
+        },
+      },
+      quantity: row.sales_items?.quantity,
+      sales_item_type: row.sales_items?.sales_item_type,
+      total_price: row.sales_items?.total_price,
+      created_at: row.sales_items?.created_at,
+      last_updated: row.sales_items?.last_updated,
+      deleted_at: row.sales_items?.deleted_at,
+    }));
+
+    return salesitemWithDetails;
   }
 
   async updateSalesItem(data: object, paramsId: number) {

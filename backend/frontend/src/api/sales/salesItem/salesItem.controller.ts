@@ -11,13 +11,15 @@ export class SalesItemController {
   }
 
   async getAllSalesItem(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
+    const sales_item_type = (req.query.sales_item_type as string) || 'false';
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
       const data = await this.salesitemService.getAllSalesItem(
-        id,
+        sales_item_type,
+        sort,
         limit,
         offset,
       );
@@ -54,14 +56,21 @@ export class SalesItemController {
 
   async createSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id, item_id, quantity, is_service_item, total_price } =
-        req.body;
+      const {
+        sales_id,
+        item_id,
+        service_id,
+        quantity,
+        sales_item_type,
+        total_price,
+      } = req.body;
 
       await this.salesitemService.createSalesItem({
         sales_id,
         item_id,
+        service_id,
         quantity,
-        is_service_item,
+        sales_item_type,
         total_price,
       });
       res.status(HttpStatus.CREATED.code).json({
@@ -81,11 +90,24 @@ export class SalesItemController {
   async updateSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { sales_item_id } = req.params;
-      const { sales_id, item_id, quantity, is_service_item, total_price } =
-        req.body;
+      const {
+        sales_id,
+        item_id,
+        service_id,
+        quantity,
+        sales_item_type,
+        total_price,
+      } = req.body;
 
       await this.salesitemService.updateSalesItem(
-        { sales_id, item_id, quantity, is_service_item, total_price },
+        {
+          sales_id,
+          item_id,
+          service_id,
+          quantity,
+          sales_item_type,
+          total_price,
+        },
         Number(sales_item_id),
       );
       res.status(HttpStatus.OK.code).json({

@@ -784,7 +784,7 @@ async function seedBorrow(db: PostgresJsDatabase) {
   const borrowRecords = Array.from({ length: 70 }).map(() => ({
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-    sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Fixed typo
+    sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
     borrow_date: faker.date.past().toISOString(),
     return_date: faker.date.future().toISOString(),
     fee: faker.number.int({ min: 1, max: 100 }),
@@ -864,6 +864,7 @@ async function seedAssignedEmployees(db: PostgresJsDatabase) {
 
 async function seedRemarkTickets(db: PostgresJsDatabase) {
   const jobOrders = await db.select().from(jobOrder);
+  const employeeIDs = await db.select().from(employee);
 
   // Check if jobOrders array is empty
   if (jobOrders.length === 0) {
@@ -899,6 +900,7 @@ async function seedRemarkTickets(db: PostgresJsDatabase) {
   // Ensure to reference job_order_id correctly
   const remarkticketsRecords = Array.from({ length: 70 }).map(() => ({
     job_order_id: faker.helpers.arrayElement(jobOrders).job_order_id, // Accessing job_order_id safely
+    created_by: faker.helpers.arrayElement(employeeIDs).employee_id,
     remark_type: faker.helpers.arrayElement(remarkTypes),
     description: faker.lorem.sentence(),
     remarktickets_status: faker.helpers.arrayElement(remark_status),
@@ -958,10 +960,12 @@ async function seedJobOrder(db: PostgresJsDatabase) {
 
 async function seedReports(db: PostgresJsDatabase) {
   const joborderIDs = await db.select().from(jobOrder);
+  const customerIDs = await db.select().from(customer);
 
   const reportsRecords = Array.from({ length: 70 }).map(() => ({
+    customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
     job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
-    remark_title: faker.lorem.sentence(10),
+    reports_title: faker.lorem.sentence(),
     remarks: faker.lorem.sentence(),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -1122,7 +1126,8 @@ async function main() {
   try {
     await seedDepartments(db);
     await seedDesignations(db);
-    await seedEmployees(db);
+
+    await seedEmployees(db); // Capture employee IDs
 
     await seedActivityLogs(db);
     await seedPersonalInformations(db);
@@ -1145,8 +1150,7 @@ async function main() {
     await seedAdjustments(db);
     await seedAttendance(db);
 
-    //Inventory
-
+    // Inventory
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
@@ -1156,7 +1160,7 @@ async function main() {
     await seedStockLogs(db);
 
     // Participants and related data
-    await seedCustomer(db);
+    await seedCustomer(db); // Seed customers first
     await seedInquiry(db);
     await seedMessage(db);
     await seedChannel(db);
@@ -1167,20 +1171,23 @@ async function main() {
     await seedPayment(db);
     await seedReceipt(db);
     await seedService(db);
-    await seedJobOrderTypes(db);
-    await seedJobOrder(db);
-    await seedSalesItem(db);
+    await seedSalesItem(db); // Seed sales items first
+    await seedBorrow(db); // Now seed borrow after sales items
     await seedReserve(db);
-    await seedBorrow(db);
 
     // Job Order and related data
-    await seedReports(db);
+    await seedJobOrderTypes(db);
+    await seedJobOrder(db);
+
+    // Pass employee IDs to seedRemarkTickets
+    await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    await seedReports(db); // Make sure this also properly references customer IDs
+
     await seedAssignedEmployees(db);
-    await seedRemarkTickets(db);
   } catch (error) {
-    console.log(error);
+    console.error('Error during seeding:', error);
   } finally {
-    pool.end();
+    await pool.end();
   }
   log.info('Generating Dummy Data Completed');
 }

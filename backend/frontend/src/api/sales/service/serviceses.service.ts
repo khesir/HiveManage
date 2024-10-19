@@ -58,7 +58,7 @@ export class ServicesService {
       .limit(limit)
       .offset(offset);
 
-    const itemswithDetials = result.map((row) => ({
+    const serviceWithDetails = result.map((row) => ({
       service_id: row.service.service_id,
       sales: {
         sales_id: row.sales?.sales_id,
@@ -94,7 +94,7 @@ export class ServicesService {
       last_updated: row.service.last_updated,
       deleted_at: row.service.deleted_at,
     }));
-    return { totalData, itemswithDetials };
+    return { totalData, serviceWithDetails };
   }
 
   async getServicesById(service_id: string) {
@@ -106,7 +106,7 @@ export class ServicesService {
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
       .where(eq(service.service_id, Number(service_id)));
 
-    const itemswithDetials = result.map((row) => ({
+    const serviceWithDetails = result.map((row) => ({
       service_id: row.service.service_id,
       sales: {
         sales_id: row.sales?.sales_id,
@@ -142,7 +142,7 @@ export class ServicesService {
       last_updated: row.service.last_updated,
       deleted_at: row.service.deleted_at,
     }));
-    return itemswithDetials;
+    return serviceWithDetails;
   }
 
   async updateServices(data: object, paramsId: number) {

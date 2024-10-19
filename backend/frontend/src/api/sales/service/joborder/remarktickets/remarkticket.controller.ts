@@ -11,13 +11,18 @@ export class RemarkTicketsController {
   }
 
   async getAllRemarkTickets(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
+    const remark_type = (req.query.remark_type as string) || 'false';
+    const remarktickets_status =
+      (req.query.remarktickets_status as string) || 'false';
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
       const data = await this.remarkticketService.getAllRemarkTickets(
-        id,
+        remark_type,
+        remarktickets_status,
+        sort,
         limit,
         offset,
       );
@@ -53,12 +58,20 @@ export class RemarkTicketsController {
 
   async createRemarkTickets(req: Request, res: Response, next: NextFunction) {
     try {
-      const { job_order_id, remark_type, created_by } = req.body;
+      const {
+        job_order_id,
+        created_by,
+        remark_type,
+        description,
+        remarktickets_status,
+      } = req.body;
 
       await this.remarkticketService.createRemarkTickets({
         job_order_id,
-        remark_type,
         created_by,
+        remark_type,
+        description,
+        remarktickets_status,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -78,10 +91,22 @@ export class RemarkTicketsController {
   async updateRemarkTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const { remark_id } = req.params;
-      const { job_order_id, remark_type, created_by } = req.body;
+      const {
+        job_order_id,
+        created_by,
+        remark_type,
+        description,
+        remarktickets_status,
+      } = req.body;
 
       await this.remarkticketService.updateRemarkTickets(
-        { job_order_id, remark_type, created_by },
+        {
+          job_order_id,
+          created_by,
+          remark_type,
+          description,
+          remarktickets_status,
+        },
         Number(remark_id),
       );
       res.status(HttpStatus.OK.code).json({

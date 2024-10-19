@@ -11,16 +11,22 @@ export class BorrowController {
   }
 
   async getAllBorrow(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
+    const status = (req.query.status as string) || 'false';
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.borrowService.getAllBorrow(id, limit, offset);
+      const data = await this.borrowService.getAllBorrow(
+        status,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.borrowWithDetails,
         limit: limit,
         offset: offset,
         data: data,
@@ -51,18 +57,20 @@ export class BorrowController {
       const {
         sales_id,
         service_id,
-        item_id,
+        sales_items_id,
         borrow_date,
         return_data,
+        fee,
         status,
       } = req.body;
 
       await this.borrowService.createBorrow({
         sales_id,
         service_id,
-        item_id,
+        sales_items_id,
         borrow_date,
         return_data,
+        fee,
         status,
       });
       res
@@ -84,14 +92,23 @@ export class BorrowController {
       const {
         sales_id,
         service_id,
-        item_id,
+        sales_items_id,
         borrow_date,
         return_data,
+        fee,
         status,
       } = req.body;
 
       await this.borrowService.updateBorrow(
-        { sales_id, service_id, item_id, borrow_date, return_data, status },
+        {
+          sales_id,
+          service_id,
+          sales_items_id,
+          borrow_date,
+          return_data,
+          fee,
+          status,
+        },
         Number(borrow_id),
       );
       res

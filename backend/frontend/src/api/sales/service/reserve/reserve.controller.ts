@@ -11,16 +11,22 @@ export class ReserveController {
   }
 
   async getAllReserve(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
+    const reserve_status = (req.query.reserve_status as string) || 'false';
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.reserveService.getAllReserve(id, limit, offset);
+      const data = await this.reserveService.getAllReserve(
+        reserve_status,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.reserveWithDetails,
         limit: limit,
         offset: offset,
         data: data,
@@ -48,9 +54,14 @@ export class ReserveController {
 
   async createReserve(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id, service_id } = req.body;
+      const { sales_id, service_id, item_id, reserve_status } = req.body;
 
-      await this.reserveService.createReserve({ sales_id, service_id });
+      await this.reserveService.createReserve({
+        sales_id,
+        service_id,
+        item_id,
+        reserve_status,
+      });
       res
         .status(HttpStatus.CREATED.code)
         .json({ status: 'Success', message: 'Successfully Created Reserve ' });
@@ -67,10 +78,10 @@ export class ReserveController {
   async updateReserve(req: Request, res: Response, next: NextFunction) {
     try {
       const { reserve_id } = req.params;
-      const { sales_id, service_id } = req.body;
+      const { sales_id, service_id, item_id, reserve_status } = req.body;
 
       await this.reserveService.updateReserve(
-        { sales_id, service_id },
+        { sales_id, service_id, item_id, reserve_status },
         Number(reserve_id),
       );
       res
