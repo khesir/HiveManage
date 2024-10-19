@@ -1,6 +1,7 @@
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { category, item, product, supplier } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateItem, UpdateItem } from './item.model';
 
 export class ItemService {
   private db: PostgresJsDatabase;
@@ -9,16 +10,22 @@ export class ItemService {
     this.db = db;
   }
 
-  async createItem(data: object) {
+  async createItem(data: CreateItem) {
     await this.db.insert(item).values(data);
   }
 
-  async getAllItem(item_id: string | undefined, limit: number, offset: number) {
+  async getAllItem(
+    on_lisitng: string,
+    sort: string,
+    limit: number,
+    offset: number,
+  ) {
     const conditions = [isNull(item.deleted_at)];
 
-    if (item_id) {
-      conditions.push(eq(item.item_id, Number(item_id)));
-    } // Query by item_Id with limit and offset
+    if (on_lisitng) {
+      conditions.push(eq(item.on_listing, Boolean(on_lisitng)));
+    }
+
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -35,6 +42,7 @@ export class ItemService {
       .leftJoin(category, eq(product.category_id, category.category_id))
       .leftJoin(supplier, eq(product.supplier_id, supplier.supplier_id))
       .where(and(...conditions))
+      .orderBy(sort === 'asc' ? asc(item.created_at) : desc(item.created_at))
       .limit(limit)
       .offset(offset);
 
@@ -68,6 +76,7 @@ export class ItemService {
         deleted_at: row.product?.deleted_at,
       },
       stock: row.item.stock,
+      on_listing: row.item.on_listing,
       tag: row.item.tag,
       re_order_level: row.item.re_order_level,
       created_at: row.item.created_at,
@@ -126,8 +135,11 @@ export class ItemService {
     return itemsWithDetails;
   }
 
-  async updateItem(data: object, paramsId: number) {
-    await this.db.update(item).set(data).where(eq(item.item_id, paramsId));
+  async updateItem(data: UpdateItem, item_id: string) {
+    await this.db
+      .update(item)
+      .set(data)
+      .where(eq(item.item_id, Number(item_id)));
   }
 
   async deleteItem(paramsId: number): Promise<void> {
