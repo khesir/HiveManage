@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { customer, employee, sales, service } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateService } from './serviceses.model';
@@ -15,13 +15,25 @@ export class ServicesService {
   }
 
   async getAllServices(
-    service_id: string | undefined,
+    sort: string,
     limit: number,
     offset: number,
+    service_type: string | undefined,
   ) {
     const conditions = [isNull(service.deleted_at)];
-    if (service_id) {
-      conditions.push(eq(service.service_id, Number(service_id)));
+    if (service_type) {
+      conditions.push(
+        eq(
+          service.service_type,
+          service_type as
+            | 'Repair'
+            | 'Sell'
+            | 'Buy'
+            | 'Borrow'
+            | 'Return'
+            | 'Exchange',
+        ),
+      );
     }
 
     const totalCountQuery = await this.db
@@ -40,6 +52,9 @@ export class ServicesService {
       .leftJoin(employee, eq(employee.employee_id, sales.employee_id))
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
       .where(isNull(service.deleted_at))
+      .orderBy(
+        sort === 'asc' ? asc(service.created_at) : desc(service.created_at),
+      )
       .limit(limit)
       .offset(offset);
 
