@@ -18,17 +18,8 @@ export class ProductService {
     });
   }
 
-  async getAllProduct(
-    product_id: string | undefined,
-    sort: string,
-    limit: number,
-    offset: number,
-  ) {
+  async getAllProduct(sort: string, limit: number, offset: number) {
     const conditions = [isNull(product.deleted_at)];
-
-    if (product_id) {
-      conditions.push(eq(product.product_id, Number(product_id)));
-    }
 
     const totalCountQuery = await this.db
       .select({

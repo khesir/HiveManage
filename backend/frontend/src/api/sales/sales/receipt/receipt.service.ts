@@ -13,17 +13,9 @@ export class ReceiptService {
     await this.db.insert(receipt).values(data);
   }
 
-  async getAllReceipt(
-    receipt_id: string | undefined,
-    sort: string,
-    limit: number,
-    offset: number,
-  ) {
+  async getAllReceipt(sort: string, limit: number, offset: number) {
     const conditions = [isNull(receipt.deleted_at)];
 
-    if (receipt_id) {
-      conditions.push(eq(receipt.receipt_id, Number(receipt_id)));
-    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
