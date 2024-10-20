@@ -21,7 +21,7 @@ import {
 	EmploymentInformation,
 	EmploymentInformationNestedForeignKey,
 	employmentInformationSchema,
-} from '@/lib/zod-schema';
+} from '@/lib/employee-zod-schema';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {

@@ -1,19 +1,19 @@
 import {ContentLayout} from '@/components/layout/content-layout';
-
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import CustomerListView from '@/modules/sales/_sections/customer-list-view';
+import {SalesCreateService} from '@/modules/sales/_sections/sales-create-service';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'sales/dashboard'},
 	{title: 'Systems', link: 'sales/overview'},
 	{title: 'Overview', link: 'sales/overview'},
-	{title: 'Customer', link: 'sales/customer'},
+	{title: 'Create Service', link: '#'},
 ];
-export default function CustomerDatabasePage() {
+
+export function CreateServicePage() {
 	return (
 		<ContentLayout title="PC BEE Management Systems">
 			<Breadcrumbs items={breadcrubItems} />
-			<CustomerListView />
+			<SalesCreateService />
 		</ContentLayout>
 	);
 }

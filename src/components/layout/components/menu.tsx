@@ -11,7 +11,7 @@ import {
 	TooltipContent,
 	TooltipProvider,
 } from '@/components/ui/tooltip';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {Group} from '@/components/constant/menu-list';
 import {CollapseMenuButton} from './collapse-menu-button';
 
@@ -21,6 +21,7 @@ interface MenuProps {
 }
 
 export function Menu({isOpen, menuList}: MenuProps) {
+	const navigate = useNavigate();
 	return (
 		<ScrollArea className="[&>div>div[style]]:!block">
 			<nav className="mt-8 h-full w-full">
@@ -123,7 +124,9 @@ export function Menu({isOpen, menuList}: MenuProps) {
 									</Button>
 								</TooltipTrigger>
 								{isOpen === false && (
-									<TooltipContent side="right">Sign out</TooltipContent>
+									<TooltipContent side="right" onClick={() => navigate('/')}>
+										Sign out
+									</TooltipContent>
 								)}
 							</Tooltip>
 						</TooltipProvider>

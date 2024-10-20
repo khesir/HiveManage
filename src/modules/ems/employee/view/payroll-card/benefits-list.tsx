@@ -20,7 +20,7 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import {dateParser} from '@/lib/util/utils';
-import {Benefits} from '@/lib/zod-schema';
+import {Benefits} from '@/lib/employee-zod-schema';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {
 	ColumnDef,

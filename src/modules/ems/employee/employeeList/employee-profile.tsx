@@ -27,7 +27,7 @@ import {
 	FinancialInformation,
 	PersonalInformation,
 	SalaryInformation,
-} from '@/lib/zod-schema';
+} from '@/lib/employee-zod-schema';
 import {
 	ChevronLeft,
 	ChevronRight,

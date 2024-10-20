@@ -9,6 +9,7 @@ import {
 	Network,
 	LayoutPanelLeft,
 	MessageSquare,
+	BotMessageSquareIcon,
 } from 'lucide-react';
 
 type Submenu = {
@@ -188,23 +189,16 @@ export function getSalesMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
-					href: '/sales',
+					href: '/sales/overview',
 					label: 'Overview',
-					active: pathname === '/sales',
+					active: pathname === '/sales/overview',
 					icon: LayoutPanelLeft,
 					submenus: [],
 				},
 				{
-					href: '/sales/sales-list',
-					label: 'Sales',
-					active: pathname.includes('/sales/sales-list'),
-					icon: PackageOpenIcon,
-					submenus: [],
-				},
-				{
-					href: '/sales/services-list',
-					label: 'Service',
-					active: pathname.includes('/sales/services-list'),
+					href: '/sales/services',
+					label: 'Services & Sales',
+					active: pathname.includes('/sales/services'),
 					icon: PackageOpenIcon,
 					submenus: [],
 				},
@@ -213,6 +207,13 @@ export function getSalesMenuList(pathname: string): Group[] {
 					label: 'Customer Database',
 					active: pathname.includes('/sales/customer'),
 					icon: Users,
+					submenus: [],
+				},
+				{
+					href: '/sales/inquiry',
+					label: 'Inquiries',
+					active: pathname.includes('/sales/inquiry'),
+					icon: BotMessageSquareIcon,
 					submenus: [],
 				},
 			],

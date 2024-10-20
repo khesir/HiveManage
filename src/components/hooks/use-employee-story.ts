@@ -1,4 +1,4 @@
-import {EmployeeBasicInformation} from '@/lib/zod-schema';
+import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
 import {create} from 'zustand';
 
 interface EmployeeStore {

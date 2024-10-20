@@ -5,6 +5,7 @@ export const employeeBasicInformationSchema = z.object({
 	firstname: z.string().min(1, 'First name is required'), // Validate that it's a non-empty string
 	middlename: z.string().optional(), // Optional middlename
 	lastname: z.string().min(1, 'Last name is required'), // Validate that it's a non-empty string
+	status: z.string().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),

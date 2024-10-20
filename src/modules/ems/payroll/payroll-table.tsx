@@ -17,7 +17,7 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import {cn} from '@/lib/util/utils';
-import {Payroll} from '@/lib/zod-schema';
+import {Payroll} from '@/lib/employee-zod-schema';
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,

@@ -10,7 +10,7 @@ import {
 	CardDescription,
 	CardFooter,
 } from '@/components/ui/card';
-import {ActivityLogsJoin} from '@/lib/custom-form-schema';
+import {ActivityLogsJoin} from '@/lib/employee-custom-form-schema';
 import {dateParser} from '@/lib/util/utils';
 import {useEffect, useState} from 'react';
 

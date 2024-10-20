@@ -7,7 +7,7 @@ import {
 	employeeBasicInformationSchema,
 	OnPayrollSchema,
 	PayollApprovalSchema,
-} from './zod-schema';
+} from './employee-zod-schema';
 
 // Used on Create Employee Form
 const employeeFormSchema = z.object({

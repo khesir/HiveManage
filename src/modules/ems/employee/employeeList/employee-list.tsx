@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {EmployeeTable} from './employee-table';
 import {columns} from './columns';
-import {EmployeeBasicInformation} from '@/lib/zod-schema';
+import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
 import {PaginationResponse, request} from '@/api/axios';
 
 export type paramsProps = {

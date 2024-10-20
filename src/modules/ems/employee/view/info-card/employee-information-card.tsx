@@ -16,7 +16,7 @@ import {
 import {
 	EmployeeBasicInformation,
 	employeeBasicInformationSchema,
-} from '@/lib/zod-schema';
+} from '@/lib/employee-zod-schema';
 import {MoreVertical} from 'lucide-react';
 import {useState} from 'react';
 import {

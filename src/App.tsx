@@ -19,9 +19,9 @@ import {
 	CustomerDatabasePage,
 	OverviewPage,
 	SalesDashboardPage,
-	SalesPage,
 	ServicePages,
 } from './pages/sales';
+import {CreateServicePage} from './pages/sales/systems/subpages/create-service-page';
 
 function App() {
 	return (
@@ -77,16 +77,16 @@ function App() {
 
 				{/* TODO: Sales Layout */}
 				<Route path="sales" element={<MainLayout userType={'sales'} />}>
-					<Route index element={<DashboardPage />} />
+					<Route path="dashboard" element={<SalesDashboardPage />} />
 					<Route path="chat" />
 					<Route path="settings" />
 					<Route path="terminal" />
 					{/* Systems */}
-					<Route path="dashboard" element={<SalesDashboardPage />} />
 					<Route path="overview" element={<OverviewPage />} />
-					<Route path="sales-list" element={<SalesPage />} />
-					<Route path="services-list" element={<ServicePages />} />
+					<Route path="create-service" element={<CreateServicePage />} />
+					<Route path="services" element={<ServicePages />} />
 					<Route path="customer" element={<CustomerDatabasePage />} />
+					<Route path="inquiry" />
 				</Route>
 				<Route path="*" element={<NotFound />} />
 			</Router>

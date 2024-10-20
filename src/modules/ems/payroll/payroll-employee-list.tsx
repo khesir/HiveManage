@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 
 import {PayrollEmployeeTable} from './payroll-employee-table';
 import {ColumnDef} from '@tanstack/react-table';
-import {OnPayrollJoin} from '@/lib/custom-form-schema';
+import {OnPayrollJoin} from '@/lib/employee-custom-form-schema';
 import {usePayrollStore} from '@/components/hooks/use-payroll-store';
 import {ApiRequest, request} from '@/api/axios';
 

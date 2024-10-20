@@ -17,7 +17,7 @@ import {
 import {
 	FinancialInformation,
 	financialInformationSchema,
-} from '@/lib/zod-schema';
+} from '@/lib/employee-zod-schema';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {

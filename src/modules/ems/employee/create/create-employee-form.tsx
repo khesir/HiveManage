@@ -17,8 +17,11 @@ import {
 } from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
 
-import {employeeFormSchema, EmployeeFormSchema} from '@/lib/custom-form-schema';
-import {Department, Designation} from '@/lib/zod-schema';
+import {
+	employeeFormSchema,
+	EmployeeFormSchema,
+} from '@/lib/employee-custom-form-schema';
+import {Department, Designation} from '@/lib/employee-zod-schema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';
 import {SubmitHandler, useForm} from 'react-hook-form';
@@ -154,7 +157,7 @@ export function CreateEmployeeForm() {
 		const output = await form.trigger(fields as FieldName[], {
 			shouldFocus: true,
 		});
-		console.log(output);
+
 		if (!output) return;
 
 		const organizedData = {
