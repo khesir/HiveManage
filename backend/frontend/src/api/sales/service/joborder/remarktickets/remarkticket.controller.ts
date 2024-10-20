@@ -11,9 +11,9 @@ export class RemarkTicketsController {
   }
 
   async getAllRemarkTickets(req: Request, res: Response, next: NextFunction) {
-    const remark_type = (req.query.remark_type as string) || 'false';
+    const remark_type = (req.query.remark_type as string) || undefined;
     const remarktickets_status =
-      (req.query.remarktickets_status as string) || 'false';
+      (req.query.remarktickets_status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;

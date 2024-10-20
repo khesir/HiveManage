@@ -20,7 +20,7 @@ export class ReserveService {
   }
 
   async getAllReserve(
-    reserve_status: string,
+    reserve_status: string | undefined,
     sort: string,
     limit: number,
     offset: number,

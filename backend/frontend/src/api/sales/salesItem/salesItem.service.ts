@@ -23,7 +23,7 @@ export class SalesItemService {
   }
 
   async getAllSalesItem(
-    sales_item_type: string,
+    sales_item_type: string | undefined,
     sort: string,
     limit: number,
     offset: number,
