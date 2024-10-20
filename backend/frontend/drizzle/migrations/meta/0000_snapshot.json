@@ -1,5 +1,5 @@
 {
-  "id": "a758703a-0ee0-4186-9fcc-7a1a5a38e952",
+  "id": "9a35099a-3e97-4e8f-bb8c-80b9ba8e87a1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -569,12 +569,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "sales_id": {
-          "name": "sales_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "service_id": {
           "name": "service_id",
           "type": "integer",
@@ -635,19 +629,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "borrow_sales_id_sales_sales_id_fk": {
-          "name": "borrow_sales_id_sales_sales_id_fk",
-          "tableFrom": "borrow",
-          "tableTo": "sales",
-          "columnsFrom": [
-            "sales_id"
-          ],
-          "columnsTo": [
-            "sales_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "borrow_service_id_service_service_id_fk": {
           "name": "borrow_service_id_service_service_id_fk",
           "tableFrom": "borrow",
@@ -1520,7 +1501,7 @@
         },
         "uuid": {
           "name": "uuid",
-          "type": "integer",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
