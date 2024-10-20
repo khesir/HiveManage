@@ -15,7 +15,7 @@ export class JobOrderService {
   }
 
   async getAllJobOrder(
-    status: string,
+    status: string | undefined,
     sort: string,
     limit: number,
     offset: number,

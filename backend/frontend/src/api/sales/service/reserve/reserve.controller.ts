@@ -11,7 +11,7 @@ export class ReserveController {
   }
 
   async getAllReserve(req: Request, res: Response, next: NextFunction) {
-    const reserve_status = (req.query.reserve_status as string) || 'false';
+    const reserve_status = (req.query.reserve_status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;

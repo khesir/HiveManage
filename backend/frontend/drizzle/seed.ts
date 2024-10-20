@@ -760,7 +760,6 @@ async function seedReserve(db: PostgresJsDatabase) {
 }
 
 async function seedBorrow(db: PostgresJsDatabase) {
-  const salesIDs = await db.select().from(sales);
   const serviceIDs = await db.select().from(service);
   const salesItemsIDs = await db.select().from(sales_items);
 
@@ -776,13 +775,15 @@ async function seedBorrow(db: PostgresJsDatabase) {
     'Damaged',
   ] as const; // Use 'as const' for TypeScript to infer literal types
 
+  const tag_item_type = ['New', 'Used', 'Broken'] as const;
+
   const borrowRecords = Array.from({ length: 70 }).map(() => ({
-    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
     sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
     borrow_date: faker.date.past().toISOString(),
     return_date: faker.date.future().toISOString(),
     fee: faker.number.int({ min: 1, max: 100 }),
+    tag_item: faker.helpers.arrayElement(tag_item_type),
     status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(), // Ensure format is correct
     last_updated: faker.date.recent(), // Ensure format is correct
@@ -941,7 +942,7 @@ async function seedJobOrder(db: PostgresJsDatabase) {
     joborder_type_id:
       faker.helpers.arrayElement(jobordertypeIDs).joborder_type_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-    uuid: faker.number.int({ min: 2, max: 10 }),
+    uuid: faker.string.uuid(),
     fee: faker.number.int({ min: 1, max: 100 }),
     status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(),

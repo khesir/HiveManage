@@ -1,5 +1,5 @@
 import { and, eq, isNull, sql, desc, asc } from 'drizzle-orm';
-import { borrow, sales, service } from '@/drizzle/drizzle.schema';
+import { borrow, sales_items, service } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateBorrow } from './borrow.model';
 
@@ -15,7 +15,7 @@ export class BorrowService {
   }
 
   async getAllBorrow(
-    status: string,
+    status: string | undefined,
     sort: string,
     limit: number,
     offset: number,
@@ -56,8 +56,11 @@ export class BorrowService {
     const result = await this.db
       .select()
       .from(borrow)
-      .leftJoin(sales, eq(borrow.sales_id, borrow.borrow_id))
-      .leftJoin(service, eq(service.service_id, borrow.service_id))
+      .leftJoin(service, eq(borrow.service_id, borrow.borrow_id))
+      .leftJoin(
+        sales_items,
+        eq(sales_items.sales_items_id, borrow.sales_item_id),
+      )
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(borrow.created_at) : desc(borrow.created_at),
@@ -68,15 +71,6 @@ export class BorrowService {
     const borrowWithDetails = result.map((row) => ({
       borrow: {
         borrow_id: row.borrow.borrow_id,
-        sales: {
-          sales_id: row.sales?.sales_id,
-          employee_id: row.sales?.employee_id,
-          customer_id: row.sales?.customer_id,
-          total_amount: row.sales?.total_amount,
-          created_at: row.sales?.created_at,
-          last_updated: row.sales?.last_updated,
-          deleted_at: row.sales?.deleted_at,
-        },
         service: {
           service_id: row.service?.service_id,
           sales_id: row.service?.sales_id,
@@ -88,6 +82,17 @@ export class BorrowService {
           created_at: row.service?.created_at,
           last_updated: row.service?.last_updated,
           deleted_at: row.service?.deleted_at,
+        },
+        sales_items: {
+          sales_items_id: row.sales_items?.sales_items_id,
+          item_id: row.sales_items?.item_id,
+          service_id: row.sales_items?.service_id,
+          quantity: row.sales_items?.quantity,
+          sales_item_type: row.sales_items?.sales_item_type,
+          total_price: row.sales_items?.total_price,
+          created_at: row.sales_items?.created_at,
+          last_updated: row.sales_items?.last_updated,
+          deleted_at: row.sales_items?.deleted_at,
         },
       },
       sales_item_id: row.borrow?.sales_item_id,
@@ -107,21 +112,15 @@ export class BorrowService {
     const result = await this.db
       .select()
       .from(borrow)
-      .leftJoin(sales, eq(borrow.sales_id, borrow.borrow_id))
-      .leftJoin(service, eq(service.service_id, borrow.service_id))
+      .leftJoin(service, eq(borrow.service_id, borrow.borrow_id))
+      .leftJoin(
+        sales_items,
+        eq(sales_items.sales_items_id, borrow.sales_item_id),
+      )
       .where(eq(borrow.borrow_id, Number(borrow_id)));
     const borrowWithDetails = result.map((row) => ({
       borrow: {
         borrow_id: row.borrow.borrow_id,
-        sales: {
-          sales_id: row.sales?.sales_id,
-          employee_id: row.sales?.employee_id,
-          customer_id: row.sales?.customer_id,
-          total_amount: row.sales?.total_amount,
-          created_at: row.sales?.created_at,
-          last_updated: row.sales?.last_updated,
-          deleted_at: row.sales?.deleted_at,
-        },
         service: {
           service_id: row.service?.service_id,
           sales_id: row.service?.sales_id,
@@ -133,6 +132,17 @@ export class BorrowService {
           created_at: row.service?.created_at,
           last_updated: row.service?.last_updated,
           deleted_at: row.service?.deleted_at,
+        },
+        sales_items: {
+          sales_items_id: row.sales_items?.sales_items_id,
+          item_id: row.sales_items?.item_id,
+          service_id: row.sales_items?.service_id,
+          quantity: row.sales_items?.quantity,
+          sales_item_type: row.sales_items?.sales_item_type,
+          total_price: row.sales_items?.total_price,
+          created_at: row.sales_items?.created_at,
+          last_updated: row.sales_items?.last_updated,
+          deleted_at: row.sales_items?.deleted_at,
         },
       },
       sales_item_id: row.borrow?.sales_item_id,

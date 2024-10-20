@@ -11,7 +11,7 @@ export class JobOrderController {
   }
 
   async getAllJobOrder(req: Request, res: Response, next: NextFunction) {
-    const status = (req.query.status as string) || 'false';
+    const status = (req.query.status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;

@@ -11,7 +11,7 @@ export class BorrowController {
   }
 
   async getAllBorrow(req: Request, res: Response, next: NextFunction) {
-    const status = (req.query.status as string) || 'false';
+    const status = (req.query.status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
@@ -61,6 +61,7 @@ export class BorrowController {
         borrow_date,
         return_data,
         fee,
+        tag_item,
         status,
       } = req.body;
 
@@ -71,6 +72,7 @@ export class BorrowController {
         borrow_date,
         return_data,
         fee,
+        tag_item,
         status,
       });
       res
@@ -96,6 +98,7 @@ export class BorrowController {
         borrow_date,
         return_data,
         fee,
+        tag_item,
         status,
       } = req.body;
 
@@ -107,6 +110,7 @@ export class BorrowController {
           borrow_date,
           return_data,
           fee,
+          tag_item,
           status,
         },
         Number(borrow_id),

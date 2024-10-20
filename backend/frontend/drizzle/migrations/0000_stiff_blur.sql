@@ -231,12 +231,12 @@ CREATE TABLE IF NOT EXISTS "benefits" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "borrow" (
 	"borrow_id" serial PRIMARY KEY NOT NULL,
-	"sales_id" integer,
 	"service_id" integer,
 	"sales_item_id" integer,
 	"borrow_date" varchar,
 	"return_date" varchar,
 	"fee" integer,
+	"tag_item" "tag_item" NOT NULL,
 	"borrow_status" "borrow_status" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS "joborder" (
 	"job_order_id" serial PRIMARY KEY NOT NULL,
 	"joborder_type_id" integer,
 	"service_id" integer,
-	"uuid" integer,
+	"uuid" varchar(255),
 	"fee" integer,
 	"joborder_status" "joborder_status" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
@@ -700,12 +700,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "benefits" ADD CONSTRAINT "benefits_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "borrow" ADD CONSTRAINT "borrow_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
