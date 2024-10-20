@@ -35,7 +35,7 @@ export class SalesService {
       .limit(limit)
       .offset(offset);
 
-    const salesWihDetails = result.map((row) => ({
+    const salesWithDetails = result.map((row) => ({
       sales: {
         sales_id: row.sales?.sales_id,
         employee: {
@@ -65,7 +65,7 @@ export class SalesService {
         deleted_at: row.sales?.deleted_at,
       },
     }));
-    return { totalData, salesWihDetails };
+    return { totalData, salesWithDetails };
   }
 
   async getSalesById(sales_id: string) {

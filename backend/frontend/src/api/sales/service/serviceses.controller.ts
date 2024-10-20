@@ -12,7 +12,7 @@ export class ServiceController {
 
   async getAllService(req: Request, res: Response, next: NextFunction) {
     const sort = (req.query.sort as string) || 'asc';
-    const service_type = (req.query.service_type as string) || undefined;
+    const service_type = (req.query.service_type as string) || 'false';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
@@ -29,7 +29,7 @@ export class ServiceController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.itemswithDetials,
+        data: data.serviceWithDetails,
       });
     } catch (error) {
       res
@@ -54,12 +54,22 @@ export class ServiceController {
 
   async createService(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id, service_title, service_type } = req.body;
+      const {
+        sales_id,
+        service_title,
+        service_type,
+        has_sales_item,
+        has_borrow,
+        has_job_order,
+      } = req.body;
 
       await this.serviceService.createServices({
         sales_id,
         service_title,
         service_type,
+        has_sales_item,
+        has_borrow,
+        has_job_order,
       });
       res
         .status(HttpStatus.CREATED.code)
@@ -77,10 +87,24 @@ export class ServiceController {
   async updateService(req: Request, res: Response, next: NextFunction) {
     try {
       const { service_id } = req.params;
-      const { sales_id, service_title, service_type } = req.body;
+      const {
+        sales_id,
+        service_title,
+        service_type,
+        has_sales_item,
+        has_borrow,
+        has_job_order,
+      } = req.body;
 
       await this.serviceService.updateServices(
-        { sales_id, service_title, service_type },
+        {
+          sales_id,
+          service_title,
+          service_type,
+          has_sales_item,
+          has_borrow,
+          has_job_order,
+        },
         Number(service_id),
       );
       res

@@ -43,7 +43,7 @@ import {
   stocksLogs,
   assignedemployees,
   remarktickets,
-  joborderitems,
+  jobordertype,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -596,12 +596,19 @@ async function seedCustomer(db: PostgresJsDatabase) {
 
   const customerRecords = Array.from({ length: 70 }).map(() => ({
     firstname: faker.person.firstName(),
+    middlename: faker.person.middleName(),
     lastname: faker.person.lastName(),
     contact_phone: faker.phone.number(),
-    socials: faker.internet.email(),
+    socials: {
+      facebook: faker.internet.url(), // Fake Facebook URL
+      twitter: faker.internet.url(), // Fake Twitter URL
+      instagram: faker.internet.url(), // Fake Instagram URL
+      linkedin: faker.internet.url(), // Fake LinkedIn URL
+    },
     address_line: faker.location.city(),
     barangay: faker.location.city(),
     province: faker.location.city(),
+    emails: faker.internet.email(),
     standing: faker.helpers.arrayElement(status),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -615,13 +622,27 @@ async function seedCustomer(db: PostgresJsDatabase) {
 // ===================================== SALES ======================================
 
 async function seedSalesItem(db: PostgresJsDatabase) {
-  const salesIDs = await db.select().from(sales);
   const itemIDs = await db.select().from(item);
+  const serviceIDs = await db.select().from(service);
+
+  const salesitemTypeEnum = [
+    'Electronics',
+    'Furniture',
+    'Clothing',
+    'Toys',
+    'Books',
+    'Appliances',
+    'Sporting Goods',
+    'Groceries',
+    'Beauty Products',
+    'Office Supplies',
+  ] as const;
 
   const salesItemRecords = Array.from({ length: 70 }).map(() => ({
-    sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     item_id: faker.helpers.arrayElement(itemIDs).item_id,
-    quantity: faker.number.int({ min: 1, max: 100 }), // Adjust max as needed
+    service_id: faker.helpers.arrayElement(serviceIDs).service_id,
+    quantity: faker.number.int({ min: 1, max: 100 }),
+    sales_item_type: faker.helpers.arrayElement(salesitemTypeEnum),
     total_price: faker.finance.amount({ min: 1, max: 12, dec: 2 }),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -719,10 +740,21 @@ async function seedReceipt(db: PostgresJsDatabase) {
 async function seedReserve(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
   const serviceIDs = await db.select().from(service);
+  const itemIDs = await db.select().from(item);
+
+  const status = [
+    'Reserved',
+    'Confirmed', // This status was missing in your original list
+    'Cancelled',
+    'Pending',
+    'Completed',
+  ] as const;
 
   const reserveRecords = Array.from({ length: 70 }).map(() => ({
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
+    item_id: faker.helpers.arrayElement(itemIDs).item_id,
+    reserve_status: faker.helpers.arrayElement(status),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -735,19 +767,9 @@ async function seedReserve(db: PostgresJsDatabase) {
 async function seedBorrow(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
   const serviceIDs = await db.select().from(service);
-  const itemIDs = await db.select().from(item);
+  const salesItemsIDs = await db.select().from(sales_items);
 
-  const statuses: (
-    | 'Requested'
-    | 'Approved'
-    | 'Borrowed'
-    | 'Returned'
-    | 'Overdue'
-    | 'Rejected'
-    | 'Cancelled'
-    | 'Lost'
-    | 'Damaged'
-  )[] = [
+  const statuses = [
     'Requested',
     'Approved',
     'Borrowed',
@@ -757,17 +779,18 @@ async function seedBorrow(db: PostgresJsDatabase) {
     'Cancelled',
     'Lost',
     'Damaged',
-  ];
+  ] as const; // Use 'as const' for TypeScript to infer literal types
 
   const borrowRecords = Array.from({ length: 70 }).map(() => ({
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-    item_id: faker.helpers.arrayElement(itemIDs).item_id,
+    sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
     borrow_date: faker.date.past().toISOString(),
     return_date: faker.date.future().toISOString(),
+    fee: faker.number.int({ min: 1, max: 100 }),
     status: faker.helpers.arrayElement(statuses),
-    created_at: faker.date.recent(),
-    last_updated: faker.date.recent(),
+    created_at: faker.date.recent(), // Ensure format is correct
+    last_updated: faker.date.recent(), // Ensure format is correct
   }));
 
   await db.insert(borrow).values(borrowRecords);
@@ -777,6 +800,11 @@ async function seedBorrow(db: PostgresJsDatabase) {
 
 async function seedService(db: PostgresJsDatabase) {
   const salesIDs = await db.select().from(sales);
+
+  if (salesIDs.length === 0) {
+    log.error('No sales records found. Cannot seed service records.');
+    return; // Early return if there are no sales records
+  }
 
   const statuses: (
     | 'Repair'
@@ -791,13 +819,19 @@ async function seedService(db: PostgresJsDatabase) {
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     service_title: faker.person.jobTitle(),
     service_type: faker.helpers.arrayElement(statuses),
-    created_at: faker.date.recent(),
-    last_updated: faker.date.recent(),
+    has_sales_item: faker.datatype.boolean(),
+    has_borrow: faker.datatype.boolean(),
+    has_job_order: faker.datatype.boolean(),
+    created_at: new Date(), // or use faker.date.recent()
+    last_updated: new Date(), // or use faker.date.recent()
   }));
 
-  await db.insert(service).values(serviceRecords);
-
-  log.info('Service records seeded successfully');
+  try {
+    await db.insert(service).values(serviceRecords);
+    log.info('Service records seeded successfully');
+  } catch (error) {
+    log.error('Error seeding service records:', error);
+  }
 }
 
 async function seedAssignedEmployees(db: PostgresJsDatabase) {
@@ -830,6 +864,7 @@ async function seedAssignedEmployees(db: PostgresJsDatabase) {
 
 async function seedRemarkTickets(db: PostgresJsDatabase) {
   const jobOrders = await db.select().from(jobOrder);
+  const employeeIDs = await db.select().from(employee);
 
   // Check if jobOrders array is empty
   if (jobOrders.length === 0) {
@@ -853,10 +888,22 @@ async function seedRemarkTickets(db: PostgresJsDatabase) {
     'Information',
   ];
 
+  const remark_status: (
+    | 'Open'
+    | 'In Progress'
+    | 'Resolved'
+    | 'Closed'
+    | 'Pending'
+    | 'Rejected'
+  )[] = ['Open', 'In Progress', 'Resolved', 'Closed', 'Pending', 'Rejected'];
+
   // Ensure to reference job_order_id correctly
   const remarkticketsRecords = Array.from({ length: 70 }).map(() => ({
     job_order_id: faker.helpers.arrayElement(jobOrders).job_order_id, // Accessing job_order_id safely
+    created_by: faker.helpers.arrayElement(employeeIDs).employee_id,
     remark_type: faker.helpers.arrayElement(remarkTypes),
+    description: faker.lorem.sentence(),
+    remarktickets_status: faker.helpers.arrayElement(remark_status),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -870,7 +917,7 @@ async function seedRemarkTickets(db: PostgresJsDatabase) {
 // =================================== JOB ORDER ==========================================
 
 async function seedJobOrder(db: PostgresJsDatabase) {
-  const employeeIDs = await db.select().from(employee);
+  const jobordertypeIDs = await db.select().from(jobordertype);
   const serviceIDs = await db.select().from(service);
 
   const statuses: (
@@ -896,10 +943,11 @@ async function seedJobOrder(db: PostgresJsDatabase) {
   ];
 
   const joborderRecords = Array.from({ length: 70 }).map(() => ({
-    employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    joborder_type_id:
+      faker.helpers.arrayElement(jobordertypeIDs).joborder_type_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-    steps: faker.lorem.paragraph(),
-    required_items: faker.lorem.paragraph(),
+    uuid: faker.number.int({ min: 2, max: 10 }),
+    fee: faker.number.int({ min: 1, max: 100 }),
     status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -912,9 +960,12 @@ async function seedJobOrder(db: PostgresJsDatabase) {
 
 async function seedReports(db: PostgresJsDatabase) {
   const joborderIDs = await db.select().from(jobOrder);
+  const customerIDs = await db.select().from(customer);
 
   const reportsRecords = Array.from({ length: 70 }).map(() => ({
+    customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
     job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
+    reports_title: faker.lorem.sentence(),
     remarks: faker.lorem.sentence(),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -925,21 +976,23 @@ async function seedReports(db: PostgresJsDatabase) {
   log.info('Report records seeded successfully');
 }
 
-async function seedJobOrderItems(db: PostgresJsDatabase) {
-  const itemIDs = await db.select().from(item);
-  const joborderIDs = await db.select().from(jobOrder);
+async function seedJobOrderTypes(db: PostgresJsDatabase) {
+  const statuses: ('Available' | 'Not Available')[] = [
+    'Available',
+    'Not Available',
+  ];
 
-  const joborderitemsRecords = Array.from({ length: 70 }).map(() => ({
-    item_id: faker.helpers.arrayElement(itemIDs).item_id,
-    job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
-    remarks: faker.lorem.sentence(),
+  const jobordertypesRecords = Array.from({ length: 70 }).map(() => ({
+    name: faker.person.fullName(),
+    description: faker.lorem.sentence(),
+    joborder_types_status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
 
-  await db.insert(joborderitems).values(joborderitemsRecords);
+  await db.insert(jobordertype).values(jobordertypesRecords);
 
-  log.info('Job Order Items seeded successfully');
+  log.info('Job Order Types seeded successfully');
 }
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
@@ -1073,7 +1126,8 @@ async function main() {
   try {
     await seedDepartments(db);
     await seedDesignations(db);
-    await seedEmployees(db);
+
+    await seedEmployees(db); // Capture employee IDs
 
     await seedActivityLogs(db);
     await seedPersonalInformations(db);
@@ -1096,8 +1150,7 @@ async function main() {
     await seedAdjustments(db);
     await seedAttendance(db);
 
-    //Inventory
-
+    // Inventory
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
@@ -1107,7 +1160,7 @@ async function main() {
     await seedStockLogs(db);
 
     // Participants and related data
-    await seedCustomer(db);
+    await seedCustomer(db); // Seed customers first
     await seedInquiry(db);
     await seedMessage(db);
     await seedChannel(db);
@@ -1115,23 +1168,26 @@ async function main() {
 
     // Sales and related data
     await seedSales(db);
-    await seedSalesItem(db);
     await seedPayment(db);
     await seedReceipt(db);
     await seedService(db);
+    await seedSalesItem(db); // Seed sales items first
+    await seedBorrow(db); // Now seed borrow after sales items
     await seedReserve(db);
-    await seedBorrow(db);
 
     // Job Order and related data
+    await seedJobOrderTypes(db);
     await seedJobOrder(db);
-    await seedReports(db);
+
+    // Pass employee IDs to seedRemarkTickets
+    await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    await seedReports(db); // Make sure this also properly references customer IDs
+
     await seedAssignedEmployees(db);
-    await seedRemarkTickets(db);
-    await seedJobOrderItems(db);
   } catch (error) {
-    console.log(error);
+    console.error('Error during seeding:', error);
   } finally {
-    pool.end();
+    await pool.end();
   }
   log.info('Generating Dummy Data Completed');
 }

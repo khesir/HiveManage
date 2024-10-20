@@ -5,50 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1727600302858,
-      "tag": "0000_long_black_crow",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1728623823174,
-      "tag": "0001_perfect_gabe_jones",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1728670427388,
-      "tag": "0002_lying_demogoblin",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1728807480971,
-      "tag": "0003_melodic_wind_dancer",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1728905529494,
-      "tag": "0004_lowly_groot",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1729188374731,
-      "tag": "0005_fearless_rocket_raccoon",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1729244948141,
-      "tag": "0006_spooky_franklin_richards",
+      "when": 1729361964931,
+      "tag": "0000_zippy_micromax",
       "breakpoints": true
     }
   ]

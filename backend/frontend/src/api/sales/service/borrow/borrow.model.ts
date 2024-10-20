@@ -3,13 +3,14 @@ import { z } from 'zod';
 export const CreateBorrow = z.object({
   sales_id: z.number().min(1),
   service_id: z.number().min(1),
-  item_id: z.number().min(1),
+  sales_items_id: z.number().min(1),
   borrow_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
   return_data: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
+  fee: z.number().min(1),
   status: z.enum([
     'Requested',
     'Approved',
@@ -26,13 +27,14 @@ export const CreateBorrow = z.object({
 export const UpdateBorrow = z.object({
   sales_id: z.number().min(1),
   service_id: z.number().min(1),
-  item_id: z.number().min(1),
+  sales_items_id: z.number().min(1),
   borrow_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
   return_data: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
+  fee: z.number().min(1),
   status: z.enum([
     'Requested',
     'Approved',

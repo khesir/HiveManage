@@ -11,16 +11,22 @@ export class JobOrderController {
   }
 
   async getAllJobOrder(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
+    const status = (req.query.status as string) || 'false';
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.joborderService.getAllJobOrder(id, limit, offset);
+      const data = await this.joborderService.getAllJobOrder(
+        status,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.joborderitemWithDetails,
         limit: limit,
         offset: offset,
         data: data,
@@ -50,14 +56,13 @@ export class JobOrderController {
 
   async createJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, service_id, steps, required_items, status } =
-        req.body;
+      const { joborder_type_id, service_id, uuid, fee, status } = req.body;
 
       await this.joborderService.createJobOrder({
-        employee_id,
+        joborder_type_id,
         service_id,
-        steps,
-        required_items,
+        uuid,
+        fee,
         status,
       });
       res.status(HttpStatus.CREATED.code).json({
@@ -77,11 +82,10 @@ export class JobOrderController {
   async updateJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { job_order_id } = req.params;
-      const { employee_id, service_id, steps, required_items, status } =
-        req.body;
+      const { joborder_type_id, service_id, uuid, fee, status } = req.body;
 
       await this.joborderService.updateJobOrder(
-        { employee_id, service_id, steps, required_items, status },
+        { joborder_type_id, service_id, uuid, fee, status },
         Number(job_order_id),
       );
       res.status(HttpStatus.OK.code).json({
