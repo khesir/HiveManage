@@ -7,7 +7,7 @@ export const CreateBorrow = z.object({
   borrow_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
-  return_data: z.string().refine((val) => !isNaN(Date.parse(val)), {
+  return_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
   fee: z.number().min(1),

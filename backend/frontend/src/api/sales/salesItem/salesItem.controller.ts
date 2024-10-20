@@ -11,7 +11,7 @@ export class SalesItemController {
   }
 
   async getAllSalesItem(req: Request, res: Response, next: NextFunction) {
-    const sales_item_type = (req.query.sales_item_type as string) || 'false';
+    const sales_item_type = (req.query.sales_item_type as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;

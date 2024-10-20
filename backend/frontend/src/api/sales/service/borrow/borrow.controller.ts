@@ -59,7 +59,7 @@ export class BorrowController {
         service_id,
         sales_items_id,
         borrow_date,
-        return_data,
+        return_date,
         fee,
         status,
       } = req.body;
@@ -69,7 +69,7 @@ export class BorrowController {
         service_id,
         sales_items_id,
         borrow_date,
-        return_data,
+        return_date,
         fee,
         status,
       });
