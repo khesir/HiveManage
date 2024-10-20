@@ -1,5 +1,5 @@
 {
-  "id": "9a35099a-3e97-4e8f-bb8c-80b9ba8e87a1",
+  "id": "57723592-9240-4285-80eb-7bc47b81a3b5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -598,6 +598,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "tag_item": {
+          "name": "tag_item",
+          "type": "tag_item",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
         },
         "borrow_status": {
           "name": "borrow_status",

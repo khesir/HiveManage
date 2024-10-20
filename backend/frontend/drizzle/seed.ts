@@ -775,12 +775,15 @@ async function seedBorrow(db: PostgresJsDatabase) {
     'Damaged',
   ] as const; // Use 'as const' for TypeScript to infer literal types
 
+  const tag_item_type = ['New', 'Used', 'Broken'] as const;
+
   const borrowRecords = Array.from({ length: 70 }).map(() => ({
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
     sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
     borrow_date: faker.date.past().toISOString(),
     return_date: faker.date.future().toISOString(),
     fee: faker.number.int({ min: 1, max: 100 }),
+    tag_item: faker.helpers.arrayElement(tag_item_type),
     status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(), // Ensure format is correct
     last_updated: faker.date.recent(), // Ensure format is correct

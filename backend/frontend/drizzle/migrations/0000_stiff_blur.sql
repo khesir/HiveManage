@@ -236,6 +236,7 @@ CREATE TABLE IF NOT EXISTS "borrow" (
 	"borrow_date" varchar,
 	"return_date" varchar,
 	"fee" integer,
+	"tag_item" "tag_item" NOT NULL,
 	"borrow_status" "borrow_status" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
