@@ -62,11 +62,11 @@ export function ItemsList() {
 	return (
 		<>
 			{/* Render your items */}
-			<ScrollArea className="h-[calc(95vh-220px)] px-2">
+			<ScrollArea className="h-[calc(90vh-210px)] px-2">
 				<div className="flex flex-col gap-3">
 					{items.map((item) => (
 						<Card
-							className="relative w-full h-[200px] overflow-hidden"
+							className="relative w-full h-[170px] overflow-hidden"
 							key={item.item_id}
 						>
 							<div className="flex justify-start">

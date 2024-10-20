@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import {EmployeeBasicInformation} from './employee-zod-schema';
+import {Customer} from './cms-zod-schema';
 
 export const salesSchema = z.object({
 	sales_id: z.number().optional(),
@@ -48,27 +49,76 @@ export type ServiceWithDetails = {
 	deleted_at?: string;
 };
 
-export const customerSchema = z.object({
-	customer_id: z.string().optional(),
-	firstname: z.string().min(1),
-	lastname: z.string().min(1),
-	contact_phone: z.string().min(1),
-	socials: z.string().min(1),
-	address_line: z.string().min(1),
-	barangay: z.string().min(1),
-	province: z.string().min(1),
-	standing: z.enum([
-		'Active',
-		'Inactive',
+export const borrowItemSchema = z.object({
+	borrow_id: z.number().optional(),
+	sales_id: z.number().min(1),
+	service_id: z.number().optional(),
+	sales_items_id: z.number().min(1),
+	borrow_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
+		message: 'Invalid date format',
+	}),
+	return_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
+		message: 'Invalid date format',
+	}),
+	fee: z.number().min(1),
+	status: z.enum([
+		'Requested',
+		'Approved',
+		'Borrowed',
+		'Returned',
+		'Overdue',
+		'Rejected',
+		'Cancelled',
+		'Lost',
+		'Damaged',
+	]),
+
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type Borrow = z.infer<typeof borrowItemSchema>;
+
+export const reservationSchema = z.object({
+	reservation_id: z.number().optional(),
+	sales_id: z.number().min(1),
+	service_id: z.number().optional(),
+	item_id: z.number().optional(),
+	reserve_status: z.enum([
 		'Pending',
-		'Suspended',
-		'Banned',
-		'VIP',
-		'Delinquent',
-		'Prospect',
+		'Reserved',
+		'Confirmed',
+		'Cancelled',
+		'Completed',
 	]),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
-export type Customer = z.infer<typeof customerSchema>;
+
+export type Reservation = z.infer<typeof reservationSchema>;
+
+export const joborderSchema = z.object({
+	jobrder_id: z.number().optional(),
+	joborder_type_id: z.number().min(1),
+	service_id: z.number().optional(),
+	uuid: z.string().min(1),
+	fee: z.number().min(1),
+	status: z.enum([
+		'Pending',
+		'In Progress',
+		'Completed',
+		'On Hold',
+		'Cancelled',
+		'Awaiting Approval',
+		'Approved',
+		'Rejected',
+		'Closed',
+	]),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type Joborder = z.infer<typeof joborderSchema>;

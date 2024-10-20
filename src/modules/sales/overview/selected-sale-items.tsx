@@ -12,8 +12,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import {Bell, Trash2} from 'lucide-react';
-import {CreateServiceSheet} from './create-service-sheet';
+import {Bell, Users} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 
 export function SelectedSaleItems() {
@@ -32,7 +31,7 @@ export function SelectedSaleItems() {
 					</Button>
 
 					<Button size={'icon'}>
-						<Trash2 />
+						<Users />
 					</Button>
 				</div>
 			</div>

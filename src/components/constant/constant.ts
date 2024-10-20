@@ -78,3 +78,24 @@ export const InventorySidebar = [
 		variant: 'ghost',
 	},
 ];
+
+export const Services = [
+	{
+		name: 'Borrow',
+		description: 'Borrow 1 Take 2',
+		fee: 100,
+		status: 'Active',
+	},
+	{
+		name: 'Reserve',
+		description: 'Reserve Item and get notified later',
+		fee: 0,
+		status: 'Active',
+	},
+	{
+		name: 'Joborder',
+		description: 'All tasks related to repairs, cleaning and moree',
+		fee: 100,
+		status: 'Active',
+	},
+];
