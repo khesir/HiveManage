@@ -204,6 +204,7 @@ export const salesItemStatusEnum = pgEnum('salesItemStatusEnum', [
   'Sold',
 ]);
 
+export const TagItemEnum = pgEnum('tag_item', ['New', 'Used', 'Broken']);
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
@@ -547,7 +548,7 @@ export const jobOrder = pgTable('joborder', {
     () => jobordertype.joborder_type_id,
   ),
   service_id: integer('service_id').references(() => service.service_id),
-  uuid: integer('uuid'),
+  uuid: varchar('uuid', { length: 255 }),
   fee: integer('fee'),
   status: jobOrderStatusEnum('joborder_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
@@ -609,7 +610,6 @@ export const reserve = pgTable('reserve', {
 //Borrow
 export const borrow = pgTable('borrow', {
   borrow_id: serial('borrow_id').primaryKey(),
-  sales_id: integer('sales_id').references(() => sales.sales_id),
   service_id: integer('service_id').references(() => service.service_id),
   sales_item_id: integer('sales_item_id').references(
     () => sales_items.sales_items_id,
@@ -617,6 +617,7 @@ export const borrow = pgTable('borrow', {
   borrow_date: varchar('borrow_date'),
   return_date: varchar('return_date'),
   fee: integer('fee'),
+  tag_item: TagItemEnum('tag_item').notNull(),
   status: borrowStatusEnum('borrow_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

@@ -11,6 +11,7 @@ export const CreateBorrow = z.object({
     message: 'Invalid date format',
   }),
   fee: z.number().min(1),
+  tag_item: z.enum(['New', 'Used', 'Broken']),
   status: z.enum([
     'Requested',
     'Approved',
@@ -35,6 +36,7 @@ export const UpdateBorrow = z.object({
     message: 'Invalid date format',
   }),
   fee: z.number().min(1),
+  tag_item: z.enum(['New', 'Used', 'Broken']),
   status: z.enum([
     'Requested',
     'Approved',

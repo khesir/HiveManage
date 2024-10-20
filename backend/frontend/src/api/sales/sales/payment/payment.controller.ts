@@ -11,8 +11,8 @@ export class PaymentController {
   }
 
   async getAllPayment(req: Request, res: Response, next: NextFunction) {
-    const payment_status = (req.query.payment_status as string) || 'false';
-    const payment_method = (req.query.payment_method as string) || 'false';
+    const payment_status = (req.query.payment_status as string) || undefined;
+    const payment_method = (req.query.payment_method as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;

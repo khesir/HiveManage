@@ -16,8 +16,8 @@ export class RemarkTicketsService {
   }
 
   async getAllRemarkTickets(
-    remark_type: string,
-    remarktickets_status: string,
+    remark_type: string | undefined,
+    remarktickets_status: string | undefined,
     sort: string,
     limit: number,
     offset: number,

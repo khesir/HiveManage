@@ -8,6 +8,7 @@ export const CreateCustomer = z.object({
   address_line: z.string().min(1),
   barangay: z.string().min(1),
   province: z.string().min(1),
+  email: z.string().min(1),
   standing: z.enum([
     'Active',
     'Inactive',
@@ -28,6 +29,7 @@ export const UpdateCustomer = z.object({
   address_line: z.string().min(1),
   barangay: z.string().min(1),
   province: z.string().min(1),
+  email: z.string().min(1),
   standing: z.enum([
     'Active',
     'Inactive',

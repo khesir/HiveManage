@@ -15,8 +15,8 @@ export class PaymentService {
   }
 
   async getAllPayment(
-    payment_status: string,
-    payment_method: string,
+    payment_status: string | undefined,
+    payment_method: string | undefined,
     sort: string,
     limit: number,
     offset: number,
