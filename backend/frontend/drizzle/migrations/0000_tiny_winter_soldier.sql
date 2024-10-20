@@ -131,7 +131,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."salesitemTypeEnum" AS ENUM('Electronics', 'Furniture', 'Clothing', 'Toys', 'Books', 'Appliances', 'Sporting Goods', 'Groceries', 'Beauty Products', 'Office Supplies');
+ CREATE TYPE "public"."salesitemTypeEnum" AS ENUM('Sales', 'Joborder', 'Borrow', 'Purchase', 'Exchange');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

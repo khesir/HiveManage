@@ -626,16 +626,11 @@ async function seedSalesItem(db: PostgresJsDatabase) {
   const serviceIDs = await db.select().from(service);
 
   const salesitemTypeEnum = [
-    'Electronics',
-    'Furniture',
-    'Clothing',
-    'Toys',
-    'Books',
-    'Appliances',
-    'Sporting Goods',
-    'Groceries',
-    'Beauty Products',
-    'Office Supplies',
+    'Sales',
+    'Joborder',
+    'Borrow',
+    'Purchase',
+    'Exchange',
   ] as const;
 
   const salesItemRecords = Array.from({ length: 70 }).map(() => ({

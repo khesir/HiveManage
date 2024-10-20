@@ -176,16 +176,11 @@ export const remarktickets_status = pgEnum('remarktickets_status', [
 ]);
 
 export const salesitemTypeEnum = pgEnum('salesitemTypeEnum', [
-  'Electronics',
-  'Furniture',
-  'Clothing',
-  'Toys',
-  'Books',
-  'Appliances',
-  'Sporting Goods',
-  'Groceries',
-  'Beauty Products',
-  'Office Supplies',
+  'Sales',
+  'Joborder',
+  'Borrow',
+  'Purchase',
+  'Exchange',
 ]);
 
 export const joborderTypeStatusEnum = pgEnum('joborderTypeStatusEnum', [

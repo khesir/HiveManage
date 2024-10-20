@@ -31,33 +31,17 @@ export class SalesItemService {
     const conditions = [isNull(sales_items.deleted_at)];
 
     if (sales_item_type) {
-      // Define valid statuses as a string union type
-      const validStatuses = [
-        'Electronics',
-        'Furniture',
-        'Clothing',
-        'Toys',
-        'Books',
-        'Appliances',
-        'Sporting Goods',
-        'Groceries',
-        'Beauty Products',
-        'Office Supplies',
-      ] as const; // 'as const' infers a readonly tuple of strings
-      if (
-        validStatuses.includes(
-          sales_item_type as (typeof validStatuses)[number],
-        )
-      ) {
-        conditions.push(
-          eq(
-            sales_items.sales_item_type,
-            sales_item_type as (typeof validStatuses)[number],
-          ),
-        );
-      } else {
-        throw new Error(`Invalid payment status: ${sales_item_type}`);
-      }
+      conditions.push(
+        eq(
+          sales_items.sales_item_type,
+          sales_item_type as
+            | 'Sales'
+            | 'Joborder'
+            | 'Borrow'
+            | 'Purchase'
+            | 'Exchange',
+        ),
+      );
     }
 
     const totalCountQuery = await this.db

@@ -1,5 +1,5 @@
 {
-  "id": "506e3e37-099d-4b53-976f-04fcb409c585",
+  "id": "a758703a-0ee0-4186-9fcc-7a1a5a38e952",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -3793,16 +3793,11 @@
       "name": "salesitemTypeEnum",
       "schema": "public",
       "values": [
-        "Electronics",
-        "Furniture",
-        "Clothing",
-        "Toys",
-        "Books",
-        "Appliances",
-        "Sporting Goods",
-        "Groceries",
-        "Beauty Products",
-        "Office Supplies"
+        "Sales",
+        "Joborder",
+        "Borrow",
+        "Purchase",
+        "Exchange"
       ]
     },
     "public.sender_type": {
