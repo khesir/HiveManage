@@ -11,16 +11,24 @@ export class CustomerController {
   }
 
   async getAllCustomer(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
+    const email = (req.query.email as string) || undefined;
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
+    const fullname = (req.query.fullname as string) || 'false';
 
     try {
-      const data = await this.customerService.getAllCustomer(id, limit, offset);
+      const data = await this.customerService.getAllCustomer(
+        email,
+        sort,
+        limit,
+        offset,
+        fullname,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
         data: data,
@@ -58,6 +66,7 @@ export class CustomerController {
         address_line,
         barangay,
         province,
+        email,
         standing,
       } = req.body;
 
@@ -69,6 +78,7 @@ export class CustomerController {
         address_line,
         barangay,
         province,
+        email,
         standing,
       });
       res
@@ -95,6 +105,7 @@ export class CustomerController {
         address_line,
         barangay,
         province,
+        email,
         standing,
       } = req.body;
 
@@ -107,6 +118,7 @@ export class CustomerController {
           address_line,
           barangay,
           province,
+          email,
           standing,
         },
         Number(customer_id),

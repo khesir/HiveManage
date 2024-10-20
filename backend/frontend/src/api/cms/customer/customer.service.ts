@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, sql, desc, asc, like, or } from 'drizzle-orm';
 import { customer } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateCustomer } from './customer.model';
@@ -15,37 +15,53 @@ export class CustomerService {
   }
 
   async getAllCustomer(
-    customer_id: string | undefined,
+    email: string | undefined,
+    sort: string,
     limit: number,
     offset: number,
+    fullname: string | undefined,
   ) {
-    try {
-      if (customer_id) {
-        const result = await this.db
-          .select()
-          .from(customer)
-          .where(
-            and(
-              eq(customer.customer_id, Number(customer_id)),
-              isNull(customer.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        const result = await this.db
-          .select()
-          .from(customer)
-          .where(isNull(customer.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching customer: ', error);
-      throw new Error('Error fetching customers');
+    const conditions = [isNull(customer.deleted_at)];
+
+    if (email) {
+      conditions.push(eq(customer.email, email));
     }
+
+    if (fullname) {
+      const likeFullname = `%${fullname}%`; // Partial match
+      const nameConditions = or(
+        like(customer.firstname, likeFullname),
+        like(customer.middlename, likeFullname),
+        like(customer.lastname, likeFullname),
+      );
+      if (nameConditions) {
+        conditions.push(nameConditions);
+      }
+    }
+
+    const totalCountQuery = await this.db
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(customer)
+      .where(and(...conditions));
+
+    const totalData = totalCountQuery[0].count;
+
+    const result = await this.db
+      .select()
+      .from(customer)
+      .where(and(...conditions))
+      .orderBy(
+        sort === 'asc' ? asc(customer.created_at) : desc(customer.created_at),
+      )
+      .limit(limit)
+      .offset(offset);
+
+    return {
+      totalData,
+      result,
+    };
   }
 
   async getCustomerById(paramsId: number) {
@@ -63,10 +79,10 @@ export class CustomerService {
       .where(eq(customer.customer_id, paramsId));
   }
 
-  async deleteCustomer(paramsId: number): Promise<void> {
+  async deleteCustomer(customerId: number): Promise<void> {
     await this.db
       .update(customer)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(customer.customer_id, paramsId));
+      .where(eq(customer.customer_id, customerId));
   }
 }
