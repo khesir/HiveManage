@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {
 	Accordion,
 	AccordionContent,
@@ -30,8 +32,10 @@ import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
 import {useState} from 'react';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-
-export function CreateCustomerForm() {
+interface CreateCustomerFormProps {
+	processCreate: (data: any[]) => void;
+}
+export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [loading, setLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [previousStep, setPreviousStep] = useState(0);
@@ -121,19 +125,9 @@ export function CreateCustomerForm() {
 	};
 
 	const processForm = async (data: Customer) => {
-		try {
-			setLoading(true);
-
-			console.log('requested data', data);
-		} catch (error) {
-			console.error('Error during form submission:', error);
-			toast('Error during form submission', {
-				description:
-					error instanceof Error ? error.message : 'An unknown error occurred',
-			});
-		} finally {
-			setLoading(false);
-		}
+		setLoading(true);
+		processCreate([data]);
+		setLoading(false);
 	};
 
 	const standing = [
@@ -148,7 +142,7 @@ export function CreateCustomerForm() {
 	];
 
 	return (
-		<div className='flex flex-col gap-5'>
+		<div className="flex flex-col gap-5">
 			<div>
 				<ul className="flex gap-4">
 					{steps.map((step, index) => (

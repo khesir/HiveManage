@@ -22,6 +22,7 @@ import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {ItemLisitingModal} from '../modal/item-listing-modal';
 import {useItemWithDetailsStore} from '@/components/hooks/use-selected-item';
+import {useSalesHook} from '@/components/hooks/use-sales-hook';
 
 interface ReservationFormProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;
@@ -46,12 +47,46 @@ export function ReservationForm({handleIsEditing}: ReservationFormProps) {
 		},
 	});
 
-	const processForm = (data: Reservation) => {
+	const {salesHookData, setSaleHookData} = useSalesHook();
+
+	const processForm = (formData: Reservation) => {
 		setLoading(true);
-		console.log(data);
+
+		//Validation if service is created
+		if (!salesHookData['service']) {
+			alert('Create service First!');
+		}
+		const updateService = {
+			...salesHookData['service'][0],
+			has_reservation: true,
+		};
+		setSaleHookData('service', [updateService], 'clear');
+		selectedItemWithDetails.map((item) => {
+			const reserveData = {
+				...formData,
+				sales_item_id: item.item_id,
+			};
+
+			const salesItemData = {
+				data: {
+					item_id: item.item_id,
+					service_id: undefined,
+					quantity: 1,
+					type: 'Reserve',
+					total_price: 0,
+					related_data: {
+						reserve: reserveData,
+					},
+				},
+				item,
+			};
+			setSaleHookData('sales_item', [salesItemData], 'append');
+		});
 		setLoading(false);
+		handleIsEditing('', undefined);
 	};
-	const status = ['Pending', 'Reserved', 'Confirmed', 'Cancelled', 'Completed'];
+
+	const status = ['Reserved', 'Confirmed', 'Cancelled', 'Pending', 'Completed'];
 	return (
 		<Form {...form}>
 			<form

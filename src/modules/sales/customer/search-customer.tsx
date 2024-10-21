@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {PaginationResponse, request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Customer} from '@/lib/cms-zod-schema';
 import {useState} from 'react';
-
-export function SearchCustomer() {
+interface SearchCustomerProps {
+	processCreate: (data: any[]) => void;
+}
+export function SearchCustomer({processCreate}: SearchCustomerProps) {
 	const [query, setQuery] = useState<string>(''); // Search query (email or fullname)
 	const [customer, setCustomer] = useState<Customer | undefined>(undefined);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -20,7 +23,6 @@ export function SearchCustomer() {
 				'GET',
 				`/api/v1/cms/customer?fullname=${query}`,
 			);
-			console.log(response);
 			// Set the customer data if found
 			if (response.data.length > 0) {
 				setCustomer(response.data[0]);
@@ -34,6 +36,11 @@ export function SearchCustomer() {
 			setLoading(false);
 		}
 	};
+
+	const handleConfirm = () => {
+		processCreate([customer]);
+	};
+
 	return (
 		<div className="flex flex-col gap-2">
 			<h1 className="font-semibold">Search Customer</h1>
@@ -50,46 +57,48 @@ export function SearchCustomer() {
 			</div>
 
 			{customer ? (
-				<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid">
-					<ul className="grid gap-3">
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Fullname</span>
-							<span>
-								{customer.lastname}, {customer.firstname} {customer.middlename}
-							</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Contact</span>
-							<span>{customer.contact}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Socials</span>
-							<span>
-								{customer.socials.flat}
-							</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Address Line</span>
-							<span>{customer.addressline}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Barangay</span>
-							<span>{customer.barangay}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Province</span>
-							<span>{customer.province}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Email</span>
-							<span>{customer.email}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Standing</span>
-							<span>{customer.standing}</span>
-						</li>
-					</ul>
-				</Card>
+				<>
+					<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid">
+						<ul className="grid gap-3">
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Fullname</span>
+								<span>
+									{customer.lastname}, {customer.firstname}{' '}
+									{customer.middlename}
+								</span>
+							</li>
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Contact</span>
+								<span>{customer.contact}</span>
+							</li>
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Socials</span>
+								<span>{customer.socials.flat}</span>
+							</li>
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Address Line</span>
+								<span>{customer.addressline}</span>
+							</li>
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Barangay</span>
+								<span>{customer.barangay}</span>
+							</li>
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Province</span>
+								<span>{customer.province}</span>
+							</li>
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Email</span>
+								<span>{customer.email}</span>
+							</li>
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Standing</span>
+								<span>{customer.standing}</span>
+							</li>
+						</ul>
+					</Card>
+					<Button className="" onClick={() => handleConfirm}></Button>
+				</>
 			) : (
 				<Card className="p-3 flex justify-center font-semibold">
 					Search for a Customer

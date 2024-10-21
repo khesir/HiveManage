@@ -23,6 +23,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
+import {useSalesHook} from '@/components/hooks/use-sales-hook';
 
 interface BorrowFormProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;
@@ -47,15 +48,61 @@ export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 			borrow_date: '',
 			return_date: '',
 			fee: fee,
-			status: undefined,
+			status: '',
 		},
 	});
-	const processForm = (data: Borrow) => {
+
+	const {salesHookData, setSaleHookData} = useSalesHook();
+
+	const processForm = (formData: Borrow) => {
 		setLoading(true);
-		console.log(data);
+
+		if (!salesHookData['service']) {
+			alert('Create service First!');
+		}
+
+		const updateService = {
+			...salesHookData['service'][0],
+			has_borrow: true,
+		};
+		setSaleHookData('service', [updateService], 'clear');
+		selectedItemWithDetails.map((item) => {
+			const borrowData = {
+				...formData,
+				sales_item_id: item.item_id,
+				service_id: undefined,
+				fee: fee,
+			};
+
+			const salesItemData = {
+				data: {
+					item_id: item.item_id,
+					service_id: undefined,
+					quantity: 1,
+					type: 'Borrow',
+					total_price: 0,
+					related_data: {
+						borrow: borrowData,
+					},
+				},
+				item,
+			};
+			setSaleHookData('sales_item', [salesItemData], 'append');
+		});
 		setLoading(false);
+		handleIsEditing('', undefined);
 	};
-	const status = ['Pending', 'Reserved', 'Confirmed', 'Cancelled', 'Completed'];
+	const status = [
+		'Requested',
+		'Approved',
+		'Borrowed',
+		'Returned',
+		'Overdue',
+		'Rejected',
+		'Cancelled',
+		'Lost',
+		'Damaged',
+	];
 	return (
 		<Form {...form}>
 			<form
@@ -72,7 +119,6 @@ export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 								Setup Borrow, to add for listing
 							</p>
 						</div>
-						<Button>Add to cart</Button>
 					</div>
 					<div className="gap-8 md:grid md:grid-cols-3 p-5">
 						<FormField
@@ -156,7 +202,7 @@ export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 								<>
 									<div className="flex justify-start gap-3 items-center">
 										<X
-											className="w-5 h-5 hover:bg-red-600 rounded-sm cursor-pointer"
+											className="w-5 h-5 hover:bg-red-600 rounded-sm cursor-pointer "
 											onClick={() => removeItemWithDetails(item.item_id)}
 										/>
 										<p className="hover:underline">
@@ -167,6 +213,7 @@ export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 							))}
 						</div>
 					</Card>
+					<Button type="submit">Add to cart</Button>
 				</Card>
 			</form>
 		</Form>

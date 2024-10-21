@@ -1,3 +1,5 @@
+import { request } from '@/api/axios';
+import { useSalesHook } from '@/components/hooks/use-sales-hook';
 import {Button} from '@/components/ui/button';
 import {Card, CardFooter} from '@/components/ui/card';
 import {
@@ -16,9 +18,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Joborder, joborderSchema} from '@/lib/sales-zod-schema';
+import {Joborder, joborderSchema, JobOrderType} from '@/lib/sales-zod-schema';
+import {generateCustomUUID} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 
 interface JoborderProps {
@@ -55,6 +58,15 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 			description: 'Item 5',
 		},
 	];
+	// TODO: Implement Job order type
+	// const [joborderType, setJobOrderType] = useState<JobOrderType>();
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		const response = await request
+	// 		setJobOrderType()
+	// 	}
+	// 	fetchData();
+	// },[])
 	const status = [
 		'Pending',
 		'In Progress',
@@ -66,22 +78,53 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 		'Rejected',
 		'Closed',
 	];
-	const processForm = (data: Joborder) => {
-		// Process data here
-		setLoading(true);
-		console.log(data);
-		setLoading(false);
-	};
 
 	const form = useForm<Joborder>({
 		resolver: zodResolver(joborderSchema),
 		defaultValues: {
 			joborder_type_id: undefined,
-			uuid: '1234',
+			uuid: generateCustomUUID(),
 			fee: fee,
 			status: undefined,
 		},
 	});
+
+	const {salesHookData, setSaleHookData} = useSalesHook();
+
+	const processForm = (formData: Joborder) => {
+		// Process data here
+		setLoading(true);
+		if (!salesHookData['service']) {
+			alert('Create service First!');
+		}
+		const updateService = {
+			...salesHookData['service'][0],
+			has_job_order: true,
+		};
+		setSaleHookData('service', [updateService], 'clear');
+		const joborderData = {
+			service_id: undefined,
+			uuid: formData.uuid,
+			fee: formData.fee,
+			status: formData.status,
+		};
+		const salesItemData = {
+			data: {
+				item_id: -1,
+				service_id: undefined,
+				quantity: 0,
+				type: 'Joborder',
+				total_price: 0,
+				related_data: {
+					joborder: joborderData,
+				},
+			},
+		};
+		setSaleHookData('sales_item', [salesItemData], 'append');
+		setLoading(false);
+		handleIsEditing('', undefined);
+	};
+
 	return (
 		<Form {...form}>
 			<form
