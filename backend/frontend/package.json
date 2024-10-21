@@ -12,6 +12,7 @@
     "db:start": "npx supabase start",
     "db:stop": "npx supabase stop",
     "db:generate": "drizzle-kit generate",
+    "db:reset": "npx supabase db reset",
     "db:generate:drop": "drizzle-kit drop",
     "db:migrate": "npx drizzle-kit migrate",
     "db:studio": "npx drizzle-kit studio",

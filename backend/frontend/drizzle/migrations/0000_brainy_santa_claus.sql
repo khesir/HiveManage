@@ -143,7 +143,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."service_type" AS ENUM('Repair', 'Sell', 'Buy', 'Borrow', 'Return', 'Exchange');
+ CREATE TYPE "public"."service_status" AS ENUM('Active', 'Inactive');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -617,7 +617,9 @@ CREATE TABLE IF NOT EXISTS "service" (
 	"service_id" serial PRIMARY KEY NOT NULL,
 	"sales_id" integer,
 	"service_title" varchar(255),
-	"service_type" "service_type" NOT NULL,
+	"service_description" varchar(255),
+	"service_status" "service_status",
+	"has_reservation" boolean,
 	"has_sales_item" boolean,
 	"has_borrow" boolean,
 	"has_job_order" boolean,

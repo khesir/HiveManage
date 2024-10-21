@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 export const CreateSales = z.object({
   employee_id: z.number().min(1),
-  customer_id: z.number().min(1),
+  customer_id: z.number().optional(),
   total_amount: z.number().min(1),
 });
 
 export const UpdateSales = z.object({
   employee_id: z.number().min(1),
-  customer_id: z.number().min(1),
+  customer_id: z.number().optional(),
   total_amount: z.number().min(1),
 });
 

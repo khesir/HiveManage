@@ -55,7 +55,6 @@ export class BorrowController {
   async createBorrow(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        sales_id,
         service_id,
         sales_items_id,
         borrow_date,
@@ -66,7 +65,6 @@ export class BorrowController {
       } = req.body;
 
       await this.borrowService.createBorrow({
-        sales_id,
         service_id,
         sales_items_id,
         borrow_date,
@@ -92,7 +90,6 @@ export class BorrowController {
     try {
       const { borrow_id } = req.params;
       const {
-        sales_id,
         service_id,
         sales_items_id,
         borrow_date,
@@ -104,7 +101,6 @@ export class BorrowController {
 
       await this.borrowService.updateBorrow(
         {
-          sales_id,
           service_id,
           sales_items_id,
           borrow_date,

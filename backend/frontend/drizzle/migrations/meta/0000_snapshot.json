@@ -1,5 +1,5 @@
 {
-  "id": "57723592-9240-4285-80eb-7bc47b81a3b5",
+  "id": "f58d7efe-20de-49a9-8af4-91366e5098cc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -3272,12 +3272,24 @@
           "primaryKey": false,
           "notNull": false
         },
-        "service_type": {
-          "name": "service_type",
-          "type": "service_type",
+        "service_description": {
+          "name": "service_description",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "service_status": {
+          "name": "service_status",
+          "type": "service_status",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "has_reservation": {
+          "name": "has_reservation",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
         },
         "has_sales_item": {
           "name": "has_sales_item",
@@ -3800,16 +3812,12 @@
         "Manager"
       ]
     },
-    "public.service_type": {
-      "name": "service_type",
+    "public.service_status": {
+      "name": "service_status",
       "schema": "public",
       "values": [
-        "Repair",
-        "Sell",
-        "Buy",
-        "Borrow",
-        "Return",
-        "Exchange"
+        "Active",
+        "Inactive"
       ]
     }
   },

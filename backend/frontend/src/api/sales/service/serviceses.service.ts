@@ -18,21 +18,12 @@ export class ServicesService {
     sort: string,
     limit: number,
     offset: number,
-    service_type: string | undefined,
+    service_status: string | undefined,
   ) {
     const conditions = [isNull(service.deleted_at)];
-    if (service_type) {
+    if (service_status) {
       conditions.push(
-        eq(
-          service.service_type,
-          service_type as
-            | 'Repair'
-            | 'Sell'
-            | 'Buy'
-            | 'Borrow'
-            | 'Return'
-            | 'Exchange',
-        ),
+        eq(service.service_status, service_status as 'Active' | 'Inactive'),
       );
     }
 
@@ -89,7 +80,8 @@ export class ServicesService {
         deleted_at: row.sales?.deleted_at,
       },
       service_title: row.service.service_title,
-      service_type: row.service.service_type,
+      service_description: row.service?.service_description,
+      service_status: row.service?.service_status,
       created_at: row.service.created_at,
       last_updated: row.service.last_updated,
       deleted_at: row.service.deleted_at,
@@ -137,7 +129,8 @@ export class ServicesService {
         deleted_at: row.sales?.deleted_at,
       },
       service_title: row.service.service_title,
-      service_type: row.service.service_type,
+      service_description: row.service?.service_description,
+      service_status: row.service?.service_status,
       created_at: row.service.created_at,
       last_updated: row.service.last_updated,
       deleted_at: row.service.deleted_at,

@@ -608,7 +608,7 @@ async function seedCustomer(db: PostgresJsDatabase) {
     address_line: faker.location.city(),
     barangay: faker.location.city(),
     province: faker.location.city(),
-    emails: faker.internet.email(),
+    email: faker.internet.email(),
     standing: faker.helpers.arrayElement(status),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -802,19 +802,16 @@ async function seedService(db: PostgresJsDatabase) {
     return; // Early return if there are no sales records
   }
 
-  const statuses: (
-    | 'Repair'
-    | 'Sell'
-    | 'Buy'
-    | 'Borrow'
-    | 'Return'
-    | 'Exchange'
-  )[] = ['Repair', 'Sell', 'Buy', 'Borrow', 'Return', 'Exchange'];
+  const statuses = ['Active', 'Inactive'];
 
   const serviceRecords = Array.from({ length: 70 }).map(() => ({
     sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
     service_title: faker.person.jobTitle(),
-    service_type: faker.helpers.arrayElement(statuses),
+    service_description: faker.lorem.sentence(),
+    service_status: faker.helpers.arrayElement(statuses) as
+      | 'Active'
+      | 'Inactive',
+    has_reservation: faker.datatype.boolean(),
     has_sales_item: faker.datatype.boolean(),
     has_borrow: faker.datatype.boolean(),
     has_job_order: faker.datatype.boolean(),
@@ -938,7 +935,7 @@ async function seedJobOrder(db: PostgresJsDatabase) {
     'Closed',
   ];
 
-  const joborderRecords = Array.from({ length: 70 }).map(() => ({
+  const joborderRecords = Array.from({ length: 10 }).map(() => ({
     joborder_type_id:
       faker.helpers.arrayElement(jobordertypeIDs).joborder_type_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,

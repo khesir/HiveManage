@@ -12,7 +12,7 @@ export class ServiceController {
 
   async getAllService(req: Request, res: Response, next: NextFunction) {
     const sort = (req.query.sort as string) || 'asc';
-    const service_type = (req.query.service_type as string) || undefined;
+    const service_status = (req.query.service_type as string) || undefined;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
@@ -21,7 +21,7 @@ export class ServiceController {
         sort,
         limit,
         offset,
-        service_type,
+        service_status,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -57,7 +57,9 @@ export class ServiceController {
       const {
         sales_id,
         service_title,
-        service_type,
+        service_description,
+        service_status,
+        has_reservation,
         has_sales_item,
         has_borrow,
         has_job_order,
@@ -66,7 +68,9 @@ export class ServiceController {
       await this.serviceService.createServices({
         sales_id,
         service_title,
-        service_type,
+        service_description,
+        service_status,
+        has_reservation,
         has_sales_item,
         has_borrow,
         has_job_order,
@@ -91,6 +95,7 @@ export class ServiceController {
         sales_id,
         service_title,
         service_type,
+        has_reservation,
         has_sales_item,
         has_borrow,
         has_job_order,
@@ -101,6 +106,7 @@ export class ServiceController {
           sales_id,
           service_title,
           service_type,
+          has_reservation,
           has_sales_item,
           has_borrow,
           has_job_order,

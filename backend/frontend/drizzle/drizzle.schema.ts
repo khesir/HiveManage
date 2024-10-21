@@ -92,14 +92,7 @@ export const borrowStatusEnum = pgEnum('borrow_status', [
   'Damaged',
 ]);
 
-export const serviceTypeEnum = pgEnum('service_type', [
-  'Repair',
-  'Sell',
-  'Buy',
-  'Borrow',
-  'Return',
-  'Exchange',
-]);
+export const serviceStatus = pgEnum('service_status', ['Active', 'Inactive']);
 export const paymentStatusEnum = pgEnum('payment_status', [
   'Pending',
   'Completed',
@@ -632,7 +625,9 @@ export const service = pgTable('service', {
   service_id: serial('service_id').primaryKey(),
   sales_id: integer('sales_id').references(() => sales.sales_id),
   service_title: varchar('service_title', { length: 255 }),
-  service_type: serviceTypeEnum('service_type').notNull(),
+  service_description: varchar('service_description', { length: 255 }),
+  service_status: serviceStatus('service_status'),
+  has_reservation: boolean('has_reservation'),
   has_sales_item: boolean('has_sales_item'),
   has_borrow: boolean('has_borrow'),
   has_job_order: boolean('has_job_order'),

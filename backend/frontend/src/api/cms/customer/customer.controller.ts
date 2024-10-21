@@ -15,7 +15,7 @@ export class CustomerController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    const fullname = (req.query.fullname as string) || 'false';
+    const fullname = (req.query.fullname as string) || undefined;
 
     try {
       const data = await this.customerService.getAllCustomer(
@@ -31,7 +31,7 @@ export class CustomerController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.result,
       });
     } catch (error) {
       res
