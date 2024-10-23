@@ -5,6 +5,7 @@ import log from '@/lib/logger';
 import { ItemsController } from './item.controller';
 import { validateItemID } from './item.middleware';
 import { CreateItem, UpdateItem } from './item.model';
+import orderitemsRoute from './orderitem/orderitem.route';
 
 const itemsRoute = Router({ mergeParams: true });
 const itemsController = new ItemsController(db);
@@ -40,4 +41,5 @@ itemsRoute.delete(
 );
 log.info('DELETE /item/:item_id set');
 
+itemsRoute.use('/:item_id/orderItem', validateItemID, orderitemsRoute);
 export default itemsRoute;

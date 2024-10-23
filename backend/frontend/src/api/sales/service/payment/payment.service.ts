@@ -1,5 +1,5 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
-import { payment, sales } from '@/drizzle/drizzle.schema';
+import { payment, service } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreatePayment } from './payment.model';
 
@@ -80,7 +80,7 @@ export class PaymentService {
     const result = await this.db
       .select()
       .from(payment)
-      .leftJoin(sales, eq(payment.sales_id, payment.payment_id))
+      .leftJoin(service, eq(payment.service_id, payment.payment_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(payment.created_at) : desc(payment.created_at),
@@ -89,23 +89,27 @@ export class PaymentService {
       .offset(offset);
 
     const paymentWithDetails = result.map((row) => ({
-      payment_id: row.payment.payment_id,
-      sales: {
-        sales_id: row.sales?.sales_id,
-        employee_id: row.sales?.employee_id,
-        customer_id: row.sales?.customer_id,
-        total_amount: row.sales?.total_amount,
-        created_at: row.sales?.created_at,
-        last_updated: row.sales?.last_updated,
-        deleted_at: row.sales?.deleted_at,
+      payment: {
+        payment_id: row.payment.payment_id,
+        service: {
+          service_id: row.service?.service_id,
+          employee_id: row.service?.employee_id,
+          service_title: row.service?.service_title,
+          service_description: row.service?.service_description,
+          service_status: row.service?.service_status,
+          has_reservation: row.service?.has_reservation,
+          has_sales_item: row.service?.has_sales_item,
+          has_borrow: row.service?.has_borrow,
+          has_job_order: row.service?.has_job_order,
+          created_at: row.service?.created_at,
+          last_updated: row.service?.last_updated,
+          deleted_at: row.service?.deleted_at,
+        },
       },
       amount: row.payment?.amount,
       payment_date: row.payment?.payment_date,
       payment_method: row.payment?.payment_method,
       payment_status: row.payment?.payment_status,
-      created_at: row.payment?.created_at,
-      last_updated: row.payment?.last_updated,
-      deleted_at: row.payment?.deleted_at,
     }));
 
     return { totalData, paymentWithDetails };
@@ -115,27 +119,31 @@ export class PaymentService {
     const result = await this.db
       .select()
       .from(payment)
-      .leftJoin(sales, eq(payment.payment_id, sales.sales_id))
+      .leftJoin(service, eq(payment.service_id, payment.payment_id))
       .where(eq(payment.payment_id, Number(payment_id)));
 
     const paymentWithDetails = result.map((row) => ({
-      payment_id: row.payment.payment_id,
-      sales: {
-        sales_id: row.sales?.sales_id,
-        employee_id: row.sales?.employee_id,
-        customer_id: row.sales?.customer_id,
-        total_amount: row.sales?.total_amount,
-        created_at: row.sales?.created_at,
-        last_updated: row.sales?.last_updated,
-        deleted_at: row.sales?.deleted_at,
+      payment: {
+        payment_id: row.payment.payment_id,
+        service: {
+          service_id: row.service?.service_id,
+          employee_id: row.service?.employee_id,
+          service_title: row.service?.service_title,
+          service_description: row.service?.service_description,
+          service_status: row.service?.service_status,
+          has_reservation: row.service?.has_reservation,
+          has_sales_item: row.service?.has_sales_item,
+          has_borrow: row.service?.has_borrow,
+          has_job_order: row.service?.has_job_order,
+          created_at: row.service?.created_at,
+          last_updated: row.service?.last_updated,
+          deleted_at: row.service?.deleted_at,
+        },
       },
       amount: row.payment?.amount,
       payment_date: row.payment?.payment_date,
       payment_method: row.payment?.payment_method,
       payment_status: row.payment?.payment_status,
-      created_at: row.payment?.created_at,
-      last_updated: row.payment?.last_updated,
-      deleted_at: row.payment?.deleted_at,
     }));
 
     return paymentWithDetails;
