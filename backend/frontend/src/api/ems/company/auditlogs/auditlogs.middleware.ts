@@ -2,32 +2,32 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
-import { activityLog, employee } from '@/drizzle/drizzle.schema';
+import { auditLog, employee } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { db } from '@/drizzle/pool';
 
 // There's a globally used
 // middlewere like error handling and schema validation
 
-export async function validateActivityID(
+export async function validateAuditID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { activity_id } = req.params;
+  const { auditlog_id } = req.params;
   try {
-    const activity = await db
+    const audit = await db
       .select()
-      .from(activityLog)
+      .from(auditLog)
       .where(
         and(
-          eq(activityLog.activity_id, Number(activity_id)),
-          isNull(activityLog.deleted_at),
+          eq(auditLog.auditlog_id, Number(auditlog_id)),
+          isNull(auditLog.deleted_at),
         ),
       );
-    console.log(activity);
-    if (!activity[0]) {
-      return res.status(404).json({ message: 'Activity not found' });
+    console.log(audit);
+    if (!audit[0]) {
+      return res.status(404).json({ message: 'Audit Log not found' });
     }
     next();
   } catch (error) {

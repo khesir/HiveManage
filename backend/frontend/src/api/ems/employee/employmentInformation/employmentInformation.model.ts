@@ -19,6 +19,7 @@ export const EmploymentInformation = z.object({
     'Retired',
     'Inactive',
   ]),
+  message: z.string().min(1),
 });
 
 export type EmploymentInformation = z.infer<typeof EmploymentInformation>;

@@ -1,24 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { ActivityLogService } from './activitylogs.service';
+import { AuditLogService } from './auditlogs.service';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
-export class ActivityLogController {
-  private activityLogService: ActivityLogService;
+export class AuditLogController {
+  private auditLogService: AuditLogService;
 
   constructor(pool: PostgresJsDatabase) {
-    this.activityLogService = new ActivityLogService(pool);
+    this.auditLogService = new AuditLogService(pool);
   }
 
-  async getAllActivityLogs(req: Request, res: Response, next: NextFunction) {
+  async getAllAuditLogs(req: Request, res: Response, next: NextFunction) {
+    const entity_type = (req.query.entity_type as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit) || 10;
     const offset = Number(req.query.offset) || 0;
-    const employee_id = Number(req.query.employee_id) || undefined;
     try {
-      const data = await this.activityLogService.getAllActivityLogs(
-        employee_id,
+      const data = await this.auditLogService.getAllAuditLog(
+        entity_type,
         limit,
         sort,
         offset,
@@ -39,11 +39,11 @@ export class ActivityLogController {
     }
   }
 
-  async getActivityLogById(req: Request, res: Response, next: NextFunction) {
+  async getAuditLogsById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { activity_id } = req.params;
-      const data = await this.activityLogService.getActivityLogById(
-        Number(activity_id),
+      const { auditlog_id } = req.params;
+      const data = await this.auditLogService.getAuditLogById(
+        Number(auditlog_id),
       );
       res.status(200).json({ message: data });
     } catch (error) {
@@ -55,16 +55,19 @@ export class ActivityLogController {
     }
   }
 
-  async createActivityLog(req: Request, res: Response, next: NextFunction) {
+  async createAuditLogs(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, action } = req.body;
+      const { employee_id, entity_id, entity_type, action, change } = req.body;
 
-      await this.activityLogService.createActivityLog({
+      await this.auditLogService.createAuditLog({
         employee_id,
+        entity_id,
+        entity_type,
         action,
+        change,
       });
       res.status(HttpStatus.CREATED.code).json({
-        message: 'Succesfully Created Activity Logs',
+        message: 'Successfully Created Audit Logs',
         // data: id,
       });
     } catch (error) {
@@ -76,20 +79,23 @@ export class ActivityLogController {
     }
   }
 
-  async updateActivityLog(req: Request, res: Response, next: NextFunction) {
+  async updateAuditLogs(req: Request, res: Response, next: NextFunction) {
     try {
-      const { activity_id } = req.params;
-      const { employee_id, action } = req.body;
+      const { auditlog_id } = req.params;
+      const { employee_id, entity_id, entity_type, action, change } = req.body;
 
-      await this.activityLogService.updateActivityLog(
+      await this.auditLogService.updateAuditLog(
         {
           employee_id,
+          entity_id,
+          entity_type,
           action,
+          change,
         },
-        Number(activity_id),
+        Number(auditlog_id),
       );
       res.status(HttpStatus.OK.code).json({
-        message: 'Activity Log Updated succesfully',
+        message: 'Audit Log Updated successfully',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -99,12 +105,12 @@ export class ActivityLogController {
     }
   }
 
-  async deleteActivityLogbyID(req: Request, res: Response, next: NextFunction) {
+  async deleteAuditLogbyID(req: Request, res: Response, next: NextFunction) {
     try {
-      const { activity_id } = req.params;
-      await this.activityLogService.deleteActivityLog(Number(activity_id));
+      const { auditlog_id } = req.params;
+      await this.auditLogService.deleteAuditLog(Number(auditlog_id));
       res.status(200).json({
-        message: `Activity Log ID:${activity_id} is deleted successfully`,
+        message: `Audit Log ID:${auditlog_id} is deleted successfully`,
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
