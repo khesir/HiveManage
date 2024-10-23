@@ -1,4 +1,3 @@
-'use client';
 import {Checkbox} from '@/components/ui/checkbox';
 import {ColumnDef} from '@tanstack/react-table';
 import {CellAction} from './cel-action';
@@ -28,7 +27,7 @@ export const columns: ColumnDef<EmployeeBasicInformation>[] = [
 	{
 		// Custom accessor to combine first_name, middle_name, last_name
 		id: 'fullname',
-		header: 'NAME',
+		header: 'Name',
 		accessorFn: (row) =>
 			`${row.firstname} ${row.middlename ? row.middlename + ' ' : ''}${row.lastname}`,
 		cell: (info) => info.getValue(),
@@ -45,7 +44,7 @@ export const columns: ColumnDef<EmployeeBasicInformation>[] = [
 	{
 		accessorKey: 'created_at',
 		header: 'Joined',
-		cell: ({row}) => dateParser(row.original.created_at),
+		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
 	},
 	{
 		id: 'actions',

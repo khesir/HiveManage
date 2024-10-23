@@ -21,7 +21,10 @@ import {
 	SalesDashboardPage,
 	ServicePages,
 } from './pages/sales';
-import {CreateServicePage} from './pages/sales/systems/subpages/create-service-page';
+import {CreateServicePage} from './pages/sales/systems/overview/create-service-page';
+import ViewServicePage from './pages/sales/systems/service/view-service-page';
+import CustomerCreatePage from './pages/sales/systems/customer/customer-create-page';
+import CustomerViewPage from './pages/sales/systems/customer/customer-view-page';
 
 function App() {
 	return (
@@ -56,14 +59,21 @@ function App() {
 					</Route>
 
 					<Route path="sales">
-						<Route path="overview" />
-						<Route path="services" />
+						<Route path="dashboard" element={<DashboardPage />} />
+						<Route path="services" element={<ServicePages />} />
+						<Route path="services/view/:id" element={<ViewServicePage />} />
+						<Route path="services/create" element={<CreateServicePage />} />
+
+						<Route path="customer" element={<CustomerDatabasePage />} />
+						<Route path="customer/view/:id" element={<CustomerViewPage />} />
+						<Route path="customer/create" element={<CustomerCreatePage />} />
 					</Route>
 
 					<Route path="inventory">
 						<Route path="overview" />
 						<Route path="items" />
 						<Route path="orders" />
+						<Route path="stock-logs" />
 					</Route>
 				</Route>
 
@@ -73,6 +83,19 @@ function App() {
 					<Route path="chat" />
 					<Route path="settings" />
 					<Route path="terminal" />
+
+					{/* Systems */}
+					<Route path="overview" />
+					<Route path="assigned-services" />
+					<Route path="services" element={<ServicePages />} />
+					<Route path="services/view/:id" element={<ViewServicePage />} />
+					<Route path="services/create" element={<CreateServicePage />} />
+
+					<Route path="customer" element={<CustomerDatabasePage />} />
+					<Route path="customer/view/:id" element={<CustomerViewPage />} />
+					<Route path="customer/create" element={<CustomerCreatePage />} />
+
+					<Route path="inquiry" />
 				</Route>
 
 				{/* TODO: Sales Layout */}
@@ -84,8 +107,15 @@ function App() {
 					{/* Systems */}
 					<Route path="overview" element={<OverviewPage />} />
 					<Route path="create-service" element={<CreateServicePage />} />
+
 					<Route path="services" element={<ServicePages />} />
+					<Route path="services/view/:id" element={<ViewServicePage />} />
+					<Route path="services/create" element={<CreateServicePage />} />
+
 					<Route path="customer" element={<CustomerDatabasePage />} />
+					<Route path="customer/view/:id" element={<CustomerViewPage />} />
+					<Route path="customer/create" element={<CustomerCreatePage />} />
+
 					<Route path="inquiry" />
 				</Route>
 				<Route path="*" element={<NotFound />} />

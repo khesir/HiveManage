@@ -1,11 +1,9 @@
-import {Separator} from '@/components/ui/separator';
-import {OrderSheet} from '../content/order-sheet';
+import {Card} from '@/components/ui/card';
 import {Heading} from '@/components/ui/heading';
-import {useSearchParams} from 'react-router-dom';
+import {Separator} from '@/components/ui/separator';
+import {ViewSalesTabList} from '../../sales/view/sales-tab-view-list';
 
-export default function CustomerListView() {
-	const [searchParams] = useSearchParams();
-
+export default function ServiceViewPage() {
 	return (
 		<div className="flex flex-col sm:gap-4">
 			<div className="grid flex-1 items-start gap-4 p-4 sm:px-6 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -13,19 +11,23 @@ export default function CustomerListView() {
 				<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
 					<div className="flex flex-col gap-4">
 						<Heading
-							title={`Customer Database`}
-							description="Manange Customer (Server side table functionalities.)"
+							title={`Services`}
+							description="Choose what to view from borrow, reserve and "
 						/>
 						<Separator />
 					</div>
-					<p>Inser Table</p>
+					<ViewSalesTabList />
 				</div>
 				<div className="flex flex-col gap-4">
 					<div className="flex lg:hidden">
 						<Separator />
 					</div>
-					{/* Service Profile */}
-					<OrderSheet />
+					{/* Employee Profile */}
+					<Card>Service Details: header </Card>
+					<Card>
+						Payment: Total cost tracking, Payment History, actual total payment
+						- redirect to payment page
+					</Card>
 				</div>
 			</div>
 		</div>

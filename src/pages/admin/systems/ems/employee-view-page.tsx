@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/layout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import EmployeeViewSection from '@/modules/ems/_sections/employee-view-section';
+import EmployeeViewSection from '@/modules/ems/_sections/employee/view-employee-section';
 
 // This is the Dashboard Page for Employee Management System (EMS)
 const breadcrubItems = [

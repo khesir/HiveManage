@@ -1,5 +1,5 @@
-import {SalesInhouseTable} from '../overview/sales-inhouse-table';
-import {SelectedSaleItems} from '../overview/selected-sale-items';
+import {SalesInhouseTable} from '../../overview/sales-inhouse-table';
+import {SelectedSaleItems} from '../../overview/selected-sale-items';
 
 export default function SalesOveriewSection() {
 	return (

@@ -1,4 +1,4 @@
-export {default as DashboardPage} from './dashboard';
+export {default as DashboardPage} from '../dashboards/admin-dashboard';
 export {default as EmployeeOverviewPage} from './systems/ems/overview-page';
 export {default as EmployeePage} from './systems/ems/employee-page';
 export {default as EmployeeCreatePage} from './systems/ems/employee-create-page';

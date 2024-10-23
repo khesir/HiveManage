@@ -28,6 +28,7 @@ export const serviceSchema = z.object({
 	service_title: z.string().min(1),
 	service_description: z.string().min(1),
 	service_status: z.enum(['Active', 'Inactive']),
+	has_reservation: z.boolean(),
 	has_sales_item: z.boolean(),
 	has_borrow: z.boolean(),
 	has_job_order: z.boolean(),
@@ -42,6 +43,7 @@ export type ServiceWithDetails = {
 	service_title: string;
 	service_description: string;
 	service_status: string;
+	has_reservation: boolean;
 	has_sales_item: boolean;
 	has_borrow: boolean;
 	has_job_order: boolean;

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {
 	Accordion,
 	AccordionContent,
@@ -31,9 +30,8 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
 import {useState} from 'react';
 import {useFieldArray, useForm} from 'react-hook-form';
-import {toast} from 'sonner';
 interface CreateCustomerFormProps {
-	processCreate: (data: any[]) => void;
+	processCreate?: (data: any[]) => void;
 }
 export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [loading, setLoading] = useState(false);
@@ -126,7 +124,12 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 
 	const processForm = async (data: Customer) => {
 		setLoading(true);
-		processCreate([data]);
+		// Overview main transaction process
+		if (typeof processCreate === 'function') {
+			processCreate([data]);
+			return true;
+		}
+		// Default process
 		setLoading(false);
 	};
 
@@ -372,87 +375,77 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 							</>
 						)}
 						{currentStep === 3 && (
-							<>
+							<div className="flex flex-col gap-3 col-span-3">
 								{fields.map((field, index) => (
-									<Card className="gap-5 flex flex-col p-5" key={index}>
-										<Accordion
-											type="single"
-											collapsible
-											defaultValue="item-1"
-											key={field.id}
-										>
-											<AccordionItem value="item-1">
-												<AccordionTrigger
-													className={cn(
-														'relative !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
-														errors?.socials?.[index] && 'text-red-700',
-													)}
+									<Accordion
+										type="single"
+										collapsible
+										defaultValue="item-1"
+										key={field.id}
+									>
+										<AccordionItem value="item-1">
+											<AccordionTrigger
+												className={cn(
+													'relative !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
+													errors?.socials?.[index] && 'text-red-700',
+												)}
+											>
+												{`Benefits #${index + 1}`}
+
+												<Button
+													variant="outline"
+													size="icon"
+													className="absolute right-8"
+													onClick={() => remove(index)}
 												>
-													{`Benefits #${index + 1}`}
-
-													<Button
-														variant="outline"
-														size="icon"
-														className="absolute right-8"
-														onClick={() => remove(index)}
-													>
-														<Trash2Icon className="h-4 w-4 " />
-													</Button>
-													{errors?.socials?.[index] && (
-														<span className="alert absolute right-8">
-															<AlertTriangleIcon className="h-4 w-4   text-red-700" />
-														</span>
+													<Trash2Icon className="h-4 w-4 " />
+												</Button>
+												{errors?.socials?.[index] && (
+													<span className="alert absolute right-8">
+														<AlertTriangleIcon className="h-4 w-4   text-red-700" />
+													</span>
+												)}
+											</AccordionTrigger>
+											<AccordionContent className="px-3">
+												<FormField
+													control={form.control}
+													name={`socials.${index}.type`}
+													render={({field}) => (
+														<FormItem>
+															<FormLabel>Type</FormLabel>
+															<FormControl>
+																<Input
+																	type="text"
+																	disabled={loading}
+																	placeholder="Social Type (e.g., Facebook)"
+																	{...field}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
 													)}
-												</AccordionTrigger>
-												<AccordionContent>
-													<div
-														className={cn(
-															'relative mb-4 gap-8 rounded-md border p-4 md:grid md:grid-cols-3',
-														)}
-													>
-														<FormField
-															control={form.control}
-															name={`socials.${index}.type`}
-															render={({field}) => (
-																<FormItem>
-																	<FormLabel>Address Line 2</FormLabel>
-																	<FormControl>
-																		<Input
-																			type="text"
-																			disabled={loading}
-																			placeholder="Social Type (e.g., Facebook)"
-																			{...field}
-																		/>
-																	</FormControl>
-																	<FormMessage />
-																</FormItem>
-															)}
-														/>
-														<FormField
-															control={form.control}
-															name={`socials.${index}.link`}
-															render={({field}) => (
-																<FormItem>
-																	<FormLabel>Link</FormLabel>
-																	<FormControl>
-																		<Input
-																			type="url"
-																			disabled={loading}
-																			placeholder="Social Link (e.g., http://facebook.com/...)"
-																			{...field}
-																		/>
-																	</FormControl>
-																	<FormMessage />
-																</FormItem>
-															)}
-														/>
-
-														{/* Remove Social Entry */}
-													</div>
-												</AccordionContent>
-											</AccordionItem>
-										</Accordion>
-									</Card>
+												/>
+												<FormField
+													control={form.control}
+													name={`socials.${index}.link`}
+													render={({field}) => (
+														<FormItem>
+															<FormLabel>Link</FormLabel>
+															<FormControl>
+																<Input
+																	type="url"
+																	disabled={loading}
+																	placeholder="Social Link (e.g., http://facebook.com/...)"
+																	{...field}
+																/>
+															</FormControl>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
+											</AccordionContent>
+										</AccordionItem>
+									</Accordion>
 								))}
 								<Button
 									type="button"
@@ -466,7 +459,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 								>
 									Add More
 								</Button>
-							</>
+							</div>
 						)}
 						{currentStep === 4 && (
 							<div>Review the provided data to proceed</div>

@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/layout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import {AdminOverviewSection} from '@/modules/ems/_sections/admin-overview-section';
+import {AdminOverviewSection} from '@/modules/ems/_sections/employee/overview-admin-section';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'admin/dashboard'},

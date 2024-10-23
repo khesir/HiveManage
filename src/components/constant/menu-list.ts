@@ -10,6 +10,7 @@ import {
 	LayoutPanelLeft,
 	MessageSquare,
 	BotMessageSquareIcon,
+	Package,
 } from 'lucide-react';
 
 type Submenu = {
@@ -106,14 +107,24 @@ export function getAdminMenuList(pathname: string): Group[] {
 					icon: Tag,
 					submenus: [
 						{
-							href: '/admin/sales/overview',
+							href: '/admin/sales/dashboard',
 							label: 'Overview',
 							active: pathname === '/admin/sales/overview',
 						},
 						{
 							href: '/admin/sales/services',
-							label: 'Services',
+							label: 'Services & Sales',
 							active: pathname === '/admin/sales/services',
+						},
+						{
+							href: '/admin/sales/customer',
+							label: 'Customer Database',
+							active: pathname === '/admin/sales/customer',
+						},
+						{
+							href: '/admin/sales/inquiry',
+							label: 'Inquiries',
+							active: pathname === '/admin/sales/inquiry',
 						},
 					],
 				},
@@ -129,14 +140,19 @@ export function getAdminMenuList(pathname: string): Group[] {
 							active: pathname === '/inventory/overview',
 						},
 						{
-							href: '/admin/inventory/items',
-							label: 'Items',
-							active: pathname === '/admin/inventory/items',
-						},
-						{
 							href: '/admin/inventory/orders',
 							label: 'Orders',
 							active: pathname === '/admin/inventory/orders',
+						},
+						{
+							href: '/admin/inventory/items',
+							label: 'Items Database',
+							active: pathname === '/admin/inventory/items',
+						},
+						{
+							href: '/admin/inventory/stock-logs',
+							label: 'Stock Logs',
+							active: pathname === '/admin/inventory/stock-logs',
 						},
 					],
 				},
@@ -246,34 +262,18 @@ export function getTechMenuList(pathname: string): Group[] {
 			groupLabel: '',
 			menus: [
 				{
-					href: '/tech/dashboard',
+					href: '/sales/dashboard',
 					label: 'Dashboard',
-					active: pathname.includes('/admin/dashboard'),
+					active: pathname.includes('/sales/dashboard'),
 					icon: LayoutGrid,
 					submenus: [],
 				},
 				{
-					href: '/admin/activity',
-					label: 'Activity',
-					active: pathname.includes('/activity'),
-					icon: Network,
-					submenus: [
-						{
-							href: '/admin/activity/overview',
-							label: 'Overview',
-							active: pathname === '/admin/activity/overview',
-						},
-						{
-							href: '/admin/activity/attendance',
-							label: 'Attendance',
-							active: pathname === '/admin/activity/attendance',
-						},
-						{
-							href: '/admin/activity/interchat',
-							label: 'Chat',
-							active: pathname === '/activity/chat',
-						},
-					],
+					href: '/sales/activity/interchat',
+					label: 'Chat',
+					active: pathname === '/activity/chat',
+					icon: MessageSquare,
+					submenus: [],
 				},
 			],
 		},
@@ -281,27 +281,39 @@ export function getTechMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
-					href: '/tech/inventory',
-					label: 'Job Order',
-					active: pathname.includes('/admin/inventory'),
+					href: '/tech/overview',
+					label: 'Overview',
+					active: pathname === '/tech/overview',
+					icon: LayoutPanelLeft,
+					submenus: [],
+				},
+				{
+					href: '/tech/assigned-services',
+					label: 'Assigned Services',
+					active: pathname.includes('/tech/services'),
 					icon: PackageOpenIcon,
-					submenus: [
-						{
-							href: '/inventory/overview',
-							label: 'Overview',
-							active: pathname === '/inventory/overview',
-						},
-						{
-							href: '/admin/inventory/items',
-							label: 'Items',
-							active: pathname === '/admin/inventory/items',
-						},
-						{
-							href: '/admin/inventory/orders',
-							label: 'Orders',
-							active: pathname === '/admin/inventory/orders',
-						},
-					],
+					submenus: [],
+				},
+				{
+					href: '/tech/services',
+					label: 'Services',
+					active: pathname.includes('/tech/services'),
+					icon: Package,
+					submenus: [],
+				},
+				{
+					href: '/tech/customer',
+					label: 'Customer Database',
+					active: pathname.includes('/tech/customer'),
+					icon: Users,
+					submenus: [],
+				},
+				{
+					href: '/tech/inquiry',
+					label: 'Inquiries',
+					active: pathname.includes('/tech/inquiry'),
+					icon: BotMessageSquareIcon,
+					submenus: [],
 				},
 			],
 		},

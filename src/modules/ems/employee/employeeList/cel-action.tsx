@@ -1,6 +1,5 @@
 'use client';
-import { Employee } from '@/components/types';
-import { AlertDialog } from '@/components/ui/alert-dialog';
+import {AlertDialog} from '@/components/ui/alert-dialog';
 import {Button} from '@/components/ui/button';
 import {
 	DropdownMenu,
@@ -9,12 +8,13 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
 import {Edit, MoreHorizontal, Trash} from 'lucide-react';
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 
 interface CellActionProps {
-	data: Employee;
+	data: EmployeeBasicInformation;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({data}) => {

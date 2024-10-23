@@ -106,7 +106,7 @@ export function Menu({isOpen, menuList}: MenuProps) {
 							<Tooltip delayDuration={100}>
 								<TooltipTrigger asChild>
 									<Button
-										onClick={() => {}}
+										onClick={() => navigate('/')}
 										variant="outline"
 										className="w-full justify-center h-10 mt-5"
 									>

@@ -19,9 +19,13 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Link} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 
 export function UserNav() {
+	const navigate = useNavigate();
+	const location = useLocation();
+	const firstSegment = location.pathname.split('/')[1]; // 'sales'
+
 	return (
 		<DropdownMenu>
 			<TooltipProvider disableHoverableContent>
@@ -55,20 +59,26 @@ export function UserNav() {
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<DropdownMenuItem className="hover:cursor-pointer" asChild>
-						<Link to="/dashboard" className="flex items-center">
+						<Link
+							to={`/${firstSegment}/dashboard`}
+							className="flex items-center"
+						>
 							<LayoutGrid className="w-4 h-4 mr-3 text-muted-foreground" />
 							Dashboard
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem className="hover:cursor-pointer" asChild>
-						<Link to="/account" className="flex items-center">
+						<Link to={`/${firstSegment}/profile`} className="flex items-center">
 							<User className="w-4 h-4 mr-3 text-muted-foreground" />
-							Account
+							Profile
 						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
+				<DropdownMenuItem
+					className="hover:cursor-pointer"
+					onClick={() => navigate('/')}
+				>
 					<LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
 					Sign out
 				</DropdownMenuItem>

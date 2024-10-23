@@ -1,9 +1,10 @@
 import {Separator} from '@/components/ui/separator';
-import {OrderSheet} from '../content/order-sheet';
 import {Heading} from '@/components/ui/heading';
 import {useSearchParams} from 'react-router-dom';
+import CustomerList from '../../customer/list/customer-list';
+import {CustomerProfile} from '../../customer/list/customer-profile';
 
-export default function ServiceListSection() {
+export default function CustomerListView() {
 	const [searchParams] = useSearchParams();
 
 	return (
@@ -13,19 +14,19 @@ export default function ServiceListSection() {
 				<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
 					<div className="flex flex-col gap-4">
 						<Heading
-							title={`Services`}
-							description="Manange Service (Server side table functionalities.)"
+							title={`Customer Database`}
+							description="Manange Customer (Server side table functionalities.)"
 						/>
 						<Separator />
 					</div>
-					<p>Inser Table</p>
+					<CustomerList searchParams={searchParams} />
 				</div>
 				<div className="flex flex-col gap-4">
 					<div className="flex lg:hidden">
 						<Separator />
 					</div>
 					{/* Service Profile */}
-					<OrderSheet />
+					<CustomerProfile />
 				</div>
 			</div>
 		</div>

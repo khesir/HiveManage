@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/layout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import PayrollSection from '@/modules/ems/_sections/payroll-section';
+import PayrollSection from '@/modules/ems/_sections/employee/payroll-section';
 import {useSearchParams} from 'react-router-dom';
 
 const breadcrubItems = [
