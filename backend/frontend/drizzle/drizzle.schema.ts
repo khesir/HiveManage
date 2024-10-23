@@ -900,7 +900,7 @@ export const customer = pgTable('customer', {
   middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
   contact_phone: varchar('contact_phone', { length: 255 }),
-  socials: jsonb('socials'),
+  socials: jsonb('socials').default([]),
   address_line: varchar('address_line', { length: 255 }),
   barangay: varchar('barangay', { length: 255 }),
   province: varchar('province', { length: 255 }),

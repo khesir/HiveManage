@@ -594,17 +594,28 @@ async function seedCustomer(db: PostgresJsDatabase) {
     'Prospect',
   ] as const;
 
+  const socialPlatforms = [
+    'Facebook',
+    'Twitter',
+    'Instagram',
+    'LinkedIn',
+    'TikTok',
+    'YouTube',
+  ] as const;
+
   const customerRecords = Array.from({ length: 70 }).map(() => ({
     firstname: faker.person.firstName(),
     middlename: faker.person.middleName(),
     lastname: faker.person.lastName(),
     contact_phone: faker.phone.number(),
-    socials: {
-      facebook: faker.internet.url(), // Fake Facebook URL
-      twitter: faker.internet.url(), // Fake Twitter URL
-      instagram: faker.internet.url(), // Fake Instagram URL
-      linkedin: faker.internet.url(), // Fake LinkedIn URL
-    },
+
+    socials: Array.from({ length: faker.number.int({ min: 1, max: 4 }) }).map(
+      () => ({
+        platform: faker.helpers.arrayElement(socialPlatforms),
+        url: faker.internet.url(), // Fake URL for the platform
+      }),
+    ),
+
     address_line: faker.location.city(),
     barangay: faker.location.city(),
     province: faker.location.city(),
