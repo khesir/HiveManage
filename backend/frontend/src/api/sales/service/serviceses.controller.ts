@@ -12,7 +12,7 @@ export class ServiceController {
 
   async getAllService(req: Request, res: Response, next: NextFunction) {
     const sort = (req.query.sort as string) || 'asc';
-    const service_status = (req.query.service_type as string) || undefined;
+    const service_status = (req.query.service_status as string) || undefined;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
