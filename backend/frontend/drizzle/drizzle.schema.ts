@@ -197,6 +197,15 @@ export const salesItemStatusEnum = pgEnum('salesItemStatusEnum', [
   'Sold',
 ]);
 
+export const entityTypeEnum = pgEnum('entityTypeEnums', [
+  'Employee',
+  'JobOrder',
+  'Sales',
+  'Service',
+  'Inventory',
+  'Order',
+]);
+
 export const TagItemEnum = pgEnum('tag_item', ['New', 'Used', 'Broken']);
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
@@ -204,6 +213,7 @@ export const employee = pgTable('employee', {
   firstname: varchar('firstname', { length: 255 }),
   middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
+  email: varchar('email', { length: 255 }),
   status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -270,7 +280,6 @@ export const salaryInformation = pgTable('salary_info', {
 // Employment Information Table
 export const employmentInformation = pgTable('employment_info', {
   employment_information_id: serial('employment_information_id').primaryKey(),
-  employee_id: integer('employee_id').references(() => employee.employee_id),
   hireDate: timestamp('hireDate').defaultNow(),
   department_id: integer('department_id').references(
     () => department.department_id,
@@ -280,6 +289,7 @@ export const employmentInformation = pgTable('employment_info', {
   ),
   employee_type: employeeTypeEnum('employee_type').notNull(),
   employee_status: employeeStatusEnum('employee_status').notNull(),
+  message: varchar('message', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -317,11 +327,14 @@ export const designation = pgTable('designation', {
   deleted_at: timestamp('deleted_at'),
 });
 
-// Activity Log Table
-export const activityLog = pgTable('activity_log', {
-  activity_id: serial('activity_id').primaryKey(),
+// Audit Log Table
+export const auditLog = pgTable('auditLog', {
+  auditlog_id: serial('auditlog_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
+  entity_id: integer('entity_id'),
+  entity_type: entityTypeEnum('entity_type').notNull(),
   action: varchar('action', { length: 255 }),
+  change: jsonb('change'),
   created_at: timestamp('created_at').defaultNow(),
   deleted_at: timestamp('deleted_at'),
 });
@@ -588,9 +601,10 @@ export const jobordertype = pgTable('jobordertype', {
 //Reserve
 export const reserve = pgTable('reserve', {
   reserve_id: serial('reserve_id').primaryKey(),
-  sales_id: integer('sales_id').references(() => sales.sales_id),
   service_id: integer('service_id').references(() => service.service_id),
-  item_id: integer('item_id').references(() => item.item_id),
+  sales_item_id: integer('sales_item_id').references(
+    () => sales_items.sales_items_id,
+  ),
   reserve_status: reserveStatusEnum('reserve_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -610,7 +624,6 @@ export const borrow = pgTable('borrow', {
   borrow_date: varchar('borrow_date'),
   return_date: varchar('return_date'),
   fee: integer('fee'),
-  tag_item: TagItemEnum('tag_item').notNull(),
   status: borrowStatusEnum('borrow_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -623,7 +636,8 @@ export const borrow = pgTable('borrow', {
 //Service
 export const service = pgTable('service', {
   service_id: serial('service_id').primaryKey(),
-  sales_id: integer('sales_id').references(() => sales.sales_id),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  customer_id: integer('customer_id').references(() => customer.customer_id),
   service_title: varchar('service_title', { length: 255 }),
   service_description: varchar('service_description', { length: 255 }),
   service_status: serviceStatus('service_status'),
@@ -687,24 +701,10 @@ export const sales_items = pgTable('sales_items', {
   deleted_at: timestamp('deleted_at'),
 });
 
-//Sales
-export const sales = pgTable('sales', {
-  sales_id: serial('sales_id').primaryKey(),
-  employee_id: integer('employee_id').references(() => employee.employee_id),
-  customer_id: integer('customer_id').references(() => customer.customer_id),
-  total_amount: real('total_amount'),
-  created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-  deleted_at: timestamp('deleted_at'),
-});
-
 //Payment
 export const payment = pgTable('payment', {
   payment_id: serial('payment_id').primaryKey(),
-  sales_id: integer('sales_id').references(() => sales.sales_id),
+  service_id: integer('service_id').references(() => service.service_id),
   amount: real('total_price'),
   payment_date: varchar('payment_date'),
   payment_method: paymentMethodEnum('payment_method').notNull(),
@@ -720,7 +720,7 @@ export const payment = pgTable('payment', {
 //Receipt
 export const receipt = pgTable('receipt', {
   receipt_id: serial('receipt_id').primaryKey(),
-  sales_id: integer('sales_id').references(() => sales.sales_id),
+  service_id: integer('service_id').references(() => service.service_id),
   payment_id: integer('payment_id').references(() => payment.payment_id),
   issued_date: varchar('issued_data'),
   total_amount: real('total_price'),
@@ -739,6 +739,7 @@ export const item = pgTable('item', {
   item_id: serial('item_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
   stock: integer('stock'),
+  price: decimal('price', { precision: 10, scale: 2 }),
   on_listing: boolean('on_listing'),
   re_order_level: integer('re_order_level'),
   tag: TagItemEnu('tag'),
@@ -768,6 +769,22 @@ export const product = pgTable('product', {
   description: varchar('description', { length: 255 }),
   price: real('price'), // Ensure scale is defined if needed
   img_url: varchar('img_url'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Product Attachment
+export const product_attachment = pgTable('product_attachment', {
+  product_attachment_id: serial('product_attachment_id').primaryKey(),
+  arrive_items_id: integer('arrive_items_id').references(
+    () => arrived_Items.arrived_Items_id,
+  ), // Shortened name
+  product_id: integer('product_id').references(() => product.product_id), // Ensure supplier.supplier_id exists
+  filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -810,6 +827,21 @@ export const order = pgTable('order', {
   items_ordered: integer('items_ordered'), // Number of items ordered
   expected_arrival: varchar('expected_arrival'), // Expected arrival date
   status: orderStatusEnum('order_status').notNull(),
+  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()), // Timestamp for last update
+  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+});
+
+//Order Item
+export const orderItem = pgTable('orderItem', {
+  orderItem_id: serial('orderItem_id').primaryKey(),
+  order_id: integer('order_id').references(() => order.order_id),
+  product_id: integer('product_id').references(() => product.product_id),
+  quantity: integer('quantity'),
+  price: integer('price'),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
   last_updated: timestamp('last_updated')
     .defaultNow()

@@ -2,44 +2,47 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
-import { db } from '@/drizzle/pool';
-import { employee, sales } from '@/drizzle/drizzle.schema';
+import { auditLog, employee } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/HttpStatus';
+import { db } from '@/drizzle/pool';
 
 // There's a globally used
-// middleware like error handling and schema validation
+// middlewere like error handling and schema validation
 
-export async function validateSalesID(
+export async function validateAuditID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { sales_id } = req.params;
-
+  const { auditlog_id } = req.params;
   try {
-    const Sales = await db
+    const audit = await db
       .select()
-      .from(sales)
+      .from(auditLog)
       .where(
-        and(eq(sales.sales_id, Number(sales_id)), isNull(sales.deleted_at)),
+        and(
+          eq(auditLog.auditlog_id, Number(auditlog_id)),
+          isNull(auditLog.deleted_at),
+        ),
       );
-    console.log(Sales);
-    if (!Sales[0]) {
-      return res.status(404).json({ message: 'Sales not found' });
+    console.log(audit);
+    if (!audit[0]) {
+      return res.status(404).json({ message: 'Audit Log not found' });
     }
     next();
   } catch (error) {
     log.error(error);
-    res.status(500).json({ message: 'Internal Server Error ' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
-export async function validateSalesByEmployeeID(
+export async function validateActivityEmployeeID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
   const { employee_id } = req.body;
+
   try {
     const data = await db
       .select()

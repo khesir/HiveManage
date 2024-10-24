@@ -41,21 +41,23 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const { department_id, designation_id, employee_type, employee_status } =
-        req.body;
-      const { employee_id } = req.params;
+      const {
+        department_id,
+        designation_id,
+        employee_type,
+        employee_status,
+        message,
+      } = req.body;
 
-      await this.employmentInformationService.createEmploymentInformation(
-        Number(employee_id),
-        {
-          department_id,
-          designation_id,
-          employee_type,
-          employee_status,
-        },
-      );
+      await this.employmentInformationService.createEmploymentInformation({
+        department_id,
+        designation_id,
+        employee_type,
+        employee_status,
+        message,
+      });
       res.status(HttpStatus.OK.code).json({
-        message: 'Employment Information created succesfully',
+        message: 'Employment Information created successfully',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -70,21 +72,26 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const { employment_id, employee_id } = req.params;
-      const { department_id, designation_id, employee_type, employee_status } =
-        req.body;
+      const { employment_id } = req.params;
+      const {
+        department_id,
+        designation_id,
+        employee_type,
+        employee_status,
+        message,
+      } = req.body;
       await this.employmentInformationService.updateEmploymentInformation(
-        Number(employee_id),
         Number(employment_id),
         {
           department_id,
           designation_id,
           employee_type,
           employee_status,
+          message,
         },
       );
       res.status(HttpStatus.OK.code).json({
-        message: 'Employment Information Updated succesfully',
+        message: 'Employment Information Updated successfully',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -105,7 +112,7 @@ export class EmploymentInformationController {
       );
       res
         .status(HttpStatus.OK.code)
-        .json({ message: 'Employment Information deleted succesfully' });
+        .json({ message: 'Employment Information deleted successfully' });
     } catch (error) {
       res.status(HttpStatus.OK.code).json({
         message: 'Internal Server Error',

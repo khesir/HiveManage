@@ -1,6 +1,5 @@
 import { Router } from 'express';
 
-import activityLogRoute from './company/activityLogs/activitylogs.route';
 import log from '@/lib/logger';
 import departmentRoute from './company/department/department.route';
 import designationRoute from './company/designation/designation.route';
@@ -11,10 +10,11 @@ import employeeRoute from './employee/employee/employee.route';
 import signatoryRoute from './payroll/signatory/signatory.route';
 import payrollApprovalRoute from './payroll/payroll_approval/payrollApproval.route';
 import payrollReportRoute from './payroll/payroll_reports/payrollReports.route';
+import auditRoute from './company/auditlogs/auditlogs.route';
 
 const emsRoute = Router({ mergeParams: true });
 
-emsRoute.use('/activityLogs', activityLogRoute);
+emsRoute.use('/auditLogs', auditRoute);
 log.info('ROUTE /activityLogs set');
 
 emsRoute.use('/departments', departmentRoute);

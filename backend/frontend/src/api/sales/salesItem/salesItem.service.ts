@@ -82,7 +82,6 @@ export class SalesItemService {
         },
         service: {
           service_id: row.service?.service_id,
-          sales_id: row.service?.sales_id,
           service_title: row.service?.service_title,
           service_description: row.service?.service_description,
           service_status: row.service?.service_status,
@@ -129,7 +128,6 @@ export class SalesItemService {
         },
         service: {
           service_id: row.service?.service_id,
-          sales_id: row.service?.sales_id,
           service_title: row.service?.service_title,
           service_description: row.service?.service_description,
           service_status: row.service?.service_status,
