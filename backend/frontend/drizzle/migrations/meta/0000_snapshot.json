@@ -1,5 +1,5 @@
 {
-  "id": "df9961e9-e17b-49a7-b4ee-33b9e8c50756",
+  "id": "6719f327-fd08-4627-8007-0af66aeab619",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -832,7 +832,8 @@
           "name": "socials",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'[]'::jsonb"
         },
         "address_line": {
           "name": "address_line",
@@ -2744,12 +2745,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "arrive_items_id": {
-          "name": "arrive_items_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "product_id": {
           "name": "product_id",
           "type": "integer",
@@ -2785,19 +2780,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "product_attachment_arrive_items_id_arrived_items_arrived_Items_id_fk": {
-          "name": "product_attachment_arrive_items_id_arrived_items_arrived_Items_id_fk",
-          "tableFrom": "product_attachment",
-          "tableTo": "arrived_items",
-          "columnsFrom": [
-            "arrive_items_id"
-          ],
-          "columnsTo": [
-            "arrived_Items_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "product_attachment_product_id_product_product_id_fk": {
           "name": "product_attachment_product_id_product_product_id_fk",
           "tableFrom": "product_attachment",

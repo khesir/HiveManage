@@ -780,9 +780,6 @@ export const product = pgTable('product', {
 //Product Attachment
 export const product_attachment = pgTable('product_attachment', {
   product_attachment_id: serial('product_attachment_id').primaryKey(),
-  arrive_items_id: integer('arrive_items_id').references(
-    () => arrived_Items.arrived_Items_id,
-  ), // Shortened name
   product_id: integer('product_id').references(() => product.product_id), // Ensure supplier.supplier_id exists
   filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
   created_at: timestamp('created_at').defaultNow(),

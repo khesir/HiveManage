@@ -1036,12 +1036,9 @@ async function seedProduct(db: PostgresJsDatabase) {
 }
 
 async function seedProductAttachment(db: PostgresJsDatabase) {
-  const arriveItemIDs = await db.select().from(arrived_Items);
   const productIDs = await db.select().from(product);
 
   const productattachmentRecords = Array.from({ length: 50 }).map(() => ({
-    arrived_Items_id:
-      faker.helpers.arrayElement(arriveItemIDs).arrived_Items_id,
     product_id: faker.helpers.arrayElement(productIDs).product_id,
     filePath: faker.lorem.sentence(),
     created_at: faker.date.recent(),
@@ -1200,11 +1197,11 @@ async function main() {
     await seedStockLogs(db);
 
     // Participants and related data
-    await seedParticipants(db);
     await seedCustomer(db); // Seed customers first
-    await seedMessage(db);
     await seedInquiry(db);
     await seedChannel(db);
+    await seedParticipants(db);
+    await seedMessage(db);
 
     // Sales and related data
     await seedService(db);

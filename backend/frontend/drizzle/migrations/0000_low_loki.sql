@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS "customer" (
 	"middlename" varchar(255),
 	"lastname" varchar(255),
 	"contact_phone" varchar(255),
-	"socials" jsonb,
+	"socials" jsonb DEFAULT '[]'::jsonb,
 	"address_line" varchar(255),
 	"barangay" varchar(255),
 	"province" varchar(255),
@@ -559,7 +559,6 @@ CREATE TABLE IF NOT EXISTS "product" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product_attachment" (
 	"product_attachment_id" serial PRIMARY KEY NOT NULL,
-	"arrive_items_id" integer,
 	"product_id" integer,
 	"filePath" varchar(255),
 	"created_at" timestamp DEFAULT now(),
@@ -891,12 +890,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "product" ADD CONSTRAINT "product_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "product_attachment" ADD CONSTRAINT "product_attachment_arrive_items_id_arrived_items_arrived_Items_id_fk" FOREIGN KEY ("arrive_items_id") REFERENCES "public"."arrived_items"("arrived_Items_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
