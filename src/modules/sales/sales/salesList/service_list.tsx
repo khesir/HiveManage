@@ -5,10 +5,11 @@ import {ServiceTable} from './service_table';
 import {columns} from './columns';
 
 export type paramsProps = {
+	isDetails?: boolean;
 	searchParams: URLSearchParams;
 };
 
-export default function ServiceList({searchParams}: paramsProps) {
+export default function ServiceList({searchParams, isDetails}: paramsProps) {
 	const [service, setService] = useState<ServiceWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 
@@ -35,6 +36,11 @@ export default function ServiceList({searchParams}: paramsProps) {
 	}, [offset, pageLimit, sort, status]);
 
 	return (
-		<ServiceTable columns={columns} data={service} pageCount={pageCount} />
+		<ServiceTable
+			columns={columns}
+			data={service}
+			pageCount={pageCount}
+			isDetails={isDetails}
+		/>
 	);
 }

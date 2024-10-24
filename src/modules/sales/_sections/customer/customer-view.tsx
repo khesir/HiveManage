@@ -1,4 +1,6 @@
 import {Separator} from '@/components/ui/separator';
+import {ViewCustomerDetails} from '../../customer/view/customer-details';
+import {CustomerProfile} from '../../customer/list/customer-profile';
 
 export default function CustomerViewSection() {
 	return (
@@ -7,7 +9,7 @@ export default function CustomerViewSection() {
 				{/* Employee List */}
 				<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
 					<div className="flex flex-col gap-4">
-						<p>Customer Details</p>
+						<ViewCustomerDetails />
 					</div>
 				</div>
 				<div className="flex flex-col gap-4">
@@ -15,7 +17,7 @@ export default function CustomerViewSection() {
 						<Separator />
 					</div>
 					{/* Employee Profile */}
-					<p>Customer Transaction History</p>
+					<CustomerProfile />
 				</div>
 			</div>
 		</div>

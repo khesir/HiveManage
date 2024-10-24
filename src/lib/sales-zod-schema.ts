@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import {EmployeeBasicInformation} from './employee-zod-schema';
 import {Customer} from './cms-zod-schema';
+import {ItemWithDetails} from './inventory-zod-schema';
 
 export const salesSchema = z.object({
 	sales_id: z.number().optional(),
@@ -119,3 +120,35 @@ export const joborderTypeschema = z.object({
 });
 
 export type JobOrderType = z.infer<typeof joborderTypeschema>;
+
+export const salesItemSchema = z.object({
+	sales_item_id: z.number().optional(),
+	service_id: z.number().min(1),
+	item_id: z.number().min(1),
+	quantity: z.number().min(1),
+	sales_item_type: z.enum([
+		'Sales',
+		'Joborder',
+		'Borrow',
+		'Purchase',
+		'Exchange',
+	]),
+	total_price: z.number().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type SalesItem = z.infer<typeof salesItemSchema>;
+
+export type SalesItemWithDetails = {
+	sales_item_id?: number;
+	service: ServiceWithDetails;
+	item: ItemWithDetails;
+	quantity: number;
+	sales_item_type: string;
+	total_price: number;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};

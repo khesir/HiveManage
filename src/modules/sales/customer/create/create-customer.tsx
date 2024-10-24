@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import useCustomerFormStore from '@/components/hooks/use-customer-form';
 import {
 	Accordion,
 	AccordionContent,
@@ -7,6 +8,14 @@ import {
 } from '@/components/ui/accordion';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 import {
 	Form,
 	FormControl,
@@ -28,8 +37,9 @@ import {Customer, customerSchema} from '@/lib/cms-zod-schema';
 import {cn} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useFieldArray, useForm} from 'react-hook-form';
+
 interface CreateCustomerFormProps {
 	processCreate?: (data: any[]) => void;
 }
@@ -37,6 +47,20 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [loading, setLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [previousStep, setPreviousStep] = useState(0);
+	const {setCustomerFormData, resetCustomerFormData} = useCustomerFormStore();
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	useEffect(() => {
+		resetCustomerFormData();
+	}, []);
+
+	const openModal = () => {
+		setIsModalOpen(true);
+	};
+
+	const closeModal = () => {
+		setIsModalOpen(false);
+	};
 
 	const form = useForm<Customer>({
 		resolver: zodResolver(customerSchema),
@@ -103,9 +127,21 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 		const output = await form.trigger(fields as FieldName[], {
 			shouldFocus: true,
 		});
+		const customerData: Customer = {
+			firstname: form.getValues('firstname'),
+			middlename: form.getValues('middlename'),
+			lastname: form.getValues('lastname'),
+			contact: form.getValues('contact'),
+			email: form.getValues('email'),
+			socials: form.getValues('socials'),
+			addressline: form.getValues('addressline'),
+			barangay: form.getValues('barangay'),
+			standing: form.getValues('standing'),
+			province: form.getValues('province'),
+		};
 
+		setCustomerFormData(customerData);
 		if (!output) return;
-
 		if (currentStep < steps.length - 1) {
 			if (currentStep === steps.length - 2) {
 				await form.handleSubmit(processForm)();
@@ -129,10 +165,19 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 			processCreate([data]);
 			return true;
 		}
-		// Default process
+		if (isModalOpen) {
+			openModal();
+		}
 		setLoading(false);
 	};
-
+	const socials = [
+		'Facebook',
+		'Twitter',
+		'Instagram',
+		'LinkedIn',
+		'TikTok',
+		'YouTube',
+	];
 	const standing = [
 		'Active',
 		'Inactive',
@@ -414,12 +459,28 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 														<FormItem>
 															<FormLabel>Type</FormLabel>
 															<FormControl>
-																<Input
-																	type="text"
+																<Select
 																	disabled={loading}
-																	placeholder="Social Type (e.g., Facebook)"
-																	{...field}
-																/>
+																	onValueChange={field.onChange}
+																	value={field.value}
+																	defaultValue={field.value}
+																>
+																	<FormControl>
+																		<SelectTrigger>
+																			<SelectValue
+																				defaultValue={field.value}
+																				placeholder="Select a country"
+																			/>
+																		</SelectTrigger>
+																	</FormControl>
+																	<SelectContent>
+																		{socials.map((data, index) => (
+																			<SelectItem key={index} value={data}>
+																				{data}
+																			</SelectItem>
+																		))}
+																	</SelectContent>
+																</Select>
 															</FormControl>
 															<FormMessage />
 														</FormItem>
@@ -513,6 +574,25 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 					</button>
 				</div>
 			</div>
+			{isModalOpen && (
+				<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+					<DialogContent className="sm:max-w-[425px]">
+						<DialogHeader>
+							<DialogTitle>Delete Item</DialogTitle>
+							<DialogDescription>
+								Are you sure you want to delete this item? This action cannot be
+								undone.
+							</DialogDescription>
+						</DialogHeader>
+						<DialogFooter>
+							<Button onClick={closeModal}>Cancel</Button>
+							<Button variant="destructive" onClick={closeModal}>
+								Confirm
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			)}
 		</div>
 	);
 }

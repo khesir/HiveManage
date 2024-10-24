@@ -4,6 +4,7 @@ import {create} from 'zustand';
 type CustomerFormStore = {
 	data: Customer | null;
 	setCustomerFormData: (newData: Partial<Customer>) => void;
+	resetCustomerFormData: () => void;
 };
 
 const useCustomerFormStore = create<CustomerFormStore>((set) => ({
@@ -12,6 +13,7 @@ const useCustomerFormStore = create<CustomerFormStore>((set) => ({
 		set((state) => ({
 			data: {...(state.data ?? {}), ...newData} as Customer,
 		})),
+	resetCustomerFormData: () => set({data: null}),
 }));
 
 export default useCustomerFormStore;

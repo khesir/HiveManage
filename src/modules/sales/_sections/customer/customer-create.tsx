@@ -1,6 +1,7 @@
 import {Separator} from '@/components/ui/separator';
 import {Heading} from '@/components/ui/heading';
 import {CreateCustomerForm} from '../../customer/create/create-customer';
+import {CreateCustomerOverview} from '../../customer/create/create-customer-overview';
 
 export default function CreateCustomerSection() {
 	return (
@@ -21,7 +22,7 @@ export default function CreateCustomerSection() {
 						<Separator />
 					</div>
 					{/* Employee Profile */}
-					<p>Overview section</p>
+					<CreateCustomerOverview />
 				</div>
 			</div>
 		</div>
