@@ -19,6 +19,7 @@ export class ServicesService {
     limit: number,
     offset: number,
     service_status: string | undefined,
+    customer_id: string | undefined,
   ) {
     const conditions = [isNull(service.deleted_at)];
     if (service_status) {
@@ -26,7 +27,9 @@ export class ServicesService {
         eq(service.service_status, service_status as 'Active' | 'Inactive'),
       );
     }
-
+    if (customer_id) {
+      conditions.push(eq(service.customer_id, Number(customer_id)));
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -41,7 +44,7 @@ export class ServicesService {
       .from(service)
       .leftJoin(employee, eq(employee.employee_id, service.employee_id))
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
-      .where(isNull(service.deleted_at))
+      .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(service.created_at) : desc(service.created_at),
       )
@@ -49,7 +52,7 @@ export class ServicesService {
       .offset(offset);
 
     const serviceWithDetails = result.map((row) => ({
-      service_id: row.service,
+      service_id: row.service.service_id,
       employee: {
         employee_id: row.employee?.employee_id,
         firstname: row.employee?.firstname,

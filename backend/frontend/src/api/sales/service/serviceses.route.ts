@@ -10,6 +10,9 @@ import borrowRoute from './borrow/borrow.route';
 import reserveRoute from './reserve/reserve.route';
 import receiptRoute from './receipt/receipt.route';
 import paymentRoute from './payment/payment.route';
+import customerRoute from '../../cms/customer/customer.route';
+import jobordertypesRoute from '../jobordertypes/jobordertypes.route';
+import salesitemRoute from './salesItem/salesItem.route';
 
 const serviceRoute = Router({ mergeParams: true });
 const serviceController = new ServiceController(db);
@@ -50,5 +53,15 @@ serviceRoute.use('/:service_id/receipt', validateServiceID, receiptRoute);
 serviceRoute.use('/:service_id/joborder', validateServiceID, joborderRoute);
 serviceRoute.use('/:service_id/borrow', validateServiceID, borrowRoute);
 serviceRoute.use('/:service_id/reserve', validateServiceID, reserveRoute);
+serviceRoute.use('/:service_id/customer', validateServiceID, customerRoute);
+serviceRoute.use('/:service_id/sales-item', validateServiceID, salesitemRoute);
+log.info('ROUTE salesitem set');
+
+serviceRoute.use(
+  '/:service_id/joborder-types',
+  validateServiceID,
+  jobordertypesRoute,
+);
+log.info('ROUTE job order types');
 
 export default serviceRoute;
