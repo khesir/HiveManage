@@ -19,15 +19,12 @@ export class EmploymentInformationService {
 
     if (!isNaN(employeeID) && !isNaN(employmentID)) {
       conditions.push(
-        eq(employmentInformation.employee_id, employeeID),
         eq(employmentInformation.employment_information_id, employmentID),
       );
     } else if (!isNaN(employmentID)) {
       conditions.push(
         eq(employmentInformation.employment_information_id, employmentID),
       );
-    } else if (!isNaN(employeeID)) {
-      conditions.push(eq(employmentInformation.employee_id, employeeID));
     }
 
     const result = await this.db
@@ -45,7 +42,6 @@ export class EmploymentInformationService {
 
     const mergedDetails = result.map((row) => ({
       employment_information_id: row.employment_info.employment_information_id,
-      employee_id: row.employment_info.employee_id,
       hireDate: row.employment_info.hireDate,
       department: {
         department_id: row.department?.department_id,
@@ -72,22 +68,16 @@ export class EmploymentInformationService {
     return mergedDetails;
   }
 
-  async createEmploymentInformation(
-    employee_id: number,
-    data: EmploymentInformation,
-  ) {
-    await this.db
-      .insert(employmentInformation)
-      .values({ employee_id: employee_id, ...data });
+  async createEmploymentInformation(data: EmploymentInformation) {
+    await this.db.insert(employmentInformation).values(data);
   }
   async updateEmploymentInformation(
-    employee_id: number,
     employmentID: number,
     data: EmploymentInformation,
   ) {
     await this.db
       .update(employmentInformation)
-      .set({ employee_id: employee_id, ...data })
+      .set(data)
       .where(eq(employmentInformation.employment_information_id, employmentID));
   }
   async deleteEmployementInformation(employmentID: number) {

@@ -1,5 +1,5 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
-import { payment, receipt, sales } from '@/drizzle/drizzle.schema';
+import { payment, receipt, service } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 export class ReceiptService {
@@ -28,7 +28,7 @@ export class ReceiptService {
     const result = await this.db
       .select()
       .from(receipt)
-      .leftJoin(sales, eq(receipt.sales_id, receipt.receipt_id))
+      .leftJoin(service, eq(receipt.service_id, receipt.receipt_id))
       .leftJoin(payment, eq(receipt.payment_id, payment.payment_id))
       .where(and(...conditions))
       .orderBy(
@@ -39,18 +39,24 @@ export class ReceiptService {
 
     const receiptWithDetails = result.map((row) => ({
       receipt_id: row.receipt.receipt_id,
-      sales: {
-        sales_id: row.sales?.sales_id,
-        employee_id: row.sales?.employee_id,
-        customer_id: row.sales?.customer_id,
-        total_amount: row.sales?.total_amount,
-        created_at: row.sales?.created_at,
-        last_updated: row.sales?.last_updated,
-        deleted_at: row.sales?.deleted_at,
+      service: {
+        service_d: row.service?.service_id,
+        employee_id: row.service?.employee_id,
+        customer_id: row.service?.customer_id,
+        service_title: row.service?.service_title,
+        service_description: row.service?.service_description,
+        service_status: row.service?.service_status,
+        has_reservation: row.service?.has_reservation,
+        has_sales_item: row.service?.has_sales_item,
+        has_borrow: row.service?.has_borrow,
+        has_job_order: row.service?.has_job_order,
+        created_at: row.service?.created_at,
+        last_updated: row.service?.last_updated,
+        deleted_at: row.service?.deleted_at,
 
         payment: {
           payment_id: row.payment?.payment_id,
-          sales_id: row.payment?.sales_id,
+          service_id: row.payment?.service_id,
           amount: row.payment?.amount,
           payment_date: row.payment?.payment_date,
           payment_method: row.payment?.payment_method,

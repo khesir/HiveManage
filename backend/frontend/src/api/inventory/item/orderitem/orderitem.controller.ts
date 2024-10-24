@@ -1,29 +1,33 @@
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
-import { SalesService } from './sales.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { OrderItemService } from './orderitem.service';
 
-export class SalesController {
-  private salesService: SalesService;
+export class OrderItemsController {
+  private orderitemService: OrderItemService;
 
   constructor(pool: PostgresJsDatabase) {
-    this.salesService = new SalesService(pool);
+    this.orderitemService = new OrderItemService(pool);
   }
 
-  async getAllSales(req: Request, res: Response, next: NextFunction) {
+  async getAllOrderItem(req: Request, res: Response, next: NextFunction) {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.salesService.getAllSales(sort, limit, offset);
+      const data = await this.orderitemService.getAllOrderItem(
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.salesWithDetails,
+        data: data.OrderitemsWithDetails,
       });
     } catch (error) {
       res
@@ -33,10 +37,10 @@ export class SalesController {
     }
   }
 
-  async getSalesById(req: Request, res: Response, next: NextFunction) {
+  async getOrderItemById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id } = req.params;
-      const data = await this.salesService.getSalesById(sales_id);
+      const { orderItem_id } = req.params;
+      const data = await this.orderitemService.getOrderItemById(orderItem_id);
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res
@@ -46,18 +50,21 @@ export class SalesController {
     }
   }
 
-  async createSales(req: Request, res: Response, next: NextFunction) {
+  async createOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, customer_id, total_amount } = req.body;
+      const { order_id, product_id, quantity, price } = req.body;
 
-      await this.salesService.createSales({
-        employee_id,
-        customer_id,
-        total_amount,
+      await this.orderitemService.createOrderItem({
+        order_id,
+        product_id,
+        quantity,
+        price,
       });
-      res
-        .status(HttpStatus.CREATED.code)
-        .json({ status: 'Success', message: 'Successfully Created Sales ' });
+
+      res.status(HttpStatus.CREATED.code).json({
+        status: 'Success',
+        message: 'Successfully Created Order Item ',
+      });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         status: 'Error ',
@@ -68,18 +75,19 @@ export class SalesController {
     }
   }
 
-  async updateSales(req: Request, res: Response, next: NextFunction) {
+  async updateOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id } = req.params;
-      const { employee_id, customer_id, total_amount } = req.body;
+      const { orderItem_id } = req.params;
+      const { order_id, product_id, quantity, price } = req.body;
 
-      await this.salesService.updateSales(
-        { employee_id, customer_id, total_amount },
-        Number(sales_id),
+      await this.orderitemService.updateOrderItem(
+        { order_id, product_id, quantity, price },
+        orderItem_id,
       );
-      res
-        .status(HttpStatus.OK.code)
-        .json({ status: 'Success', message: 'Sales Updated Successfully ' });
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Order Item Updated Successfully ',
+      });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -88,13 +96,13 @@ export class SalesController {
     }
   }
 
-  async deleteSales(req: Request, res: Response, next: NextFunction) {
+  async deleteOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id } = req.params;
-      await this.salesService.deleteSales(Number(sales_id));
+      const { orderItem_id } = req.params;
+      await this.orderitemService.deleteOrderItem(Number(orderItem_id));
       res.status(200).json({
         status: 'Success',
-        message: `Sales ID:${sales_id} is deleted Successfully`,
+        message: `Order Item ID:${orderItem_id} is deleted Successfully`,
       });
     } catch (error) {
       res

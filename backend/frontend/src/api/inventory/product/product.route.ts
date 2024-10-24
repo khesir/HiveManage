@@ -5,6 +5,7 @@ import log from '@/lib/logger';
 import { ProductController } from './product.controller';
 import { validateProductID } from './product.middleware';
 import { CreateProduct, UpdateProduct } from './product.model';
+import productattachmentRoute from './productattachment/productattachment.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
@@ -40,4 +41,9 @@ productRoute.delete(
 );
 log.info('DELETE /product/:product_id set');
 
+productRoute.use(
+  '/:product_id/product_attachment',
+  validateProductID,
+  productattachmentRoute,
+);
 export default productRoute;

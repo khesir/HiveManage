@@ -58,12 +58,13 @@ export class EmployeeController {
 
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { uuid, firstname, middlename, lastname, status } = req.body;
+      const { uuid, firstname, middlename, lastname, email, status } = req.body;
       await this.employeeService.createEmployee({
         uuid,
         firstname,
         middlename,
         lastname,
+        email,
         status,
       });
       res.status(HttpStatus.CREATED.code).json({
@@ -79,7 +80,7 @@ export class EmployeeController {
   async updateEmployee(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_id } = req.params;
-      const { uuid, firstname, middlename, lastname, status } = req.body;
+      const { uuid, firstname, middlename, lastname, email, status } = req.body;
 
       await this.employeeService.updateEmployee(
         {
@@ -87,12 +88,13 @@ export class EmployeeController {
           firstname,
           middlename,
           lastname,
+          email,
           status,
         },
         Number(employee_id),
       );
       res.status(HttpStatus.OK.code).json({
-        message: 'Employee Updated succesfully',
+        message: 'Employee Updated successfully',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({

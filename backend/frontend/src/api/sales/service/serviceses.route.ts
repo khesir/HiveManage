@@ -8,6 +8,8 @@ import { CreateService, UpdateService } from './serviceses.model';
 import joborderRoute from './joborder/joborder.route';
 import borrowRoute from './borrow/borrow.route';
 import reserveRoute from './reserve/reserve.route';
+import receiptRoute from './receipt/receipt.route';
+import paymentRoute from './payment/payment.route';
 
 const serviceRoute = Router({ mergeParams: true });
 const serviceController = new ServiceController(db);
@@ -43,6 +45,8 @@ serviceRoute.delete(
 );
 log.info('DELETE /service/:service_id set');
 
+serviceRoute.use('/:service_id/payment', validateServiceID, paymentRoute);
+serviceRoute.use('/:service_id/receipt', validateServiceID, receiptRoute);
 serviceRoute.use('/:service_id/joborder', validateServiceID, joborderRoute);
 serviceRoute.use('/:service_id/borrow', validateServiceID, borrowRoute);
 serviceRoute.use('/:service_id/reserve', validateServiceID, reserveRoute);
