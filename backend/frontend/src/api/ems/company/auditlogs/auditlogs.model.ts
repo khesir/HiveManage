@@ -3,7 +3,7 @@ import { z } from 'zod';
 // Validation Schema
 export const CreateAuditLog = z.object({
   employee_id: z.number().min(1),
-  entity_id: z.number().min(1),
+  entity_id: z.number().optional(),
   entity_type: z.enum([
     'Employee',
     'JobOrder',
@@ -18,7 +18,7 @@ export const CreateAuditLog = z.object({
 
 export const UpdateAuditLog = z.object({
   employee_id: z.number().min(1),
-  entity_id: z.number().min(1),
+  entity_id: z.number().optional(),
   entity_type: z.enum([
     'Employee',
     'JobOrder',

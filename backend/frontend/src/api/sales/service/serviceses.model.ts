@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 export const CreateService = z.object({
-  sales_id: z.number().min(1),
+  employee_id: z.number().min(1),
+  customer_id: z.number().min(1),
+
   service_title: z.string().min(1),
   service_description: z.string().min(1),
   service_status: z.enum(['Active', 'Inactive']),
@@ -12,7 +14,8 @@ export const CreateService = z.object({
 });
 
 export const UpdateService = z.object({
-  sales_id: z.number().min(1),
+  employee_id: z.number().min(1),
+  customer_id: z.number().min(1),
   service_title: z.string().min(1),
   service_description: z.string().min(1),
   service_status: z.enum(['Active', 'Inactive']),

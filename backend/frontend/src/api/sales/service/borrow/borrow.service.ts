@@ -1,5 +1,11 @@
 import { and, eq, isNull, sql, desc, asc } from 'drizzle-orm';
-import { borrow, sales_items, service } from '@/drizzle/drizzle.schema';
+import {
+  borrow,
+  customer,
+  employee,
+  sales_items,
+  service,
+} from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateBorrow } from './borrow.model';
 
@@ -56,7 +62,9 @@ export class BorrowService {
     const result = await this.db
       .select()
       .from(borrow)
-      .leftJoin(service, eq(borrow.service_id, borrow.borrow_id))
+      .leftJoin(service, eq(service.service_id, borrow.borrow_id))
+      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
+      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
       .leftJoin(
         sales_items,
         eq(sales_items.sales_items_id, borrow.sales_item_id),
@@ -69,33 +77,50 @@ export class BorrowService {
       .offset(offset);
 
     const borrowWithDetails = result.map((row) => ({
-      borrow: {
-        borrow_id: row.borrow.borrow_id,
-        service: {
-          service_id: row.service?.service_id,
-          sales_id: row.service?.sales_id,
-          service_title: row.service?.service_title,
-          service_description: row.service?.service_description,
-          service_status: row.service?.service_status,
-          has_reservation: row.service?.has_reservation,
-          has_sales_item: row.service?.has_sales_item,
-          has_borrow: row.service?.has_borrow,
-          has_job_order: row.service?.has_job_order,
-          created_at: row.service?.created_at,
-          last_updated: row.service?.last_updated,
-          deleted_at: row.service?.deleted_at,
+      borrow_id: row.borrow.borrow_id,
+      service: {
+        service_id: row.service?.service_id,
+        employee: {
+          employee_id: row.employee?.employee_id,
+          firstname: row.employee?.firstname,
+          middlename: row.employee?.middlename,
+          lastname: row.employee?.lastname,
+          status: row.employee?.status,
+          created_at: row.employee?.created_at,
+          last_updated: row.employee?.last_updated,
+          deleted_at: row.employee?.deleted_at,
         },
-        sales_items: {
-          sales_items_id: row.sales_items?.sales_items_id,
-          item_id: row.sales_items?.item_id,
-          service_id: row.sales_items?.service_id,
-          quantity: row.sales_items?.quantity,
-          sales_item_type: row.sales_items?.sales_item_type,
-          total_price: row.sales_items?.total_price,
-          created_at: row.sales_items?.created_at,
-          last_updated: row.sales_items?.last_updated,
-          deleted_at: row.sales_items?.deleted_at,
+        customer: {
+          customer_id: row.customer?.customer_id,
+          firstname: row.customer?.firstname,
+          lastname: row.customer?.lastname,
+          contact_phone: row.customer?.contact_phone,
+          socials: row.customer?.socials,
+          address_line: row.customer?.address_line,
+          baranay: row.customer?.address_line,
+          province: row.customer?.province,
+          standing: row.customer?.standing,
         },
+        service_title: row.service?.service_title,
+        service_description: row.service?.service_description,
+        service_status: row.service?.service_status,
+        has_sales_item: row.service?.has_sales_item,
+        has_borrow: row.service?.has_borrow,
+        has_job_order: row.service?.has_job_order,
+        created_at: row.service?.created_at,
+        last_updated: row.service?.last_updated,
+        deleted_at: row.service?.deleted_at,
+      },
+      sales_items: {
+        sales_items_id: row.sales_items?.sales_items_id,
+        item_id: row.sales_items?.item_id,
+        service_id: row.sales_items?.service_id,
+        quantity: row.sales_items?.quantity,
+        sales_item_type: row.sales_items?.sales_item_type,
+        total_price: row.sales_items?.total_price,
+        created_at: row.sales_items?.created_at,
+        last_updated: row.sales_items?.last_updated,
+        deleted_at: row.sales_items?.deleted_at,
       },
       sales_item_id: row.borrow?.sales_item_id,
       borrow_date: row.borrow?.borrow_date,
@@ -114,40 +139,59 @@ export class BorrowService {
     const result = await this.db
       .select()
       .from(borrow)
-      .leftJoin(service, eq(borrow.service_id, borrow.borrow_id))
+      .leftJoin(service, eq(service.service_id, borrow.service_id))
+      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
+      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
       .leftJoin(
         sales_items,
         eq(sales_items.sales_items_id, borrow.sales_item_id),
       )
       .where(eq(borrow.borrow_id, Number(borrow_id)));
     const borrowWithDetails = result.map((row) => ({
-      borrow: {
-        borrow_id: row.borrow.borrow_id,
-        service: {
-          service_id: row.service?.service_id,
-          sales_id: row.service?.sales_id,
-          service_title: row.service?.service_title,
-          service_description: row.service?.service_description,
-          service_status: row.service?.service_status,
-          has_reservation: row.service?.has_reservation,
-          has_sales_item: row.service?.has_sales_item,
-          has_borrow: row.service?.has_borrow,
-          has_job_order: row.service?.has_job_order,
-          created_at: row.service?.created_at,
-          last_updated: row.service?.last_updated,
-          deleted_at: row.service?.deleted_at,
+      borrow_id: row.borrow.borrow_id,
+      service: {
+        service_id: row.service?.service_id,
+        employee: {
+          employee_id: row.employee?.employee_id,
+          firstname: row.employee?.firstname,
+          middlename: row.employee?.middlename,
+          lastname: row.employee?.lastname,
+          status: row.employee?.status,
+          created_at: row.employee?.created_at,
+          last_updated: row.employee?.last_updated,
+          deleted_at: row.employee?.deleted_at,
         },
-        sales_items: {
-          sales_items_id: row.sales_items?.sales_items_id,
-          item_id: row.sales_items?.item_id,
-          service_id: row.sales_items?.service_id,
-          quantity: row.sales_items?.quantity,
-          sales_item_type: row.sales_items?.sales_item_type,
-          total_price: row.sales_items?.total_price,
-          created_at: row.sales_items?.created_at,
-          last_updated: row.sales_items?.last_updated,
-          deleted_at: row.sales_items?.deleted_at,
+        customer: {
+          customer_id: row.customer?.customer_id,
+          firstname: row.customer?.firstname,
+          lastname: row.customer?.lastname,
+          contact_phone: row.customer?.contact_phone,
+          socials: row.customer?.socials,
+          address_line: row.customer?.address_line,
+          baranay: row.customer?.address_line,
+          province: row.customer?.province,
+          standing: row.customer?.standing,
         },
+        service_title: row.service?.service_title,
+        service_description: row.service?.service_description,
+        service_status: row.service?.service_status,
+        has_sales_item: row.service?.has_sales_item,
+        has_borrow: row.service?.has_borrow,
+        has_job_order: row.service?.has_job_order,
+        created_at: row.service?.created_at,
+        last_updated: row.service?.last_updated,
+        deleted_at: row.service?.deleted_at,
+      },
+      sales_items: {
+        sales_items_id: row.sales_items?.sales_items_id,
+        item_id: row.sales_items?.item_id,
+        service_id: row.sales_items?.service_id,
+        quantity: row.sales_items?.quantity,
+        sales_item_type: row.sales_items?.sales_item_type,
+        total_price: row.sales_items?.total_price,
+        created_at: row.sales_items?.created_at,
+        last_updated: row.sales_items?.last_updated,
+        deleted_at: row.sales_items?.deleted_at,
       },
       sales_item_id: row.borrow?.sales_item_id,
       borrow_date: row.borrow?.borrow_date,

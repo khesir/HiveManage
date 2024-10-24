@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { eq, isNull } from 'drizzle-orm';
 import { jobordertype } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateJobOrderTypes } from './jobordertypes.model';
@@ -14,40 +14,14 @@ export class JobOrderTypeService {
     await this.db.insert(jobordertype).values(data);
   }
 
-  async getAllJobOrderTypes(
-    joborder_type_id: string | undefined,
-    limit: number,
-    offset: number,
-  ) {
-    try {
-      if (joborder_type_id) {
-        // Query by supplierId with limit and offset
-        const result = await this.db
-          .select()
-          .from(jobordertype)
-          .where(
-            and(
-              eq(jobordertype.joborder_type_id, Number(joborder_type_id)),
-              isNull(jobordertype.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        //Query all suppliers with limit and offset
-        const result = await this.db
-          .select()
-          .from(jobordertype)
-          .where(isNull(jobordertype.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching suppliers: ', error);
-      throw new Error('Error fetching suppliers');
-    }
+  async getAllJobOrderTypes(limit: number, offset: number) {
+    const result = await this.db
+      .select()
+      .from(jobordertype)
+      .where(isNull(jobordertype.deleted_at))
+      .limit(limit)
+      .offset(offset);
+    return result;
   }
 
   async getJobOrderTypesById(paramsId: number) {

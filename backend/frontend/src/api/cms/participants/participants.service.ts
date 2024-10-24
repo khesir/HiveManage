@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { eq, isNull } from 'drizzle-orm';
 import { participants } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
@@ -13,38 +13,14 @@ export class ParticipantsService {
     await this.db.insert(participants).values(data);
   }
 
-  async getAllParticipants(
-    participants_id: string | undefined,
-    limit: number,
-    offset: number,
-  ) {
-    try {
-      if (participants_id) {
-        const result = await this.db
-          .select()
-          .from(participants)
-          .where(
-            and(
-              eq(participants.participants_id, Number(participants_id)),
-              isNull(participants.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        const result = await this.db
-          .select()
-          .from(participants)
-          .where(isNull(participants.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching participant: ', error);
-      throw new Error('Error fetching participants');
-    }
+  async getAllParticipants(limit: number, offset: number) {
+    const result = await this.db
+      .select()
+      .from(participants)
+      .where(isNull(participants.deleted_at))
+      .limit(limit)
+      .offset(offset);
+    return result;
   }
 
   async getParticipantsById(paramsId: number) {

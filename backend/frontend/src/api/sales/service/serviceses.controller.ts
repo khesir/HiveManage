@@ -55,7 +55,8 @@ export class ServiceController {
   async createService(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        sales_id,
+        customer_id,
+        employee_id,
         service_title,
         service_description,
         service_status,
@@ -66,7 +67,8 @@ export class ServiceController {
       } = req.body;
 
       await this.serviceService.createServices({
-        sales_id,
+        employee_id,
+        customer_id,
         service_title,
         service_description,
         service_status,
@@ -92,7 +94,8 @@ export class ServiceController {
     try {
       const { service_id } = req.params;
       const {
-        sales_id,
+        customer_id,
+        employee_id,
         service_title,
         service_type,
         has_reservation,
@@ -103,7 +106,8 @@ export class ServiceController {
 
       await this.serviceService.updateServices(
         {
-          sales_id,
+          customer_id,
+          employee_id,
           service_title,
           service_type,
           has_reservation,

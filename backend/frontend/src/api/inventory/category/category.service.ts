@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { eq, isNull } from 'drizzle-orm';
 import { category } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
@@ -13,40 +13,14 @@ export class CategoryService {
     await this.db.insert(category).values(data);
   }
 
-  async getAllCategory(
-    category_id: string | undefined,
-    limit: number,
-    offset: number,
-  ) {
-    try {
-      if (category_id) {
-        // Query by supplierId with limit and offset
-        const result = await this.db
-          .select()
-          .from(category)
-          .where(
-            and(
-              eq(category.category_id, Number(category_id)),
-              isNull(category.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        //Query all suppliers with limit and offset
-        const result = await this.db
-          .select()
-          .from(category)
-          .where(isNull(category.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching suppliers: ', error);
-      throw new Error('Error fetching suppliers');
-    }
+  async getAllCategory(limit: number, offset: number) {
+    const result = await this.db
+      .select()
+      .from(category)
+      .where(isNull(category.deleted_at))
+      .limit(limit)
+      .offset(offset);
+    return result;
   }
 
   async getCategoryById(paramsId: number) {

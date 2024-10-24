@@ -11,14 +11,11 @@ export class JobOrderTypesController {
   }
 
   async getAllJobOrderTypes(req: Request, res: Response, next: NextFunction) {
-    const joborder_types_id: string | undefined =
-      (req.query.joborder_types_id as string) || undefined;
     const limit = parseInt(req.query.limit as string) || 10; // default limit value
     const offset = parseInt(req.query.offset as string) || 0; // default offset value
     try {
       // Fetch data count from the database
       const data = await this.jobordertypesService.getAllJobOrderTypes(
-        joborder_types_id,
         limit,
         offset,
       );

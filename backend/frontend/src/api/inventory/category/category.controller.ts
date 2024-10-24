@@ -11,12 +11,11 @@ export class CategoryController {
   }
 
   async getAllCategory(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.categoryService.getAllCategory(id, limit, offset);
+      const data = await this.categoryService.getAllCategory(limit, offset);
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',

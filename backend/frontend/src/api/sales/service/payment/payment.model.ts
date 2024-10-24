@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CreatePayment = z.object({
-  sales_id: z.number().min(1),
+  service_id: z.number().min(1),
   amount: z.number().min(1),
   payment_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
@@ -22,7 +22,7 @@ export const CreatePayment = z.object({
 });
 
 export const UpdatePayment = z.object({
-  sales_id: z.number().min(1),
+  service_id: z.number().min(1),
   amount: z.number().min(1),
   payment_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',

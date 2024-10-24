@@ -48,10 +48,10 @@ export class ReceiptController {
 
   async createReceipt(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id, payment_id, issued_date, total_amount } = req.body;
+      const { service_id, payment_id, issued_date, total_amount } = req.body;
 
       await this.receiptService.createReceipt({
-        sales_id,
+        service_id,
         payment_id,
         issued_date,
         total_amount,
@@ -72,10 +72,10 @@ export class ReceiptController {
   async updateReceipt(req: Request, res: Response, next: NextFunction) {
     try {
       const { receipt_id } = req.params;
-      const { sales_id, payment_id, issued_date, total_amount } = req.body;
+      const { service_id, payment_id, issued_date, total_amount } = req.body;
 
       await this.receiptService.updateReceipt(
-        { sales_id, payment_id, issued_date, total_amount },
+        { service_id, payment_id, issued_date, total_amount },
         Number(receipt_id),
       );
       res

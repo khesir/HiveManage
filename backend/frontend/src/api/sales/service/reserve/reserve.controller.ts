@@ -54,12 +54,11 @@ export class ReserveController {
 
   async createReserve(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_id, service_id, item_id, reserve_status } = req.body;
+      const { service_id, sales_item_id, reserve_status } = req.body;
 
       await this.reserveService.createReserve({
-        sales_id,
         service_id,
-        item_id,
+        sales_item_id,
         reserve_status,
       });
       res

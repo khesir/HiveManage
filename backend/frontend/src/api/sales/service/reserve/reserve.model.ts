@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
 export const CreateReserve = z.object({
-  sales_id: z.number().min(1),
   service_id: z.number().min(1),
-  item_id: z.number().min(1),
+  sales_item_id: z.number().min(1),
   reserve_status: z.enum([
     'Pending',
     'Reserved',
@@ -14,9 +13,8 @@ export const CreateReserve = z.object({
 });
 
 export const UpdateReserve = z.object({
-  sales_id: z.number().min(1),
   service_id: z.number().min(1),
-  item_id: z.number().min(1),
+  sales_item_id: z.number().min(1),
   reserve_status: z.enum([
     'Pending',
     'Reserved',
