@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 // Define your Zod schema for CreateSalesItem
 export const CreateSalesItem = z.object({
-  sales_id: z.number().min(1),
   item_id: z.number().min(1),
   service_id: z.number().min(1),
   quantity: z.number().min(1),
@@ -17,7 +16,6 @@ export const CreateSalesItem = z.object({
 });
 
 export const UpdateSalesItem = z.object({
-  sales_id: z.number().min(1),
   item_id: z.number().min(1),
   service_id: z.number().min(1),
   quantity: z.number().min(1),

@@ -56,17 +56,10 @@ export class SalesItemController {
 
   async createSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        sales_id,
-        item_id,
-        service_id,
-        quantity,
-        sales_item_type,
-        total_price,
-      } = req.body;
+      const { item_id, service_id, quantity, sales_item_type, total_price } =
+        req.body;
 
       await this.salesitemService.createSalesItem({
-        sales_id,
         item_id,
         service_id,
         quantity,
@@ -90,18 +83,11 @@ export class SalesItemController {
   async updateSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { sales_item_id } = req.params;
-      const {
-        sales_id,
-        item_id,
-        service_id,
-        quantity,
-        sales_item_type,
-        total_price,
-      } = req.body;
+      const { item_id, service_id, quantity, sales_item_type, total_price } =
+        req.body;
 
       await this.salesitemService.updateSalesItem(
         {
-          sales_id,
           item_id,
           service_id,
           quantity,
