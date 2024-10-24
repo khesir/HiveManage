@@ -166,7 +166,6 @@ export function CustomerTable<TData extends Customer, TValue>({
 	useEffect(() => {
 		if (data.length > 0) {
 			const customer: Customer = data[0];
-			console.log(`First Customer: ${customer}`);
 			useCustomerFormStore.getState().setCustomerFormData(customer);
 		}
 	}, [data]);
@@ -177,8 +176,6 @@ export function CustomerTable<TData extends Customer, TValue>({
 		const rowData: Customer = row.original;
 
 		// Do something with the row data
-		console.log('Clicked row data:', rowData);
-
 		useCustomerFormStore.getState().setCustomerFormData(rowData);
 	};
 

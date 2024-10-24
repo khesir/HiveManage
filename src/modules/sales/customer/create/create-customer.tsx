@@ -68,7 +68,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 			firstname: '',
 			middlename: '',
 			lastname: '',
-			contact: '',
+			contact_phone: '',
 			email: '',
 			socials: [{type: '', link: ''}],
 			addressline: '',
@@ -131,7 +131,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 			firstname: form.getValues('firstname'),
 			middlename: form.getValues('middlename'),
 			lastname: form.getValues('lastname'),
-			contact: form.getValues('contact'),
+			contact_phone: form.getValues('contact_phone'),
 			email: form.getValues('email'),
 			socials: form.getValues('socials'),
 			addressline: form.getValues('addressline'),
@@ -383,7 +383,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 							<>
 								<FormField
 									control={form.control}
-									name={`contact`}
+									name={`contact_phone`}
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Contact</FormLabel>

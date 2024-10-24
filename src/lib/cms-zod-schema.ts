@@ -5,7 +5,7 @@ export const customerSchema = z.object({
 	firstname: z.string().min(1),
 	middlename: z.string().optional(),
 	lastname: z.string().min(1),
-	contact: z.string().min(1),
+	contact_phone: z.string().min(1),
 	email: z.string().min(1),
 	socials: z.array(
 		z.object({

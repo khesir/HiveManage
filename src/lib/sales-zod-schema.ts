@@ -25,7 +25,8 @@ export type SalesWithDetails = {
 
 export const serviceSchema = z.object({
 	service_id: z.number().optional(),
-	sales_id: z.number().min(1),
+	customer_id: z.number().min(1),
+	employee_id: z.number().min(1),
 	service_title: z.string().min(1),
 	service_description: z.string().min(1),
 	service_status: z.enum(['Active', 'Inactive']),
@@ -40,7 +41,8 @@ export const serviceSchema = z.object({
 export type Service = z.infer<typeof serviceSchema>;
 export type ServiceWithDetails = {
 	service_id: number;
-	sales: SalesWithDetails;
+	customer: Customer;
+	employee: EmployeeBasicInformation;
 	service_title: string;
 	service_description: string;
 	service_status: string;

@@ -3,10 +3,10 @@ import {ColumnDef} from '@tanstack/react-table';
 
 export const columns: ColumnDef<SalesItemWithDetails>[] = [
 	{
-		accessorKey: 'product.name',
+		accessorKey: 'item.product.name',
 		header: 'Name',
 		accessorFn: (row) =>
-			`${row.item.product.name} - ${row.item.product.supplier}`,
+			`${row.item.product.name} - ${row.item.product.supplier.name}`,
 		cell: (info) => info.getValue(),
 		filterFn: 'includesString',
 	},
@@ -15,15 +15,15 @@ export const columns: ColumnDef<SalesItemWithDetails>[] = [
 		header: 'Price',
 	},
 	{
-		accessorKey: 'item.quantity',
+		accessorKey: 'quantity',
 		header: 'Quantity',
 	},
 	{
-		accessorKey: 'item.sales_item_type',
+		accessorKey: 'sales_item_type',
 		header: 'Type',
 	},
 	{
-		accessorKey: 'item.total_price',
+		accessorKey: 'total_price',
 		header: 'Total Price',
 	},
 ];

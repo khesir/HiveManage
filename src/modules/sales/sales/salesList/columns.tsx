@@ -2,12 +2,26 @@ import {ServiceWithDetails} from '@/lib/sales-zod-schema';
 import {dateParser} from '@/lib/util/utils';
 import {ColumnDef} from '@tanstack/react-table';
 import {Button} from '@/components/ui/button';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
+import useServiceFormStore from '@/components/hooks/use-service-store';
 
-const ActionsCell = ({service_id}: ServiceWithDetails) => {
+const ActionsCell = (data: ServiceWithDetails) => {
+	const {setServiceFormData} = useServiceFormStore();
 	const navigate = useNavigate();
+	const location = useLocation();
+	const handleClick = (service_id: number) => {
+		const id = Number(service_id);
+		if (location.pathname.includes('/sales')) {
+			navigate(`/sales/services/view/${id}`);
+		} else if (location.pathname.includes('/admin')) {
+			navigate(`/admin/sales/services/view/${id}`);
+		} else if (location.pathname.includes('/tech')) {
+			navigate(`/tech/services/view/${id}`);
+		}
+		setServiceFormData(data);
+	};
 
-	return <Button onClick={() => navigate(`view/${service_id}`)}>View</Button>;
+	return <Button onClick={() => handleClick(data.service_id)}>View</Button>;
 };
 
 export const columns: ColumnDef<ServiceWithDetails>[] = [
@@ -19,7 +33,7 @@ export const columns: ColumnDef<ServiceWithDetails>[] = [
 		id: 'Fullname',
 		header: 'Customer Name',
 		accessorFn: (row) =>
-			`${row.sales.customer.firstname} ${row.sales.customer.middlename ? row.sales.customer.middlename + ' ' : ''}${row.sales.customer.lastname}`,
+			`${row.customer.firstname} ${row.customer.middlename ? row.customer.middlename + ' ' : ''}${row.customer.lastname}`,
 		cell: (info) => info.getValue(),
 		filterFn: 'includesString',
 	},

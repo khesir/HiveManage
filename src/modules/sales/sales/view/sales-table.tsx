@@ -1,5 +1,5 @@
-import {buttonVariants, Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
+import {Button} from '@/components/ui/button';
+
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Select,
@@ -14,10 +14,9 @@ import {
 	TableHead,
 	TableBody,
 	TableCell,
+	Table,
 } from '@/components/ui/table';
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
-import {SalesItemWithDetails, SalesWithDetails} from '@/lib/sales-zod-schema';
-import {cn} from '@/lib/util/utils';
+import {SalesItemWithDetails} from '@/lib/sales-zod-schema';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {
 	ColumnDef,
@@ -25,22 +24,15 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
-	Row,
 	useReactTable,
 } from '@tanstack/react-table';
-import {Plus, Table, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useCallback, useState, useEffect} from 'react';
-import {
-	useNavigate,
-	useLocation,
-	useSearchParams,
-	Link,
-} from 'react-router-dom';
+import {useNavigate, useLocation, useSearchParams} from 'react-router-dom';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	searchKey: string;
 	pageSizeOptions?: number[];
 	pageCount: number;
 	searchParams?: {
@@ -51,7 +43,6 @@ interface DataTableProps<TData, TValue> {
 export function SalesTable<TData extends SalesItemWithDetails, TValue>({
 	columns,
 	data,
-	searchKey,
 	pageCount,
 	pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
@@ -63,7 +54,6 @@ export function SalesTable<TData extends SalesItemWithDetails, TValue>({
 	const pageAsNumber = Number(page);
 	const fallbackPage =
 		isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber;
-
 	const per_page = searchParams.get('limit') || '10';
 	const perPageAsNumber = Number(per_page);
 	const fallBackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
@@ -117,8 +107,6 @@ export function SalesTable<TData extends SalesItemWithDetails, TValue>({
 		manualFiltering: true,
 	});
 
-	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
-
 	// Debounced search value to avoid triggering requests too frequently
 	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
 	// console.log(debouncedSearchValue);
@@ -161,41 +149,8 @@ export function SalesTable<TData extends SalesItemWithDetails, TValue>({
 	// 	createQueryString,
 	// ]);
 
-	// Set the first employee data to Zustand on initial render
-	useEffect(() => {
-		if (data.length > 0) {
-			const res: SalesItemWithDetails = data[0];
-			console.log(`First Customer: ${res}`);
-		}
-	}, [data]);
-
-	// This handles the employee viewing by click
-	const handleRowClick = (row: Row<TData>) => {
-		// Access the data of the clicked row
-		const rowData: SalesItemWithDetails = row.original;
-
-		// Do something with the row data
-		console.log('Clicked row data:', rowData);
-	};
-
 	return (
 		<>
-			<div className="flex justify-between gap-3 md:gap-0">
-				<Input
-					placeholder={`Find Customer...`}
-					value={searchValue ?? ''} // Bind the input value to the current filter value
-					onChange={(event) =>
-						table.getColumn(searchKey)?.setFilterValue(event.target.value)
-					} // Update filter value}
-					className="w-full md:max-w-sm"
-				/>
-				<Link
-					to={'create'}
-					className={cn(buttonVariants({variant: 'default'}))}
-				>
-					<Plus className="mr-2 h-4 w-4" /> Add New
-				</Link>
-			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
@@ -221,7 +176,6 @@ export function SalesTable<TData extends SalesItemWithDetails, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									onClick={() => handleRowClick(row)}
 									style={{cursor: 'pointer'}}
 									data-state={row.getIsSelected() && 'selected'}
 								>

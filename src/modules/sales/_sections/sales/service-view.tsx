@@ -1,7 +1,7 @@
-import {Card} from '@/components/ui/card';
 import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
 import {ViewSalesTabList} from '../../sales/view/sales-tab-view-list';
+import {SalesItemProfile} from '../../sales/view/sales-item-profile';
 
 export default function ServiceViewPage() {
 	return (
@@ -23,11 +23,7 @@ export default function ServiceViewPage() {
 						<Separator />
 					</div>
 					{/* Employee Profile */}
-					<Card>Service Details: header </Card>
-					<Card>
-						Payment: Total cost tracking, Payment History, actual total payment
-						- redirect to payment page
-					</Card>
+					<SalesItemProfile />
 				</div>
 			</div>
 		</div>
