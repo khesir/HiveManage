@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { LeaveLimitService } from './leaveLimit.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class LeaveLimitController {
   private leaveLimitService: LeaveLimitService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.leaveLimitService = new LeaveLimitService(pool);
   }
 

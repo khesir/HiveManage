@@ -4,15 +4,16 @@ import {
   customer,
   employee,
   sales_items,
+  SchemaType,
   service,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateBorrow } from './borrow.model';
 
 export class BorrowService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
@@ -21,6 +22,7 @@ export class BorrowService {
   }
 
   async getAllBorrow(
+    service_id: string | undefined,
     status: string | undefined,
     sort: string,
     limit: number,
@@ -49,7 +51,9 @@ export class BorrowService {
         throw new Error(`Invalid payment status: ${status}`);
       }
     }
-
+    if (service_id) {
+      conditions.push(eq(borrow.service_id, Number(service_id)));
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,

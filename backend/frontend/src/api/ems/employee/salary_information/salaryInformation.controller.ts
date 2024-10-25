@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { SalaryInformationService } from './salaryInformation.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class SalaryInformationController {
   private salaryInformationService: SalaryInformationService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.salaryInformationService = new SalaryInformationService(pool);
   }
 

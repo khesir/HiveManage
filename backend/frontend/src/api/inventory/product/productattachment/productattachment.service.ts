@@ -1,11 +1,15 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
-import { product, product_attachment } from '@/drizzle/drizzle.schema';
+import {
+  product,
+  product_attachment,
+  SchemaType,
+} from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ProductAttachmentService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

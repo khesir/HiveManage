@@ -1,12 +1,12 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { eq, and, isNull } from 'drizzle-orm';
 
-import { department } from '@/drizzle/drizzle.schema';
+import { department, SchemaType } from '@/drizzle/drizzle.schema';
 
 export class DepartmentService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

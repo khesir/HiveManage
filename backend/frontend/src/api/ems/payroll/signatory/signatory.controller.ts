@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { SignatoryService } from './signatory.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class SignatoryController {
   private signatoryService: SignatoryService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.signatoryService = new SignatoryService(pool);
   }
 

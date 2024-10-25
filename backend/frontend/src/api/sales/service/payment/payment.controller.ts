@@ -2,15 +2,17 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PaymentService } from './payment.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class PaymentController {
   private paymentService: PaymentService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.paymentService = new PaymentService(pool);
   }
 
   async getAllPayment(req: Request, res: Response, next: NextFunction) {
+    const service_id = (req.params.service_id as string) || undefined;
     const payment_status = (req.query.payment_status as string) || undefined;
     const payment_method = (req.query.payment_method as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
@@ -19,6 +21,7 @@ export class PaymentController {
 
     try {
       const data = await this.paymentService.getAllPayment(
+        service_id,
         payment_method,
         payment_status,
         sort,
@@ -28,10 +31,10 @@ export class PaymentController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.paymentWithDetails,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.paymentWithDetails,
       });
     } catch (error) {
       res

@@ -2,15 +2,17 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ReserveService } from './reserve.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class ReserveController {
   private reserveService: ReserveService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.reserveService = new ReserveService(pool);
   }
 
   async getAllReserve(req: Request, res: Response, next: NextFunction) {
+    const service_id = (req.params.service_id as string) || undefined;
     const reserve_status = (req.query.reserve_status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -18,6 +20,7 @@ export class ReserveController {
 
     try {
       const data = await this.reserveService.getAllReserve(
+        service_id,
         reserve_status,
         sort,
         limit,
@@ -26,10 +29,10 @@ export class ReserveController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.reserveWithDetails,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.reserveWithDetails,
       });
     } catch (error) {
       res

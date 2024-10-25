@@ -4,6 +4,7 @@ import {
   employee,
   reserve,
   sales_items,
+  SchemaType,
   service,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
@@ -11,9 +12,9 @@ import { CreateReserve } from './reserve.model';
 import z from 'zod/lib';
 
 export class ReserveService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
@@ -26,6 +27,7 @@ export class ReserveService {
   }
 
   async getAllReserve(
+    service_id: string | undefined,
     reserve_status: string | undefined,
     sort: string,
     limit: number,
@@ -54,6 +56,9 @@ export class ReserveService {
       } else {
         throw new Error(`Invalid payment status: ${reserve_status}`);
       }
+    }
+    if (service_id) {
+      conditions.push(eq(reserve.service_id, Number(service_id)));
     }
 
     const totalCountQuery = await this.db

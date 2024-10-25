@@ -4,13 +4,14 @@ import {
   department,
   designation,
   employmentInformation,
+  SchemaType,
 } from '@/drizzle/drizzle.schema';
 import { EmploymentInformation } from './employmentInformation.model';
 
 export class EmploymentInformationService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

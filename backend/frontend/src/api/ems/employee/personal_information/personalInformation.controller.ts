@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { PersonalInformationService } from './personalInformation.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class PersonalInformationController {
   private personalInformationService: PersonalInformationService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.personalInformationService = new PersonalInformationService(pool);
   }
 

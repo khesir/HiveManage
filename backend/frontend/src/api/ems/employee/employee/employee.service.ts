@@ -1,11 +1,11 @@
 import { asc, desc, eq, isNull, and, sql, like, or } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { employee } from '@/drizzle/drizzle.schema';
+import { employee, SchemaType } from '@/drizzle/drizzle.schema';
 
 export class EmployeeService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
   async getAllEmployee(

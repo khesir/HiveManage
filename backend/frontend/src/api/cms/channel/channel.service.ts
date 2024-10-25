@@ -1,11 +1,11 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { channel } from '@/drizzle/drizzle.schema';
+import { channel, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ChannelService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

@@ -1,12 +1,12 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { benefits } from '@/drizzle/drizzle.schema';
+import { benefits, SchemaType } from '@/drizzle/drizzle.schema';
 import { and, eq, isNull } from 'drizzle-orm';
 import { CreateBenefits, UpdateBenefits } from './benefits.model';
 
 export class BenefitsService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

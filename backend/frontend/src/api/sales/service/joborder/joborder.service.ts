@@ -1,12 +1,17 @@
-import { and, eq, isNull, sql, desc, asc } from 'drizzle-orm';
-import { jobOrder, jobordertype, service } from '@/drizzle/drizzle.schema';
+import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
+import {
+  jobOrder,
+  jobordertype,
+  SchemaType,
+  service,
+} from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateJobOrder } from './joborder.model';
 
 export class JobOrderService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
@@ -15,6 +20,7 @@ export class JobOrderService {
   }
 
   async getAllJobOrder(
+    service_id: string | undefined,
     status: string | undefined,
     sort: string,
     limit: number,
@@ -42,6 +48,9 @@ export class JobOrderService {
       } else {
         throw new Error(`Invalid payment status: ${status}`);
       }
+    }
+    if (service_id) {
+      conditions.push(eq(jobOrder.service_id, Number(service_id)));
     }
 
     const totalCountQuery = await this.db

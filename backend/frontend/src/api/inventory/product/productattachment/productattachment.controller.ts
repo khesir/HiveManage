@@ -2,11 +2,12 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { ProductAttachmentService } from './productattachment.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class ProductAttachmentController {
   private productattachmentService: ProductAttachmentService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.productattachmentService = new ProductAttachmentService(pool);
   }
 

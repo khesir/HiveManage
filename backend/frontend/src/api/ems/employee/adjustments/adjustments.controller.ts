@@ -3,11 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { HttpStatus } from '@/lib/config';
 import { AdjustmentsService } from './adjustments.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class AdjustmentsController {
   private adjustmentsService: AdjustmentsService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.adjustmentsService = new AdjustmentsService(pool);
   }
 

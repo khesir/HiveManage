@@ -1,12 +1,12 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { order } from '@/drizzle/drizzle.schema';
+import { order, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateOrder } from './order.model';
 
 export class OrderService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
   async createOrder(data: CreateOrder): Promise<void> {

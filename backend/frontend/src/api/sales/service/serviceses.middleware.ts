@@ -25,7 +25,6 @@ export async function validateServiceID(
           isNull(service.deleted_at),
         ),
       );
-    console.log(Service);
     if (!Service[0]) {
       return res.status(404).json({ message: 'Service not found' });
     }

@@ -2,28 +2,35 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ReceiptService } from './receipt.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class ReceiptController {
   private receiptService: ReceiptService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.receiptService = new ReceiptService(pool);
   }
 
   async getAllReceipt(req: Request, res: Response, next: NextFunction) {
+    const service_id = (req.params.service_id as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.receiptService.getAllReceipt(sort, limit, offset);
+      const data = await this.receiptService.getAllReceipt(
+        service_id,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.receiptWithDetails,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.receiptWithDetails,
       });
     } catch (error) {
       res

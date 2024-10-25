@@ -1,12 +1,12 @@
 import { and, eq, isNull, sql, desc, asc, like, or } from 'drizzle-orm';
-import { customer } from '@/drizzle/drizzle.schema';
+import { customer, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateCustomer } from './customer.model';
 
 export class CustomerService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

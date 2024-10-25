@@ -2,11 +2,12 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { JobOrderTypeService } from './jobordertypes.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class JobOrderTypesController {
   private jobordertypesService: JobOrderTypeService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.jobordertypesService = new JobOrderTypeService(pool);
   }
 

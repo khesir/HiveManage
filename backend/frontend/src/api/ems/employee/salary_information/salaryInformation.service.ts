@@ -1,12 +1,12 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { salaryInformation } from '@/drizzle/drizzle.schema';
+import { salaryInformation, SchemaType } from '@/drizzle/drizzle.schema';
 import { SalaryInformation } from './salaryInformation.model';
 
 export class SalaryInformationService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

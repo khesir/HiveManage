@@ -1,12 +1,12 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { message } from '@/drizzle/drizzle.schema';
+import { message, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateMessage } from './message.model';
 
 export class MessageService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

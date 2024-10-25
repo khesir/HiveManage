@@ -4,15 +4,16 @@ import {
   employee,
   payment,
   receipt,
+  SchemaType,
   service,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateReceipt, UpdateReceipt } from './receipt.model';
 
 export class ReceiptService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
@@ -20,8 +21,17 @@ export class ReceiptService {
     await this.db.insert(receipt).values(data);
   }
 
-  async getAllReceipt(sort: string, limit: number, offset: number) {
+  async getAllReceipt(
+    service_id: string | undefined,
+    sort: string,
+    limit: number,
+    offset: number,
+  ) {
     const conditions = [isNull(receipt.deleted_at)];
+
+    if (service_id) {
+      conditions.push(eq(receipt.service_id, Number(service_id)));
+    }
 
     const totalCountQuery = await this.db
       .select({

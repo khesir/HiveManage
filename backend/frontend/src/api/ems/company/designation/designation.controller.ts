@@ -3,11 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/config';
 import { DesignationService } from './designation.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class DesignationController {
   private designationService: DesignationService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.designationService = new DesignationService(pool);
   }
 

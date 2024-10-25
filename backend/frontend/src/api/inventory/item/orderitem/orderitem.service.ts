@@ -5,15 +5,16 @@ import {
   order,
   orderItem,
   product,
+  SchemaType,
   supplier,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { UpdateOrderItem } from './orderitem.model';
 
 export class OrderItemService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

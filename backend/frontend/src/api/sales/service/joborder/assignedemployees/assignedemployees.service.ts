@@ -3,14 +3,15 @@ import {
   borrow,
   employee,
   jobOrder,
+  SchemaType,
 } from '@/drizzle/drizzle.schema';
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class AssignedEmployeeService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

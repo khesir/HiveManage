@@ -1,12 +1,12 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { inquiry } from '@/drizzle/drizzle.schema';
+import { inquiry, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateInquiry } from './inquiry.model';
 
 export class InquiryService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

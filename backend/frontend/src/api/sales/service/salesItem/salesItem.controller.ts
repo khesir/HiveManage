@@ -2,16 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SalesItemService } from './salesItem.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class SalesItemController {
   private salesitemService: SalesItemService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.salesitemService = new SalesItemService(pool);
   }
 
   async getAllSalesItem(req: Request, res: Response, next: NextFunction) {
-    const service_id = req.params.service_id;
+    const service_id = (req.params.service_id as string) || undefined;
     const sales_item_type = (req.query.sales_item_type as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;

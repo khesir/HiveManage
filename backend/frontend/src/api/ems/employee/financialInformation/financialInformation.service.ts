@@ -1,11 +1,11 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { financialInformation } from '@/drizzle/drizzle.schema';
+import { financialInformation, SchemaType } from '@/drizzle/drizzle.schema';
 
 export class FinancialInformationService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
   async getFinancialInformation(financial_id: number, employee_id: number) {

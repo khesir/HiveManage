@@ -45,6 +45,7 @@ import {
   jobordertype,
   product_attachment,
   orderItem,
+  SchemaType,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -53,7 +54,7 @@ import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 
-async function seedEmployees(db: PostgresJsDatabase) {
+async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
   const employeeStatus: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
   const employees = Array.from({ length: 50 }).map(() => ({
     firstname: faker.person.firstName(),
@@ -67,7 +68,7 @@ async function seedEmployees(db: PostgresJsDatabase) {
   log.info('Employee records seeded successfully.');
 }
 
-async function seedPersonalInformations(db: PostgresJsDatabase) {
+async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
   const allowedGenders: ('Male' | 'Female' | 'Others')[] = [
     'Male',
     'Female',
@@ -99,7 +100,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase) {
   await db.insert(personalInformation).values(personalInfos);
 }
 
-async function seedFinancialInformations(db: PostgresJsDatabase) {
+async function seedFinancialInformations(db: PostgresJsDatabase<SchemaType>) {
   const employees = await db.select().from(employee);
 
   const financialInfos = Array.from({ length: 50 }).map(() => ({
@@ -115,7 +116,7 @@ async function seedFinancialInformations(db: PostgresJsDatabase) {
   log.info('Financial Information records seeded successfully.');
 }
 
-async function seedSalaryInformations(db: PostgresJsDatabase) {
+async function seedSalaryInformations(db: PostgresJsDatabase<SchemaType>) {
   const allowedFrequencies: (
     | 'Daily'
     | 'Weekly'
@@ -135,7 +136,7 @@ async function seedSalaryInformations(db: PostgresJsDatabase) {
   log.info('Salary Information records seeded successfully.');
 }
 
-async function seedEmploymentInformations(db: PostgresJsDatabase) {
+async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
   const allowedEmployeeTypes: (
     | 'Regular'
     | 'Probationary'
@@ -181,7 +182,7 @@ async function seedEmploymentInformations(db: PostgresJsDatabase) {
 //  =======================================================================================
 // =============================== COMPANY FEATURES ======================================
 
-async function seedDepartments(db: PostgresJsDatabase) {
+async function seedDepartments(db: PostgresJsDatabase<SchemaType>) {
   const departmentStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
 
   const departments = Array.from({ length: 10 }).map(() => ({
@@ -193,7 +194,7 @@ async function seedDepartments(db: PostgresJsDatabase) {
   log.info('Department records seeded successfully.');
 }
 
-async function seedDesignations(db: PostgresJsDatabase) {
+async function seedDesignations(db: PostgresJsDatabase<SchemaType>) {
   const designationStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
 
   const designations = Array.from({ length: 10 }).map(() => ({
@@ -205,7 +206,7 @@ async function seedDesignations(db: PostgresJsDatabase) {
   log.info('Designations records seeded successfully.');
 }
 
-async function seedAuditLogs(db: PostgresJsDatabase) {
+async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
   const employees = await db.select().from(employee);
 
   const entity_type: (
@@ -236,7 +237,7 @@ async function seedAuditLogs(db: PostgresJsDatabase) {
   log.info('Audit Logs records seeded successfully.');
 }
 
-async function seedLeaveLimits(db: PostgresJsDatabase) {
+async function seedLeaveLimits(db: PostgresJsDatabase<SchemaType>) {
   const employees = await db.select().from(employee);
   const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
     'Sick Leave',
@@ -255,7 +256,7 @@ async function seedLeaveLimits(db: PostgresJsDatabase) {
   log.info('Leave Limit records seeded successfully.');
 }
 
-async function seedLeaveRequests(db: PostgresJsDatabase) {
+async function seedLeaveRequests(db: PostgresJsDatabase<SchemaType>) {
   const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
     'Sick Leave',
     'Vacation Leave',
@@ -286,7 +287,7 @@ async function seedLeaveRequests(db: PostgresJsDatabase) {
 //  =======================================================================================
 // ==================================== PAYROLL ===========================================
 
-async function seedPayrolls(db: PostgresJsDatabase) {
+async function seedPayrolls(db: PostgresJsDatabase<SchemaType>) {
   const statuses: ('Active' | 'Inactive' | 'Inprogress')[] = [
     'Active',
     'Inactive',
@@ -305,7 +306,7 @@ async function seedPayrolls(db: PostgresJsDatabase) {
   log.info('Payroll records seeded successfully.');
 }
 
-async function seedOnPayrolls(db: PostgresJsDatabase) {
+async function seedOnPayrolls(db: PostgresJsDatabase<SchemaType>) {
   const payrollIDs = await db
     .select({ payroll_id: payroll.payroll_id })
     .from(payroll);
@@ -323,7 +324,7 @@ async function seedOnPayrolls(db: PostgresJsDatabase) {
   log.info('On Payroll records seeded successfully.');
 }
 
-async function seedSignatory(db: PostgresJsDatabase) {
+async function seedSignatory(db: PostgresJsDatabase<SchemaType>) {
   const employees = await db.select().from(employee);
 
   const signatoryRecords = Array.from({ length: 10 }).map(() => ({
@@ -337,7 +338,7 @@ async function seedSignatory(db: PostgresJsDatabase) {
   log.info('Signatory records seeded successfully.');
 }
 
-async function seedPayrollApprovals(db: PostgresJsDatabase) {
+async function seedPayrollApprovals(db: PostgresJsDatabase<SchemaType>) {
   const onPayrolls = await db.select().from(onPayroll);
   const signatories = await db.select().from(signatory);
   const approvalStatuses: ('Approved' | 'Pending' | 'Rejected')[] = [
@@ -356,7 +357,7 @@ async function seedPayrollApprovals(db: PostgresJsDatabase) {
   log.info('Payroll approval records seeded successfully.');
 }
 
-async function seedPayrollReportRecords(db: PostgresJsDatabase) {
+async function seedPayrollReportRecords(db: PostgresJsDatabase<SchemaType>) {
   const onpayrolls = await db.select().from(onPayroll);
 
   const payrollReportRecords = Array.from({ length: 50 }).map(() => ({
@@ -380,7 +381,7 @@ async function seedPayrollReportRecords(db: PostgresJsDatabase) {
 
 //  =======================================================================================
 // =============================== EMPLOYEE PERFORMANCE ===================================
-async function seedDeductions(db: PostgresJsDatabase) {
+async function seedDeductions(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
   const allowedFrequencies: (
     | 'Daily'
@@ -412,7 +413,7 @@ async function seedDeductions(db: PostgresJsDatabase) {
 
   log.info('Deductions records seeded successfully.');
 }
-async function seedBenefits(db: PostgresJsDatabase) {
+async function seedBenefits(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
   const allowedFrequencies: (
     | 'Daily'
@@ -444,7 +445,7 @@ async function seedBenefits(db: PostgresJsDatabase) {
   log.info('Benefits records seeded successfully.');
 }
 
-async function seedAdjustments(db: PostgresJsDatabase) {
+async function seedAdjustments(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
 
   const adjustmentType: ('Bonus' | 'Comission' | 'Overtime' | 'Other')[] = [
@@ -467,7 +468,7 @@ async function seedAdjustments(db: PostgresJsDatabase) {
   log.info('Adjustments records seeded successfully.');
 }
 
-async function seedAdditionalPay(db: PostgresJsDatabase) {
+async function seedAdditionalPay(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
 
   const allowedAdditionalPayTypes: (
@@ -490,7 +491,7 @@ async function seedAdditionalPay(db: PostgresJsDatabase) {
   log.info('Additional pay records seeded successfully.');
 }
 
-async function seedAttendance(db: PostgresJsDatabase) {
+async function seedAttendance(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
   const attendanceStatuses: (
     | 'Present'
@@ -516,7 +517,7 @@ async function seedAttendance(db: PostgresJsDatabase) {
 }
 //  =======================================================================================
 // ===================================== CUSTOMER ======================================
-async function seedParticipants(db: PostgresJsDatabase) {
+async function seedParticipants(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
   const channelIDs = await db.select().from(channel);
 
@@ -532,7 +533,7 @@ async function seedParticipants(db: PostgresJsDatabase) {
   log.info('Participant records seeded successfully');
 }
 
-async function seedChannel(db: PostgresJsDatabase) {
+async function seedChannel(db: PostgresJsDatabase<SchemaType>) {
   const inquiryIDs = await db.select().from(inquiry);
 
   const channelRecords = Array.from({ length: 70 }).map(() => ({
@@ -547,7 +548,7 @@ async function seedChannel(db: PostgresJsDatabase) {
   log.info('Channel records seeded successfully');
 }
 
-async function seedMessage(db: PostgresJsDatabase) {
+async function seedMessage(db: PostgresJsDatabase<SchemaType>) {
   const inquiryIDs = await db.select().from(inquiry);
 
   const status = [
@@ -571,7 +572,7 @@ async function seedMessage(db: PostgresJsDatabase) {
   log.info('Message records seeded successfully');
 }
 
-async function seedInquiry(db: PostgresJsDatabase) {
+async function seedInquiry(db: PostgresJsDatabase<SchemaType>) {
   const customerIDs = await db.select().from(customer);
 
   const status = [
@@ -597,7 +598,7 @@ async function seedInquiry(db: PostgresJsDatabase) {
   log.info('Inquiry records seeded successfully');
 }
 
-async function seedCustomer(db: PostgresJsDatabase) {
+async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
   const status = [
     'Active',
     'Inactive', // This status was missing in your original list
@@ -647,7 +648,7 @@ async function seedCustomer(db: PostgresJsDatabase) {
 //  =======================================================================================
 // ===================================== SALES ======================================
 
-async function seedSalesItem(db: PostgresJsDatabase) {
+async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
   const itemIDs = await db.select().from(item);
   const serviceIDs = await db.select().from(service);
 
@@ -674,7 +675,7 @@ async function seedSalesItem(db: PostgresJsDatabase) {
   log.info('Sales Items records seeded successfully');
 }
 
-async function seedPayment(db: PostgresJsDatabase) {
+async function seedPayment(db: PostgresJsDatabase<SchemaType>) {
   const serviceIDs = await db.select().from(service);
 
   const statuses: ('Cash' | 'Card' | 'Online Payment')[] = [
@@ -721,7 +722,7 @@ async function seedPayment(db: PostgresJsDatabase) {
   log.info('Payment records seeded successfully');
 }
 
-async function seedReceipt(db: PostgresJsDatabase) {
+async function seedReceipt(db: PostgresJsDatabase<SchemaType>) {
   const serviceIDs = await db.select().from(service);
   const paymentIDs = await db.select().from(payment);
 
@@ -741,7 +742,7 @@ async function seedReceipt(db: PostgresJsDatabase) {
 //  =======================================================================================
 // ==================================== SERVICES ======================================
 
-async function seedReserve(db: PostgresJsDatabase) {
+async function seedReserve(db: PostgresJsDatabase<SchemaType>) {
   const serviceIDs = await db.select().from(service);
   const itemIDs = await db.select().from(item);
 
@@ -766,7 +767,7 @@ async function seedReserve(db: PostgresJsDatabase) {
   log.info('Reserve records seeded successfully');
 }
 
-async function seedBorrow(db: PostgresJsDatabase) {
+async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
   const serviceIDs = await db.select().from(service);
   const salesItemsIDs = await db.select().from(sales_items);
 
@@ -801,7 +802,7 @@ async function seedBorrow(db: PostgresJsDatabase) {
   log.info('Borrow records seeded successfully');
 }
 
-async function seedService(db: PostgresJsDatabase) {
+async function seedService(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
   const customerIDs = await db.select().from(customer);
 
@@ -831,7 +832,7 @@ async function seedService(db: PostgresJsDatabase) {
   }
 }
 
-async function seedAssignedEmployees(db: PostgresJsDatabase) {
+async function seedAssignedEmployees(db: PostgresJsDatabase<SchemaType>) {
   const jobOrders = await db.select().from(jobOrder);
   const employees = await db.select().from(employee); // Assuming you're also fetching employees here
 
@@ -859,7 +860,7 @@ async function seedAssignedEmployees(db: PostgresJsDatabase) {
   log.info('Assigned Employees seeded successfully');
 }
 
-async function seedRemarkTickets(db: PostgresJsDatabase) {
+async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
   const jobOrders = await db.select().from(jobOrder);
   const employeeIDs = await db.select().from(employee);
 
@@ -913,7 +914,7 @@ async function seedRemarkTickets(db: PostgresJsDatabase) {
 //  =======================================================================================
 // =================================== JOB ORDER ==========================================
 
-async function seedJobOrder(db: PostgresJsDatabase) {
+async function seedJobOrder(db: PostgresJsDatabase<SchemaType>) {
   const jobordertypeIDs = await db.select().from(jobordertype);
   const serviceIDs = await db.select().from(service);
 
@@ -955,7 +956,7 @@ async function seedJobOrder(db: PostgresJsDatabase) {
   log.info('Job Order records seeded successfully');
 }
 
-async function seedReports(db: PostgresJsDatabase) {
+async function seedReports(db: PostgresJsDatabase<SchemaType>) {
   const joborderIDs = await db.select().from(jobOrder);
   const customerIDs = await db.select().from(customer);
 
@@ -973,7 +974,7 @@ async function seedReports(db: PostgresJsDatabase) {
   log.info('Report records seeded successfully');
 }
 
-async function seedJobOrderTypes(db: PostgresJsDatabase) {
+async function seedJobOrderTypes(db: PostgresJsDatabase<SchemaType>) {
   const statuses: ('Available' | 'Not Available')[] = [
     'Available',
     'Not Available',
@@ -994,7 +995,7 @@ async function seedJobOrderTypes(db: PostgresJsDatabase) {
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
-async function seedItem(db: PostgresJsDatabase) {
+async function seedItem(db: PostgresJsDatabase<SchemaType>) {
   const productIDs = await db.select().from(product);
   const tag_status: ('New' | 'Used' | 'Broken')[] = ['New', 'Used', 'Broken'];
   const itemRecords = Array.from({ length: 50 }).map(() => ({
@@ -1015,7 +1016,7 @@ async function seedItem(db: PostgresJsDatabase) {
   log.info('Item records seeded successfully');
 }
 
-async function seedProduct(db: PostgresJsDatabase) {
+async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const categoryIDs = await db.select().from(category);
   const supplierIDs = await db.select().from(supplier);
 
@@ -1035,7 +1036,7 @@ async function seedProduct(db: PostgresJsDatabase) {
   log.info('Product records seeded successfully');
 }
 
-async function seedProductAttachment(db: PostgresJsDatabase) {
+async function seedProductAttachment(db: PostgresJsDatabase<SchemaType>) {
   const productIDs = await db.select().from(product);
 
   const productattachmentRecords = Array.from({ length: 50 }).map(() => ({
@@ -1050,7 +1051,7 @@ async function seedProductAttachment(db: PostgresJsDatabase) {
   log.info('Product Attachment records seeded successfully');
 }
 
-async function seedCategory(db: PostgresJsDatabase) {
+async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
   const categoryRecords = Array.from({ length: 25 }).map(() => ({
     name: faker.commerce.department(),
     content: faker.lorem.paragraph(),
@@ -1061,7 +1062,7 @@ async function seedCategory(db: PostgresJsDatabase) {
   log.info('Category records seeded successfully');
 }
 
-async function seedSupplier(db: PostgresJsDatabase) {
+async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
   const supplierRecords = Array.from({ length: 25 }).map(() => ({
     name: faker.commerce.productName(),
     contact_number: faker.phone.number(),
@@ -1075,7 +1076,7 @@ async function seedSupplier(db: PostgresJsDatabase) {
   log.info('Supplier records seeded successfully');
 }
 
-async function seedOrder(db: PostgresJsDatabase) {
+async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
   const productIDs = await db.select().from(product);
 
   const statuses: (
@@ -1109,7 +1110,7 @@ async function seedOrder(db: PostgresJsDatabase) {
   log.info('Order records seeded successfully');
 }
 
-async function seedOrderItem(db: PostgresJsDatabase) {
+async function seedOrderItem(db: PostgresJsDatabase<SchemaType>) {
   const orderIDs = await db.select().from(order);
   const productIDs = await db.select().from(product);
 
@@ -1127,7 +1128,7 @@ async function seedOrderItem(db: PostgresJsDatabase) {
   log.info('Order Item records seeded successfully');
 }
 
-async function seedStockLogs(db: PostgresJsDatabase) {
+async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
   const itemdata = await db.select().from(item);
   const movement: ('Stock In' | 'Stock Out')[] = ['Stock In', 'Stock Out'];
   const stockRecord = Array.from({ length: 50 }).map(() => ({
@@ -1140,7 +1141,7 @@ async function seedStockLogs(db: PostgresJsDatabase) {
   log.info('Stock Logs records seeded successfully');
 }
 
-async function seedArrivedItems(db: PostgresJsDatabase) {
+async function seedArrivedItems(db: PostgresJsDatabase<SchemaType>) {
   const orderIDs = await db.select().from(order);
 
   const arrivedItemsRecords = Array.from({ length: 50 }).map(() => ({

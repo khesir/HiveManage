@@ -3,11 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { OrderService } from './order.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class OrderController {
   private orderService: OrderService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.orderService = new OrderService(pool);
   }
 

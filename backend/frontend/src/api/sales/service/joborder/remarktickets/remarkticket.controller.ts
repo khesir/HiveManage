@@ -2,11 +2,12 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { RemarkTicketsService } from './remarkticket.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class RemarkTicketsController {
   private remarkticketService: RemarkTicketsService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.remarkticketService = new RemarkTicketsService(pool);
   }
 

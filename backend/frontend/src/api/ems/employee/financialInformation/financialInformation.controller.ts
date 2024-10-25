@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { FinancialInformationService } from './financialInformation.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class FinancialInformationController {
   private financialInformationService: FinancialInformationService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.financialInformationService = new FinancialInformationService(pool);
   }
 

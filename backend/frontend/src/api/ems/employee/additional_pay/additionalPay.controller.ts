@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { AdditionalPayService } from './additionalPay.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class AdditionalPayController {
   private additionalPayService: AdditionalPayService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.additionalPayService = new AdditionalPayService(pool);
   }
 

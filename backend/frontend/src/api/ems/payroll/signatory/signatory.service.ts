@@ -1,11 +1,11 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { signatory } from '@/drizzle/drizzle.schema';
+import { SchemaType, signatory } from '@/drizzle/drizzle.schema';
 import { eq, and, isNull } from 'drizzle-orm';
 
 export class SignatoryService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

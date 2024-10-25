@@ -1,11 +1,11 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { supplier } from '@/drizzle/drizzle.schema';
+import { SchemaType, supplier } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class SupplierService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

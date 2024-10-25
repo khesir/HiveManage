@@ -1,12 +1,18 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
-import { customer, employee, payment, service } from '@/drizzle/drizzle.schema';
+import {
+  customer,
+  employee,
+  payment,
+  SchemaType,
+  service,
+} from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreatePayment } from './payment.model';
 
 export class PaymentService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
@@ -15,6 +21,7 @@ export class PaymentService {
   }
 
   async getAllPayment(
+    service_id: string | undefined,
     payment_status: string | undefined,
     payment_method: string | undefined,
     sort: string,
@@ -66,6 +73,10 @@ export class PaymentService {
       } else {
         throw new Error(`Invalid payment status: ${payment_status}`);
       }
+    }
+
+    if (service_id) {
+      conditions.push(eq(payment.service_id, Number(service_id)));
     }
 
     const totalCountQuery = await this.db

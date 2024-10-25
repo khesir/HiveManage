@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { leaveLimit } from '@/drizzle/drizzle.schema';
+import { leaveLimit, SchemaType } from '@/drizzle/drizzle.schema';
 import { CreateLeaveLimit } from './leaveLimit.model';
 
 export class LeaveLimitService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

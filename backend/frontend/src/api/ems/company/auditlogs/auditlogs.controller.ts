@@ -3,11 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 import { AuditLogService } from './auditlogs.service';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class AuditLogController {
   private auditLogService: AuditLogService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.auditLogService = new AuditLogService(pool);
   }
 

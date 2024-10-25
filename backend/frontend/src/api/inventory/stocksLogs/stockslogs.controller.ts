@@ -2,11 +2,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { StocksLogsService } from './stockslogs.service';
 import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/config';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class StocksLogsController {
   private stockslogsService: StocksLogsService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.stockslogsService = new StocksLogsService(pool);
   }
 

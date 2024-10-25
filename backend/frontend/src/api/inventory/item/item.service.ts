@@ -1,12 +1,18 @@
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
-import { category, item, product, supplier } from '@/drizzle/drizzle.schema';
+import {
+  category,
+  item,
+  product,
+  SchemaType,
+  supplier,
+} from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateItem, UpdateItem } from './item.model';
 
 export class ItemService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

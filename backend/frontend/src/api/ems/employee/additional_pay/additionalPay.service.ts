@@ -1,5 +1,5 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { additionalPay } from '@/drizzle/drizzle.schema';
+import { additionalPay, SchemaType } from '@/drizzle/drizzle.schema';
 import { eq, and, isNull } from 'drizzle-orm';
 import {
   CreateAdditionalPay,
@@ -7,9 +7,9 @@ import {
 } from './additionalPay.model';
 
 export class AdditionalPayService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

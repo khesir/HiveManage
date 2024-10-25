@@ -3,11 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { HttpStatus } from '@/lib/config';
 import { PayrollService } from './payroll.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class PayrollController {
   private payrollService: PayrollService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.payrollService = new PayrollService(pool);
   }
 

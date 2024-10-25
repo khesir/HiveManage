@@ -6,6 +6,7 @@ import {
   item,
   product,
   sales_items,
+  SchemaType,
   service,
   supplier,
 } from '@/drizzle/drizzle.schema';
@@ -14,9 +15,9 @@ import { CreateSalesItem } from './salesItem.model';
 import { z } from 'zod';
 
 export class SalesItemService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

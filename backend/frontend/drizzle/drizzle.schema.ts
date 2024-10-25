@@ -595,6 +595,36 @@ export const jobordertype = pgTable('jobordertype', {
     .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
+
+// Assigned Employees
+export const assignedemployees = pgTable('assignedemployees', {
+  assigned_employee_id: serial('assigned_employee_id').primaryKey(),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  assigned_by: varchar('assigned_by', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Remark Tickets
+export const remarktickets = pgTable('remarktickets', {
+  remark_id: serial('remark_id').primaryKey(),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  created_by: integer('created_by').references(() => employee.employee_id),
+  remark_type: remarkTypeEnum('remark_type').notNull(),
+  description: varchar('description', { length: 255 }),
+  remarktickets_status: remarktickets_status('remarktickets_status').notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
 //  =======================================================================================
 // ==================================== SERVICE ======================================
 
@@ -653,38 +683,6 @@ export const service = pgTable('service', {
   deleted_at: timestamp('deleted_at'),
 });
 
-// Assigned Employees
-export const assignedemployees = pgTable('assignedemployees', {
-  assigned_employee_id: serial('assigned_employee_id').primaryKey(),
-  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
-  employee_id: integer('employee_id').references(() => employee.employee_id),
-  assigned_by: varchar('assigned_by', { length: 255 }),
-  created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-  deleted_at: timestamp('deleted_at'),
-});
-
-//Remark Tickets
-export const remarktickets = pgTable('remarktickets', {
-  remark_id: serial('remark_id').primaryKey(),
-  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
-  created_by: integer('created_by').references(() => employee.employee_id),
-  remark_type: remarkTypeEnum('remark_type').notNull(),
-  description: varchar('description', { length: 255 }),
-  remarktickets_status: remarktickets_status('remarktickets_status').notNull(),
-  created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-  deleted_at: timestamp('deleted_at'),
-});
-//  =======================================================================================
-// ==================================== SALES ======================================
-
 //SalesItems
 export const sales_items = pgTable('sales_items', {
   sales_items_id: serial('sales_item_id').primaryKey(),
@@ -731,6 +729,7 @@ export const receipt = pgTable('receipt', {
     .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
+
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
@@ -945,3 +944,70 @@ export const customer = pgTable('customer', {
 
 //  =======================================================================================
 // =================================== PARTORDER ==========================================
+
+// ===================================Query Schema ========================================
+export type SchemaType = {
+  [key: string]: ReturnType<typeof pgTable>;
+};
+export const schema: SchemaType = {
+  // EMS
+  employee,
+  personalInformation,
+  financialInformation,
+  salaryInformation,
+  employmentInformation,
+
+  // Company Feature
+  department,
+  designation,
+  auditLog,
+  leaveLimit,
+  leaveRequest,
+
+  // Payroll
+  payroll,
+  onPayroll,
+  payrollApproval,
+  signatory,
+  payrollReports,
+
+  // Performance Tracker
+  deductions,
+  benefits,
+  adjustments,
+  additionalPay,
+  attendance,
+
+  // Job Order
+  jobOrder,
+  reports,
+  jobordertype,
+  assignedemployees,
+  remarktickets,
+
+  //Services
+  reserve,
+  borrow,
+  service,
+  sales_items,
+  payment,
+  receipt,
+
+  // Inventory
+  item,
+  stocksLogs,
+  product,
+  product_attachment,
+  category,
+  supplier,
+  order,
+  orderItem,
+  arrived_Items,
+
+  // Chat System and Inquiry
+  participants,
+  channel,
+  customer,
+  inquiry,
+  message,
+} as const;

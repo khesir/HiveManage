@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { EmployeeService } from './employee.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class EmployeeController {
   private employeeService: EmployeeService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.employeeService = new EmployeeService(pool);
   }
 

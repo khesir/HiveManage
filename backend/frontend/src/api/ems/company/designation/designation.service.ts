@@ -1,11 +1,11 @@
-import { designation } from '@/drizzle/drizzle.schema';
+import { designation, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { eq, and, isNull } from 'drizzle-orm';
 export class DesignationService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

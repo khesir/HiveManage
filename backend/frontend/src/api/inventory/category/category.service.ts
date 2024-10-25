@@ -1,11 +1,11 @@
 import { eq, isNull } from 'drizzle-orm';
-import { category } from '@/drizzle/drizzle.schema';
+import { category, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class CategoryService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

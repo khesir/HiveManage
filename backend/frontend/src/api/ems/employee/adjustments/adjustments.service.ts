@@ -1,12 +1,12 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { adjustments } from '@/drizzle/drizzle.schema';
+import { adjustments, SchemaType } from '@/drizzle/drizzle.schema';
 import { eq, isNull, and } from 'drizzle-orm';
 import { CreateAdjustments, UpdateAdjustments } from './adjustments.model';
 
 export class AdjustmentsService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

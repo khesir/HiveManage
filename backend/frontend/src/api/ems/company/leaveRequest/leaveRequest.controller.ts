@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { LeaveRequestService } from './leaveRequest.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class LeaveRequestController {
   private leaveRequestService: LeaveRequestService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.leaveRequestService = new LeaveRequestService(pool);
   }
 

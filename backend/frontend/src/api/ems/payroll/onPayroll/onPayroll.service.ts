@@ -1,11 +1,16 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { OnPayroll } from './onPayroll.model';
-import { employee, onPayroll, payrollApproval } from '@/drizzle/drizzle.schema';
+import {
+  employee,
+  onPayroll,
+  payrollApproval,
+  SchemaType,
+} from '@/drizzle/drizzle.schema';
 import { inArray, eq, and, isNull } from 'drizzle-orm';
 export class OnPayrollService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
   async getAllOnPayroll(payroll_id: number) {

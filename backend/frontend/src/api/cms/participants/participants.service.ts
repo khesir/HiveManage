@@ -1,11 +1,11 @@
 import { eq, isNull } from 'drizzle-orm';
-import { participants } from '@/drizzle/drizzle.schema';
+import { participants, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ParticipantsService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

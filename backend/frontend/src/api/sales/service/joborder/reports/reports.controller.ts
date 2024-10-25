@@ -2,11 +2,12 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ReportsService } from './reports.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class ReportsController {
   private reportsService: ReportsService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.reportsService = new ReportsService(pool);
   }
 
@@ -20,10 +21,10 @@ export class ReportsController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.reportsWithDetails,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.reportsWithDetails,
       });
     } catch (error) {
       res

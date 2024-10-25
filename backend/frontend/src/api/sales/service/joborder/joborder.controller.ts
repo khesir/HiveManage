@@ -2,15 +2,17 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { JobOrderService } from './joborder.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class JobOrderController {
   private joborderService: JobOrderService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.joborderService = new JobOrderService(pool);
   }
 
   async getAllJobOrder(req: Request, res: Response, next: NextFunction) {
+    const service_id = (req.params.service_id as string) || undefined;
     const status = (req.query.status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -18,6 +20,7 @@ export class JobOrderController {
 
     try {
       const data = await this.joborderService.getAllJobOrder(
+        service_id,
         status,
         sort,
         limit,
@@ -26,10 +29,10 @@ export class JobOrderController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.joborderitemWithDetails,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.joborderitemWithDetails,
       });
     } catch (error) {
       res

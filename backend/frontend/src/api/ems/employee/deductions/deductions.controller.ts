@@ -3,11 +3,12 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { DeductionsService } from './deductions.service';
+import { SchemaType } from '@/drizzle/drizzle.schema';
 
 export class DeductionsController {
   private deductionsService: DeductionsService;
 
-  constructor(pool: PostgresJsDatabase) {
+  constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.deductionsService = new DeductionsService(pool);
   }
 

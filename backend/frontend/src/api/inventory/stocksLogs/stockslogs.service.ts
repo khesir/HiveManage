@@ -2,6 +2,7 @@ import {
   category,
   item,
   product,
+  SchemaType,
   stocksLogs,
   supplier,
 } from '@/drizzle/drizzle.schema';
@@ -9,9 +10,9 @@ import { and, eq, sql } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class StocksLogsService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

@@ -1,13 +1,13 @@
 import { asc, desc, eq, isNull, and, sql } from 'drizzle-orm';
 
-import { auditLog, employee } from '@/drizzle/drizzle.schema';
+import { auditLog, employee, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateAuditLog } from './auditlogs.model';
 
 export class AuditLogService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

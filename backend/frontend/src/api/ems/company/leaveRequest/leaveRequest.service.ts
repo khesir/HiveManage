@@ -1,12 +1,12 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { leaveRequest } from '@/drizzle/drizzle.schema';
+import { leaveRequest, SchemaType } from '@/drizzle/drizzle.schema';
 import { LeaveRequest } from './leaveRequest.model';
 
 export class LeaveRequestService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 

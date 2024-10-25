@@ -1,12 +1,12 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { eq, and, isNull, isNotNull } from 'drizzle-orm';
-import { deductions } from '@/drizzle/drizzle.schema';
+import { deductions, SchemaType } from '@/drizzle/drizzle.schema';
 import { CreateDeductions, UpdateDeductions } from './deductions.model';
 
 export class DeductionsService {
-  private db: PostgresJsDatabase;
+  private db: PostgresJsDatabase<SchemaType>;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
