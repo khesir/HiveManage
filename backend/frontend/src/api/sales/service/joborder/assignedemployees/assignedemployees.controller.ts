@@ -16,23 +16,13 @@ export class AssignedEmployeeController {
     res: Response,
     next: NextFunction,
   ) {
-    const sort = (req.query.sort as string) || 'asc';
-    const limit = parseInt(req.query.limit as string) || 10;
-    const offset = parseInt(req.query.offset as string) || 0;
-
     try {
-      const data = await this.assignedemployeeService.getAllAssignedEmployee(
-        sort,
-        limit,
-        offset,
-      );
+      const { job_order_id } = req.params;
+      const data =
+        await this.assignedemployeeService.getAllAssignedEmployee(job_order_id);
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Data Retrieved Successfully',
-        total_data: data.totalData,
-        limit: limit,
-        offset: offset,
-        data: data.AssignedEmployeeDetails,
+        data: data,
       });
     } catch (error) {
       res
@@ -53,7 +43,7 @@ export class AssignedEmployeeController {
         await this.assignedemployeeService.getAssignEmployeeByID(
           assigned_employee_id,
         );
-      res.status(200).json({ status: 'Success', message: data });
+      res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
