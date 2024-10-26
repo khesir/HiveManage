@@ -28,7 +28,7 @@ export function SalesItemProfile() {
 			<CardHeader className="flex flex-row items-start bg-muted/50">
 				<div className="grid gap-0.5">
 					<CardTitle className="group flex items-center gap-2 text-lg">
-						{data?.service_title}
+						{`#${data?.service_id} - ${data?.service_title}`}
 					</CardTitle>
 					<CardDescription>
 						{dateParser(data?.created_at ?? '')}
@@ -69,7 +69,6 @@ export function SalesItemProfile() {
 							<span className="text-muted-foreground">Fullname</span>
 							<span>
 								{data?.customer.lastname}
-								{', '}
 								{data?.customer.firstname} {data?.customer.middlename}
 							</span>
 						</li>

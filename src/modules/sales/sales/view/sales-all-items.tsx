@@ -4,6 +4,7 @@ import {useParams, useSearchParams} from 'react-router-dom';
 import {SalesTable} from './sales-table';
 import {columns} from './columns';
 import {SalesItemWithDetails} from '@/lib/sales-zod-schema';
+import {useSalesItemWithDetailsStore} from './hooks/use-sales-item-store';
 
 export function SalesAllItem() {
 	const [searchParams] = useSearchParams();
@@ -16,6 +17,7 @@ export function SalesAllItem() {
 	const sales_item_type = searchParams.get('sales_item_type') || null;
 	const sort = searchParams.get('sort') || null;
 	const offset = (page - 1) * pageLimit;
+	const {setSelectedSalesItemWithDetails} = useSalesItemWithDetailsStore();
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
@@ -26,6 +28,7 @@ export function SalesAllItem() {
 					(sort ? `&sort=${sort}` : ''),
 			);
 			setSalesItem(res.data);
+			setSelectedSalesItemWithDetails(res.data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));
 		};
 

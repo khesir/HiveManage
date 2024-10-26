@@ -30,7 +30,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
 import {
 	Select,
 	SelectContent,
@@ -38,35 +37,53 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Borrow, borrowItemSchema} from '@/lib/sales-zod-schema';
+import {Reservation, reservationSchema} from '@/lib/sales-zod-schema';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {MoreVertical} from 'lucide-react';
+import {MoreVertical, X} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
+import {DeleteReservation} from '../api/delete-reservation';
+import {useItemWithDetailsStore} from '@/components/hooks/use-selected-item';
+import {ItemLisitingModal} from '@/modules/sales/overview/modal/item-listing-modal';
+import {useSalesItemWithDetailsStore} from '../hooks/use-sales-item-store';
 
 export function ReservationCard() {
 	const {data} = useServiceFormStore();
 	const [res, setRes] = useState<string | undefined>(undefined);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [borrow, setBorrow] = useState<Borrow>();
+	const [reservation, setReservation] = useState<Reservation>();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
-
+	const {
+		selectedItemWithDetails,
+		setSelectedItemWithDetails,
+		removeItemWithDetails,
+	} = useItemWithDetailsStore();
+	const {selectedSalesItemWithDetails} = useSalesItemWithDetailsStore();
+	useEffect(() => {
+		const filterData = () => {
+			const filterData = selectedSalesItemWithDetails.filter(
+				(entry) => entry.sales_item_type === 'Reservation',
+			);
+			return filterData;
+		};
+		filterData();
+	}, []);
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
 			try {
-				const response = await request<ApiRequest<Borrow[]>>(
+				const response = await request<ApiRequest<Reservation[]>>(
 					'GET',
-					`api/v1/sms/service/${data?.service_id}/borrow`,
+					`api/v1/sms/service/${data?.service_id}/reserve`,
 				);
-				const _data = response.data as Borrow[];
+				const _data = response.data as Reservation[];
 				console.log(_data);
 				if (_data.length > 0) {
-					setBorrow(_data[0]);
+					setReservation(_data[0]);
 				} else {
-					setBorrow(undefined);
+					setReservation(undefined);
 				}
 			} catch (error) {
 				if (error instanceof Error) {
@@ -90,31 +107,42 @@ export function ReservationCard() {
 	};
 
 	// Form
-	const form = useForm<Borrow>({
-		resolver: zodResolver(borrowItemSchema),
+	const form = useForm<Reservation>({
+		resolver: zodResolver(reservationSchema),
 		mode: 'onChange',
 	});
 
 	const handleEdit = () => {
+		setSelectedItemWithDetails([]);
 		setIsEditing((prev) => !prev);
-		if (borrow) {
+		if (reservation) {
 			form.reset({
-				borrow_date: borrow.borrow_date,
-				return_date: borrow.return_date,
-				fee: borrow.fee,
-				status: borrow.status,
+				reserve_status: reservation.reserve_status,
 			});
 		}
 	};
 
 	const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-	const gender = [
-		{id: 1, name: 'Male'},
-		{id: 2, name: 'Female'},
-		{id: 3, name: 'Others'},
-	];
 
-	const processForm = async (formData: Borrow) => {
+	const handleDelete = async () => {
+		try {
+			setSubmitLoading(true);
+			if (reservation?.reservation_id !== undefined) {
+				await DeleteReservation(reservation.reservation_id);
+				setReservation(undefined);
+			}
+		} catch (error) {
+			toast('Error updating employment information:', {
+				description:
+					error instanceof Error ? error.message : 'An unknown error occurred',
+			});
+		} finally {
+			setSubmitLoading(false);
+			handleEdit();
+		}
+	};
+
+	const processForm = async (formData: Reservation) => {
 		try {
 			setSubmitLoading(true);
 			console.log(formData);
@@ -128,17 +156,8 @@ export function ReservationCard() {
 			handleEdit();
 		}
 	};
-	const borrow_status = [
-		'Requested',
-		'Approved',
-		'Borrowed',
-		'Returned',
-		'Overdue',
-		'Rejected',
-		'Cancelled',
-		'Lost',
-		'Damaged',
-	];
+	const status = ['Reserved', 'Confirmed', 'Cancelled', 'Pending', 'Completed'];
+
 	return (
 		<Accordion type="single" collapsible className="w-full">
 			<AccordionItem value="item-1">
@@ -191,49 +210,10 @@ export function ReservationCard() {
 								<Card className="gap-8 md:grid md:grid-cols-3 p-5">
 									<FormField
 										control={form.control}
-										name="fee"
+										name="reserve_status"
 										render={({field}) => (
 											<FormItem>
-												<FormLabel>Joborder Fee</FormLabel>
-												<FormControl>
-													<Input disabled={true} {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="borrow_date"
-										render={({field}) => (
-											<FormItem>
-												<FormLabel>Start</FormLabel>
-												<FormControl>
-													<Input type="date" disabled={loading} {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="return_date"
-										render={({field}) => (
-											<FormItem>
-												<FormLabel>End</FormLabel>
-												<FormControl>
-													<Input type="date" disabled={loading} {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="status"
-										render={({field}) => (
-											<FormItem>
-												<FormLabel>Borrow Status</FormLabel>
+												<FormLabel>Reservation Status</FormLabel>
 												<Select
 													disabled={loading}
 													onValueChange={field.onChange}
@@ -248,7 +228,7 @@ export function ReservationCard() {
 														</SelectTrigger>
 													</FormControl>
 													<SelectContent>
-														{borrow_status.map((data, index) => (
+														{status.map((data, index) => (
 															<SelectItem key={index} value={data}>
 																{data}
 															</SelectItem>
@@ -259,6 +239,29 @@ export function ReservationCard() {
 											</FormItem>
 										)}
 									/>
+									<Card className="flex flex-col gap-3 p-5 m-5 mt-0">
+										<div className="flex justify-between gap-3 items-center">
+											<h1 className="text-lg font-semibold">Selected Items</h1>
+											<ItemLisitingModal title="Reservation" />
+										</div>
+										<div className="w-full flex flex-col gap-3">
+											{selectedItemWithDetails.map((item) => (
+												<>
+													<div className="flex justify-start gap-3 items-center">
+														<X
+															className="w-5 h-5 hover:bg-red-600 rounded-sm cursor-pointer"
+															onClick={() =>
+																removeItemWithDetails(item.item_id)
+															}
+														/>
+														<p className="hover:underline">
+															{item.product.name} - {item.product.supplier.name}
+														</p>
+													</div>
+												</>
+											))}
+										</div>
+									</Card>
 								</Card>
 								<div className="flex justify-end">
 									<div className="space-x-2">
@@ -274,7 +277,7 @@ export function ReservationCard() {
 								</div>
 							</form>
 						</Form>
-					) : borrow === undefined ? (
+					) : reservation === undefined ? (
 						<div className="flex justify-center">
 							<Button
 								onClick={() => {
@@ -288,20 +291,12 @@ export function ReservationCard() {
 						<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid">
 							<ul className="grid gap-3">
 								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Borrow Date</span>
-									<span>{borrow?.borrow_date}</span>
-								</li>
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Reture Date</span>
-									<span>{borrow?.return_date}</span>
-								</li>
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Fee</span>
-									<span>{borrow?.fee}</span>
+									<span className="text-muted-foreground">Reserved Date</span>
+									<span>{reservation?.created_at}</span>
 								</li>
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Status</span>
-									<span>{borrow?.status}</span>
+									<span>{reservation?.reserve_status}</span>
 								</li>
 							</ul>
 						</Card>
@@ -320,7 +315,7 @@ export function ReservationCard() {
 						</DialogHeader>
 						<DialogFooter>
 							<Button onClick={closeModal}>Cancel</Button>
-							<Button variant="destructive" onClick={closeModal}>
+							<Button variant="destructive" onClick={handleDelete}>
 								Confirm
 							</Button>
 						</DialogFooter>

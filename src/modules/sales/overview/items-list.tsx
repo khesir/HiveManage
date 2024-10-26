@@ -156,7 +156,7 @@ export function ItemsList() {
 	if (items.length === 0) {
 		return (
 			<Card className="relative w-full h-[170px] overflow-hidden">
-				<CardTitle className="font-semibold text-sm  hover:underline">
+				<CardTitle className="h-full font-semibold text-xl  hover:underline flex items-center justify-center">
 					No Item Available
 				</CardTitle>
 			</Card>

@@ -38,36 +38,53 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Borrow, borrowItemSchema} from '@/lib/sales-zod-schema';
+import {
+	Joborder,
+	joborderSchema,
+	JobOrderType,
+	JobOrderWithDetails,
+} from '@/lib/sales-zod-schema';
+import {generateCustomUUID} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
+import {CreateJoborder} from '../api/create-joborder';
+import {UpdateJobOrder} from '../api/update-joborder';
+import {DeleteJobOrder} from '../api/delete-joborder';
+import {useParams} from 'react-router-dom';
 
 export function JobOrderCard() {
+	const {id} = useParams();
 	const {data} = useServiceFormStore();
 	const [res, setRes] = useState<string | undefined>(undefined);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [borrow, setBorrow] = useState<Borrow>();
+	const [joborder, setJoborder] = useState<JobOrderWithDetails | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
+	const fee = 100;
+	const generatedUUID = generateCustomUUID();
+	const [joborderType, setJoborderType] = useState<JobOrderType[] | null>(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
 			try {
-				const response = await request<ApiRequest<Borrow[]>>(
-					'GET',
-					`api/v1/sms/service/${data?.service_id}/borrow`,
-				);
-				const _data = response.data as Borrow[];
-				console.log(_data);
-				if (_data.length > 0) {
-					setBorrow(_data[0]);
-				} else {
-					setBorrow(undefined);
-				}
+				const [joborderRes, joborderTypeRes] = await Promise.all([
+					request<ApiRequest<JobOrderWithDetails[]>>(
+						'GET',
+						`api/v1/sms/service/${data?.service_id}/joborder`,
+					),
+
+					request<ApiRequest<JobOrderType[]>>(
+						'GET',
+						`api/v1/sms/joborder-types`,
+					),
+				]);
+
+				setJoborder((joborderRes.data[0] as JobOrderWithDetails) || null);
+				setJoborderType((joborderTypeRes.data as JobOrderType[]) || null);
 			} catch (error) {
 				if (error instanceof Error) {
 					setRes(error.message);
@@ -85,39 +102,18 @@ export function JobOrderCard() {
 		setIsModalOpen(true);
 	};
 
-	const closeModal = () => {
+	const closeModal = async () => {
+		await handleDelete();
 		setIsModalOpen(false);
 	};
 
-	// Form
-	const form = useForm<Borrow>({
-		resolver: zodResolver(borrowItemSchema),
-		mode: 'onChange',
-	});
-
-	const handleEdit = () => {
-		setIsEditing((prev) => !prev);
-		if (borrow) {
-			form.reset({
-				borrow_date: borrow.borrow_date,
-				return_date: borrow.return_date,
-				fee: borrow.fee,
-				status: borrow.status,
-			});
-		}
-	};
-
-	const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-	const gender = [
-		{id: 1, name: 'Male'},
-		{id: 2, name: 'Female'},
-		{id: 3, name: 'Others'},
-	];
-
-	const processForm = async (formData: Borrow) => {
+	const handleDelete = async () => {
 		try {
 			setSubmitLoading(true);
-			console.log(formData);
+			if (joborder?.joborder_id !== undefined) {
+				await DeleteJobOrder(joborder.joborder_id);
+				setJoborder(null);
+			}
 		} catch (error) {
 			toast('Error updating employment information:', {
 				description:
@@ -128,16 +124,87 @@ export function JobOrderCard() {
 			handleEdit();
 		}
 	};
-	const borrow_status = [
-		'Requested',
-		'Approved',
-		'Borrowed',
-		'Returned',
-		'Overdue',
-		'Rejected',
+	// Form
+	const form = useForm<Joborder>({
+		resolver: zodResolver(joborderSchema),
+		mode: 'onChange',
+	});
+
+	const handleEdit = () => {
+		setIsEditing((prev) => !prev);
+		if (joborder) {
+			form.reset({
+				joborder_type_id: Number(joborder.joborder_type?.joborder_type_id),
+				uuid: joborder?.uuid,
+				fee: joborder?.fee,
+				status: joborder?.status as
+					| 'Pending'
+					| 'In Progress'
+					| 'Completed'
+					| 'On Hold'
+					| 'Cancelled'
+					| 'Awaiting Approval'
+					| 'Approved'
+					| 'Rejected'
+					| 'Closed',
+			});
+		} else {
+			form.reset({
+				joborder_type_id: undefined,
+				uuid: generatedUUID,
+				fee: fee,
+				status: undefined,
+			});
+		}
+	};
+
+	const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+
+	const processForm = async (formData: Joborder) => {
+		try {
+			setSubmitLoading(true);
+			if (joborder) {
+				// Update endpoint
+				const res = await UpdateJobOrder(formData, id!, joborder.joborder_id!);
+				setJoborder(res);
+				toast('Joborder Successfully Updated!');
+			} else {
+				// Create endpoint
+				const res = await CreateJoborder(formData, id!);
+				setJoborder(res);
+				toast('Joborder Successfully Created!');
+			}
+		} catch (error) {
+			toast('Error updating employment information:', {
+				description:
+					error instanceof Error ? error.message : 'An unknown error occurred',
+			});
+			console.log(error);
+		} finally {
+			setSubmitLoading(false);
+			handleEdit();
+		}
+	};
+
+	// TODO: Implement Job order type
+	// const [joborderType, setJobOrderType] = useState<JobOrderType>();
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		const response = await request
+	// 		setJobOrderType()
+	// 	}
+	// 	fetchData();
+	// },[])
+	const status = [
+		'Pending',
+		'In Progress',
+		'Completed',
+		'On Hold',
 		'Cancelled',
-		'Lost',
-		'Damaged',
+		'Awaiting Approval',
+		'Approved',
+		'Rejected',
+		'Closed',
 	];
 	return (
 		<Accordion type="single" collapsible className="w-full">
@@ -191,12 +258,33 @@ export function JobOrderCard() {
 								<Card className="gap-8 md:grid md:grid-cols-3 p-5">
 									<FormField
 										control={form.control}
+										name="uuid"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Joborder UUID</FormLabel>
+												<FormControl>
+													<Input
+														{...field}
+														disabled={true}
+														placeholder="Auto Generated"
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
 										name="fee"
 										render={({field}) => (
 											<FormItem>
 												<FormLabel>Joborder Fee</FormLabel>
 												<FormControl>
-													<Input disabled={true} {...field} />
+													<Input
+														{...field}
+														placeholder="Fee"
+														disabled={submitLoading}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -204,26 +292,39 @@ export function JobOrderCard() {
 									/>
 									<FormField
 										control={form.control}
-										name="borrow_date"
+										name="joborder_type_id"
 										render={({field}) => (
 											<FormItem>
-												<FormLabel>Start</FormLabel>
-												<FormControl>
-													<Input type="date" disabled={loading} {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="return_date"
-										render={({field}) => (
-											<FormItem>
-												<FormLabel>End</FormLabel>
-												<FormControl>
-													<Input type="date" disabled={loading} {...field} />
-												</FormControl>
+												<FormLabel>Joborder Type</FormLabel>
+												<Select
+													disabled={submitLoading}
+													onValueChange={(value) =>
+														field.onChange(Number(value))
+													}
+													value={field.value ? field.value.toString() : ''}
+												>
+													<FormControl>
+														<SelectTrigger>
+															<SelectValue
+																defaultValue={field.value}
+																placeholder="Select a type"
+															/>
+														</SelectTrigger>
+													</FormControl>
+													<SelectContent>
+														{joborderType?.map(
+															(jo) =>
+																jo.joborder_type_id !== undefined && (
+																	<SelectItem
+																		key={jo.joborder_type_id}
+																		value={jo.joborder_type_id.toString()}
+																	>
+																		{jo.name}
+																	</SelectItem>
+																),
+														)}
+													</SelectContent>
+												</Select>
 												<FormMessage />
 											</FormItem>
 										)}
@@ -233,9 +334,9 @@ export function JobOrderCard() {
 										name="status"
 										render={({field}) => (
 											<FormItem>
-												<FormLabel>Borrow Status</FormLabel>
+												<FormLabel>Joborder Status</FormLabel>
 												<Select
-													disabled={loading}
+													disabled={submitLoading}
 													onValueChange={field.onChange}
 													value={field.value ? field.value.toString() : ''}
 												>
@@ -248,7 +349,7 @@ export function JobOrderCard() {
 														</SelectTrigger>
 													</FormControl>
 													<SelectContent>
-														{borrow_status.map((data, index) => (
+														{status.map((data, index) => (
 															<SelectItem key={index} value={data}>
 																{data}
 															</SelectItem>
@@ -274,37 +375,45 @@ export function JobOrderCard() {
 								</div>
 							</form>
 						</Form>
-					) : borrow === undefined ? (
+					) : joborder === undefined ? (
 						<div className="flex justify-center">
 							<Button
 								onClick={() => {
 									handleEdit();
 								}}
 							>
-								Add Personal Info Data
+								Add Joborder
 							</Button>
 						</div>
 					) : (
-						<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid">
-							<ul className="grid gap-3">
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Borrow Date</span>
-									<span>{borrow?.borrow_date}</span>
-								</li>
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Reture Date</span>
-									<span>{borrow?.return_date}</span>
-								</li>
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Fee</span>
-									<span>{borrow?.fee}</span>
-								</li>
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Status</span>
-									<span>{borrow?.status}</span>
-								</li>
-							</ul>
-						</Card>
+						<div className="flex flex-col gap-3">
+							<div>
+								<Button>View Full Details</Button>
+							</div>
+							<Card
+								x-chunk="dashboard-05-chunk-3"
+								className="gap-8 p-4 md:grid"
+							>
+								<ul className="grid gap-3">
+									<li className="flex items-center justify-between">
+										<span className="text-muted-foreground">UUID</span>
+										<span>{joborder?.uuid}</span>
+									</li>
+									<li className="flex items-center justify-between">
+										<span className="text-muted-foreground">Fee</span>
+										<span>{joborder?.fee}</span>
+									</li>
+									<li className="flex items-center justify-between">
+										<span className="text-muted-foreground">Type</span>
+										<span>{joborder?.joborder_type?.name}</span>
+									</li>
+									<li className="flex items-center justify-between">
+										<span className="text-muted-foreground">Status</span>
+										<span>{joborder?.status}</span>
+									</li>
+								</ul>
+							</Card>
+						</div>
 					)}
 				</AccordionContent>
 			</AccordionItem>

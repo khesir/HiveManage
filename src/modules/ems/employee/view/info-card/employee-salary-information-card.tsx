@@ -14,7 +14,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {SalaryInformation, salaryInformationSchema} from '@/lib/employee-zod-schema';
+import {
+	SalaryInformation,
+	salaryInformationSchema,
+} from '@/lib/employee-zod-schema';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {

@@ -111,6 +111,18 @@ export const joborderSchema = z.object({
 
 export type Joborder = z.infer<typeof joborderSchema>;
 
+export type JobOrderWithDetails = {
+	joborder_id?: number;
+	service: ServiceWithDetails;
+	joborder_type: JobOrderType;
+	uuid: string;
+	fee: number;
+	status: string;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};
+
 export const joborderTypeschema = z.object({
 	joborder_type_id: z.string().optional(),
 	name: z.string().min(1),

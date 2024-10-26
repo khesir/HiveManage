@@ -39,11 +39,15 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Borrow, borrowItemSchema} from '@/lib/sales-zod-schema';
+import {dateParser} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
+import {DeleteBorrow} from '../api/delete-borrow';
+import {UpdateBorrow} from '../api/update-borrow';
+import {CreateBorrow} from '../api/create-borrow';
 
 export function BorrrowCard() {
 	const {data} = useServiceFormStore();
@@ -85,7 +89,8 @@ export function BorrrowCard() {
 		setIsModalOpen(true);
 	};
 
-	const closeModal = () => {
+	const closeModal = async () => {
+		await handleDelete();
 		setIsModalOpen(false);
 	};
 
@@ -94,30 +99,59 @@ export function BorrrowCard() {
 		resolver: zodResolver(borrowItemSchema),
 		mode: 'onChange',
 	});
+	const fee = 100;
+
+	const handleDelete = async () => {
+		try {
+			setSubmitLoading(true);
+			if (borrow?.borrow_id !== undefined) {
+				await DeleteBorrow(borrow.borrow_id);
+				setBorrow(undefined);
+			}
+		} catch (error) {
+			toast('Error updating employment information:', {
+				description:
+					error instanceof Error ? error.message : 'An unknown error occurred',
+			});
+		} finally {
+			setSubmitLoading(false);
+			handleEdit();
+		}
+	};
 
 	const handleEdit = () => {
 		setIsEditing((prev) => !prev);
 		if (borrow) {
 			form.reset({
-				borrow_date: borrow.borrow_date,
-				return_date: borrow.return_date,
+				borrow_date: dateParser(borrow.borrow_date),
+				return_date: dateParser(borrow.return_date),
 				fee: borrow.fee,
 				status: borrow.status,
+			});
+		} else {
+			form.reset({
+				borrow_date: undefined,
+				return_date: undefined,
+				fee: fee,
+				status: undefined,
 			});
 		}
 	};
 
 	const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-	const gender = [
-		{id: 1, name: 'Male'},
-		{id: 2, name: 'Female'},
-		{id: 3, name: 'Others'},
-	];
 
 	const processForm = async (formData: Borrow) => {
 		try {
 			setSubmitLoading(true);
-			console.log(formData);
+			if (borrow) {
+				// Update Endpoint
+				const res = await UpdateBorrow(formData);
+				setBorrow(res);
+			} else {
+				// Create Endpoint
+				const res = await CreateBorrow(formData);
+				setBorrow(res);
+			}
 		} catch (error) {
 			toast('Error updating employment information:', {
 				description:
@@ -194,7 +228,7 @@ export function BorrrowCard() {
 										name="fee"
 										render={({field}) => (
 											<FormItem>
-												<FormLabel>Joborder Fee</FormLabel>
+												<FormLabel>Service fee</FormLabel>
 												<FormControl>
 													<Input disabled={true} {...field} />
 												</FormControl>
@@ -209,7 +243,11 @@ export function BorrrowCard() {
 											<FormItem>
 												<FormLabel>Start</FormLabel>
 												<FormControl>
-													<Input type="date" disabled={loading} {...field} />
+													<Input
+														type="date"
+														disabled={submitLoading}
+														{...field}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -222,7 +260,11 @@ export function BorrrowCard() {
 											<FormItem>
 												<FormLabel>End</FormLabel>
 												<FormControl>
-													<Input type="date" disabled={loading} {...field} />
+													<Input
+														type="date"
+														disabled={submitLoading}
+														{...field}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -235,7 +277,7 @@ export function BorrrowCard() {
 											<FormItem>
 												<FormLabel>Borrow Status</FormLabel>
 												<Select
-													disabled={loading}
+													disabled={submitLoading}
 													onValueChange={field.onChange}
 													value={field.value ? field.value.toString() : ''}
 												>
@@ -281,7 +323,7 @@ export function BorrrowCard() {
 									handleEdit();
 								}}
 							>
-								Add Personal Info Data
+								Add Borrow
 							</Button>
 						</div>
 					) : (
@@ -289,11 +331,11 @@ export function BorrrowCard() {
 							<ul className="grid gap-3">
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Borrow Date</span>
-									<span>{borrow?.borrow_date}</span>
+									<span>{dateParser(borrow?.borrow_date ?? '')}</span>
 								</li>
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Reture Date</span>
-									<span>{borrow?.return_date}</span>
+									<span>{dateParser(borrow?.return_date ?? '')}</span>
 								</li>
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Fee</span>

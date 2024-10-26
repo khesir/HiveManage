@@ -1,5 +1,4 @@
-import { request } from '@/api/axios';
-import { useSalesHook } from '@/components/hooks/use-sales-hook';
+import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {Button} from '@/components/ui/button';
 import {Card, CardFooter} from '@/components/ui/card';
 import {
@@ -18,10 +17,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Joborder, joborderSchema, JobOrderType} from '@/lib/sales-zod-schema';
+import {Joborder, joborderSchema} from '@/lib/sales-zod-schema';
 import {generateCustomUUID} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 
 interface JoborderProps {

@@ -39,6 +39,9 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useFieldArray, useForm} from 'react-hook-form';
+import {toast} from 'sonner';
+import { CreateCustomer } from '../api/create-customer';
+import { useNavigate } from 'react-router-dom';
 
 interface CreateCustomerFormProps {
 	processCreate?: (data: any[]) => void;
@@ -47,20 +50,12 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [loading, setLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [previousStep, setPreviousStep] = useState(0);
+	const navigate = useNavigate();
 	const {setCustomerFormData, resetCustomerFormData} = useCustomerFormStore();
-	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	useEffect(() => {
 		resetCustomerFormData();
 	}, []);
-
-	const openModal = () => {
-		setIsModalOpen(true);
-	};
-
-	const closeModal = () => {
-		setIsModalOpen(false);
-	};
 
 	const form = useForm<Customer>({
 		resolver: zodResolver(customerSchema),
@@ -143,9 +138,6 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 		setCustomerFormData(customerData);
 		if (!output) return;
 		if (currentStep < steps.length - 1) {
-			if (currentStep === steps.length - 2) {
-				await form.handleSubmit(processForm)();
-			}
 			setPreviousStep(currentStep);
 			setCurrentStep((step) => step + 1);
 		}
@@ -159,14 +151,26 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	};
 
 	const processForm = async (data: Customer) => {
-		setLoading(true);
-		// Overview main transaction process
-		if (typeof processCreate === 'function') {
-			processCreate([data]);
-			return true;
-		}
-		if (isModalOpen) {
-			openModal();
+		try {
+			setLoading(true);
+			// Overview main transaction process
+			// Don't touch
+			if (typeof processCreate === 'function') {
+				processCreate([data]);
+				return true;
+			}
+
+			// Saving process for default
+			// ========================================
+			await CreateCustomer(data);
+			// ========================================
+			toast('Customer Successfully Created!');
+			navigate(-1);
+		} catch (error) {
+			toast('Error updating employment information:', {
+				description:
+					error instanceof Error ? error.message : 'An unknown error occurred',
+			});
 		}
 		setLoading(false);
 	};
@@ -469,7 +473,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 																		<SelectTrigger>
 																			<SelectValue
 																				defaultValue={field.value}
-																				placeholder="Select a country"
+																				placeholder="Select a Socials"
 																			/>
 																		</SelectTrigger>
 																	</FormControl>
@@ -523,7 +527,18 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 							</div>
 						)}
 						{currentStep === 4 && (
-							<div>Review the provided data to proceed</div>
+							<div className="col-span-3 space-y-">
+								<div className="flex flex-col gap-3 mb-5">
+									<p className="text-lg font-semibold">Final Check</p>
+									<p>
+										Please review the Customer data and click this submit button
+										to proceed
+									</p>
+								</div>
+								<div className="flex justify-end">
+									<Button type="submit">Submit</Button>
+								</div>
+							</div>
 						)}
 					</Card>
 				</form>
@@ -574,25 +589,6 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 					</button>
 				</div>
 			</div>
-			{isModalOpen && (
-				<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-					<DialogContent className="sm:max-w-[425px]">
-						<DialogHeader>
-							<DialogTitle>Delete Item</DialogTitle>
-							<DialogDescription>
-								Are you sure you want to delete this item? This action cannot be
-								undone.
-							</DialogDescription>
-						</DialogHeader>
-						<DialogFooter>
-							<Button onClick={closeModal}>Cancel</Button>
-							<Button variant="destructive" onClick={closeModal}>
-								Confirm
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
-			)}
 		</div>
 	);
 }
