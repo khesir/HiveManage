@@ -626,6 +626,34 @@ export const remarktickets = pgTable('remarktickets', {
     .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
+
+//Remark Items
+export const remarkitems = pgTable('remarkitems', {
+  remark_items_id: serial('remark_items_id').primaryKey(),
+  sales_items_id: integer('sales_items_id').references(
+    () => sales_items.sales_items_id,
+  ),
+  remark_id: integer('remark_id').references(() => remarktickets.remark_id),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Remark Reports
+export const remarkreports = pgTable('remarkreports', {
+  remark_reports_id: serial('remark_reports_id').primaryKey(),
+  reports_id: integer('reports_id').references(() => reports.reports_id),
+  remark_id: integer('remark_id').references(() => remarktickets.remark_id),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
 //  =======================================================================================
 // ==================================== SERVICE ======================================
 

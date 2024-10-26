@@ -8,6 +8,8 @@ import { CreateJobOrder, UpdateJobOrder } from './joborder.model';
 import reportsRoute from './reports/reports.route';
 import assignedEmployeeRoute from './assignedemployees/assignedemployees.route';
 import remarkTicketsRoute from './remarktickets/remarkticket.route';
+import remarkItemsRoute from './remarkitems/remarkitem.route';
+import remarkReportsRoute from './remarkreports/remarkreports.route';
 
 const joborderRoute = Router({ mergeParams: true });
 const joborderController = new JobOrderController(db);
@@ -61,6 +63,20 @@ joborderRoute.use(
   validateJobOrderID,
   remarkTicketsRoute,
 );
-log.info('ROUTE Job order reports set');
+log.info('ROUTE Job order remark tickets set');
+
+joborderRoute.use(
+  '/:job_order_id/remarkitems',
+  validateJobOrderID,
+  remarkItemsRoute,
+);
+log.info('ROUTE Job order remark items set');
+
+joborderRoute.use(
+  '/:job_order_id/remarkreports',
+  validateJobOrderID,
+  remarkReportsRoute,
+);
+log.info('ROUTE Job order remark reports set');
 
 export default joborderRoute;
