@@ -578,6 +578,24 @@ CREATE TABLE IF NOT EXISTS "receipt" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "remarkitems" (
+	"remark_items_id" serial PRIMARY KEY NOT NULL,
+	"sales_items_id" integer,
+	"remark_id" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "remarkreports" (
+	"remark_reports_id" serial PRIMARY KEY NOT NULL,
+	"reports_id" integer,
+	"remark_id" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "remarktickets" (
 	"remark_id" serial PRIMARY KEY NOT NULL,
 	"job_order_id" integer,
@@ -909,6 +927,30 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "receipt" ADD CONSTRAINT "receipt_payment_id_payment_payment_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."payment"("payment_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "remarkitems" ADD CONSTRAINT "remarkitems_sales_items_id_sales_items_sales_item_id_fk" FOREIGN KEY ("sales_items_id") REFERENCES "public"."sales_items"("sales_item_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "remarkitems" ADD CONSTRAINT "remarkitems_remark_id_remarktickets_remark_id_fk" FOREIGN KEY ("remark_id") REFERENCES "public"."remarktickets"("remark_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "remarkreports" ADD CONSTRAINT "remarkreports_reports_id_reports_reports_id_fk" FOREIGN KEY ("reports_id") REFERENCES "public"."reports"("reports_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "remarkreports" ADD CONSTRAINT "remarkreports_remark_id_remarktickets_remark_id_fk" FOREIGN KEY ("remark_id") REFERENCES "public"."remarktickets"("remark_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
