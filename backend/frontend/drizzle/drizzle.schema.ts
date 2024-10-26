@@ -588,6 +588,7 @@ export const jobordertype = pgTable('jobordertype', {
   joborder_types_status: joborderTypeStatusEnum(
     'joborder_types_status',
   ).notNull(),
+  fee: integer('fee'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -632,9 +633,7 @@ export const remarktickets = pgTable('remarktickets', {
 export const reserve = pgTable('reserve', {
   reserve_id: serial('reserve_id').primaryKey(),
   service_id: integer('service_id').references(() => service.service_id),
-  sales_item_id: integer('sales_item_id').references(
-    () => sales_items.sales_items_id,
-  ),
+  items_id: integer('item_id').references(() => item.item_id),
   reserve_status: reserveStatusEnum('reserve_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

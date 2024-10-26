@@ -6,7 +6,7 @@ import {
   service,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { CreateJobOrder } from './joborder.model';
+import { CreateJobOrder, UpdateJobOrder } from './joborder.model';
 
 export class JobOrderService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -67,7 +67,7 @@ export class JobOrderService {
       .from(jobOrder)
       .leftJoin(
         jobordertype,
-        eq(jobOrder.joborder_type_id, jobOrder.job_order_id),
+        eq(jobordertype.joborder_type_id, jobOrder.joborder_type_id),
       )
       .leftJoin(service, eq(service.service_id, jobOrder.service_id))
       .where(and(...conditions))
@@ -78,8 +78,8 @@ export class JobOrderService {
       .offset(offset);
 
     const joborderitemWithDetails = result.map((row) => ({
-      jobOrder: row.joborder.job_order_id,
-      jobordertype: {
+      joborder_id: row.joborder.job_order_id,
+      joborder_type: {
         joborder_type_id: row.jobordertype?.joborder_type_id,
         name: row.jobordertype?.name,
         description: row.jobordertype?.description,
@@ -118,35 +118,33 @@ export class JobOrderService {
       .from(jobOrder)
       .leftJoin(
         jobordertype,
-        eq(jobOrder.joborder_type_id, jobOrder.job_order_id),
+        eq(jobordertype.joborder_type_id, jobOrder.joborder_type_id),
       )
       .leftJoin(service, eq(service.service_id, jobOrder.service_id))
       .where(eq(jobOrder.job_order_id, Number(job_order_id)));
     const joborderitemWithDetails = result.map((row) => ({
-      jobOrder: {
-        jobOrder: row.joborder.job_order_id,
-        jobordertype: {
-          joborder_type_id: row.jobordertype?.joborder_type_id,
-          name: row.jobordertype?.name,
-          description: row.jobordertype?.description,
-          joborder_types_status: row.jobordertype?.joborder_types_status,
-          created_at: row.jobordertype?.created_at,
-          last_updated: row.jobordertype?.last_updated,
-          deleted_at: row.jobordertype?.deleted_at,
-        },
-        service: {
-          service_id: row.service?.service_id,
-          service_title: row.service?.service_title,
-          service_description: row.service?.service_description,
-          service_status: row.service?.service_status,
-          has_reservation: row.service?.has_reservation,
-          has_sales_item: row.service?.has_sales_item,
-          has_borrow: row.service?.has_borrow,
-          has_job_order: row.service?.has_job_order,
-          created_at: row.service?.created_at,
-          last_updated: row.service?.last_updated,
-          deleted_at: row.service?.deleted_at,
-        },
+      joborder_id: row.joborder.job_order_id,
+      joborder_type: {
+        joborder_type_id: row.jobordertype?.joborder_type_id,
+        name: row.jobordertype?.name,
+        description: row.jobordertype?.description,
+        joborder_types_status: row.jobordertype?.joborder_types_status,
+        created_at: row.jobordertype?.created_at,
+        last_updated: row.jobordertype?.last_updated,
+        deleted_at: row.jobordertype?.deleted_at,
+      },
+      service: {
+        service_id: row.service?.service_id,
+        service_title: row.service?.service_title,
+        service_description: row.service?.service_description,
+        service_status: row.service?.service_status,
+        has_reservation: row.service?.has_reservation,
+        has_sales_item: row.service?.has_sales_item,
+        has_borrow: row.service?.has_borrow,
+        has_job_order: row.service?.has_job_order,
+        created_at: row.service?.created_at,
+        last_updated: row.service?.last_updated,
+        deleted_at: row.service?.deleted_at,
       },
       uuid: row.joborder?.uuid,
       fee: row.joborder?.fee,
@@ -159,7 +157,7 @@ export class JobOrderService {
     return joborderitemWithDetails;
   }
 
-  async updateJobOrder(data: object, paramsId: number) {
+  async updateJobOrder(data: UpdateJobOrder, paramsId: number) {
     await this.db
       .update(jobOrder)
       .set(data)

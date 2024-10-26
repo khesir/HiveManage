@@ -398,6 +398,7 @@ CREATE TABLE IF NOT EXISTS "jobordertype" (
 	"name" varchar(255),
 	"description" varchar(255),
 	"joborder_types_status" "joborderTypeStatusEnum" NOT NULL,
+	"fee" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -603,7 +604,7 @@ CREATE TABLE IF NOT EXISTS "reports" (
 CREATE TABLE IF NOT EXISTS "reserve" (
 	"reserve_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
-	"sales_item_id" integer,
+	"item_id" integer,
 	"reserve_status" "reserveStatusEnum" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -943,7 +944,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "reserve" ADD CONSTRAINT "reserve_sales_item_id_sales_items_sales_item_id_fk" FOREIGN KEY ("sales_item_id") REFERENCES "public"."sales_items"("sales_item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "reserve" ADD CONSTRAINT "reserve_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

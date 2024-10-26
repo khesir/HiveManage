@@ -981,8 +981,9 @@ async function seedJobOrderTypes(db: PostgresJsDatabase<SchemaType>) {
   ];
 
   const jobordertypesRecords = Array.from({ length: 70 }).map(() => ({
-    name: faker.person.fullName(),
+    name: faker.company.catchPhrase(),
     description: faker.lorem.sentence(),
+    fee: faker.number.int({ min: 50, max: 1000 }),
     joborder_types_status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),

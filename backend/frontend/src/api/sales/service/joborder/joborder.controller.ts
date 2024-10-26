@@ -48,7 +48,7 @@ export class JobOrderController {
       const data = await this.joborderService.getJobOrderById(
         Number(job_order_id),
       );
-      res.status(200).json({ status: 'Success', message: data });
+      res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -59,7 +59,8 @@ export class JobOrderController {
 
   async createJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const { joborder_type_id, service_id, uuid, fee, status } = req.body;
+      const service_id = Number(req.params.service_id);
+      const { joborder_type_id, uuid, fee, status } = req.body;
 
       await this.joborderService.createJobOrder({
         joborder_type_id,
@@ -85,7 +86,8 @@ export class JobOrderController {
   async updateJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { job_order_id } = req.params;
-      const { joborder_type_id, service_id, uuid, fee, status } = req.body;
+      const service_id = Number(req.params.service_id);
+      const { joborder_type_id, uuid, fee, status } = req.body;
 
       await this.joborderService.updateJobOrder(
         { joborder_type_id, service_id, uuid, fee, status },

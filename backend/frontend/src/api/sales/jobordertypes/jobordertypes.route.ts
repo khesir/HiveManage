@@ -26,7 +26,7 @@ jobordertypesRoute.get(
 log.info('GET /jobordertypes/:joborder_type_id set');
 
 jobordertypesRoute.patch(
-  '/',
+  '/:joborder_type_id',
   [validateRequest({ body: CreateJobOrderTypes })],
   jobordertypesController.createJobOrderTypes.bind(jobordertypesController),
 );

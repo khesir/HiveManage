@@ -102,7 +102,7 @@ export class ServicesService {
       .where(eq(service.service_id, Number(service_id)));
 
     const serviceWithDetails = result.map((row) => ({
-      service_id: row.service,
+      service_id: row.service.service_id,
       employee: {
         employee_id: row.employee?.employee_id,
         firstname: row.employee?.firstname,

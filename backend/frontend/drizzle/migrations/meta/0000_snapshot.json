@@ -1,5 +1,5 @@
 {
-  "id": "6719f327-fd08-4627-8007-0af66aeab619",
+  "id": "c26305b8-e12b-4b4e-9230-e329abdbf1fa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1619,6 +1619,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "fee": {
+          "name": "fee",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -3082,8 +3088,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "sales_item_id": {
-          "name": "sales_item_id",
+        "item_id": {
+          "name": "item_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -3131,15 +3137,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "reserve_sales_item_id_sales_items_sales_item_id_fk": {
-          "name": "reserve_sales_item_id_sales_items_sales_item_id_fk",
+        "reserve_item_id_item_item_id_fk": {
+          "name": "reserve_item_id_item_item_id_fk",
           "tableFrom": "reserve",
-          "tableTo": "sales_items",
+          "tableTo": "item",
           "columnsFrom": [
-            "sales_item_id"
+            "item_id"
           ],
           "columnsTo": [
-            "sales_item_id"
+            "item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
