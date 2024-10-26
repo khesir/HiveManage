@@ -1,5 +1,5 @@
 {
-  "id": "c26305b8-e12b-4b4e-9230-e329abdbf1fa",
+  "id": "6206ff9c-f031-4598-8351-9ef6bc4420d7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2882,6 +2882,156 @@
           ],
           "columnsTo": [
             "payment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.remarkitems": {
+      "name": "remarkitems",
+      "schema": "",
+      "columns": {
+        "remark_items_id": {
+          "name": "remark_items_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sales_items_id": {
+          "name": "sales_items_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "remark_id": {
+          "name": "remark_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "remarkitems_sales_items_id_sales_items_sales_item_id_fk": {
+          "name": "remarkitems_sales_items_id_sales_items_sales_item_id_fk",
+          "tableFrom": "remarkitems",
+          "tableTo": "sales_items",
+          "columnsFrom": [
+            "sales_items_id"
+          ],
+          "columnsTo": [
+            "sales_item_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "remarkitems_remark_id_remarktickets_remark_id_fk": {
+          "name": "remarkitems_remark_id_remarktickets_remark_id_fk",
+          "tableFrom": "remarkitems",
+          "tableTo": "remarktickets",
+          "columnsFrom": [
+            "remark_id"
+          ],
+          "columnsTo": [
+            "remark_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.remarkreports": {
+      "name": "remarkreports",
+      "schema": "",
+      "columns": {
+        "remark_reports_id": {
+          "name": "remark_reports_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "reports_id": {
+          "name": "reports_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "remark_id": {
+          "name": "remark_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "remarkreports_reports_id_reports_reports_id_fk": {
+          "name": "remarkreports_reports_id_reports_reports_id_fk",
+          "tableFrom": "remarkreports",
+          "tableTo": "reports",
+          "columnsFrom": [
+            "reports_id"
+          ],
+          "columnsTo": [
+            "reports_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "remarkreports_remark_id_remarktickets_remark_id_fk": {
+          "name": "remarkreports_remark_id_remarktickets_remark_id_fk",
+          "tableFrom": "remarkreports",
+          "tableTo": "remarktickets",
+          "columnsFrom": [
+            "remark_id"
+          ],
+          "columnsTo": [
+            "remark_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

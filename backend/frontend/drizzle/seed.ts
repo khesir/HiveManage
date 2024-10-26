@@ -46,6 +46,8 @@ import {
   product_attachment,
   orderItem,
   SchemaType,
+  remarkitems,
+  remarkreports,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -911,6 +913,38 @@ async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
   log.info('Remark Tickets seeded successfully');
 }
 
+async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
+  const salesItemIDs = await db.select().from(sales_items);
+  const remarksIDs = await db.select().from(remarktickets);
+
+  const remarkitemsRecords = Array.from({ length: 70 }).map(() => ({
+    sales_items_id: faker.helpers.arrayElement(salesItemIDs).sales_items_id,
+    remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(remarkitems).values(remarkitemsRecords);
+
+  log.info('Remark Items seeded successfully');
+}
+
+async function seedRemarkReports(db: PostgresJsDatabase<SchemaType>) {
+  const reportIDs = await db.select().from(reports);
+  const remarkIDs = await db.select().from(remarktickets);
+
+  const remarkreportsRecords = Array.from({ length: 70 }).map(() => ({
+    reports_id: faker.helpers.arrayElement(reportIDs).reports_id,
+    remark_id: faker.helpers.arrayElement(remarkIDs).remark_id,
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(remarkreports).values(remarkreportsRecords);
+
+  log.info('Remark Reports seeded successfully');
+}
+
 //  =======================================================================================
 // =================================== JOB ORDER ==========================================
 
@@ -1219,7 +1253,9 @@ async function main() {
 
     // Pass employee IDs to seedRemarkTickets
     await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    await seedRemarkItems(db);
     await seedReports(db); // Make sure this also properly references customer IDs
+    await seedRemarkReports(db);
 
     await seedAssignedEmployees(db);
   } catch (error) {
