@@ -1,7 +1,7 @@
 import {Separator} from '@/components/ui/separator';
 import {Heading} from '@/components/ui/heading';
 import {useSearchParams} from 'react-router-dom';
-import ServiceList from '../../sales/salesList/service_list';
+import ServiceList from '../../sales/service_list';
 
 export default function ServiceListSection() {
 	const [searchParams] = useSearchParams();

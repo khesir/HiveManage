@@ -18,7 +18,6 @@ import {
 	AssignEmployeeWithDetails,
 	RemarkTicketWithDetails,
 } from '@/lib/sales-zod-schema';
-import items from '@/modules/inventory/items';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {Badge, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
@@ -91,7 +90,7 @@ export function TaskListOverview() {
 		setPageLimit(newLimit);
 	};
 
-	if (items.length === 0) {
+	if (remarkTickets.length === 0) {
 		return (
 			<Card className="relative w-full h-[100px] overflow-hidden">
 				<CardTitle className="h-full font-semibold text-lg flex items-center justify-center cursor-pointer">

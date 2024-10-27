@@ -1,4 +1,4 @@
-import useCustomerFormStore from '@/components/hooks/use-customer-form';
+import useCustomerFormStore from '@/modules/sales/customer/hooks/use-customer-form';
 import {Button} from '@/components/ui/button';
 import {
 	Card,

@@ -8,13 +8,7 @@ import {
 	Row,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {
-	Link,
-	useLocation,
-	useNavigate,
-	useSearchParams,
-} from 'react-router-dom';
-import {Input} from '@/components/ui/input';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -31,17 +25,16 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Button, buttonVariants} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {cn} from '@/lib/util/utils';
-import {Customer} from '@/lib/cms-zod-schema';
 import useCustomerFormStore from '@/modules/sales/customer/hooks/use-customer-form';
+import {StockLogsWithDetails} from '@/lib/inventory-zod-schema';
+import useStockLogsWithDetailsFormStore from './hooks/use-stock-logs';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	searchKey: string;
 	pageSizeOptions?: number[];
 	pageCount: number;
 	searchParams?: {
@@ -49,10 +42,9 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function CustomerTable<TData extends Customer, TValue>({
+export function StockLogsTable<TData extends StockLogsWithDetails, TValue>({
 	columns,
 	data,
-	searchKey,
 	pageCount,
 	pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
@@ -117,9 +109,6 @@ export function CustomerTable<TData extends Customer, TValue>({
 		manualPagination: true,
 		manualFiltering: true,
 	});
-
-	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
-
 	// Debounced search value to avoid triggering requests too frequently
 	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
 	// console.log(debouncedSearchValue);
@@ -165,38 +154,22 @@ export function CustomerTable<TData extends Customer, TValue>({
 	// Set the first employee data to Zustand on initial render
 	useEffect(() => {
 		if (data.length > 0) {
-			const customer: Customer = data[0];
-			useCustomerFormStore.getState().setCustomerFormData(customer);
+			const customer: StockLogsWithDetails = data[0];
+			useStockLogsWithDetailsFormStore.getState().setStockLogs(customer);
 		}
 	}, [data]);
 
 	// This handles the employee viewing by click
 	const handleRowClick = (row: Row<TData>) => {
 		// Access the data of the clicked row
-		const rowData: Customer = row.original;
+		const rowData: StockLogsWithDetails = row.original;
 
 		// Do something with the row data
-		useCustomerFormStore.getState().setCustomerFormData(rowData);
+		useStockLogsWithDetailsFormStore.getState().setStockLogs(rowData);
 	};
 
 	return (
 		<>
-			<div className="flex justify-between gap-3 md:gap-0">
-				<Input
-					placeholder={`Find Customer...`}
-					value={searchValue ?? ''} // Bind the input value to the current filter value
-					onChange={(event) =>
-						table.getColumn(searchKey)?.setFilterValue(event.target.value)
-					} // Update filter value}
-					className="w-full md:max-w-sm"
-				/>
-				<Link
-					to={'create'}
-					className={cn(buttonVariants({variant: 'default'}))}
-				>
-					<Plus className="mr-2 h-4 w-4" /> Add New
-				</Link>
-			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>

@@ -1,4 +1,4 @@
-import useCustomerFormStore from '@/components/hooks/use-customer-form';
+import useCustomerFormStore from '@/modules/sales/customer/hooks/use-customer-form';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 
 import {Separator} from '@/components/ui/separator';

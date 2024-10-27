@@ -30,10 +30,12 @@ import CustomerViewPage from './pages/sales/systems/customer/customer-view-page'
 import TechOverview from './pages/tech/systems/overview/overview-page';
 import Settings from './pages/general/settings';
 import Terminal from './pages/general/terminal';
-import ChatSystem from './pages/chat/chat';
+import ChatSystem from './modules/chat/chat';
 import InquiryPage from './pages/sales/systems/inquiry';
 import JoborderListsPage from './pages/tech/systems/service/joborder-page';
 import JoborderViewPage from './pages/tech/systems/service/joborder/view-page';
+import InventoryOverview from './pages/inventory/overview/admin-overview';
+import ItemPage from './pages/inventory/items/items-page';
 
 function App() {
 	return (
@@ -81,10 +83,9 @@ function App() {
 					</Route>
 
 					<Route path="inventory">
-						<Route path="overview" />
-						<Route path="items" />
+						<Route path="overview" element={<InventoryOverview />} />
+						<Route path="items" element={<ItemPage />} />
 						<Route path="orders" />
-						<Route path="stock-logs" />
 					</Route>
 				</Route>
 
