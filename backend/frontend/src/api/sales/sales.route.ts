@@ -4,6 +4,7 @@ import serviceRoute from './service/serviceses.route';
 import jobordertypesRoute from './jobordertypes/jobordertypes.route';
 import joborderRoute from './service/joborder/joborder.route';
 import assignedEmployeeRoute from './service/joborder/assignedemployees/assignedemployees.route';
+import remarktypesRoute from './remarktype/remarktype.route';
 
 const smsRoute = Router({ mergeParams: true });
 
@@ -19,10 +20,14 @@ log.info('ROUTE service set');
 
 // Soon Change to JoborderAssign
 smsRoute.use('/assigned-employee', assignedEmployeeRoute);
+log.info('ROUTE assigned-employee set');
 // put 3 services here for get all endpoint
 // Reserve
 // Borrow
 // Job order
+// Remark Type
+smsRoute.use('/remarktype', remarktypesRoute);
+log.info('ROUTE remarktype set');
 
 // Purpose: for table
 export default smsRoute;

@@ -13,7 +13,6 @@ export class RemarkTicketsController {
 
   async getAllRemarkTickets(req: Request, res: Response, next: NextFunction) {
     const joborder_id = req.params.job_order_id as string;
-    const remark_type = (req.query.remark_type as string) || undefined;
     const remarktickets_status =
       (req.query.remarktickets_status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
@@ -23,7 +22,6 @@ export class RemarkTicketsController {
     try {
       const data = await this.remarkticketService.getAllRemarkTickets(
         joborder_id,
-        remark_type,
         remarktickets_status,
         sort,
         limit,
@@ -35,7 +33,7 @@ export class RemarkTicketsController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.RemarkTicketsDetails,
+        data: data.remarkticketitemWithDetails,
       });
     } catch (error) {
       res
@@ -62,19 +60,23 @@ export class RemarkTicketsController {
   async createRemarkTickets(req: Request, res: Response, next: NextFunction) {
     try {
       const {
+        remark_type_id,
         job_order_id,
-        created_by,
-        remark_type,
         description,
+        content,
         remarktickets_status,
+        created_by,
+        deadline,
       } = req.body;
 
       await this.remarkticketService.createRemarkTickets({
+        remark_type_id,
         job_order_id,
-        created_by,
-        remark_type,
         description,
+        content,
         remarktickets_status,
+        created_by,
+        deadline,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -95,20 +97,24 @@ export class RemarkTicketsController {
     try {
       const { remark_id } = req.params;
       const {
+        remark_type_id,
         job_order_id,
-        created_by,
-        remark_type,
         description,
+        content,
         remarktickets_status,
+        created_by,
+        deadline,
       } = req.body;
 
       await this.remarkticketService.updateRemarkTickets(
         {
+          remark_type_id,
           job_order_id,
-          created_by,
-          remark_type,
           description,
+          content,
           remarktickets_status,
+          created_by,
+          deadline,
         },
         Number(remark_id),
       );

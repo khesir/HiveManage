@@ -1,17 +1,10 @@
 import { z } from 'zod';
 
 export const CreateRemarkTickets = z.object({
+  remark_type_id: z.number().min(1),
   job_order_id: z.number().min(1),
-  created_by: z.number().min(1),
-  remark_type: z.enum([
-    'General',
-    'Urgent',
-    'Follow-up',
-    'Resolved',
-    'On-Hold',
-    'Information',
-  ]),
   description: z.string().min(1),
+  content: z.string().min(1),
   remarktickets_status: z.enum([
     'Resolved',
     'Pending',
@@ -20,28 +13,25 @@ export const CreateRemarkTickets = z.object({
     'Closed',
     'Open',
   ]), // Updated to match expected values
+  created_by: z.number().min(1),
+  deadline: z.date(),
 });
 
 export const UpdateRemarkTickets = z.object({
+  remark_type_id: z.number().min(1),
   job_order_id: z.number().min(1),
-  created_by: z.number().min(1),
-  remark_type: z.enum([
-    'General',
-    'Urgent',
-    'Follow-up',
-    'Resolved',
-    'On-Hold',
-    'Information',
-  ]),
   description: z.string().min(1),
+  content: z.string().min(1),
   remarktickets_status: z.enum([
-    'General',
-    'Urgent',
-    'Follow-up', // Updated to match the seed data
     'Resolved',
-    'On-Hold',
-    'Information',
-  ]),
+    'Pending',
+    'In Progress',
+    'Rejected',
+    'Closed',
+    'Open',
+  ]), // Updated to match expected values
+  created_by: z.number().min(1),
+  deadline: z.date(),
 });
 
 export type CreateRemarkTickets = z.infer<typeof CreateRemarkTickets>;

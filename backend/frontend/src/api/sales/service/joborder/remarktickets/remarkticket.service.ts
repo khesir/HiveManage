@@ -1,8 +1,12 @@
-import { jobOrder, remarktickets, SchemaType } from '@/drizzle/drizzle.schema';
+import {
+  jobOrder,
+  remarktickets,
+  remarktype,
+  SchemaType,
+} from '@/drizzle/drizzle.schema';
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateRemarkTickets } from './remarkticket.model';
-import z from 'zod/lib';
 
 export class RemarkTicketsService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -11,43 +15,18 @@ export class RemarkTicketsService {
     this.db = db;
   }
 
-  async createRemarkTickets(data: z.infer<typeof CreateRemarkTickets>) {
+  async createRemarkTickets(data: CreateRemarkTickets) {
     await this.db.insert(remarktickets).values(data);
   }
 
   async getAllRemarkTickets(
     joborder_id: string | undefined,
-    remark_type: string | undefined,
     remarktickets_status: string | undefined,
     sort: string,
     limit: number,
     offset: number,
   ) {
     const conditions = [isNull(remarktickets.deleted_at)];
-
-    if (remark_type) {
-      // Define valid statuses as a string union type
-      const validStatuses = [
-        'General',
-        'Urgent',
-        'Follow-up', // Updated to match the seed data
-        'Resolved',
-        'On-Hold',
-        'Information',
-      ] as const; // 'as const' infers a readonly tuple of strings
-      if (
-        validStatuses.includes(remark_type as (typeof validStatuses)[number])
-      ) {
-        conditions.push(
-          eq(
-            remarktickets.remark_type,
-            remark_type as (typeof validStatuses)[number],
-          ),
-        );
-      } else {
-        throw new Error(`Invalid payment status: ${remark_type}`);
-      }
-    }
 
     if (remarktickets_status) {
       // Define valid statuses as a string union type
@@ -77,8 +56,11 @@ export class RemarkTicketsService {
     if (joborder_id) {
       conditions.push(eq(remarktickets.job_order_id, Number(joborder_id)));
     }
+
     const totalCountQuery = await this.db
-      .select({ count: sql<number>`COUNT(*)` })
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
       .from(remarktickets)
       .where(and(...conditions));
 
@@ -87,7 +69,11 @@ export class RemarkTicketsService {
     const result = await this.db
       .select()
       .from(remarktickets)
-      .leftJoin(jobOrder, eq(remarktickets.job_order_id, jobOrder.job_order_id))
+      .leftJoin(
+        remarktype,
+        eq(remarktype.remark_type_id, remarktickets.remark_type_id),
+      )
+      .leftJoin(jobOrder, eq(jobOrder.job_order_id, remarktickets.job_order_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -97,8 +83,16 @@ export class RemarkTicketsService {
       .limit(limit)
       .offset(offset);
 
-    const RemarkTicketsDetails = result.map((row) => ({
+    const remarkticketitemWithDetails = result.map((row) => ({
       remark_id: row.remarktickets.remark_id,
+      remarktype: {
+        remark_type_id: row.remarktype?.remark_type_id,
+        name: row.remarktype?.name,
+        description: row.remarktype?.description,
+        created_at: row.remarktype?.created_at,
+        last_updated: row.remarktype?.last_updated,
+        deleted_at: row.remarktype?.deleted_at,
+      },
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
         joborder_type_id: row.joborder?.joborder_type_id,
@@ -110,27 +104,40 @@ export class RemarkTicketsService {
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,
       },
-      created_by: row.remarktickets.created_by,
-      remark_type: row.remarktickets.remark_type,
-      description: row.remarktickets.description,
-      remarktickets_status: row.remarktickets.remarktickets_status,
-      created_at: row.remarktickets.created_at,
-      last_updated: row.remarktickets.last_updated,
-      deleted_at: row.remarktickets.deleted_at,
+      description: row.remarktickets?.description,
+      content: row.remarktickets?.content,
+      remarkticket_status: row.remarktickets?.remarktickets_status,
+      created_by: row.remarktickets?.created_by,
+      deadline: row.remarktickets?.deadline,
+      created_at: row.remarktickets?.created_at,
+      last_updated: row.remarktickets?.last_updated,
+      deleted_at: row.remarktickets?.deleted_at,
     }));
 
-    return { totalData, RemarkTicketsDetails };
+    return { totalData, remarkticketitemWithDetails };
   }
 
   async getRemarkTicketsByID(remark_id: string) {
     const result = await this.db
       .select()
       .from(remarktickets)
-      .leftJoin(jobOrder, eq(remarktickets.job_order_id, jobOrder.job_order_id))
+      .leftJoin(
+        remarktype,
+        eq(remarktype.remark_type_id, remarktickets.remark_type_id),
+      )
+      .leftJoin(jobOrder, eq(jobOrder.job_order_id, remarktickets.job_order_id))
       .where(eq(remarktickets.remark_id, Number(remark_id)));
 
-    const RemarkTicketsDetails = result.map((row) => ({
+    const remarkticketitemWithDetails = result.map((row) => ({
       remark_id: row.remarktickets.remark_id,
+      remarktype: {
+        remark_type_id: row.remarktype?.remark_type_id,
+        name: row.remarktype?.name,
+        description: row.remarktype?.description,
+        created_at: row.remarktype?.created_at,
+        last_updated: row.remarktype?.last_updated,
+        deleted_at: row.remarktype?.deleted_at,
+      },
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
         joborder_type_id: row.joborder?.joborder_type_id,
@@ -142,16 +149,17 @@ export class RemarkTicketsService {
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,
       },
-      created_by: row.remarktickets.created_by,
-      remark_type: row.remarktickets.remark_type,
-      description: row.remarktickets.description,
-      remarktickets_status: row.remarktickets.remarktickets_status,
-      created_at: row.remarktickets.created_at,
-      last_updated: row.remarktickets.last_updated,
-      deleted_at: row.remarktickets.deleted_at,
+      description: row.remarktickets?.description,
+      content: row.remarktickets?.content,
+      remarkticket_status: row.remarktickets?.remarktickets_status,
+      created_by: row.remarktickets?.created_by,
+      deadline: row.remarktickets?.deadline,
+      created_at: row.remarktickets?.created_at,
+      last_updated: row.remarktickets?.last_updated,
+      deleted_at: row.remarktickets?.deleted_at,
     }));
 
-    return RemarkTicketsDetails;
+    return remarkticketitemWithDetails;
   }
 
   async updateRemarkTickets(data: object, paramsId: number) {

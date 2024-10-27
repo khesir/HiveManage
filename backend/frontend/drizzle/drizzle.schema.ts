@@ -150,15 +150,6 @@ export const genderEnum = pgEnum('gender', ['Male', 'Female', 'Others']);
 
 export const TagItemEnu = pgEnum('tag_item', ['New', 'Used', 'Broken']);
 
-export const remarkTypeEnum = pgEnum('remark_type_enum', [
-  'General',
-  'Urgent',
-  'Follow-up', // Updated to match the seed data
-  'Resolved',
-  'On-Hold',
-  'Information',
-]);
-
 export const remarktickets_status = pgEnum('remarktickets_status', [
   'Open',
   'In Progress',
@@ -210,11 +201,27 @@ export const TagItemEnum = pgEnum('tag_item', ['New', 'Used', 'Broken']);
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
+  employee_role_id: integer('employee_role_id').references(
+    () => employee_role.employee_role_id,
+  ),
   firstname: varchar('firstname', { length: 255 }),
   middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
   email: varchar('email', { length: 255 }),
   status: varchar('status', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+// Employee Role
+export const employee_role = pgTable('employee_role', {
+  employee_role_id: serial('employee_role_id').primaryKey(),
+  name: varchar('name', { length: 255 }),
+  access_level: integer('access_level'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -614,11 +621,15 @@ export const assignedemployees = pgTable('assignedemployees', {
 //Remark Tickets
 export const remarktickets = pgTable('remarktickets', {
   remark_id: serial('remark_id').primaryKey(),
+  remark_type_id: integer('remark_type_id').references(
+    () => remarktype.remark_type_id,
+  ),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
-  created_by: integer('created_by').references(() => employee.employee_id),
-  remark_type: remarkTypeEnum('remark_type').notNull(),
   description: varchar('description', { length: 255 }),
+  content: varchar('content', { length: 255 }),
   remarktickets_status: remarktickets_status('remarktickets_status').notNull(),
+  created_by: integer('created_by').references(() => employee.employee_id),
+  deadline: timestamp('deadline').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -647,6 +658,44 @@ export const remarkreports = pgTable('remarkreports', {
   remark_reports_id: serial('remark_reports_id').primaryKey(),
   reports_id: integer('reports_id').references(() => reports.reports_id),
   remark_id: integer('remark_id').references(() => remarktickets.remark_id),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Remark Type
+export const remarktype = pgTable('remarktype', {
+  remark_type_id: serial('remark_type_id').primaryKey(),
+  name: varchar('name', { length: 255 }),
+  description: varchar('description', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Remark Assigned
+export const remarkassigned = pgTable('remarkassigned', {
+  remarkassigned_id: serial('remarkassigned_id').primaryKey(),
+  remark_id: integer('remark_id').references(() => remarktickets.remark_id),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Remark Content
+export const remarkcontent = pgTable('remarkcontent', {
+  remarkcontent_id: serial('remarkcontent_id').primaryKey(),
+  markdown: varchar('markdown'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -979,6 +1028,7 @@ export type SchemaType = {
 export const schema: SchemaType = {
   // EMS
   employee,
+  employee_role,
   personalInformation,
   financialInformation,
   salaryInformation,
@@ -1011,6 +1061,11 @@ export const schema: SchemaType = {
   jobordertype,
   assignedemployees,
   remarktickets,
+  remarktype,
+  remarkitems,
+  remarkreports,
+  remarkassigned,
+  remarkcontent,
 
   //Services
   reserve,
