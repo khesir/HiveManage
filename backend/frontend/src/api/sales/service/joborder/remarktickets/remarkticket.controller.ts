@@ -12,6 +12,7 @@ export class RemarkTicketsController {
   }
 
   async getAllRemarkTickets(req: Request, res: Response, next: NextFunction) {
+    const joborder_id = req.params.job_order_id as string;
     const remark_type = (req.query.remark_type as string) || undefined;
     const remarktickets_status =
       (req.query.remarktickets_status as string) || undefined;
@@ -21,6 +22,7 @@ export class RemarkTicketsController {
 
     try {
       const data = await this.remarkticketService.getAllRemarkTickets(
+        joborder_id,
         remark_type,
         remarktickets_status,
         sort,

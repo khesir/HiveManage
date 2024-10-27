@@ -13,7 +13,7 @@ export class JobOrderController {
 
   async getAllJobOrder(req: Request, res: Response, next: NextFunction) {
     const service_id = (req.params.service_id as string) || undefined;
-    const status = (req.query.status as string) || undefined;
+    const joborder_status = (req.query.joborder_status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
@@ -21,7 +21,7 @@ export class JobOrderController {
     try {
       const data = await this.joborderService.getAllJobOrder(
         service_id,
-        status,
+        joborder_status,
         sort,
         limit,
         offset,
@@ -60,14 +60,14 @@ export class JobOrderController {
   async createJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const service_id = Number(req.params.service_id);
-      const { joborder_type_id, uuid, fee, status } = req.body;
+      const { joborder_type_id, uuid, fee, joborder_status } = req.body;
 
       await this.joborderService.createJobOrder({
         joborder_type_id,
         service_id,
         uuid,
         fee,
-        status,
+        joborder_status,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -87,10 +87,10 @@ export class JobOrderController {
     try {
       const { job_order_id } = req.params;
       const service_id = Number(req.params.service_id);
-      const { joborder_type_id, uuid, fee, status } = req.body;
+      const { joborder_type_id, uuid, fee, joborder_status } = req.body;
 
       await this.joborderService.updateJobOrder(
-        { joborder_type_id, service_id, uuid, fee, status },
+        { joborder_type_id, service_id, uuid, fee, joborder_status },
         Number(job_order_id),
       );
       res.status(HttpStatus.OK.code).json({

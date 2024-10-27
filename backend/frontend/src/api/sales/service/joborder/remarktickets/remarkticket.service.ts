@@ -16,6 +16,7 @@ export class RemarkTicketsService {
   }
 
   async getAllRemarkTickets(
+    joborder_id: string | undefined,
     remark_type: string | undefined,
     remarktickets_status: string | undefined,
     sort: string,
@@ -73,7 +74,9 @@ export class RemarkTicketsService {
         throw new Error(`Invalid payment status: ${remarktickets_status}`);
       }
     }
-
+    if (joborder_id) {
+      conditions.push(eq(remarktickets.job_order_id, Number(joborder_id)));
+    }
     const totalCountQuery = await this.db
       .select({ count: sql<number>`COUNT(*)` })
       .from(remarktickets)
@@ -102,7 +105,7 @@ export class RemarkTicketsService {
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,
-        status: row.joborder?.status,
+        joborder_status: row.joborder?.joborder_status,
         created_at: row.joborder?.created_at,
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,
@@ -134,7 +137,7 @@ export class RemarkTicketsService {
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,
-        status: row.joborder?.status,
+        joborder_status: row.joborder?.joborder_status,
         created_at: row.joborder?.created_at,
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,

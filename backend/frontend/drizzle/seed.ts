@@ -980,7 +980,7 @@ async function seedJobOrder(db: PostgresJsDatabase<SchemaType>) {
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
     uuid: faker.string.uuid(),
     fee: faker.number.int({ min: 1, max: 100 }),
-    status: faker.helpers.arrayElement(statuses),
+    joborder_status: faker.helpers.arrayElement(statuses),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));

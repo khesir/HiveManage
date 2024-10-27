@@ -6,6 +6,7 @@ import {
 } from '@/drizzle/drizzle.schema';
 import { and, eq, isNull } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { CreateAssignedEmployees } from './assignedemployees.model';
 
 export class AssignedEmployeeService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -14,11 +15,21 @@ export class AssignedEmployeeService {
     this.db = db;
   }
 
-  async createAssignedEmployees(data: object) {
+  async createAssignedEmployees(data: CreateAssignedEmployees) {
     await this.db.insert(assignedemployees).values(data);
   }
 
-  async getAllAssignedEmployee(job_order_id: string) {
+  async getAllAssignedEmployee(
+    job_order_id: string | undefined,
+    employee_id: string | undefined,
+  ) {
+    const conditions = [isNull(assignedemployees.deleted_at)];
+    if (job_order_id) {
+      conditions.push(eq(assignedemployees.job_order_id, Number(job_order_id)));
+    }
+    if (employee_id) {
+      conditions.push(eq(assignedemployees.employee_id, Number(employee_id)));
+    }
     const result = await this.db
       .select()
       .from(assignedemployees)
@@ -26,12 +37,7 @@ export class AssignedEmployeeService {
         employee,
         eq(assignedemployees.employee_id, employee.employee_id),
       )
-      .where(
-        and(
-          eq(assignedemployees.job_order_id, Number(job_order_id)),
-          isNull(assignedemployees.deleted_at),
-        ),
-      );
+      .where(and(...conditions));
 
     const assignedEmployeeDetails = result.map((row) => ({
       assigned_employee_id: row.assignedemployees.assigned_employee_id,

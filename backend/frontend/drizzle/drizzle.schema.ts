@@ -556,7 +556,7 @@ export const jobOrder = pgTable('joborder', {
   service_id: integer('service_id').references(() => service.service_id),
   uuid: varchar('uuid', { length: 255 }),
   fee: integer('fee'),
-  status: jobOrderStatusEnum('joborder_status').notNull(),
+  joborder_status: jobOrderStatusEnum('joborder_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

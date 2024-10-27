@@ -5,7 +5,7 @@ export const CreateJobOrder = z.object({
   service_id: z.number().optional(),
   uuid: z.string().min(1),
   fee: z.number().min(1),
-  status: z.enum([
+  joborder_status: z.enum([
     'Pending',
     'In Progress',
     'Completed',
@@ -23,7 +23,7 @@ export const UpdateJobOrder = z.object({
   service_id: z.number().optional(),
   uuid: z.string().min(1),
   fee: z.number().min(1),
-  status: z.enum([
+  joborder_status: z.enum([
     'Pending',
     'In Progress',
     'Completed',

@@ -17,9 +17,12 @@ export class AssignedEmployeeController {
     next: NextFunction,
   ) {
     try {
-      const { job_order_id } = req.params;
-      const data =
-        await this.assignedemployeeService.getAllAssignedEmployee(job_order_id);
+      const { job_order_id } = req.params || undefined;
+      const employee_id = (req.query.employee_id as string) || undefined;
+      const data = await this.assignedemployeeService.getAllAssignedEmployee(
+        job_order_id,
+        employee_id,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         data: data,
@@ -58,7 +61,8 @@ export class AssignedEmployeeController {
     next: NextFunction,
   ) {
     try {
-      const { job_order_id, employee_id, assigned_by } = req.body;
+      const job_order_id = Number(req.params.job_order_id);
+      const { employee_id, assigned_by } = req.body;
 
       await this.assignedemployeeService.createAssignedEmployees({
         job_order_id,

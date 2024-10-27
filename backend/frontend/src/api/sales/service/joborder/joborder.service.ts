@@ -21,14 +21,14 @@ export class JobOrderService {
 
   async getAllJobOrder(
     service_id: string | undefined,
-    status: string | undefined,
+    joborder_status: string | undefined,
     sort: string,
     limit: number,
     offset: number,
   ) {
     const conditions = [isNull(jobOrder.deleted_at)];
 
-    if (status) {
+    if (joborder_status) {
       // Define valid statuses as a string union type
       const validStatuses = [
         'Pending',
@@ -41,9 +41,16 @@ export class JobOrderService {
         'Rejected',
         'Closed',
       ] as const; // 'as const' infers a readonly tuple of strings
-      if (validStatuses.includes(status as (typeof validStatuses)[number])) {
+      if (
+        validStatuses.includes(
+          joborder_status as (typeof validStatuses)[number],
+        )
+      ) {
         conditions.push(
-          eq(jobOrder.status, status as (typeof validStatuses)[number]),
+          eq(
+            jobOrder.joborder_status,
+            joborder_status as (typeof validStatuses)[number],
+          ),
         );
       } else {
         throw new Error(`Invalid payment status: ${status}`);
@@ -103,7 +110,7 @@ export class JobOrderService {
       },
       uuid: row.joborder?.uuid,
       fee: row.joborder?.fee,
-      status: row.joborder?.status,
+      joborder_status: row.joborder?.joborder_status,
       created_at: row.joborder?.created_at,
       last_updated: row.joborder?.last_updated,
       deleted_at: row.joborder?.deleted_at,
@@ -148,7 +155,7 @@ export class JobOrderService {
       },
       uuid: row.joborder?.uuid,
       fee: row.joborder?.fee,
-      status: row.joborder?.status,
+      joborder_status: row.joborder?.joborder_status,
       created_at: row.joborder?.created_at,
       last_updated: row.joborder?.last_updated,
       deleted_at: row.joborder?.deleted_at,
