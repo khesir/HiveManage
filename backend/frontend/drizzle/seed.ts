@@ -48,6 +48,10 @@ import {
   SchemaType,
   remarkitems,
   remarkreports,
+  remarktype,
+  remarkassigned,
+  employee_role,
+  remarkcontent,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -58,7 +62,20 @@ import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
   const employeeStatus: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
+
+  // Fetch employee roles and check if any exist
+  const employeeroleIDs = await db.select().from(employee_role);
+
+  if (employeeroleIDs.length === 0) {
+    throw new Error(
+      "No employee roles found. Seed the 'employee_role' table first.",
+    );
+  }
+
+  // Generate employee data
   const employees = Array.from({ length: 50 }).map(() => ({
+    employee_role_id:
+      faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
     firstname: faker.person.firstName(),
     middlename: faker.person.firstName(),
     lastname: faker.person.lastName(),
@@ -66,8 +83,19 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
     status: faker.helpers.arrayElement(employeeStatus),
   }));
 
+  // Insert into the employee table
   await db.insert(employee).values(employees);
   log.info('Employee records seeded successfully.');
+}
+
+async function seedEmployeesRole(db: PostgresJsDatabase<SchemaType>) {
+  const employeesRole = Array.from({ length: 50 }).map(() => ({
+    name: faker.person.fullName(),
+    access_level: faker.number.int({ min: 1, max: 100 }),
+  }));
+
+  await db.insert(employee_role).values(employeesRole);
+  log.info('Employee Role records seeded successfully.');
 }
 
 async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
@@ -864,29 +892,8 @@ async function seedAssignedEmployees(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
   const jobOrders = await db.select().from(jobOrder);
+  const remarktypeIDs = await db.select().from(remarktype);
   const employeeIDs = await db.select().from(employee);
-
-  // Check if jobOrders array is empty
-  if (jobOrders.length === 0) {
-    log.warn('No job orders found. Skipping remark tickets seeding.');
-    return; // Skip seeding if there are no job orders
-  }
-
-  const remarkTypes: (
-    | 'General'
-    | 'Urgent'
-    | 'Follow-up'
-    | 'Resolved'
-    | 'On-Hold'
-    | 'Information'
-  )[] = [
-    'General',
-    'Urgent',
-    'Follow-up',
-    'Resolved',
-    'On-Hold',
-    'Information',
-  ];
 
   const remark_status: (
     | 'Open'
@@ -900,10 +907,12 @@ async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
   // Ensure to reference job_order_id correctly
   const remarkticketsRecords = Array.from({ length: 70 }).map(() => ({
     job_order_id: faker.helpers.arrayElement(jobOrders).job_order_id, // Accessing job_order_id safely
-    created_by: faker.helpers.arrayElement(employeeIDs).employee_id,
-    remark_type: faker.helpers.arrayElement(remarkTypes),
+    remark_type_id: faker.helpers.arrayElement(remarktypeIDs).remark_type_id,
     description: faker.lorem.sentence(),
+    content: faker.lorem.sentence(),
     remarktickets_status: faker.helpers.arrayElement(remark_status),
+    created_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+    deadline: faker.date.future(),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -943,6 +952,47 @@ async function seedRemarkReports(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(remarkreports).values(remarkreportsRecords);
 
   log.info('Remark Reports seeded successfully');
+}
+
+async function seedRemarkType(db: PostgresJsDatabase<SchemaType>) {
+  const remarktypeRecords = Array.from({ length: 70 }).map(() => ({
+    name: faker.commerce.productName(),
+    description: faker.lorem.sentence(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(remarktype).values(remarktypeRecords);
+
+  log.info('Remark Type seeded successfully');
+}
+
+async function seedRemarkAssigned(db: PostgresJsDatabase<SchemaType>) {
+  const employeeIDs = await db.select().from(employee);
+  const remarkIDs = await db.select().from(remarktickets);
+
+  const remarkassignedRecords = Array.from({ length: 70 }).map(() => ({
+    remark_id: faker.helpers.arrayElement(remarkIDs).remark_id,
+    employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(remarkassigned).values(remarkassignedRecords);
+
+  log.info('Remark Assigned seeded successfully');
+}
+
+async function seedRemarkContent(db: PostgresJsDatabase<SchemaType>) {
+  const remarkcontentRecords = Array.from({ length: 70 }).map(() => ({
+    markdown: faker.lorem.sentences(),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(remarkcontent).values(remarkcontentRecords);
+
+  log.info('Remark Content seeded successfully');
 }
 
 //  =======================================================================================
@@ -1198,6 +1248,7 @@ async function main() {
     await seedDepartments(db);
     await seedDesignations(db);
 
+    await seedEmployeesRole(db);
     await seedEmployees(db); // Capture employee IDs
 
     await seedAuditLogs(db);
@@ -1252,12 +1303,15 @@ async function main() {
     await seedJobOrder(db);
 
     // Pass employee IDs to seedRemarkTickets
+    await seedRemarkType(db);
     await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
     await seedRemarkItems(db);
     await seedReports(db); // Make sure this also properly references customer IDs
     await seedRemarkReports(db);
+    await seedRemarkAssigned(db);
 
     await seedAssignedEmployees(db);
+    await seedRemarkContent(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

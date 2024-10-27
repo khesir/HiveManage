@@ -113,12 +113,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."remark_type_enum" AS ENUM('General', 'Urgent', 'Follow-up', 'Resolved', 'On-Hold', 'Information');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."remarktickets_status" AS ENUM('Open', 'In Progress', 'Resolved', 'Closed', 'Pending', 'Rejected');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -322,11 +316,21 @@ CREATE TABLE IF NOT EXISTS "designation" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "employee" (
 	"employee_id" serial PRIMARY KEY NOT NULL,
+	"employee_role_id" integer,
 	"firstname" varchar(255),
 	"middlename" varchar(255),
 	"lastname" varchar(255),
 	"email" varchar(255),
 	"status" varchar(255),
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "employee_role" (
+	"employee_role_id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(255),
+	"access_level" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -578,6 +582,23 @@ CREATE TABLE IF NOT EXISTS "receipt" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "remarkassigned" (
+	"remarkassigned_id" serial PRIMARY KEY NOT NULL,
+	"remark_id" integer,
+	"employee_id" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "remarkcontent" (
+	"remarkcontent_id" serial PRIMARY KEY NOT NULL,
+	"markdown" varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "remarkitems" (
 	"remark_items_id" serial PRIMARY KEY NOT NULL,
 	"sales_items_id" integer,
@@ -598,11 +619,22 @@ CREATE TABLE IF NOT EXISTS "remarkreports" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "remarktickets" (
 	"remark_id" serial PRIMARY KEY NOT NULL,
+	"remark_type_id" integer,
 	"job_order_id" integer,
-	"created_by" integer,
-	"remark_type" "remark_type_enum" NOT NULL,
 	"description" varchar(255),
+	"content" varchar(255),
 	"remarktickets_status" "remarktickets_status" NOT NULL,
+	"created_by" integer,
+	"deadline" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "remarktype" (
+	"remark_type_id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(255),
+	"description" varchar(255),
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -770,6 +802,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "employee" ADD CONSTRAINT "employee_employee_role_id_employee_role_employee_role_id_fk" FOREIGN KEY ("employee_role_id") REFERENCES "public"."employee_role"("employee_role_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "employment_info" ADD CONSTRAINT "employment_info_department_id_department_department_id_fk" FOREIGN KEY ("department_id") REFERENCES "public"."department"("department_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -932,6 +970,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "remarkassigned" ADD CONSTRAINT "remarkassigned_remark_id_remarktickets_remark_id_fk" FOREIGN KEY ("remark_id") REFERENCES "public"."remarktickets"("remark_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "remarkassigned" ADD CONSTRAINT "remarkassigned_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "remarkitems" ADD CONSTRAINT "remarkitems_sales_items_id_sales_items_sales_item_id_fk" FOREIGN KEY ("sales_items_id") REFERENCES "public"."sales_items"("sales_item_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -951,6 +1001,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "remarkreports" ADD CONSTRAINT "remarkreports_remark_id_remarktickets_remark_id_fk" FOREIGN KEY ("remark_id") REFERENCES "public"."remarktickets"("remark_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "remarktickets" ADD CONSTRAINT "remarktickets_remark_type_id_remarktype_remark_type_id_fk" FOREIGN KEY ("remark_type_id") REFERENCES "public"."remarktype"("remark_type_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

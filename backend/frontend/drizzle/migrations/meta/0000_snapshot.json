@@ -1,5 +1,5 @@
 {
-  "id": "af836f47-b2c6-4bdc-9d59-3cbd74f3c76d",
+  "id": "c948b86f-a3b9-42d4-9726-e2922251737e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1096,6 +1096,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "employee_role_id": {
+          "name": "employee_role_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "firstname": {
           "name": "firstname",
           "type": "varchar(255)",
@@ -1123,6 +1129,68 @@
         "status": {
           "name": "status",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "employee_employee_role_id_employee_role_employee_role_id_fk": {
+          "name": "employee_employee_role_id_employee_role_employee_role_id_fk",
+          "tableFrom": "employee",
+          "tableTo": "employee_role",
+          "columnsFrom": [
+            "employee_role_id"
+          ],
+          "columnsTo": [
+            "employee_role_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.employee_role": {
+      "name": "employee_role",
+      "schema": "",
+      "columns": {
+        "employee_role_id": {
+          "name": "employee_role_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_level": {
+          "name": "access_level",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -2890,6 +2958,123 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.remarkassigned": {
+      "name": "remarkassigned",
+      "schema": "",
+      "columns": {
+        "remarkassigned_id": {
+          "name": "remarkassigned_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "remark_id": {
+          "name": "remark_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "remarkassigned_remark_id_remarktickets_remark_id_fk": {
+          "name": "remarkassigned_remark_id_remarktickets_remark_id_fk",
+          "tableFrom": "remarkassigned",
+          "tableTo": "remarktickets",
+          "columnsFrom": [
+            "remark_id"
+          ],
+          "columnsTo": [
+            "remark_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "remarkassigned_employee_id_employee_employee_id_fk": {
+          "name": "remarkassigned_employee_id_employee_employee_id_fk",
+          "tableFrom": "remarkassigned",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "employee_id"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.remarkcontent": {
+      "name": "remarkcontent",
+      "schema": "",
+      "columns": {
+        "remarkcontent_id": {
+          "name": "remarkcontent_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "markdown": {
+          "name": "markdown",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.remarkitems": {
       "name": "remarkitems",
       "schema": "",
@@ -3050,27 +3235,26 @@
           "primaryKey": true,
           "notNull": true
         },
+        "remark_type_id": {
+          "name": "remark_type_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "job_order_id": {
           "name": "job_order_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "created_by": {
-          "name": "created_by",
-          "type": "integer",
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "remark_type": {
-          "name": "remark_type",
-          "type": "remark_type_enum",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
+        "content": {
+          "name": "content",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
@@ -3079,6 +3263,18 @@
           "name": "remarktickets_status",
           "type": "remarktickets_status",
           "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deadline": {
+          "name": "deadline",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         },
@@ -3105,6 +3301,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "remarktickets_remark_type_id_remarktype_remark_type_id_fk": {
+          "name": "remarktickets_remark_type_id_remarktype_remark_type_id_fk",
+          "tableFrom": "remarktickets",
+          "tableTo": "remarktype",
+          "columnsFrom": [
+            "remark_type_id"
+          ],
+          "columnsTo": [
+            "remark_type_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "remarktickets_job_order_id_joborder_job_order_id_fk": {
           "name": "remarktickets_job_order_id_joborder_job_order_id_fk",
           "tableFrom": "remarktickets",
@@ -3132,6 +3341,54 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.remarktype": {
+      "name": "remarktype",
+      "schema": "",
+      "columns": {
+        "remark_type_id": {
+          "name": "remark_type_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -3989,18 +4246,6 @@
         "Active",
         "Inactive",
         "Inprogress"
-      ]
-    },
-    "public.remark_type_enum": {
-      "name": "remark_type_enum",
-      "schema": "public",
-      "values": [
-        "General",
-        "Urgent",
-        "Follow-up",
-        "Resolved",
-        "On-Hold",
-        "Information"
       ]
     },
     "public.remarktickets_status": {

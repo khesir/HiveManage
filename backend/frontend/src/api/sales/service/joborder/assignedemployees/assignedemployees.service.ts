@@ -34,19 +34,35 @@ export class AssignedEmployeeService {
       .select()
       .from(assignedemployees)
       .leftJoin(
+        jobOrder,
+        eq(jobOrder.job_order_id, assignedemployees.job_order_id),
+      )
+      .leftJoin(
         employee,
-        eq(assignedemployees.employee_id, employee.employee_id),
+        eq(employee.employee_id, assignedemployees.employee_id),
       )
       .where(and(...conditions));
 
     const assignedEmployeeDetails = result.map((row) => ({
       assigned_employee_id: row.assignedemployees.assigned_employee_id,
-      job_order_id: row.assignedemployees.job_order_id,
+      jobOrder: {
+        job_order_id: row.joborder?.job_order_id,
+        joborder_type_id: row.joborder?.joborder_type_id,
+        service_id: row.joborder?.service_id,
+        uuid: row.joborder?.uuid,
+        fee: row.joborder?.fee,
+        joborder_status: row.joborder?.joborder_status,
+        created_at: row.joborder?.created_at,
+        last_updated: row.joborder?.last_updated,
+        deleted_at: row.joborder?.deleted_at,
+      },
       employee: {
         employee_id: row.employee?.employee_id,
+        employee_role_id: row.employee?.employee_role_id,
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,
+        email: row.employee?.email,
         status: row.employee?.status,
         created_at: row.employee?.created_at,
         last_updated: row.employee?.last_updated,
@@ -82,12 +98,24 @@ export class AssignedEmployeeService {
 
     const assignedEmployeeDetails = result.map((row) => ({
       assigned_employee_id: row.assignedemployees.assigned_employee_id,
-      job_order_id: row.assignedemployees.job_order_id,
+      jobOrder: {
+        job_order_id: row.joborder?.job_order_id,
+        joborder_type_id: row.joborder?.joborder_type_id,
+        service_id: row.joborder?.service_id,
+        uuid: row.joborder?.uuid,
+        fee: row.joborder?.fee,
+        joborder_status: row.joborder?.joborder_status,
+        created_at: row.joborder?.created_at,
+        last_updated: row.joborder?.last_updated,
+        deleted_at: row.joborder?.deleted_at,
+      },
       employee: {
         employee_id: row.employee?.employee_id,
+        employee_role_id: row.employee?.employee_role_id,
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,
+        email: row.employee?.email,
         status: row.employee?.status,
         created_at: row.employee?.created_at,
         last_updated: row.employee?.last_updated,
