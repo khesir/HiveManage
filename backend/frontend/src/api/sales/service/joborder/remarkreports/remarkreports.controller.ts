@@ -56,11 +56,11 @@ export class RemarkReportsController {
   async createRemarkReports(req: Request, res: Response, next: NextFunction) {
     try {
       const remark_id = Number(req.params.service_id);
-      const { customer_id } = req.body;
+      const { reports_id } = req.body;
 
       await this.remarkreportsService.createRemarkReports({
         remark_id,
-        customer_id,
+        reports_id,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -80,10 +80,10 @@ export class RemarkReportsController {
     try {
       const { remark_reports_id } = req.params;
       const remark_id = Number(req.params.remark_id);
-      const { customer_id } = req.body;
+      const { reports_id } = req.body;
 
       await this.remarkreportsService.updateRemarkReports(
-        { customer_id, remark_id },
+        { reports_id, remark_id },
         Number(remark_reports_id),
       );
       res.status(HttpStatus.OK.code).json({
