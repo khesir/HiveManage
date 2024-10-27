@@ -39,6 +39,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {
+	AssignEmployeeWithDetails,
 	Joborder,
 	joborderSchema,
 	JobOrderType,
@@ -54,6 +55,8 @@ import {CreateJoborder} from '../api/create-joborder';
 import {UpdateJobOrder} from '../api/update-joborder';
 import {DeleteJobOrder} from '../api/delete-joborder';
 import {useParams} from 'react-router-dom';
+import {AssignEmployeeModal} from '../modal/assign-employee-modal';
+import {useEmployeeStore} from '../hooks/use-employee-list';
 
 export function JobOrderCard() {
 	const {id} = useParams();
@@ -66,7 +69,10 @@ export function JobOrderCard() {
 	const fee = 100;
 	const generatedUUID = generateCustomUUID();
 	const [joborderType, setJoborderType] = useState<JobOrderType[] | null>(null);
-
+	const {setSelectedEmployee, resetEmployee} = useEmployeeStore();
+	const [assignEmployee, setAssignEmployees] = useState<
+		AssignEmployeeWithDetails[]
+	>([]);
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
@@ -82,8 +88,24 @@ export function JobOrderCard() {
 						`api/v1/sms/joborder-types`,
 					),
 				]);
+				const joborderData =
+					(joborderRes.data[0] as JobOrderWithDetails) || null;
+				if (joborderData) {
+					const assignedEmployees = await request<
+						ApiRequest<AssignEmployeeWithDetails[]>
+					>(
+						'GET',
+						`/api/v1/sms/service/${id}/joborder/${joborderData.joborder_id}/assigned-employee`,
+					).then((data) => data.data as AssignEmployeeWithDetails[]);
 
-				setJoborder((joborderRes.data[0] as JobOrderWithDetails) || null);
+					const employeeData = assignedEmployees.map(
+						(assignEmp) => assignEmp.employee,
+					);
+
+					setAssignEmployees(assignedEmployees);
+					setSelectedEmployee(employeeData);
+					setJoborder(joborderData);
+				}
 				setJoborderType((joborderTypeRes.data as JobOrderType[]) || null);
 			} catch (error) {
 				if (error instanceof Error) {
@@ -95,6 +117,7 @@ export function JobOrderCard() {
 				setLoading(false);
 			}
 		};
+		resetEmployee();
 		fetchData();
 	}, [data]);
 
@@ -159,7 +182,6 @@ export function JobOrderCard() {
 	};
 
 	const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-
 	const processForm = async (formData: Joborder) => {
 		try {
 			setSubmitLoading(true);
@@ -206,8 +228,14 @@ export function JobOrderCard() {
 		'Rejected',
 		'Closed',
 	];
+	console.log(joborder);
 	return (
-		<Accordion type="single" collapsible className="w-full">
+		<Accordion
+			type="single"
+			collapsible
+			className="w-full"
+			defaultValue='item-1"'
+		>
 			<AccordionItem value="item-1">
 				<AccordionTrigger
 					value="item-1"
@@ -375,7 +403,7 @@ export function JobOrderCard() {
 								</div>
 							</form>
 						</Form>
-					) : joborder === undefined ? (
+					) : joborder === undefined || joborder == null ? (
 						<div className="flex justify-center">
 							<Button
 								onClick={() => {
@@ -387,8 +415,12 @@ export function JobOrderCard() {
 						</div>
 					) : (
 						<div className="flex flex-col gap-3">
-							<div>
+							<div className="flex justify-between">
 								<Button>View Full Details</Button>
+								<AssignEmployeeModal
+									assignEmployee={assignEmployee}
+									joborder_id={joborder?.joborder_id ?? null}
+								/>
 							</div>
 							<Card
 								x-chunk="dashboard-05-chunk-3"

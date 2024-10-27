@@ -15,7 +15,13 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+} from '@/components/ui/tooltip';
 import {ServiceWithDetails} from '@/lib/sales-zod-schema';
+import {TooltipTrigger} from '@radix-ui/react-tooltip';
 import {Bell, Trash2, Users} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'sonner';
@@ -66,13 +72,38 @@ export function SelectedSaleItems() {
 				</Button>
 
 				<div className="space-x-2">
-					<Button size={'icon'}>
-						<Bell />
-					</Button>
-
-					<Button size={'icon'}>
-						<Users />
-					</Button>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger>
+								<Button
+									variant={'outline'}
+									size={'icon'}
+									onClick={() => navigate('/sales/inquiry')}
+								>
+									<Bell />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Inquries</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger>
+								<Button
+									variant={'outline'}
+									size={'icon'}
+									onClick={() => navigate('/sales/customer')}
+								>
+									<Users />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Customer Database</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				</div>
 			</div>
 			<ScrollArea className="relative h-[calc(90vh-220px)] rounded-md border">

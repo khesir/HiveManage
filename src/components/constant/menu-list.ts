@@ -290,7 +290,7 @@ export function getTechMenuList(pathname: string): Group[] {
 				{
 					href: '/tech/assigned-services',
 					label: 'Assigned Services',
-					active: pathname.includes('/tech/services'),
+					active: pathname.includes('/tech/assigned-services'),
 					icon: PackageOpenIcon,
 					submenus: [],
 				},

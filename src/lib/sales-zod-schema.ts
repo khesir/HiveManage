@@ -166,3 +166,24 @@ export type SalesItemWithDetails = {
 	last_updated?: string;
 	deleted_at?: string;
 };
+
+export const assignedEmployeesSchema = z.object({
+	assigned_employee_id: z.number().optional(),
+	job_order_id: z.number().optional(),
+	employee_id: z.number().min(1),
+	assigned_by: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type AssignEmployee = z.infer<typeof assignedEmployeesSchema>;
+
+export type AssignEmployeeWithDetails = {
+	assigned_employee_id?: number;
+	joborder_id: number;
+	employee: EmployeeBasicInformation;
+	assigned_by: string;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};

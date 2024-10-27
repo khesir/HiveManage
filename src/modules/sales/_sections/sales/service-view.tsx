@@ -12,7 +12,7 @@ export default function ServiceViewPage() {
 					<div className="flex flex-col gap-4">
 						<Heading
 							title={`Services`}
-							description="Choose what to view from borrow, reserve and "
+							description="Joborder Service Finished, Borrow & reservation is under development"
 						/>
 						<Separator />
 					</div>
