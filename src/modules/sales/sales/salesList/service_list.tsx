@@ -28,7 +28,7 @@ export default function ServiceList({
 	const customer =
 		Number(searchParams.get('customer_id')) || customer_id || undefined;
 
-		useEffect(() => {
+	useEffect(() => {
 		const fetchEmployees = async () => {
 			const res = await request<PaginationResponse<ServiceWithDetails>>(
 				'GET',

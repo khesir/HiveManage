@@ -93,7 +93,7 @@ export const joborderSchema = z.object({
 	joborder_type_id: z.number().min(1),
 	uuid: z.string().min(1),
 	fee: z.number().min(1),
-	status: z.enum([
+	joborder_status: z.enum([
 		'Pending',
 		'In Progress',
 		'Completed',
@@ -117,7 +117,7 @@ export type JobOrderWithDetails = {
 	joborder_type: JobOrderType;
 	uuid: string;
 	fee: number;
-	status: string;
+	joborder_status: string;
 	created_at?: string;
 	last_updated?: string;
 	deleted_at?: string;
@@ -187,3 +187,60 @@ export type AssignEmployeeWithDetails = {
 	last_updated?: string;
 	deleted_at?: string;
 };
+
+export const remarkTypeSchema = z.object({
+	remark_type_id: z.number().optional(),
+	name: z.string().min(1),
+	description: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type RemarkType = z.infer<typeof remarkTypeSchema>;
+
+export const remarkTicketsSchema = z.object({
+	remark_id: z.number().optional(),
+	job_order_id: z.number().optional(),
+	remark_type: z.enum([
+		'General',
+		'Urgent',
+		'Follow-up',
+		'Resolved',
+		'On-Hold',
+		'Information',
+	]),
+	title: z.string().min(1),
+	description: z.string().optional(),
+	content: z.string().min(1),
+	remarktickets_status: z.string().min(1),
+	created_by: z.number().min(1),
+	deadline: z.number().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type RemarkTicket = z.infer<typeof remarkTicketsSchema>;
+
+export type RemarkTicketWithDetails = {
+	remark_id?: number;
+	remark_type: RemarkType;
+	joborder_id: JobOrderWithDetails;
+	title: string;
+	description: string;
+	content: RemarkContent;
+	status: string;
+	remarktickets_status: string;
+	created_by: EmployeeBasicInformation;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};
+
+export const remarkContentSchema = z.object({
+	remark_content_id: z.string().optional(),
+	markdown: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type RemarkContent = z.infer<typeof remarkContentSchema>;

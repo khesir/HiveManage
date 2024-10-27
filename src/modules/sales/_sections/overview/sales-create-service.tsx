@@ -2,16 +2,16 @@
 import {Separator} from '@/components/ui/separator';
 import {CreateCustomerForm} from '../../customer/create/create-customer';
 import {Heading} from '@/components/ui/heading'; // Assuming you have a custom Heading component
-import {SelectedSaleReviewItems} from '../../overview/selected-sale-review-items';
+import {SelectedSaleReviewItems} from '../../dashboard/salesOverview/selected-sale-review-items';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {SearchCustomer} from '../../overview/customer/search-customer';
+import {SearchCustomer} from '../../dashboard/salesOverview/customer/search-customer';
 import {Button} from '@/components/ui/button';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {useEffect, useState} from 'react';
 import {Card} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
 import {useProgressStore} from '@/components/hooks/use-progress-store';
-import {CreateServiceProcess} from '../../overview/api/create-service-process';
+import {CreateServiceProcess} from '../../dashboard/salesOverview/api/create-service-process';
 import {ScrollArea} from '@/components/ui/scroll-area';
 export function SalesCreateService() {
 	const {salesHookData, setSaleHookData} = useSalesHook();

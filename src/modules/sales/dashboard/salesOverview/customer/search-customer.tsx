@@ -69,7 +69,7 @@ export function SearchCustomer({processCreate}: SearchCustomerProps) {
 							</li>
 							<li className="flex items-center justify-between">
 								<span className="text-muted-foreground">Contact</span>
-								<span>{customer.contact}</span>
+								<span>{customer.contact_phone}</span>
 							</li>
 							<li className="flex items-center justify-between">
 								<span className="text-muted-foreground">Socials</span>

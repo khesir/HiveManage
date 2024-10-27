@@ -6,7 +6,11 @@ import {columns} from './columns';
 import {SalesItemWithDetails} from '@/lib/sales-zod-schema';
 import {useSalesItemWithDetailsStore} from './hooks/use-sales-item-store';
 
-export function SalesAllItem() {
+interface SalesAllItemProps {
+	item_type?: string;
+}
+
+export function SalesAllItem({item_type}: SalesAllItemProps) {
 	const [searchParams] = useSearchParams();
 	const {id} = useParams();
 	const [items, setSalesItem] = useState<SalesItemWithDetails[]>([]);
@@ -14,7 +18,8 @@ export function SalesAllItem() {
 	const pageLimit = Number(searchParams.get('limit')) || 10;
 
 	const page = Number(searchParams.get('page')) || 1;
-	const sales_item_type = searchParams.get('sales_item_type') || null;
+	const sales_item_type =
+		item_type || searchParams.get('sales_item_type') || null;
 	const sort = searchParams.get('sort') || null;
 	const offset = (page - 1) * pageLimit;
 	const {setSelectedSalesItemWithDetails} = useSalesItemWithDetailsStore();

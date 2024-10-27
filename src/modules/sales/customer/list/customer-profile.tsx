@@ -94,7 +94,7 @@ export function CustomerProfile() {
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Socials</span>
-							<span>{data.socials.flat}</span>
+							<span>not tested</span>
 						</li>
 					</ul>
 				</div>

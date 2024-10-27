@@ -9,11 +9,11 @@ export default function TemporaryUserAuthForm() {
 
 	const onSubmit = async (data: string) => {
 		if (data === 'Admin') {
-			navigate('admin/dashboard');
+			navigate('/admin/dashboard');
 		} else if (data === 'Tech') {
-			navigate('tech/dashboard');
-		} else {
-			navigate('sales/dashboard');
+			navigate('/tech/dashboard');
+		} else if (data === 'Sales') {
+			navigate('/sales/dashboard');
 		}
 	};
 

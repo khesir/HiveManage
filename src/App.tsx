@@ -21,10 +21,19 @@ import {
 	SalesDashboardPage,
 	ServicePages,
 } from './pages/sales';
+
+// TODO: Sort this to each index found in root of page file index.ts
 import {CreateServicePage} from './pages/sales/systems/overview/create-service-page';
 import ViewServicePage from './pages/sales/systems/service/view-service-page';
 import CustomerCreatePage from './pages/sales/systems/customer/customer-create-page';
 import CustomerViewPage from './pages/sales/systems/customer/customer-view-page';
+import TechOverview from './pages/tech/systems/overview/overview-page';
+import Settings from './pages/general/settings';
+import Terminal from './pages/general/terminal';
+import ChatSystem from './pages/chat/chat';
+import InquiryPage from './pages/sales/systems/inquiry';
+import JoborderListsPage from './pages/tech/systems/service/joborder-page';
+import JoborderViewPage from './pages/tech/systems/service/joborder/view-page';
 
 function App() {
 	return (
@@ -35,9 +44,9 @@ function App() {
 				{/* Admin Layout */}
 				<Route path="admin" element={<MainLayout userType={'admin'} />}>
 					<Route path="dashboard" element={<DashboardPage />} />
-					<Route path="chat" />
-					<Route path="settings" />
-					<Route path="terminal" />
+					<Route path="chat" element={<ChatSystem />} />
+					<Route path="settings" element={<Settings />} />
+					<Route path="terminal" element={<Terminal />} />
 
 					<Route path="ems">
 						<Route path="overview" element={<EmployeeOverviewPage />} />
@@ -58,6 +67,7 @@ function App() {
 						<Route path="leave" />
 					</Route>
 
+					{/* Sales Layout */}
 					<Route path="sales">
 						<Route path="dashboard" element={<DashboardPage />} />
 						<Route path="services" element={<ServicePages />} />
@@ -67,6 +77,7 @@ function App() {
 						<Route path="customer" element={<CustomerDatabasePage />} />
 						<Route path="customer/view/:id" element={<CustomerViewPage />} />
 						<Route path="customer/create" element={<CustomerCreatePage />} />
+						<Route path="inquiry" element={<InquiryPage />} />
 					</Route>
 
 					<Route path="inventory">
@@ -77,33 +88,34 @@ function App() {
 					</Route>
 				</Route>
 
-				{/* TODO: Technical Layout */}
+				{/* Technical Layout */}
 				<Route path="tech" element={<MainLayout userType={'tech'} />}>
 					<Route path="dashboard" element={<DashboardPage />} />
-					<Route path="chat" />
-					<Route path="settings" />
-					<Route path="terminal" />
+					<Route path="chat" element={<ChatSystem />} />
+					<Route path="settings" element={<Settings />} />
+					<Route path="terminal" element={<Terminal />} />
 
 					{/* Systems */}
-					<Route path="overview" />
-					<Route path="assigned-services" />
-					<Route path="services" element={<ServicePages />} />
-					<Route path="services/view/:id" element={<ViewServicePage />} />
-					<Route path="services/create" element={<CreateServicePage />} />
+					<Route path="overview" element={<TechOverview />} />
+					<Route path="services/joborders" element={<JoborderListsPage />} />
+					<Route
+						path="services/joborders/view/:id"
+						element={<JoborderViewPage />}
+					/>
 
 					<Route path="customer" element={<CustomerDatabasePage />} />
 					<Route path="customer/view/:id" element={<CustomerViewPage />} />
 					<Route path="customer/create" element={<CustomerCreatePage />} />
 
-					<Route path="inquiry" />
+					<Route path="inquiry" element={<InquiryPage />} />
 				</Route>
 
 				{/* TODO: Sales Layout */}
 				<Route path="sales" element={<MainLayout userType={'sales'} />}>
 					<Route path="dashboard" element={<SalesDashboardPage />} />
-					<Route path="chat" />
-					<Route path="settings" />
-					<Route path="terminal" />
+					<Route path="chat" element={<ChatSystem />} />
+					<Route path="settings" element={<Settings />} />
+					<Route path="terminal" element={<Terminal />} />
 					{/* Systems */}
 					<Route path="overview" element={<OverviewPage />} />
 					<Route path="create-service" element={<CreateServicePage />} />
@@ -111,12 +123,16 @@ function App() {
 					<Route path="services" element={<ServicePages />} />
 					<Route path="services/view/:id" element={<ViewServicePage />} />
 					<Route path="services/create" element={<CreateServicePage />} />
+					<Route
+						path="services/joborders/view/:id"
+						element={<JoborderViewPage />}
+					/>
 
 					<Route path="customer" element={<CustomerDatabasePage />} />
 					<Route path="customer/view/:id" element={<CustomerViewPage />} />
 					<Route path="customer/create" element={<CustomerCreatePage />} />
 
-					<Route path="inquiry" />
+					<Route path="inquiry" element={<InquiryPage />} />
 				</Route>
 				<Route path="*" element={<NotFound />} />
 			</Router>

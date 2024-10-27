@@ -45,7 +45,7 @@ import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
 import {DeleteReservation} from '../api/delete-reservation';
 import {useItemWithDetailsStore} from '@/components/hooks/use-selected-item';
-import {ItemLisitingModal} from '@/modules/sales/overview/modal/item-listing-modal';
+import {ItemLisitingModal} from '@/modules/sales/dashboard/salesOverview/modal/item-listing-modal';
 import {useSalesItemWithDetailsStore} from '../hooks/use-sales-item-store';
 
 export function ReservationCard() {
