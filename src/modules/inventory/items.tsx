@@ -1,4 +1,3 @@
-import {ContentLayout} from '@/app/_components/layout/general/content-layout';
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -9,6 +8,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import {Link} from 'react-router-dom';
 import OverviewContent from './section/overview-content';
+import {ContentLayout} from '@/components/layout/content-layout';
 
 export default function ItemPage() {
 	return (

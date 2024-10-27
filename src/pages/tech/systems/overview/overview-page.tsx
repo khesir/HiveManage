@@ -1,6 +1,7 @@
 import {ContentLayout} from '@/components/layout/content-layout';
 
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
+import TechOverviewSection from '@/modules/sales/_sections/overview/tech/tech-overview-section';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: '/tech/dashboard'},
@@ -13,7 +14,7 @@ export default function TechOverview() {
 	return (
 		<ContentLayout title="PC BEE Management Systems">
 			<Breadcrumbs items={breadcrubItems} />
-			<p>Overview Joborder</p>
+			<TechOverviewSection />
 		</ContentLayout>
 	);
 }
