@@ -19,7 +19,6 @@ export function SelectedSaleReviewItems() {
 		navigate(-1);
 	};
 	const {salesHookData} = useSalesHook();
-	console.log(salesHookData);
 	return (
 		<Card>
 			<CardHeader className="flex flex-row items-start bg-muted/50">

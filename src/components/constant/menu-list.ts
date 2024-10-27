@@ -135,24 +135,19 @@ export function getAdminMenuList(pathname: string): Group[] {
 					icon: PackageOpenIcon,
 					submenus: [
 						{
-							href: '/inventory/overview',
+							href: '/admin/inventory/overview',
 							label: 'Overview',
-							active: pathname === '/inventory/overview',
+							active: pathname === '/admin/inventory/overview',
+						},
+						{
+							href: '/admin/inventory/items',
+							label: 'Items & Products',
+							active: pathname === '/admin/inventory/items',
 						},
 						{
 							href: '/admin/inventory/orders',
 							label: 'Orders',
 							active: pathname === '/admin/inventory/orders',
-						},
-						{
-							href: '/admin/inventory/items',
-							label: 'Items Database',
-							active: pathname === '/admin/inventory/items',
-						},
-						{
-							href: '/admin/inventory/stock-logs',
-							label: 'Stock Logs',
-							active: pathname === '/admin/inventory/stock-logs',
 						},
 					],
 				},

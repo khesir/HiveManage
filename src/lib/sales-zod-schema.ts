@@ -180,7 +180,7 @@ export type AssignEmployee = z.infer<typeof assignedEmployeesSchema>;
 
 export type AssignEmployeeWithDetails = {
 	assigned_employee_id?: number;
-	joborder_id: number;
+	job_order_id: number;
 	employee: EmployeeBasicInformation;
 	assigned_by: string;
 	created_at?: string;

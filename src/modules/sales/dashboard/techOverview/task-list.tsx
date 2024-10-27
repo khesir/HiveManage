@@ -1,4 +1,4 @@
-import {PaginationResponse, request} from '@/api/axios';
+import {ApiRequest, PaginationResponse, request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
 import {
 	Card,
@@ -14,7 +14,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {RemarkTicketWithDetails} from '@/lib/sales-zod-schema';
+import {
+	AssignEmployeeWithDetails,
+	RemarkTicketWithDetails,
+} from '@/lib/sales-zod-schema';
 import items from '@/modules/inventory/items';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {Badge, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
@@ -40,13 +43,39 @@ export function TaskListOverview() {
 
 	useEffect(() => {
 		const fetchItems = async () => {
-			const res = await request<PaginationResponse<RemarkTicketWithDetails>>(
-				'GET',
-				`/api/v1/sms/assigned-employee?employee_id=10` +
-					(sort ? `&sort=${sort}` : ''),
-			);
-			setRemarkTickets(res.data);
-			setPageCount(Math.ceil(res.total_data / pageLimit));
+			try {
+				const res = await request<
+					PaginationResponse<AssignEmployeeWithDetails>
+				>(
+					'GET',
+					`/api/v1/sms/assigned-employee?employee_id=12` +
+						(sort ? `&sort=${sort}` : ''),
+				);
+				// Extract joborder_id and make requests
+				const allRequests = await Promise.all(
+					res.data
+						.map((item) => {
+							const joborderId = item.job_order_id;
+							const employeeId = item.employee.employee_id;
+							if (joborderId) {
+								return request<ApiRequest<RemarkTicketWithDetails>>(
+									'GET',
+									`/api/v1/sms/joborder/${joborderId}/remark-tickets?employee_id=${employeeId}`,
+								);
+							}
+							return null;
+						})
+						.filter(Boolean),
+				);
+
+				const remarkTicketsData = allRequests
+					.filter((response) => response !== null)
+					.map((response) => response!.data);
+				setRemarkTickets(remarkTicketsData as RemarkTicketWithDetails[]);
+				setPageCount(Math.ceil(res.total_data));
+			} catch (error) {
+				console.log(error);
+			}
 		};
 		fetchItems();
 	}, [offset, pageLimit]);
@@ -61,16 +90,17 @@ export function TaskListOverview() {
 	const handlePageLimitChange = (newLimit: number) => {
 		setPageLimit(newLimit);
 	};
+
 	if (items.length === 0) {
 		return (
-			<Card className="relative w-full h-[170px] overflow-hidden">
-				<CardTitle className="h-full font-semibold text-xl  hover:underline flex items-center justify-center">
-					No Item Available
+			<Card className="relative w-full h-[100px] overflow-hidden">
+				<CardTitle className="h-full font-semibold text-lg flex items-center justify-center cursor-pointer">
+					No Tasks assigned at the moment
 				</CardTitle>
 			</Card>
 		);
 	}
-	console.log('A');
+
 	return (
 		<>
 			{/* Render your items */}
@@ -78,7 +108,7 @@ export function TaskListOverview() {
 				<div className="flex flex-col gap-3">
 					{remarkTickets.map((ticket) => (
 						<Card
-							className="relative w-full h-[170px] overflow-hidden"
+							className="relative w-full h-[100px] overflow-hidden"
 							key={ticket.remark_id}
 						>
 							<div className="flex justify-start">
