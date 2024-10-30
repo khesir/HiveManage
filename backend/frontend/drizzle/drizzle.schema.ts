@@ -198,6 +198,19 @@ export const entityTypeEnum = pgEnum('entityTypeEnums', [
 ]);
 
 export const TagItemEnum = pgEnum('tag_item', ['New', 'Used', 'Broken']);
+
+export const TagEnum = pgEnum('tag_supplier', [
+  'Active',
+  'Inactive',
+  'Pending Approval',
+  'Verified',
+  'Unverified',
+  'Suspended',
+  'Preferred',
+  'Blacklisted',
+  'Under Review',
+  'Archived',
+]);
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
@@ -826,6 +839,35 @@ export const item = pgTable('item', {
   deleted_at: timestamp('deleted_at'),
 });
 
+//Item Supplier
+export const item_supplier = pgTable('item_supplier', {
+  item_supplier_id: serial('item_supplier_id').primaryKey(),
+  supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
+  item_id: integer('item_id').references(() => item.item_id),
+  tag: TagEnum('tag').notNull(),
+  stock: integer('stock'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Price History
+export const price_history = pgTable('price_history', {
+  price_history_id: serial('price_history_id').primaryKey(),
+  item_id: integer('item_id').references(() => item.item_id),
+  price: decimal('price', { precision: 10, scale: 2 }),
+  change_date: timestamp('change_date').defaultNow(),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
 export const stocksLogs = pgTable('stock_logs', {
   stock_log_id: serial('stock_logs_id').primaryKey(),
   item_id: integer('item_id').references(() => item.item_id),
@@ -857,6 +899,19 @@ export const product_attachment = pgTable('product_attachment', {
   product_attachment_id: serial('product_attachment_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id), // Ensure supplier.supplier_id exists
   filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Product
+export const product_category = pgTable('product_category', {
+  product_category_id: serial('product_category_id').primaryKey(),
+  product_id: integer('product_id').references(() => product.product_id), // Ensure category.category_id exists
+  category_id: integer('category_id').references(() => category.category_id), // Ensure supplier.supplier_id exists
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -1085,6 +1140,9 @@ export const schema: SchemaType = {
   order,
   orderItem,
   arrived_Items,
+  item_supplier,
+  price_history,
+  product_category,
 
   // Chat System and Inquiry
   participants,

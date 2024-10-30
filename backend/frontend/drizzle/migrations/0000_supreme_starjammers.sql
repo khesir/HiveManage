@@ -385,6 +385,17 @@ CREATE TABLE IF NOT EXISTS "item" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "item_supplier" (
+	"item_supplier_id" serial PRIMARY KEY NOT NULL,
+	"supplier_id" integer,
+	"item_id" integer,
+	"tag" varchar(50),
+	"stock" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "joborder" (
 	"job_order_id" serial PRIMARY KEY NOT NULL,
 	"joborder_type_id" integer,
@@ -549,6 +560,16 @@ CREATE TABLE IF NOT EXISTS "personal_info" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "price_history" (
+	"price_history_id" serial PRIMARY KEY NOT NULL,
+	"item_id" integer,
+	"price" numeric(10, 2),
+	"change_date" timestamp DEFAULT now(),
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product" (
 	"product_id" serial PRIMARY KEY NOT NULL,
 	"category_id" integer,
@@ -566,6 +587,15 @@ CREATE TABLE IF NOT EXISTS "product_attachment" (
 	"product_attachment_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
 	"filePath" varchar(255),
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "product_category" (
+	"product_category_id" serial PRIMARY KEY NOT NULL,
+	"product_id" integer,
+	"category_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -838,6 +868,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "item_supplier" ADD CONSTRAINT "item_supplier_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "item_supplier" ADD CONSTRAINT "item_supplier_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "joborder" ADD CONSTRAINT "joborder_joborder_type_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("joborder_type_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -940,6 +982,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "price_history" ADD CONSTRAINT "price_history_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "product" ADD CONSTRAINT "product_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -953,6 +1001,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "product_attachment" ADD CONSTRAINT "product_attachment_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "product_category" ADD CONSTRAINT "product_category_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "product_category" ADD CONSTRAINT "product_category_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

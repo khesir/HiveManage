@@ -52,6 +52,9 @@ import {
   remarkassigned,
   employee_role,
   remarkcontent,
+  product_category,
+  item_supplier,
+  price_history,
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -89,9 +92,9 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedEmployeesRole(db: PostgresJsDatabase<SchemaType>) {
-  const employeesRole = Array.from({ length: 50 }).map(() => ({
+  const employeesRole = Array.from({ length: 5 }).map(() => ({
     name: faker.person.fullName(),
-    access_level: faker.number.int({ min: 1, max: 100 }),
+    access_level: faker.number.int({ min: 1, max: 5 }),
   }));
 
   await db.insert(employee_role).values(employeesRole);
@@ -1101,6 +1104,65 @@ async function seedItem(db: PostgresJsDatabase<SchemaType>) {
   log.info('Item records seeded successfully');
 }
 
+async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
+  const itemIDs = await db.select().from(item);
+
+  const pricehistoryRecords = Array.from({ length: 50 }).map(() => ({
+    item_id: faker.helpers.arrayElement(itemIDs).item_id,
+    price: parseFloat(
+      faker.finance.amount({ min: 1001, max: 5000, dec: 2 }),
+    ).toFixed(2),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(price_history).values(pricehistoryRecords);
+
+  log.info('Item records seeded successfully');
+}
+
+async function seedItemSupplier(db: PostgresJsDatabase<SchemaType>) {
+  const supplierIDs = await db.select().from(supplier);
+  const itemIDs = await db.select().from(item);
+
+  const tag_status: (
+    | 'Active'
+    | 'Inactive'
+    | 'Pending Approval'
+    | 'Verified'
+    | 'Unverified'
+    | 'Suspended'
+    | 'Preferred'
+    | 'Blacklisted'
+    | 'Under Review'
+    | 'Archived'
+  )[] = [
+    'Active',
+    'Inactive',
+    'Pending Approval',
+    'Verified',
+    'Unverified',
+    'Suspended',
+    'Preferred',
+    'Blacklisted',
+    'Under Review',
+    'Archived',
+  ];
+
+  const itemsupplierRecords = Array.from({ length: 50 }).map(() => ({
+    supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+    item_id: faker.helpers.arrayElement(itemIDs).item_id,
+    tag: faker.helpers.arrayElement(tag_status),
+    stock: faker.number.int({ min: 100, max: 500 }),
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(item_supplier).values(itemsupplierRecords);
+
+  log.info('Item Supplier records seeded successfully');
+}
+
 async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const categoryIDs = await db.select().from(category);
   const supplierIDs = await db.select().from(supplier);
@@ -1145,6 +1207,20 @@ async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(category).values(categoryRecords);
 
   log.info('Category records seeded successfully');
+}
+
+async function seedProductCategory(db: PostgresJsDatabase<SchemaType>) {
+  const productIDs = await db.select().from(product);
+  const categoryIDs = await db.select().from(category);
+
+  const productcategoryRecords = Array.from({ length: 25 }).map(() => ({
+    product_id: faker.helpers.arrayElement(productIDs).product_id,
+    category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+  }));
+
+  await db.insert(product_category).values(productcategoryRecords);
+
+  log.info('Product Category records seeded successfully');
 }
 
 async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
@@ -1280,7 +1356,10 @@ async function main() {
     await seedArrivedItems(db);
     await seedOrderItem(db);
     await seedProductAttachment(db);
+    await seedProductCategory(db);
     await seedItem(db);
+    await seedItemSupplier(db);
+    await seedPriceHistory(db);
     await seedStockLogs(db);
 
     // Participants and related data

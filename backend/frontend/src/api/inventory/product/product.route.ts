@@ -6,6 +6,7 @@ import { ProductController } from './product.controller';
 import { validateProductID } from './product.middleware';
 import { CreateProduct, UpdateProduct } from './product.model';
 import productattachmentRoute from './productattachment/productattachment.route';
+import productcategoryRoute from './productcategory/productcategory.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
@@ -45,5 +46,11 @@ productRoute.use(
   '/:product_id/product_attachment',
   validateProductID,
   productattachmentRoute,
+);
+
+productRoute.use(
+  '/:product_id/productcategory',
+  validateProductID,
+  productcategoryRoute,
 );
 export default productRoute;
