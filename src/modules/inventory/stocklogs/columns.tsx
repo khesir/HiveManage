@@ -16,10 +16,6 @@ export const columns: ColumnDef<StockLogsWithDetails>[] = [
 		header: 'Movement',
 	},
 	{
-		accessorKey: 'action',
-		header: 'Action',
-	},
-	{
 		accessorKey: 'created_at',
 		header: 'Created',
 		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),

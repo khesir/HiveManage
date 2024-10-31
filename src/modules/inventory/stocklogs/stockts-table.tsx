@@ -28,7 +28,6 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import useCustomerFormStore from '@/modules/sales/customer/hooks/use-customer-form';
 import {StockLogsWithDetails} from '@/lib/inventory-zod-schema';
 import useStockLogsWithDetailsFormStore from './hooks/use-stock-logs';
 

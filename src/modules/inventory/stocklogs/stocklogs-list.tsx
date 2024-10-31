@@ -30,10 +30,6 @@ export default function StockLogsList() {
 	}, [offset, pageLimit, sort, status]);
 
 	return (
-		<StockLogsTable
-			columns={columns} // Define your `columns` somewhere in the component or import them
-			data={stockLogs}
-			pageCount={pageCount}
-		/>
+		<StockLogsTable columns={columns} data={stockLogs} pageCount={pageCount} />
 	);
 }

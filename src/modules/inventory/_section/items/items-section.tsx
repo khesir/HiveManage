@@ -1,5 +1,7 @@
 import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
+import ItemsWithDetailsList from '../../items/items-list';
+import {ItemProfile} from '../../items/items-profile';
 
 export default function ItemSection() {
 	return (
@@ -14,12 +16,14 @@ export default function ItemSection() {
 						/>
 						<Separator />
 					</div>
+					<ItemsWithDetailsList />
 				</div>
 				<div className="flex flex-col gap-4">
 					<div className="flex lg:hidden">
 						<Separator />
 					</div>
 					{/* Employee Profile */}
+					<ItemProfile />
 				</div>
 			</div>
 		</div>
