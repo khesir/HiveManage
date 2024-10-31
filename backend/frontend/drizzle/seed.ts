@@ -55,6 +55,10 @@ import {
   product_category,
   price_history,
   inventory_record,
+  item_supplier,
+  price_history,
+  product_category,
+
   // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
@@ -911,8 +915,8 @@ async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
   const remarkticketsRecords = Array.from({ length: 70 }).map(() => ({
     job_order_id: faker.helpers.arrayElement(jobOrders).job_order_id, // Accessing job_order_id safely
     remark_type_id: faker.helpers.arrayElement(remarktypeIDs).remark_type_id,
+    title: faker.commerce.productName(),
     description: faker.lorem.sentence(),
-    content: faker.lorem.sentence(),
     remarktickets_status: faker.helpers.arrayElement(remark_status),
     created_by: faker.helpers.arrayElement(employeeIDs).employee_id,
     deadline: faker.date.future(),
@@ -958,7 +962,7 @@ async function seedRemarkReports(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedRemarkType(db: PostgresJsDatabase<SchemaType>) {
-  const remarktypeRecords = Array.from({ length: 70 }).map(() => ({
+  const remarktypeRecords = Array.from({ length: 5 }).map(() => ({
     name: faker.commerce.productName(),
     description: faker.lorem.sentence(),
     created_at: faker.date.recent(),

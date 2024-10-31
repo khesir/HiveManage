@@ -12,6 +12,9 @@ const smsRoute = Router({ mergeParams: true });
 smsRoute.use('/joborder-types', jobordertypesRoute);
 log.info('ROUTE joborder types set');
 
+smsRoute.use('/remark-type', remarktypesRoute);
+log.info('ROUTE remarktype set');
+
 smsRoute.use('/joborder', joborderRoute);
 log.info('ROUTE job order set');
 
@@ -26,8 +29,6 @@ log.info('ROUTE assigned-employee set');
 // Borrow
 // Job order
 // Remark Type
-smsRoute.use('/remarktype', remarktypesRoute);
-log.info('ROUTE remarktype set');
 
 // Purpose: for table
 export default smsRoute;

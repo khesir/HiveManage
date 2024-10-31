@@ -6,7 +6,7 @@ import {
   stocksLogs,
   supplier,
 } from '@/drizzle/drizzle.schema';
-import { and, eq, sql } from 'drizzle-orm';
+import { eq, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class StocksLogsService {
@@ -31,8 +31,7 @@ export class StocksLogsService {
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(stocksLogs)
-      .where(and(...conditions));
+      .from(stocksLogs);
 
     const totalData = totalCountQuery[0].count;
 
@@ -43,7 +42,11 @@ export class StocksLogsService {
       .leftJoin(product, eq(product.product_id, item.product_id))
       .leftJoin(supplier, eq(product.supplier_id, supplier.supplier_id))
       .leftJoin(category, eq(category.category_id, product.category_id))
-      .where(and(...conditions))
+      .orderBy(
+        sort === 'asc'
+          ? asc(stocksLogs.created_at)
+          : desc(stocksLogs.created_at),
+      )
       .limit(limit)
       .offset(offset);
 

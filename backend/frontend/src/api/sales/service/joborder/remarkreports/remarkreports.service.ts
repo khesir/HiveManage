@@ -1,8 +1,8 @@
 import { and, eq, isNull, sql } from 'drizzle-orm';
 import {
-  customer,
   remarkreports,
   remarktickets,
+  reports,
   SchemaType,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
@@ -46,8 +46,8 @@ export class RemarkReportsService {
       .select()
       .from(remarkreports)
       .leftJoin(
-        customer,
-        eq(customer.customer_id, remarkreports.remark_reports_id),
+        reports,
+        eq(reports.reports_id, remarkreports.remark_reports_id),
       )
       .leftJoin(
         remarktickets,
@@ -59,21 +59,14 @@ export class RemarkReportsService {
 
     const remarkreportsWithDetails = result.map((row) => ({
       remark_reports_id: row.remarkreports.remark_reports_id,
-      customer: {
-        customer_id: row.customer?.customer_id,
-        firstname: row.customer?.firstname,
-        middlename: row.customer?.middlename,
-        lastname: row.customer?.lastname,
-        contact_phone: row.customer?.contact_phone,
-        socials: row.customer?.socials,
-        address_line: row.customer?.address_line,
-        barangay: row.customer?.barangay,
-        province: row.customer?.province,
-        email: row.customer?.email,
-        standing: row.customer?.standing,
-        created_at: row.customer?.created_at,
-        last_updated: row.customer?.last_updated,
-        deleted_at: row.customer?.deleted_at,
+      reports: {
+        customer_id: row.reports?.customer_id,
+        job_order_id: row.reports?.job_order_id,
+        reports_title: row.reports?.reports_title,
+        remarks: row.reports?.remarks,
+        created_at: row.reports?.created_at,
+        last_updated: row.reports?.last_updated,
+        deleted_at: row.reports?.deleted_at,
       },
       remarktickets: {
         remark_id: row.remarktickets?.remark_id,
@@ -99,8 +92,8 @@ export class RemarkReportsService {
       .select()
       .from(remarkreports)
       .leftJoin(
-        customer,
-        eq(customer.customer_id, remarkreports.remark_reports_id),
+        reports,
+        eq(reports.reports_id, remarkreports.remark_reports_id),
       )
       .leftJoin(
         remarktickets,
@@ -110,21 +103,14 @@ export class RemarkReportsService {
 
     const remarkreportsWithDetails = result.map((row) => ({
       remark_reports_id: row.remarkreports.remark_reports_id,
-      customer: {
-        customer_id: row.customer?.customer_id,
-        firstname: row.customer?.firstname,
-        middlename: row.customer?.middlename,
-        lastname: row.customer?.lastname,
-        contact_phone: row.customer?.contact_phone,
-        socials: row.customer?.socials,
-        address_line: row.customer?.address_line,
-        barangay: row.customer?.barangay,
-        province: row.customer?.province,
-        email: row.customer?.email,
-        standing: row.customer?.standing,
-        created_at: row.customer?.created_at,
-        last_updated: row.customer?.last_updated,
-        deleted_at: row.customer?.deleted_at,
+      reports: {
+        customer_id: row.reports?.customer_id,
+        job_order_id: row.reports?.job_order_id,
+        reports_title: row.reports?.reports_title,
+        remarks: row.reports?.remarks,
+        created_at: row.reports?.created_at,
+        last_updated: row.reports?.last_updated,
+        deleted_at: row.reports?.deleted_at,
       },
       remarktickets: {
         remark_id: row.remarktickets?.remark_id,

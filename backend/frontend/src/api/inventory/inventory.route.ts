@@ -25,7 +25,7 @@ log.info('ROUTE /product set');
 imsRoute.use('/category', categoryRoute);
 log.info('ROUTE category set');
 
-imsRoute.use('/stockLogs', stockLogsRoute);
+imsRoute.use('/stock-logs', stockLogsRoute);
 log.info('ROUTE StockLogs set');
 
 export default imsRoute;

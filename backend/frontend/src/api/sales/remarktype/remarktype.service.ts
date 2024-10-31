@@ -14,13 +14,11 @@ export class RemarkTypeService {
     await this.db.insert(remarktype).values(data);
   }
 
-  async getAllRemarkType(limit: number, offset: number) {
+  async getAllRemarkType() {
     const result = await this.db
       .select()
       .from(remarktype)
-      .where(isNull(remarktype.deleted_at))
-      .limit(limit)
-      .offset(offset);
+      .where(isNull(remarktype.deleted_at));
     return result;
   }
 

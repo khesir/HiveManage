@@ -3,8 +3,9 @@ import { z } from 'zod';
 export const CreateRemarkTickets = z.object({
   remark_type_id: z.number().min(1),
   job_order_id: z.number().min(1),
+  title: z.string().min(1),
   description: z.string().min(1),
-  content: z.string().min(1),
+  content: z.number().optional(),
   remarktickets_status: z.enum([
     'Resolved',
     'Pending',
@@ -13,15 +14,16 @@ export const CreateRemarkTickets = z.object({
     'Closed',
     'Open',
   ]), // Updated to match expected values
+  deadline: z.string().optional(),
   created_by: z.number().min(1),
-  deadline: z.date(),
 });
 
 export const UpdateRemarkTickets = z.object({
   remark_type_id: z.number().min(1),
   job_order_id: z.number().min(1),
+  title: z.string().min(1),
   description: z.string().min(1),
-  content: z.string().min(1),
+  content: z.number().optional(),
   remarktickets_status: z.enum([
     'Resolved',
     'Pending',
@@ -31,7 +33,7 @@ export const UpdateRemarkTickets = z.object({
     'Open',
   ]), // Updated to match expected values
   created_by: z.number().min(1),
-  deadline: z.date(),
+  deadline: z.string().optional(),
 });
 
 export type CreateRemarkTickets = z.infer<typeof CreateRemarkTickets>;

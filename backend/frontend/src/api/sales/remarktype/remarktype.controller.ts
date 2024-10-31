@@ -12,17 +12,11 @@ export class RemarkTypesController {
   }
 
   async getAllRemarkTypes(req: Request, res: Response, next: NextFunction) {
-    const limit = parseInt(req.query.limit as string) || 10; // default limit value
-    const offset = parseInt(req.query.offset as string) || 0; // default offset value
     try {
       // Fetch data count from the database
-      const data = await this.remarktypeService.getAllRemarkType(limit, offset);
+      const data = await this.remarktypeService.getAllRemarkType();
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Data retrieved successfully',
-        total_data: data.length,
-        limit: limit,
-        offset: offset,
         data: data,
       });
     } catch (error) {
@@ -39,7 +33,7 @@ export class RemarkTypesController {
       const data = await this.remarktypeService.getRemarkTypeById(
         Number(remark_type_id),
       );
-      res.status(200).json({ status: 'Success', message: data });
+      res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

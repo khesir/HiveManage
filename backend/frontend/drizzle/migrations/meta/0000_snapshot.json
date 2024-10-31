@@ -1,5 +1,5 @@
 {
-  "id": "b496a186-d88c-4f71-96a7-81c0109a546e",
+  "id": "e5779690-cc02-41d7-adb8-0452ebaca921",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1587,11 +1587,12 @@
           "primaryKey": false,
           "notNull": false
         },
-        "price": {
-          "name": "price",
-          "type": "numeric(10, 2)",
+        "tag": {
+          "name": "tag",
+          "type": "tag_supplier",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "on_listing": {
           "name": "on_listing",
@@ -3479,6 +3480,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "description": {
           "name": "description",
           "type": "varchar(255)",
@@ -3487,7 +3494,7 @@
         },
         "content": {
           "name": "content",
-          "type": "varchar(255)",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -3555,6 +3562,19 @@
           ],
           "columnsTo": [
             "job_order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "remarktickets_content_remarkcontent_remarkcontent_id_fk": {
+          "name": "remarktickets_content_remarkcontent_remarkcontent_id_fk",
+          "tableFrom": "remarktickets",
+          "tableTo": "remarkcontent",
+          "columnsFrom": [
+            "content"
+          ],
+          "columnsTo": [
+            "remarkcontent_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
