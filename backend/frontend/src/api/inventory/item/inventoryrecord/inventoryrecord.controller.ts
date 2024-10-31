@@ -2,16 +2,16 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/drizzle.schema';
-import { SupplierItemService } from './supplieritem.service';
+import { InventoryRecordService } from './inventoryrecord.service';
 
-export class SupplierItemController {
-  private supplieritemService: SupplierItemService;
+export class InventoryRecordController {
+  private inventoryrecordService: InventoryRecordService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.supplieritemService = new SupplierItemService(pool);
+    this.inventoryrecordService = new InventoryRecordService(pool);
   }
 
-  async getAllSupplierItem(req: Request, res: Response, next: NextFunction) {
+  async getAllInventoryRecord(req: Request, res: Response, next: NextFunction) {
     const item_id = req.params.item_id as string;
     const tag = (req.query.tag as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
@@ -19,7 +19,7 @@ export class SupplierItemController {
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.supplieritemService.getAllSupplierItem(
+      const data = await this.inventoryrecordService.getAllInventoryRecord(
         item_id,
         tag,
         sort,
@@ -32,7 +32,7 @@ export class SupplierItemController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.supplieritemWithDetails,
+        data: data.inventoryrecordWithDetails,
       });
     } catch (error) {
       res
@@ -42,11 +42,17 @@ export class SupplierItemController {
     }
   }
 
-  async getSupplierItemById(req: Request, res: Response, next: NextFunction) {
+  async getInventoryRecordById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { item_supplier_id } = req.params;
+      const { inventory_record_id } = req.params;
       const data =
-        await this.supplieritemService.getSupplierItemByID(item_supplier_id);
+        await this.inventoryrecordService.getInventoryRecordByID(
+          inventory_record_id,
+        );
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res
@@ -56,11 +62,11 @@ export class SupplierItemController {
     }
   }
 
-  async createSupplierItem(req: Request, res: Response, next: NextFunction) {
+  async createInventoryRecord(req: Request, res: Response, next: NextFunction) {
     try {
       const { supplier_id, item_id, tag, stock } = req.body;
 
-      await this.supplieritemService.createSupplierItem({
+      await this.inventoryrecordService.createInventoryRecord({
         supplier_id,
         item_id,
         tag,
@@ -69,7 +75,7 @@ export class SupplierItemController {
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
-        message: 'Successfully Created Supplier Item ',
+        message: 'Successfully Created Inventory Record ',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -81,23 +87,23 @@ export class SupplierItemController {
     }
   }
 
-  async updateSupplierItem(req: Request, res: Response, next: NextFunction) {
+  async updateInventoryRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { item_supplier_id } = req.params;
+      const { inventory_record_id } = req.params;
       const { supplier_id, item_id, tag, stock } = req.body;
 
-      await this.supplieritemService.updateSupplierItem(
+      await this.inventoryrecordService.updateInventoryRecord(
         {
           supplier_id,
           item_id,
           tag,
           stock,
         },
-        Number(item_supplier_id),
+        Number(inventory_record_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Supplier Item Updated Successfully ',
+        message: 'Inventory Record Updated Successfully ',
       });
     } catch (error) {
       res
@@ -107,15 +113,15 @@ export class SupplierItemController {
     }
   }
 
-  async deleteSupplierItem(req: Request, res: Response, next: NextFunction) {
+  async deleteInventoryRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { item_supplier_id } = req.params;
-      await this.supplieritemService.deleteSupplierItem(
-        Number(item_supplier_id),
+      const { inventory_record_id } = req.params;
+      await this.inventoryrecordService.deleteInventoryRecord(
+        Number(inventory_record_id),
       );
       res.status(200).json({
         status: 'Success',
-        message: `Supplier Item ID:${item_supplier_id} is deleted Successfully`,
+        message: `Inventory Record ID:${inventory_record_id} is deleted Successfully`,
       });
     } catch (error) {
       res

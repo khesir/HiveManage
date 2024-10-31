@@ -1477,99 +1477,12 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.item": {
-      "name": "item",
+    "public.inventory_record": {
+      "name": "inventory_record",
       "schema": "",
       "columns": {
-        "item_id": {
-          "name": "item_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "stock": {
-          "name": "stock",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "on_listing": {
-          "name": "on_listing",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "re_order_level": {
-          "name": "re_order_level",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tag": {
-          "name": "tag",
-          "type": "tag_item",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "item_product_id_product_product_id_fk": {
-          "name": "item_product_id_product_product_id_fk",
-          "tableFrom": "item",
-          "tableTo": "product",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "product_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.item_supplier": {
-      "name": "item_supplier",
-      "schema": "",
-      "columns": {
-        "item_supplier_id": {
-          "name": "item_supplier_id",
+        "inventory_record_id": {
+          "name": "inventory_record_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -1622,9 +1535,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "item_supplier_supplier_id_supplier_supplier_id_fk": {
-          "name": "item_supplier_supplier_id_supplier_supplier_id_fk",
-          "tableFrom": "item_supplier",
+        "inventory_record_supplier_id_supplier_supplier_id_fk": {
+          "name": "inventory_record_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "inventory_record",
           "tableTo": "supplier",
           "columnsFrom": [
             "supplier_id"
@@ -1635,15 +1548,103 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "item_supplier_item_id_item_item_id_fk": {
-          "name": "item_supplier_item_id_item_item_id_fk",
-          "tableFrom": "item_supplier",
+        "inventory_record_item_id_item_item_id_fk": {
+          "name": "inventory_record_item_id_item_item_id_fk",
+          "tableFrom": "inventory_record",
           "tableTo": "item",
           "columnsFrom": [
             "item_id"
           ],
           "columnsTo": [
             "item_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.item": {
+      "name": "item",
+      "schema": "",
+      "columns": {
+        "item_id": {
+          "name": "item_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stock": {
+          "name": "stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tag": {
+          "name": "tag",
+          "type": "tag_supplier",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "on_listing": {
+          "name": "on_listing",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "re_order_level": {
+          "name": "re_order_level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tag": {
+          "name": "tag",
+          "type": "tag_item",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "item_product_id_product_product_id_fk": {
+          "name": "item_product_id_product_product_id_fk",
+          "tableFrom": "item",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2231,7 +2232,7 @@
         },
         "price": {
           "name": "price",
-          "type": "integer",
+          "type": "numeric(50, 2)",
           "primaryKey": false,
           "notNull": false
         },

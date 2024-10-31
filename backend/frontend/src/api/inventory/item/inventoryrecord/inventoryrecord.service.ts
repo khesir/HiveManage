@@ -1,32 +1,32 @@
 import {
   item,
-  item_supplier,
+  inventory_record,
   SchemaType,
   supplier,
 } from '@/drizzle/drizzle.schema';
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { CreateSupplierItem } from './supplieritem.model';
+import { CreateInventoryRecord } from './inventoryrecord.model';
 
-export class SupplierItemService {
+export class InventoryRecordService {
   private db: PostgresJsDatabase<SchemaType>;
 
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
-  async createSupplierItem(data: CreateSupplierItem) {
-    await this.db.insert(item_supplier).values(data);
+  async createInventoryRecord(data: CreateInventoryRecord) {
+    await this.db.insert(inventory_record).values(data);
   }
 
-  async getAllSupplierItem(
+  async getAllInventoryRecord(
     item_id: string | undefined,
     tag: string | undefined,
     sort: string,
     limit: number,
     offset: number,
   ) {
-    const conditions = [isNull(item_supplier.deleted_at)];
+    const conditions = [isNull(inventory_record.deleted_at)];
 
     if (tag) {
       // Define valid statuses as a string union type
@@ -44,41 +44,44 @@ export class SupplierItemService {
       ] as const; // 'as const' infers a readonly tuple of strings
       if (validStatuses.includes(tag as (typeof validStatuses)[number])) {
         conditions.push(
-          eq(item_supplier.tag, tag as (typeof validStatuses)[number]),
+          eq(inventory_record.tag, tag as (typeof validStatuses)[number]),
         );
       } else {
         throw new Error(`Invalid payment status: ${tag}`);
       }
     }
     if (item_id) {
-      conditions.push(eq(item_supplier.item_id, Number(item_id)));
+      conditions.push(eq(inventory_record.item_id, Number(item_id)));
     }
 
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(item_supplier)
+      .from(inventory_record)
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
 
     const result = await this.db
       .select()
-      .from(item_supplier)
-      .leftJoin(supplier, eq(supplier.supplier_id, item_supplier.supplier_id))
-      .leftJoin(item, eq(item.item_id, item_supplier.item_id))
+      .from(inventory_record)
+      .leftJoin(
+        supplier,
+        eq(supplier.supplier_id, inventory_record.supplier_id),
+      )
+      .leftJoin(item, eq(item.item_id, inventory_record.item_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
-          ? asc(item_supplier.created_at)
-          : desc(item_supplier.created_at),
+          ? asc(inventory_record.created_at)
+          : desc(inventory_record.created_at),
       )
       .limit(limit)
       .offset(offset);
 
-    const supplieritemWithDetails = result.map((row) => ({
-      item_supplier_id: row.item_supplier.item_supplier_id,
+    const inventoryrecordWithDetails = result.map((row) => ({
+      inventory_record_id: row.inventory_record.inventory_record_id,
       supplier: {
         supplier_id: row.supplier?.supplier_id,
         name: row.supplier?.name,
@@ -100,26 +103,31 @@ export class SupplierItemService {
         last_updated: row.item?.last_updated,
         deleted_at: row.item?.deleted_at,
       },
-      tag: row.item_supplier?.tag,
-      stock: row.item_supplier?.stock,
-      created_at: row.item_supplier?.created_at,
-      last_updated: row.item_supplier?.last_updated,
-      deleted_at: row.item_supplier?.deleted_at,
+      tag: row.inventory_record?.tag,
+      stock: row.inventory_record?.stock,
+      created_at: row.inventory_record?.created_at,
+      last_updated: row.inventory_record?.last_updated,
+      deleted_at: row.inventory_record?.deleted_at,
     }));
 
-    return { totalData, supplieritemWithDetails };
+    return { totalData, inventoryrecordWithDetails };
   }
 
-  async getSupplierItemByID(item_supplier_id: string) {
+  async getInventoryRecordByID(item_supplier_id: string) {
     const result = await this.db
       .select()
-      .from(item_supplier)
-      .leftJoin(supplier, eq(supplier.supplier_id, item_supplier.supplier_id))
-      .leftJoin(item, eq(item.item_id, item_supplier.item_id))
-      .where(eq(item_supplier.item_supplier_id, Number(item_supplier_id)));
+      .from(inventory_record)
+      .leftJoin(
+        supplier,
+        eq(supplier.supplier_id, inventory_record.supplier_id),
+      )
+      .leftJoin(item, eq(item.item_id, inventory_record.item_id))
+      .where(
+        eq(inventory_record.inventory_record_id, Number(item_supplier_id)),
+      );
 
-    const supplieritemWithDetails = result.map((row) => ({
-      item_supplier_id: row.item_supplier.item_supplier_id,
+    const inventoryrecordWithDetails = result.map((row) => ({
+      inventory_record_id: row.inventory_record.inventory_record_id,
       supplier: {
         supplier_id: row.supplier?.supplier_id,
         name: row.supplier?.name,
@@ -141,27 +149,27 @@ export class SupplierItemService {
         last_updated: row.item?.last_updated,
         deleted_at: row.item?.deleted_at,
       },
-      tag: row.item_supplier?.tag,
-      stock: row.item_supplier?.stock,
-      created_at: row.item_supplier?.created_at,
-      last_updated: row.item_supplier?.last_updated,
-      deleted_at: row.item_supplier?.deleted_at,
+      tag: row.inventory_record?.tag,
+      stock: row.inventory_record?.stock,
+      created_at: row.inventory_record?.created_at,
+      last_updated: row.inventory_record?.last_updated,
+      deleted_at: row.inventory_record?.deleted_at,
     }));
 
-    return supplieritemWithDetails;
+    return inventoryrecordWithDetails;
   }
 
-  async updateSupplierItem(data: object, paramsId: number) {
+  async updateInventoryRecord(data: object, paramsId: number) {
     await this.db
-      .update(item_supplier)
+      .update(inventory_record)
       .set(data)
-      .where(eq(item_supplier.item_supplier_id, paramsId));
+      .where(eq(inventory_record.inventory_record_id, paramsId));
   }
 
-  async deleteSupplierItem(paramsId: number): Promise<void> {
+  async deleteInventoryRecord(paramsId: number): Promise<void> {
     await this.db
-      .update(item_supplier)
+      .update(inventory_record)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(item_supplier.item_supplier_id, paramsId));
+      .where(eq(inventory_record.inventory_record_id, paramsId));
   }
 }

@@ -139,9 +139,15 @@ export class OrderItemService {
   }
 
   async updateOrderItem(data: UpdateOrderItem, orderItem_id: string) {
+    // Convert price to a string with two decimal places
+    const updatedData = {
+      ...data,
+      price: data.price.toFixed(2), // Ensure price is a string formatted as a decimal
+    };
+
     await this.db
       .update(orderItem)
-      .set(data)
+      .set(updatedData)
       .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
   }
 

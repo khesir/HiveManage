@@ -3,31 +3,31 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { item_supplier } from '@/drizzle/drizzle.schema';
+import { inventory_record } from '@/drizzle/drizzle.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
 
-export async function validateSupplierItemID(
+export async function validateInventoryRecordID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { item_supplier_id } = req.params;
+  const { inventory_record_id } = req.params;
 
   try {
-    const SupplierItem = await db
+    const InventoryRecord = await db
       .select()
-      .from(item_supplier)
+      .from(inventory_record)
       .where(
         and(
-          eq(item_supplier.item_supplier_id, Number(item_supplier_id)),
-          isNull(item_supplier.deleted_at),
+          eq(inventory_record.inventory_record_id, Number(inventory_record_id)),
+          isNull(inventory_record.deleted_at),
         ),
       );
 
-    if (!SupplierItem[0]) {
-      return res.status(404).json({ message: 'Supplier Item not found' });
+    if (!InventoryRecord[0]) {
+      return res.status(404).json({ message: 'Inventory Record not found' });
     }
     next();
   } catch (error) {

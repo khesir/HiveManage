@@ -16,7 +16,17 @@ export class StocksLogsService {
     this.db = db;
   }
 
-  async getAllStocksLogs(limit: number, offest: number, sort: string) {
+  async getAllStocksLogs(
+    item_id: string | undefined,
+    limit: number,
+    offset: number,
+  ) {
+    const conditions = [];
+
+    if (item_id) {
+      conditions.push(eq(stocksLogs.item_id, Number(item_id)));
+    }
+
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -38,7 +48,7 @@ export class StocksLogsService {
           : desc(stocksLogs.created_at),
       )
       .limit(limit)
-      .offset(offest);
+      .offset(offset);
 
     const itemsWithDetails = result.map((row) => ({
       stock_log_id: row.stock_logs.stock_log_id,

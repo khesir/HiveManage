@@ -6,8 +6,8 @@ import { ItemsController } from './item.controller';
 import { validateItemID } from './item.middleware';
 import { CreateItem, UpdateItem } from './item.model';
 import orderitemsRoute from './orderitem/orderitem.route';
-import supplierItemRoute from './supplieritem/supplieritem.route';
 import priceHistoryRoute from './pricehistory/pricehistory.route';
+import inventoryRecordRoute from './inventoryrecord/inventoryrecord.route';
 
 const itemsRoute = Router({ mergeParams: true });
 const itemsController = new ItemsController(db);
@@ -45,7 +45,11 @@ log.info('DELETE /item/:item_id set');
 
 itemsRoute.use('/:item_id/orderItem', validateItemID, orderitemsRoute);
 
-itemsRoute.use('/:item_id/supplieritem', validateItemID, supplierItemRoute);
+itemsRoute.use(
+  '/:item_id/inventoryrecord',
+  validateItemID,
+  inventoryRecordRoute,
+);
 
 itemsRoute.use('/:item_id/pricehistory', validateItemID, priceHistoryRoute);
 

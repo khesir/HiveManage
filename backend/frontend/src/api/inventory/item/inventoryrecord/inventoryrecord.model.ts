@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CreateSupplierItem = z.object({
+export const CreateInventoryRecord = z.object({
   supplier_id: z.number().min(1),
   item_id: z.number().min(1),
   tag: z.enum([
@@ -18,7 +18,7 @@ export const CreateSupplierItem = z.object({
   stock: z.number().min(1),
 });
 
-export const UpdateSupplierItem = z.object({
+export const UpdateInventoryRecord = z.object({
   supplier_id: z.number().min(1),
   item_id: z.number().min(1),
   tag: z.enum([
@@ -36,5 +36,5 @@ export const UpdateSupplierItem = z.object({
   stock: z.number().min(1),
 });
 
-export type CreateSupplierItem = z.infer<typeof CreateSupplierItem>;
-export type UpdateSupplierItem = z.infer<typeof UpdateSupplierItem>;
+export type CreateInventoryRecord = z.infer<typeof CreateInventoryRecord>;
+export type UpdateInventoryRecord = z.infer<typeof UpdateInventoryRecord>;
