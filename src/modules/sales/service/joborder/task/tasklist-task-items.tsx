@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {PaginationResponse, request} from '@/api/axios';
-import {Card, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardHeader, CardTitle} from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useState, useEffect} from 'react';
-import {useJoborderStore} from './hook/useJoborderStore';
-import {TaskWithDetails} from './validation/task';
 import {Button} from '@/components/ui/button';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
-import {AvatarCircles} from '@/components/ui/avatarcircles';
-import {ActionsCell} from './view/tasklist/columns';
+import {useJoborderStore} from '../hook/useJoborderStore';
+import {TaskWithDetails} from '../validation/task';
 
-export function JoborderTaskList() {
+export function TaskItems() {
 	const {joborderData} = useJoborderStore();
 	const [fullRemarkTickets, setFullRemarkTickets] = useState<TaskWithDetails[]>(
 		[],
@@ -25,7 +22,7 @@ export function JoborderTaskList() {
 		const fetchEmployees = async () => {
 			const res = await request<PaginationResponse<TaskWithDetails>>(
 				'GET',
-				`/api/v1/sms/service/${joborderData?.service.service_id}/joborder/${joborderData?.joborder_id}/remark-tickets?no_pagination=true`,
+				`/api/v1/sms/service/${joborderData?.service.service_id}/joborder/${joborderData?.joborder_id}/remark-items?no_pagination=true`,
 			);
 			setFullRemarkTickets(res.data);
 			setPageCount(Math.ceil(res.total_data / pageSize));
@@ -43,9 +40,31 @@ export function JoborderTaskList() {
 	const handlePaginationChange = (newPageIndex: number) => {
 		setPageIndex(newPageIndex);
 	};
-
 	return (
 		<>
+			<ScrollArea className="h-[calc(70vh-210px)] px-2">
+				<div className="flex flex-col gap-3">
+					{remarkTickets.length !== 0 ? (
+						remarkTickets.map((ticket, index) => (
+							<Card
+								className="relative w-full h-[120px] flex flex-col"
+								key={index}
+							>
+								<CardHeader className="flex flex-col justify-start">
+									<CardTitle className="font-semibold text-sm  hover:underline">
+										test
+									</CardTitle>
+								</CardHeader>
+								{/* <div className="absolute bottom-1 right-3 gap-2 flex items-center justify-end">
+								<Button>Remove</Button>
+							</div> */}
+							</Card>
+						))
+					) : (
+						<div>No available Task</div>
+					)}
+				</div>
+			</ScrollArea>
 			<div className="flex flex-row justify-between gap-2 p-2">
 				<div className="flex items-center justify-center text-sm font-medium">
 					Page {pageIndex + 1} of {pageCount}
@@ -89,33 +108,6 @@ export function JoborderTaskList() {
 					</Button>
 				</div>
 			</div>
-			<ScrollArea className="h-[calc(80vh-210px)] px-2">
-				<div className="flex flex-col gap-3">
-					{remarkTickets.length !== 0 ? (
-						remarkTickets.map((ticket, index) => (
-							<Card
-								className="relative w-full h-[120px] flex flex-col"
-								key={index}
-							>
-								<CardHeader className="flex flex-col justify-start">
-									<CardTitle className="font-semibold text-sm  hover:underline">
-										{`#${ticket.remark_id}, ${ticket.title} - ${ticket.remarkticket_status}`}
-									</CardTitle>
-								</CardHeader>
-								<CardFooter className="flex justify-between">
-									<AvatarCircles avatarUrls={['#', '#', '#', '#']} />
-									<ActionsCell {...ticket} />
-								</CardFooter>
-								{/* <div className="absolute bottom-1 right-3 gap-2 flex items-center justify-end">
-								<Button>Remove</Button>
-							</div> */}
-							</Card>
-						))
-					) : (
-						<div>No available Task</div>
-					)}
-				</div>
-			</ScrollArea>
 		</>
 	);
 }

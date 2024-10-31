@@ -1,4 +1,4 @@
-import {useItemWithDetailsStore} from '@/components/hooks/use-selected-item';
+import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {Borrow, borrowItemSchema} from '@/lib/sales-zod-schema';
@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
-import {ItemLisitingModal} from '../modal/item-listing-modal';
+import {ItemLisitingModal} from '../../../_components/modal/item-listing-modal';
 
 interface BorrowFormProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;

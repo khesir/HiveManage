@@ -1,18 +1,16 @@
 import {PaginationResponse, request} from '@/api/axios';
-import {RemarkTicketWithDetails} from '@/lib/sales-zod-schema';
 import {useState, useEffect} from 'react';
 import {useSearchParams} from 'react-router-dom';
-import {JoborderTable} from './tasklist-table';
 import {useJoborderStore} from '../../hook/useJoborderStore';
 import {columns} from './columns';
+import {TaskTable} from './tasklist-table';
+import {TaskWithDetails} from '../../validation/task';
 
 export function TaskList() {
 	const {joborderData} = useJoborderStore();
 	const [searchParams] = useSearchParams();
 
-	const [remarkTickets, setRemarkTickets] = useState<RemarkTicketWithDetails[]>(
-		[],
-	);
+	const [remarkTickets, setRemarkTickets] = useState<TaskWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 
 	const page = Number(searchParams.get('page')) || 1;
@@ -23,7 +21,7 @@ export function TaskList() {
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
-			const res = await request<PaginationResponse<RemarkTicketWithDetails>>(
+			const res = await request<PaginationResponse<TaskWithDetails>>(
 				'GET',
 				`/api/v1/sms/service/${joborderData?.service.service_id}/joborder/${joborderData?.joborder_id}/remark-tickets?limit=${pageLimit}&offset=${offset}` +
 					(status ? `&joborder_status=${status}` : '') +
@@ -35,8 +33,9 @@ export function TaskList() {
 
 		fetchEmployees();
 	}, [offset, pageLimit, sort, status]);
+	console.log(remarkTickets);
 	return (
-		<JoborderTable
+		<TaskTable
 			columns={columns}
 			data={remarkTickets}
 			searchKey={'uuid'}

@@ -12,11 +12,11 @@ const ActionsCell = (data: ServiceWithDetails) => {
 	const handleClick = (service_id: number) => {
 		const id = Number(service_id);
 		if (location.pathname.includes('/sales')) {
-			navigate(`/sales/services/view/${id}`);
+			navigate(`/sales/services/joborder/view/${id}`);
 		} else if (location.pathname.includes('/admin')) {
-			navigate(`/admin/sales/services/view/${id}`);
+			navigate(`/admin/sales/services/joborder/view/${id}`);
 		} else if (location.pathname.includes('/tech')) {
-			navigate(`/tech/services/view/${id}`);
+			navigate(`/tech/services/joborder/view/${id}`);
 		}
 		setServiceFormData(data);
 	};

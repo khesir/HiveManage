@@ -9,14 +9,6 @@ import {
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog';
-import {
 	Form,
 	FormControl,
 	FormField,
@@ -40,8 +32,8 @@ import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-import { CreateCustomer } from '../api/create-customer';
-import { useNavigate } from 'react-router-dom';
+import {CreateCustomer} from '../api/create-customer';
+import {useNavigate} from 'react-router-dom';
 
 interface CreateCustomerFormProps {
 	processCreate?: (data: any[]) => void;

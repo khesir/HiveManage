@@ -1,29 +1,42 @@
 import {ColumnDef} from '@tanstack/react-table';
-import {RemarkTicketWithDetails} from '@/lib/sales-zod-schema';
 import useServiceFormStore from '@/components/hooks/use-service-store';
 import {Button} from '@/components/ui/button';
 import {useNavigate, useLocation} from 'react-router-dom';
+import {TaskWithDetails} from '../../validation/task';
+import useTicketStore from '../../hook/use-ticket-store';
 
-const ActionsCell = (data: RemarkTicketWithDetails) => {
+export const ActionsCell = (data: TaskWithDetails) => {
 	const {setServiceFormData} = useServiceFormStore();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const handleClick = (service_id: number) => {
-		const id = Number(service_id);
+	const handleClick = (clickData: TaskWithDetails) => {
+		const ticket_id = Number(clickData.remark_id);
+		useTicketStore.getState().setTicketStore(clickData);
 		if (location.pathname.includes('/sales')) {
-			navigate(`/sales/services/view/${id}`);
+			navigate(
+				`/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
+			);
 		} else if (location.pathname.includes('/admin')) {
-			navigate(`/admin/sales/services/view/${id}`);
+			navigate(
+				`/admin/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
+			);
 		} else if (location.pathname.includes('/tech')) {
-			navigate(`/tech/services/view/${id}`);
+			navigate(
+				`/tech/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
+			);
 		}
+
 		setServiceFormData(data);
 	};
-
-	return <Button onClick={() => handleClick(data.remark_id!)}>View</Button>;
+	console.log(data);
+	return (
+		<Button onClick={() => handleClick(data)} variant={'outline'}>
+			View
+		</Button>
+	);
 };
 
-export const columns: ColumnDef<RemarkTicketWithDetails>[] = [
+export const columns: ColumnDef<TaskWithDetails>[] = [
 	{
 		accessorKey: 'remark_id',
 		header: 'ID',
@@ -41,7 +54,7 @@ export const columns: ColumnDef<RemarkTicketWithDetails>[] = [
 		header: 'Description',
 	},
 	{
-		accessorKey: 'remarktickets_status',
+		accessorKey: 'remarkticket_status',
 		header: 'Status',
 	},
 	{

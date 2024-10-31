@@ -29,7 +29,7 @@ import {
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {Badge} from '@/components/ui/badge';
 import {Input} from '@/components/ui/input';
-import {useItemWithDetailsStore} from '@/components/hooks/use-selected-item';
+import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
 
 interface ItemListingModal {
 	title: string;

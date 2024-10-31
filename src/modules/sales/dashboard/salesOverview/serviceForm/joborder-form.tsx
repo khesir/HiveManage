@@ -20,8 +20,10 @@ import {
 import {Joborder, joborderSchema} from '@/lib/sales-zod-schema';
 import {generateCustomUUID} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
+
+import {JoborderSetting} from '@/modules/_configSettings/config';
 
 interface JoborderProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;
@@ -30,6 +32,7 @@ interface JoborderProps {
 
 export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 	const [loading, setLoading] = useState<boolean>(false);
+	const [status, setStatus] = useState<string[]>([]);
 	const joborderType = [
 		{
 			id: 1,
@@ -57,6 +60,11 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 			description: 'Item 5',
 		},
 	];
+	useEffect(() => {
+		const statusJO = new JoborderSetting();
+		setStatus(statusJO.getJoborderStatus());
+	}, []);
+
 	// TODO: Implement Job order type
 	// const [joborderType, setJobOrderType] = useState<JobOrderType>();
 	// useEffect(() => {
@@ -66,17 +74,6 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 	// 	}
 	// 	fetchData();
 	// },[])
-	const status = [
-		'Pending',
-		'In Progress',
-		'Completed',
-		'On Hold',
-		'Cancelled',
-		'Awaiting Approval',
-		'Approved',
-		'Rejected',
-		'Closed',
-	];
 
 	const form = useForm<Joborder>({
 		resolver: zodResolver(joborderSchema),
@@ -84,7 +81,7 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 			joborder_type_id: undefined,
 			uuid: generateCustomUUID(),
 			fee: fee,
-			status: undefined,
+			joborder_status: undefined,
 		},
 	});
 
@@ -105,7 +102,7 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 			service_id: undefined,
 			uuid: formData.uuid,
 			fee: formData.fee,
-			status: formData.status,
+			status: formData.joborder_status,
 		};
 		const salesItemData = {
 			data: {
@@ -198,7 +195,7 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 						/>
 						<FormField
 							control={form.control}
-							name="status"
+							name="joborder_status"
 							render={({field}) => (
 								<FormItem>
 									<FormLabel>Joborder Status</FormLabel>

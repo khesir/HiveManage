@@ -25,9 +25,15 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {RemarkTicketWithDetails} from '@/lib/sales-zod-schema';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {TaskWithDetails} from '../../validation/task';
+import useAddFormStatus from '../../hook/use-ticket-form';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -40,7 +46,7 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function JoborderTable<TData extends RemarkTicketWithDetails, TValue>({
+export function TaskTable<TData extends TaskWithDetails, TValue>({
 	columns,
 	data,
 	pageCount,
@@ -108,52 +114,52 @@ export function JoborderTable<TData extends RemarkTicketWithDetails, TValue>({
 		manualFiltering: true,
 	});
 
-	// Debounced search value to avoid triggering requests too frequently
-	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-	// console.log(debouncedSearchValue);
-	// useEffect(() => {
-	// 	const handler = setTimeout(() => {
-	// 		setDebouncedSearchValue(searchValue);
-	// 	}, 500); // Adjust debounce delay as needed
-	// 	return () => clearTimeout(handler);
-	// }, [searchValue]);
-
-	// // Update the URL with the search query when the searchValue changes
-	// useEffect(() => {
-	// 	if (debouncedSearchValue?.length > 0) {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null, // Reset page when searching
-	// 				limit: pageSize,
-	// 				fullname: debouncedSearchValue, // Add search param to URL
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	} else {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null,
-	// 				limit: pageSize,
-	// 				fullname: null, // Remove search param from URL if empty
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	}
-
-	// 	// Reset pagination to first page on search change
-	// 	setPagination((prev) => ({...prev, pageIndex: 0}));
-	// }, [
-	// 	debouncedSearchValue,
-	// 	pageSize,
-	// 	navigate,
-	// 	location.pathname,
-	// 	createQueryString,
-	// ]);
-
-	// Set the first employee data to Zustand on initial render
-
+	// Editing form
+	const {addStatus, setAddStatus} = useAddFormStatus();
+	const [filter, setFilter] = useState(false);
+	const handleAdding = () => {
+		setAddStatus(!addStatus);
+	};
 	return (
 		<>
+			<div className="flex justify-between mb-3">
+				<div className="space-x-2">
+					{!filter ? (
+						<Button variant={'outline'} onClick={() => setFilter(!filter)}>
+							Filter
+						</Button>
+					) : (
+						<>
+							<Button variant={'outline'} onClick={() => setFilter(!filter)}>
+								Filter
+							</Button>
+							<DropdownMenu>
+								<DropdownMenuTrigger>
+									<Button variant={'outline'}>Status</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="flex flex-col">
+									<Button variant={'ghost'}>No set</Button>
+									<Button variant={'ghost'}>Active</Button>
+									<Button variant={'ghost'}>Inactive</Button>
+								</DropdownMenuContent>
+							</DropdownMenu>
+							<DropdownMenu>
+								<DropdownMenuTrigger>
+									<Button variant={'outline'}>isAssigned: True</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="flex flex-col">
+									<Button variant={'ghost'}>True</Button>
+									<Button variant={'ghost'}>False</Button>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</>
+					)}
+				</div>
+				<Button onClick={handleAdding}>
+					<Plus className="w-4 h-4" />
+					Add Task
+				</Button>
+			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
@@ -283,7 +289,7 @@ export function JoborderTable<TData extends RemarkTicketWithDetails, TValue>({
 						</Button>
 					</div>
 				</div>
-			</div>
+			</div>{' '}
 		</>
 	);
 }

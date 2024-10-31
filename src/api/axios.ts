@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import configManager from '@/_config/config';
+import configManager from '@/modules/_configSettings/config';
 export interface PaginationResponse<T> {
 	total_data: number;
 	offset: number;

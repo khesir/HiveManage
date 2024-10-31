@@ -36,6 +36,7 @@ import JoborderListsPage from './pages/tech/systems/service/joborder-page';
 import JoborderViewPage from './pages/tech/systems/service/joborder/view-page';
 import InventoryOverview from './pages/inventory/overview/admin-overview';
 import ItemPage from './pages/inventory/items/items-page';
+import ReadTask from './pages/sales/systems/service/tickets/task-detail';
 
 function App() {
 	return (
@@ -75,7 +76,15 @@ function App() {
 						<Route path="services" element={<ServicePages />} />
 						<Route path="services/view/:id" element={<ViewServicePage />} />
 						<Route path="services/create" element={<CreateServicePage />} />
-
+						<Route
+							path="services/joborders/view/:id"
+							element={<JoborderViewPage />}
+						/>
+						<Route
+							path="services/joborders/view/:id/task/:task_id"
+							element={<ReadTask />}
+						/>
+						<Route path="services/joborders/view/:id/report" />
 						<Route path="customer" element={<CustomerDatabasePage />} />
 						<Route path="customer/view/:id" element={<CustomerViewPage />} />
 						<Route path="customer/create" element={<CustomerCreatePage />} />
@@ -103,7 +112,11 @@ function App() {
 						path="services/joborders/view/:id"
 						element={<JoborderViewPage />}
 					/>
-
+					<Route
+						path="services/joborders/view/:id/task/:task_id"
+						element={<ReadTask />}
+					/>
+					<Route path="services/joborders/view/:id/report" />
 					<Route path="customer" element={<CustomerDatabasePage />} />
 					<Route path="customer/view/:id" element={<CustomerViewPage />} />
 					<Route path="customer/create" element={<CustomerCreatePage />} />
@@ -128,6 +141,11 @@ function App() {
 						path="services/joborders/view/:id"
 						element={<JoborderViewPage />}
 					/>
+					<Route
+						path="services/joborders/view/:id/task/:task_id"
+						element={<ReadTask />}
+					/>
+					<Route path="services/joborders/view/:id/report" />
 
 					<Route path="customer" element={<CustomerDatabasePage />} />
 					<Route path="customer/view/:id" element={<CustomerViewPage />} />
