@@ -1,5 +1,5 @@
 {
-  "id": "c777558e-1969-4ec5-bae4-2d0515ee6500",
+  "id": "b496a186-d88c-4f71-96a7-81c0109a546e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1477,6 +1477,94 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.inventory_record": {
+      "name": "inventory_record",
+      "schema": "",
+      "columns": {
+        "inventory_record_id": {
+          "name": "inventory_record_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "supplier_id": {
+          "name": "supplier_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "item_id": {
+          "name": "item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tag": {
+          "name": "tag",
+          "type": "tag_supplier",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stock": {
+          "name": "stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "inventory_record_supplier_id_supplier_supplier_id_fk": {
+          "name": "inventory_record_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "inventory_record",
+          "tableTo": "supplier",
+          "columnsFrom": [
+            "supplier_id"
+          ],
+          "columnsTo": [
+            "supplier_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "inventory_record_item_id_item_item_id_fk": {
+          "name": "inventory_record_item_id_item_item_id_fk",
+          "tableFrom": "inventory_record",
+          "tableTo": "item",
+          "columnsFrom": [
+            "item_id"
+          ],
+          "columnsTo": [
+            "item_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.item": {
       "name": "item",
       "schema": "",
@@ -1556,93 +1644,6 @@
           ],
           "columnsTo": [
             "product_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.item_supplier": {
-      "name": "item_supplier",
-      "schema": "",
-      "columns": {
-        "item_supplier_id": {
-          "name": "item_supplier_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "supplier_id": {
-          "name": "supplier_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "item_id": {
-          "name": "item_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tag": {
-          "name": "tag",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "stock": {
-          "name": "stock",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "item_supplier_supplier_id_supplier_supplier_id_fk": {
-          "name": "item_supplier_supplier_id_supplier_supplier_id_fk",
-          "tableFrom": "item_supplier",
-          "tableTo": "supplier",
-          "columnsFrom": [
-            "supplier_id"
-          ],
-          "columnsTo": [
-            "supplier_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "item_supplier_item_id_item_item_id_fk": {
-          "name": "item_supplier_item_id_item_item_id_fk",
-          "tableFrom": "item_supplier",
-          "tableTo": "item",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2230,7 +2231,7 @@
         },
         "price": {
           "name": "price",
-          "type": "integer",
+          "type": "numeric(50, 2)",
           "primaryKey": false,
           "notNull": false
         },
@@ -4264,6 +4265,22 @@
     }
   },
   "enums": {
+    "public.tag_supplier": {
+      "name": "tag_supplier",
+      "schema": "public",
+      "values": [
+        "Active",
+        "Inactive",
+        "Pending Approval",
+        "Verified",
+        "Unverified",
+        "Suspended",
+        "Preferred",
+        "Blacklisted",
+        "Under Review",
+        "Archived"
+      ]
+    },
     "public.tag_item": {
       "name": "tag_item",
       "schema": "public",

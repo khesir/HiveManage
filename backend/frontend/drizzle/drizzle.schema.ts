@@ -840,8 +840,8 @@ export const item = pgTable('item', {
 });
 
 //Item Supplier
-export const item_supplier = pgTable('item_supplier', {
-  item_supplier_id: serial('item_supplier_id').primaryKey(),
+export const inventory_record = pgTable('inventory_record', {
+  inventory_record_id: serial('inventory_record_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
   item_id: integer('item_id').references(() => item.item_id),
   tag: TagEnum('tag').notNull(),
@@ -968,7 +968,7 @@ export const orderItem = pgTable('orderItem', {
   order_id: integer('order_id').references(() => order.order_id),
   product_id: integer('product_id').references(() => product.product_id),
   quantity: integer('quantity'),
-  price: integer('price'),
+  price: decimal('price', { precision: 50, scale: 2 }),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -1140,7 +1140,7 @@ export const schema: SchemaType = {
   order,
   orderItem,
   arrived_Items,
-  item_supplier,
+  inventory_record,
   price_history,
   product_category,
 

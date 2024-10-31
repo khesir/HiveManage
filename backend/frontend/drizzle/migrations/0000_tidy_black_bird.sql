@@ -1,4 +1,10 @@
 DO $$ BEGIN
+ CREATE TYPE "public"."tag_supplier" AS ENUM('Active', 'Inactive', 'Pending Approval', 'Verified', 'Unverified', 'Suspended', 'Preferred', 'Blacklisted', 'Under Review', 'Archived');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."tag_item" AS ENUM('New', 'Used', 'Broken');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -372,6 +378,17 @@ CREATE TABLE IF NOT EXISTS "inquiry" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "inventory_record" (
+	"inventory_record_id" serial PRIMARY KEY NOT NULL,
+	"supplier_id" integer,
+	"item_id" integer,
+	"tag" "tag_supplier" NOT NULL,
+	"stock" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "item" (
 	"item_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
@@ -380,17 +397,6 @@ CREATE TABLE IF NOT EXISTS "item" (
 	"on_listing" boolean,
 	"re_order_level" integer,
 	"tag" "tag_item",
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "item_supplier" (
-	"item_supplier_id" serial PRIMARY KEY NOT NULL,
-	"supplier_id" integer,
-	"item_id" integer,
-	"tag" varchar(50),
-	"stock" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -480,7 +486,7 @@ CREATE TABLE IF NOT EXISTS "orderItem" (
 	"order_id" integer,
 	"product_id" integer,
 	"quantity" integer,
-	"price" integer,
+	"price" numeric(50, 2),
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -862,19 +868,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "inventory_record" ADD CONSTRAINT "inventory_record_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "inventory_record" ADD CONSTRAINT "inventory_record_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "item" ADD CONSTRAINT "item_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "item_supplier" ADD CONSTRAINT "item_supplier_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "item_supplier" ADD CONSTRAINT "item_supplier_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

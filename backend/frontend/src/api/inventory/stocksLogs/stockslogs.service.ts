@@ -19,7 +19,7 @@ export class StocksLogsService {
   async getAllStocksLogs(
     item_id: string | undefined,
     limit: number,
-    offest: number,
+    offset: number,
   ) {
     const conditions = [];
 
@@ -45,7 +45,7 @@ export class StocksLogsService {
       .leftJoin(category, eq(category.category_id, product.category_id))
       .where(and(...conditions))
       .limit(limit)
-      .offset(offest);
+      .offset(offset);
 
     const itemsWithDetails = result.map((row) => ({
       stock_log_id: row.stock_logs.stock_log_id,
