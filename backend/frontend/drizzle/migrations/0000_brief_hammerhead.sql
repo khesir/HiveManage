@@ -1,4 +1,10 @@
 DO $$ BEGIN
+ CREATE TYPE "public"."tag_supplier" AS ENUM('Active', 'Inactive', 'Pending Approval', 'Verified', 'Unverified', 'Suspended', 'Preferred', 'Blacklisted', 'Under Review', 'Archived');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."tag_item" AS ENUM('New', 'Used', 'Broken');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -389,7 +395,7 @@ CREATE TABLE IF NOT EXISTS "item_supplier" (
 	"item_supplier_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
 	"item_id" integer,
-	"tag" varchar(50),
+	"tag" "tag_supplier" NOT NULL,
 	"stock" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -651,8 +657,9 @@ CREATE TABLE IF NOT EXISTS "remarktickets" (
 	"remark_id" serial PRIMARY KEY NOT NULL,
 	"remark_type_id" integer,
 	"job_order_id" integer,
+	"title" varchar,
 	"description" varchar(255),
-	"content" varchar(255),
+	"content" integer,
 	"remarktickets_status" "remarktickets_status" NOT NULL,
 	"created_by" integer,
 	"deadline" timestamp NOT NULL,
@@ -1073,6 +1080,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "remarktickets" ADD CONSTRAINT "remarktickets_job_order_id_joborder_job_order_id_fk" FOREIGN KEY ("job_order_id") REFERENCES "public"."joborder"("job_order_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "remarktickets" ADD CONSTRAINT "remarktickets_content_remarkcontent_remarkcontent_id_fk" FOREIGN KEY ("content") REFERENCES "public"."remarkcontent"("remarkcontent_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

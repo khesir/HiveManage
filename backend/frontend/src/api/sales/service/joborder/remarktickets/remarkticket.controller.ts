@@ -62,6 +62,7 @@ export class RemarkTicketsController {
       const {
         remark_type_id,
         job_order_id,
+        title,
         description,
         content,
         remarktickets_status,
@@ -72,6 +73,7 @@ export class RemarkTicketsController {
       await this.remarkticketService.createRemarkTickets({
         remark_type_id,
         job_order_id,
+        title,
         description,
         content,
         remarktickets_status,
@@ -99,6 +101,7 @@ export class RemarkTicketsController {
       const {
         remark_type_id,
         job_order_id,
+        title,
         description,
         content,
         remarktickets_status,
@@ -110,6 +113,7 @@ export class RemarkTicketsController {
         {
           remark_type_id,
           job_order_id,
+          title,
           description,
           content,
           remarktickets_status,

@@ -638,11 +638,12 @@ export const remarktickets = pgTable('remarktickets', {
     () => remarktype.remark_type_id,
   ),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  title: varchar('title'),
   description: varchar('description', { length: 255 }),
-  content: varchar('content', { length: 255 }),
+  content: integer('content').references(() => remarkcontent.remarkcontent_id),
   remarktickets_status: remarktickets_status('remarktickets_status').notNull(),
   created_by: integer('created_by').references(() => employee.employee_id),
-  deadline: timestamp('deadline').notNull(),
+  deadline: varchar('deadline'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
