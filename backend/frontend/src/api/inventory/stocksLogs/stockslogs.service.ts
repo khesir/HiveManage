@@ -17,16 +17,10 @@ export class StocksLogsService {
   }
 
   async getAllStocksLogs(
-    item_id: string | undefined,
+    sort: string | undefined,
     limit: number,
     offset: number,
   ) {
-    const conditions = [];
-
-    if (item_id) {
-      conditions.push(eq(stocksLogs.item_id, Number(item_id)));
-    }
-
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,

@@ -15,12 +15,14 @@ export class RemarkTicketsController {
     const joborder_id = req.params.job_order_id as string;
     const remarktickets_status =
       (req.query.remarktickets_status as string) || undefined;
+    const no_pagination = req.query.no_pagination === 'true';
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
       const data = await this.remarkticketService.getAllRemarkTickets(
+        no_pagination,
         joborder_id,
         remarktickets_status,
         sort,

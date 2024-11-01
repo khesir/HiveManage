@@ -13,11 +13,13 @@ export class RemarkItemsController {
 
   async getAllRemarkItems(req: Request, res: Response, next: NextFunction) {
     const remark_id = (req.params.remark_id as string) || undefined;
+    const no_pagination = req.query.no_pagination === 'true';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
       const data = await this.remarkitemService.getAllRemarkItems(
+        no_pagination,
         remark_id,
         limit,
         offset,

@@ -20,6 +20,7 @@ export class RemarkItemsService {
   }
 
   async getAllRemarkItems(
+    no_pagination: boolean,
     remark_id: string | undefined,
     limit: number,
     offset: number,
@@ -39,7 +40,7 @@ export class RemarkItemsService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(remarkitems)
       .leftJoin(
@@ -50,10 +51,12 @@ export class RemarkItemsService {
         remarktickets,
         eq(remarktickets.remark_id, remarkitems.remark_id),
       )
-      .where(and(...conditions))
-      .limit(limit)
-      .offset(offset);
+      .where(and(...conditions));
 
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+    const result = await query;
     const remarkitemsWithDetails = result.map((row) => ({
       remark_items_id: row.remarkitems.remark_items_id,
       sales_items: {

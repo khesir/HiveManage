@@ -20,6 +20,7 @@ export class RemarkTicketsService {
   }
 
   async getAllRemarkTickets(
+    no_pagination: boolean,
     joborder_id: string | undefined,
     remarktickets_status: string | undefined,
     sort: string,
@@ -66,7 +67,7 @@ export class RemarkTicketsService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(remarktickets)
       .leftJoin(
@@ -79,13 +80,18 @@ export class RemarkTicketsService {
         sort === 'asc'
           ? asc(remarktickets.created_at)
           : desc(remarktickets.created_at),
-      )
-      .limit(limit)
-      .offset(offset);
+      );
+
+    // Control Pagination
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+
+    const result = await query;
 
     const remarkticketitemWithDetails = result.map((row) => ({
       remark_id: row.remarktickets.remark_id,
-      remarktype: {
+      remark_type: {
         remark_type_id: row.remarktype?.remark_type_id,
         name: row.remarktype?.name,
         description: row.remarktype?.description,
@@ -93,7 +99,7 @@ export class RemarkTicketsService {
         last_updated: row.remarktype?.last_updated,
         deleted_at: row.remarktype?.deleted_at,
       },
-      jobOrder: {
+      job_order: {
         job_order_id: row.joborder?.job_order_id,
         joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
@@ -104,6 +110,7 @@ export class RemarkTicketsService {
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,
       },
+      title: row.remarktickets.title,
       description: row.remarktickets?.description,
       content: row.remarktickets?.content,
       remarkticket_status: row.remarktickets?.remarktickets_status,

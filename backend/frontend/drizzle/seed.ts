@@ -55,11 +55,6 @@ import {
   product_category,
   price_history,
   inventory_record,
-  item_supplier,
-  price_history,
-  product_category,
-
-  // other schemas...
 } from './drizzle.schema';
 import log from '../lib/logger';
 import { db, pool } from './pool';
@@ -919,7 +914,7 @@ async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
     description: faker.lorem.sentence(),
     remarktickets_status: faker.helpers.arrayElement(remark_status),
     created_by: faker.helpers.arrayElement(employeeIDs).employee_id,
-    deadline: faker.date.future(),
+    deadline: faker.date.future().toISOString(),
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));

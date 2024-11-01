@@ -18,9 +18,9 @@ export class StocksLogsController {
 
     try {
       const data = await this.stockslogsService.getAllStocksLogs(
+        sort,
         limit,
         offset,
-        sort,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

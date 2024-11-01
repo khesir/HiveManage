@@ -68,28 +68,28 @@ joborderRoute.use(
 log.info('ROUTE Job order remark tickets set');
 
 joborderRoute.use(
-  '/:job_order_id/remarkitems',
+  '/:job_order_id/remark-items',
   validateJobOrderID,
   remarkItemsRoute,
 );
 log.info('ROUTE Job order remark items set');
 
 joborderRoute.use(
-  '/:job_order_id/remarkreports',
+  '/:job_order_id/remark-reports',
   validateJobOrderID,
   remarkReportsRoute,
 );
 log.info('ROUTE Job order remark reports set');
 
 joborderRoute.use(
-  '/:job_order_id/remarkassigned',
+  '/:job_order_id/remark-assigned',
   validateJobOrderID,
   remarkassignedRoute,
 );
 log.info('ROUTE Job order remark assigned set');
 
 joborderRoute.use(
-  '/:job_order_id/remarkcontent',
+  '/:job_order_id/remark-content',
   validateJobOrderID,
   remarkContentRoute,
 );

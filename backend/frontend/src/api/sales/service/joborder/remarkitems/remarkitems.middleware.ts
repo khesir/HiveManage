@@ -25,7 +25,6 @@ export async function validateRemarkItemsID(
           isNull(remarkitems.deleted_at),
         ),
       );
-    console.log(RemarkItems);
     if (!RemarkItems[0]) {
       return res.status(404).json({ message: 'Remark Items not found' });
     }

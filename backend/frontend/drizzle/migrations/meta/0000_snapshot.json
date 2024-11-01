@@ -1,5 +1,5 @@
 {
-  "id": "e5779690-cc02-41d7-adb8-0452ebaca921",
+  "id": "33c9bd64-527d-4c7c-9200-1b8111aa031a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1587,12 +1587,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "tag": {
-          "name": "tag",
-          "type": "tag_supplier",
-          "typeSchema": "public",
+        "price": {
+          "name": "price",
+          "type": "numeric(10, 2)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "on_listing": {
           "name": "on_listing",
@@ -3513,9 +3512,9 @@
         },
         "deadline": {
           "name": "deadline",
-          "type": "timestamp",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
