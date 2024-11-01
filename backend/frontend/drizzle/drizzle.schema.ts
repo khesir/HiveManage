@@ -577,6 +577,7 @@ export const jobOrder = pgTable('joborder', {
   uuid: varchar('uuid', { length: 255 }),
   fee: integer('fee'),
   joborder_status: jobOrderStatusEnum('joborder_status').notNull(),
+  total_cost_price: real('total_cost_price'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -609,6 +610,21 @@ export const jobordertype = pgTable('jobordertype', {
     'joborder_types_status',
   ).notNull(),
   fee: integer('fee'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Job Order Services
+export const joborder_services = pgTable('joborder_services', {
+  joborder_services_id: serial('joborder_services_id').primaryKey(),
+  joborder_types_id: integer('joborder_types_id').references(
+    () => jobordertype.joborder_type_id,
+  ),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -655,9 +671,7 @@ export const remarktickets = pgTable('remarktickets', {
 //Remark Items
 export const remarkitems = pgTable('remarkitems', {
   remark_items_id: serial('remark_items_id').primaryKey(),
-  sales_items_id: integer('sales_items_id').references(
-    () => sales_items.sales_items_id,
-  ),
+  item_id: integer('item_id').references(() => item.item_id),
   remark_id: integer('remark_id').references(() => remarktickets.remark_id),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -1115,6 +1129,7 @@ export const schema: SchemaType = {
   jobOrder,
   reports,
   jobordertype,
+  joborder_services,
   assignedemployees,
   remarktickets,
   remarktype,

@@ -12,6 +12,7 @@ import remarkItemsRoute from './remarkitems/remarkitem.route';
 import remarkReportsRoute from './remarkreports/remarkreports.route';
 import remarkassignedRoute from './remarkassigned/remarkassigned.route';
 import remarkContentRoute from './remarkcontent/remarkcontent.route';
+import joborderServiceRoute from './joborderservice/joborderservice.route';
 
 const joborderRoute = Router({ mergeParams: true });
 const joborderController = new JobOrderController(db);
@@ -94,4 +95,11 @@ joborderRoute.use(
   remarkContentRoute,
 );
 log.info('ROUTE Job order remark content set');
+
+joborderRoute.use(
+  '/:job_order_id/joborderservices',
+  validateJobOrderID,
+  joborderServiceRoute,
+);
+log.info('ROUTE Job Order Service content set');
 export default joborderRoute;
