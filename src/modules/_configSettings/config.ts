@@ -4,7 +4,7 @@
 // - etc.. (More complex global setting)
 
 class ConfigManager {
-	private static instance: ConfigManager;
+	public static instance: ConfigManager;
 	private baseURL: string;
 	private joborder_fee: number;
 	constructor() {
@@ -38,6 +38,7 @@ class JoborderSetting extends ConfigManager {
 	private jobOrderSpecificSetting: string;
 
 	private Joborder_status = [
+		'Not set',
 		'Pending',
 		'In Progress',
 		'Completed',
@@ -52,6 +53,12 @@ class JoborderSetting extends ConfigManager {
 	constructor() {
 		super();
 		this.jobOrderSpecificSetting = 'Default Joborder Settings';
+	}
+	public static getInstance(): JoborderSetting {
+		if (!(ConfigManager.instance instanceof JoborderSetting)) {
+			ConfigManager.instance = new JoborderSetting();
+		}
+		return ConfigManager.instance as JoborderSetting;
 	}
 	getTitle() {
 		return this.jobOrderSpecificSetting;
@@ -75,6 +82,12 @@ class TicketsSettings extends ConfigManager {
 	constructor() {
 		super();
 		this.ticketSettingsTitle = 'Default Ticket Settings';
+	}
+	public static getInstance(): TicketsSettings {
+		if (!(ConfigManager.instance instanceof TicketsSettings)) {
+			ConfigManager.instance = new TicketsSettings();
+		}
+		return ConfigManager.instance as TicketsSettings;
 	}
 
 	getTicketTitleSettings(): string {

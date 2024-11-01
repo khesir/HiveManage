@@ -1,5 +1,6 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {JobOrderWithDetails} from '@/lib/sales-zod-schema';
+import {dateParser} from '@/lib/util/utils';
 
 export const columns: ColumnDef<JobOrderWithDetails>[] = [
 	{
@@ -17,5 +18,10 @@ export const columns: ColumnDef<JobOrderWithDetails>[] = [
 	{
 		accessorKey: 'fee',
 		header: 'Fee',
+	},
+	{
+		accessorKey: 'created_at',
+		header: 'Created At',
+		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
 	},
 ];

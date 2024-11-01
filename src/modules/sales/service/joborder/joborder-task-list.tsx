@@ -9,7 +9,9 @@ import {Button} from '@/components/ui/button';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-import {ActionsCell} from './view/tasklist/columns';
+import {useNavigate, useLocation} from 'react-router-dom';
+import useTicketStore from './hook/use-ticket-store';
+import useTaskStore from '../../_components/hooks/use-task-store';
 
 export function JoborderTaskList() {
 	const {joborderData} = useJoborderStore();
@@ -119,3 +121,32 @@ export function JoborderTaskList() {
 		</>
 	);
 }
+const ActionsCell = (data: TaskWithDetails) => {
+	const {setTaskStoreData} = useTaskStore();
+	const navigate = useNavigate();
+	const location = useLocation();
+	const handleClick = (clickData: TaskWithDetails) => {
+		const ticket_id = Number(clickData.remark_id);
+		useTicketStore.getState().setTicketStore(clickData);
+		if (location.pathname.includes('/sales')) {
+			navigate(
+				`/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
+			);
+		} else if (location.pathname.includes('/admin')) {
+			navigate(
+				`/admin/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
+			);
+		} else if (location.pathname.includes('/tech')) {
+			navigate(
+				`/tech/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
+			);
+		}
+
+		setTaskStoreData(data);
+	};
+	return (
+		<Button onClick={() => handleClick(data)} variant={'outline'}>
+			View
+		</Button>
+	);
+};

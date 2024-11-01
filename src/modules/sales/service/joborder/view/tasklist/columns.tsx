@@ -28,7 +28,6 @@ export const ActionsCell = (data: TaskWithDetails) => {
 
 		setServiceFormData(data);
 	};
-	console.log(data);
 	return (
 		<Button onClick={() => handleClick(data)} variant={'outline'}>
 			View

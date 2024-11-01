@@ -46,6 +46,7 @@ interface DataTableProps<TData, TValue> {
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
+	jo_status: string[];
 }
 
 export function JoborderTable<TData extends JobOrderWithDetails, TValue>({
@@ -54,10 +55,10 @@ export function JoborderTable<TData extends JobOrderWithDetails, TValue>({
 	searchKey,
 	pageCount,
 	pageSizeOptions = [10, 20, 30, 40, 50],
+	jo_status,
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [filter, setFilter] = useState<boolean>(true);
 	const [searchParams] = useSearchParams();
 	// Search Params
 	const page = searchParams.get('page') || '1';
@@ -119,57 +120,8 @@ export function JoborderTable<TData extends JobOrderWithDetails, TValue>({
 	});
 
 	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
-
-	// Debounced search value to avoid triggering requests too frequently
-	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-	// console.log(debouncedSearchValue);
-	// useEffect(() => {
-	// 	const handler = setTimeout(() => {
-	// 		setDebouncedSearchValue(searchValue);
-	// 	}, 500); // Adjust debounce delay as needed
-	// 	return () => clearTimeout(handler);
-	// }, [searchValue]);
-
-	// // Update the URL with the search query when the searchValue changes
-	// useEffect(() => {
-	// 	if (debouncedSearchValue?.length > 0) {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null, // Reset page when searching
-	// 				limit: pageSize,
-	// 				fullname: debouncedSearchValue, // Add search param to URL
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	} else {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null,
-	// 				limit: pageSize,
-	// 				fullname: null, // Remove search param from URL if empty
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	}
-
-	// 	// Reset pagination to first page on search change
-	// 	setPagination((prev) => ({...prev, pageIndex: 0}));
-	// }, [
-	// 	debouncedSearchValue,
-	// 	pageSize,
-	// 	navigate,
-	// 	location.pathname,
-	// 	createQueryString,
-	// ]);
-
-	// Set the first employee data to Zustand on initial render
-	useEffect(() => {
-		if (data.length > 0) {
-			const joborder: JobOrderWithDetails = data[0];
-			useJoborderStore.getState().setJoborderData(joborder);
-		}
-	}, [data]);
-
+	// ====================================================================================
+	// Interactivity Clicks on table
 	// This handles the employee viewing by click
 	const handleRowClick = (row: Row<TData>) => {
 		// Access the data of the clicked row
@@ -179,6 +131,99 @@ export function JoborderTable<TData extends JobOrderWithDetails, TValue>({
 		useJoborderStore.getState().setJoborderData(rowData);
 	};
 
+	// ====================================================================================
+	// Search Funtion
+	// Debounced search value to avoid triggering requests too frequently
+	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			setDebouncedSearchValue(searchValue);
+		}, 500); // Adjust debounce delay as needed
+		return () => clearTimeout(handler);
+	}, [searchValue]);
+
+	// // Update the URL with the search query when the searchValue changes
+	useEffect(() => {
+		if (debouncedSearchValue?.length > 0) {
+			navigate(
+				`${location.pathname}?${createQueryString({
+					page: null, // Reset page when searching
+					limit: pageSize,
+					uuid: debouncedSearchValue, // Add search param to URL
+				})}`,
+				{replace: true},
+			);
+		} else {
+			navigate(
+				`${location.pathname}?${createQueryString({
+					page: null,
+					limit: pageSize,
+					uuid: null, // Remove search param from URL if empty
+				})}`,
+				{replace: true},
+			);
+		}
+
+		// Reset pagination to first page on search change
+		setPagination((prev) => ({...prev, pageIndex: 0}));
+	}, [
+		debouncedSearchValue,
+		pageSize,
+		navigate,
+		location.pathname,
+		createQueryString,
+	]);
+
+	// Set the first employee data to Zustand on initial render
+	useEffect(() => {
+		if (data.length > 0) {
+			const joborder: JobOrderWithDetails = data[0];
+			useJoborderStore.getState().setJoborderData(joborder);
+		}
+	}, [data]);
+	// ====================================================================================
+	// Filters
+	const [filter, setFilter] = useState<boolean>(true);
+	const [statusFilter, setStatusFilter] = useState<string | null>(
+		searchParams.get('status'),
+	);
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
+		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
+	);
+
+	const handleStatusFilterChange = (status: string | null) => {
+		if (status === statusFilter) return;
+
+		const newStatus = status === 'Not set' ? null : status;
+		setStatusFilter(newStatus);
+
+		// Reset to the first page on filter change and update the URL
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: 1,
+				limit: pageSize,
+				status: newStatus,
+				sort: sortOrder,
+			})}`,
+			{replace: true},
+		);
+
+		setPagination((prev) => ({...prev, pageIndex: 0}));
+	};
+	const handleSortOrderChange = (order: 'asc' | 'desc') => {
+		if (sortOrder === order) return;
+
+		setSortOrder(order);
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1,
+				limit: pageSize,
+				status: statusFilter,
+				sort: order,
+			})}`,
+			{replace: true},
+		);
+	};
 	return (
 		<>
 			<div className="flex justify-between gap-3 md:gap-0">
@@ -194,21 +239,39 @@ export function JoborderTable<TData extends JobOrderWithDetails, TValue>({
 							</Button>
 							<DropdownMenu>
 								<DropdownMenuTrigger>
-									<Button variant={'outline'}>Status</Button>
+									<Button variant={'outline'}>
+										Status: {statusFilter ? statusFilter : 'Not set'}
+									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>No set</Button>
-									<Button variant={'ghost'}>Active</Button>
-									<Button variant={'ghost'}>Inactive</Button>
+									{jo_status.map((data, index) => (
+										<Button
+											key={index}
+											variant={statusFilter === data ? 'default' : 'ghost'}
+											onClick={() => handleStatusFilterChange(data)}
+										>
+											{data}
+										</Button>
+									))}
 								</DropdownMenuContent>
 							</DropdownMenu>
 							<DropdownMenu>
 								<DropdownMenuTrigger>
-									<Button variant={'outline'}>isAssigned: True</Button>
+									<Button variant={'outline'}>Sort: {sortOrder}</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>True</Button>
-									<Button variant={'ghost'}>False</Button>
+									<Button
+										variant={sortOrder === 'asc' ? 'default' : 'ghost'}
+										onClick={() => handleSortOrderChange('asc')}
+									>
+										Ascending
+									</Button>
+									<Button
+										variant={sortOrder === 'desc' ? 'default' : 'ghost'}
+										onClick={() => handleSortOrderChange('desc')}
+									>
+										Descending
+									</Button>
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</>

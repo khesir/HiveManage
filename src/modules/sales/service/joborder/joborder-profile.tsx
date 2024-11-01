@@ -20,11 +20,17 @@ export function JoborderProfile() {
 					<div className="font-semibold">Information</div>
 					<ul className="grid gap-3">
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Service ID</span>
-							<span>{joborderData.service.service_id}</span>
+							<span className="text-muted-foreground">Title</span>
+							<span>{joborderData.service.service_title}</span>
+						</li>
+						<li className="flex flex-col gap-3">
+							<span className="text-muted-foreground">Description</span>
+							<span className="pl-3">
+								{joborderData.service.service_description}
+							</span>
 						</li>
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Type</span>
+							<span className="text-muted-foreground">Joborder Type</span>
 							<span>{joborderData.joborder_type.name}</span>
 						</li>
 						<li className="flex items-center justify-between">
