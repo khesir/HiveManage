@@ -409,6 +409,16 @@ CREATE TABLE IF NOT EXISTS "joborder" (
 	"uuid" varchar(255),
 	"fee" integer,
 	"joborder_status" "joborder_status" NOT NULL,
+	"total_cost_price" real,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "joborder_services" (
+	"joborder_services_id" serial PRIMARY KEY NOT NULL,
+	"joborder_types_id" integer,
+	"job_order_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -637,7 +647,7 @@ CREATE TABLE IF NOT EXISTS "remarkcontent" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "remarkitems" (
 	"remark_items_id" serial PRIMARY KEY NOT NULL,
-	"sales_items_id" integer,
+	"item_id" integer,
 	"remark_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -899,6 +909,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("joborder_types_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_job_order_id_joborder_job_order_id_fk" FOREIGN KEY ("job_order_id") REFERENCES "public"."joborder"("job_order_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "leave_limit" ADD CONSTRAINT "leave_limit_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1049,7 +1071,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "remarkitems" ADD CONSTRAINT "remarkitems_sales_items_id_sales_items_sales_item_id_fk" FOREIGN KEY ("sales_items_id") REFERENCES "public"."sales_items"("sales_item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "remarkitems" ADD CONSTRAINT "remarkitems_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

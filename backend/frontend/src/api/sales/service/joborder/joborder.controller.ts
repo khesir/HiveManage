@@ -62,7 +62,8 @@ export class JobOrderController {
   async createJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const service_id = Number(req.params.service_id);
-      const { joborder_type_id, uuid, fee, joborder_status } = req.body;
+      const { joborder_type_id, uuid, fee, joborder_status, total_price_cost } =
+        req.body;
 
       await this.joborderService.createJobOrder({
         joborder_type_id,
@@ -70,6 +71,7 @@ export class JobOrderController {
         uuid,
         fee,
         joborder_status,
+        total_price_cost,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -89,10 +91,18 @@ export class JobOrderController {
     try {
       const { job_order_id } = req.params;
       const service_id = Number(req.params.service_id);
-      const { joborder_type_id, uuid, fee, joborder_status } = req.body;
+      const { joborder_type_id, uuid, fee, joborder_status, total_price_cost } =
+        req.body;
 
       await this.joborderService.updateJobOrder(
-        { joborder_type_id, service_id, uuid, fee, joborder_status },
+        {
+          joborder_type_id,
+          service_id,
+          uuid,
+          fee,
+          joborder_status,
+          total_price_cost,
+        },
         Number(job_order_id),
       );
       res.status(HttpStatus.OK.code).json({
