@@ -16,6 +16,7 @@ export const CreateJobOrder = z.object({
     'Rejected',
     'Closed',
   ]),
+  total_price_cost: z.number().optional(),
 });
 
 export const UpdateJobOrder = z.object({
@@ -34,6 +35,7 @@ export const UpdateJobOrder = z.object({
     'Rejected',
     'Closed',
   ]),
+  total_price_cost: z.number().optional(),
 });
 
 export type CreateJobOrder = z.infer<typeof CreateJobOrder>;

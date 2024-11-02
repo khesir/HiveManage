@@ -67,6 +67,7 @@ export class ReportsService {
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,
         joborder_status: row.joborder?.joborder_status,
+        total_cost_price: row.joborder?.total_cost_price,
         created_at: row.joborder?.created_at,
         last_updated: row.joborder?.last_updated,
         deleted_at: row.joborder?.deleted_at,

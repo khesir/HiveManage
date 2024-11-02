@@ -55,6 +55,7 @@ import {
   product_category,
   price_history,
   inventory_record,
+  joborder_services,
 } from './drizzle.schema';
 import log from '../lib/logger';
 import { db, pool } from './pool';
@@ -925,11 +926,11 @@ async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
-  const salesItemIDs = await db.select().from(sales_items);
+  const itemIDs = await db.select().from(item);
   const remarksIDs = await db.select().from(remarktickets);
 
   const remarkitemsRecords = Array.from({ length: 70 }).map(() => ({
-    sales_items_id: faker.helpers.arrayElement(salesItemIDs).sales_items_id,
+    item_id: faker.helpers.arrayElement(itemIDs).item_id,
     remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
@@ -1033,6 +1034,10 @@ async function seedJobOrder(db: PostgresJsDatabase<SchemaType>) {
     uuid: faker.string.uuid(),
     fee: faker.number.int({ min: 1, max: 100 }),
     joborder_status: faker.helpers.arrayElement(statuses),
+    total_cost_price: parseFloat(
+      faker.finance.amount({ min: 1, max: 12, dec: 2 }),
+    ),
+
     created_at: faker.date.recent(),
     last_updated: faker.date.recent(),
   }));
@@ -1078,6 +1083,23 @@ async function seedJobOrderTypes(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(jobordertype).values(jobordertypesRecords);
 
   log.info('Job Order Types seeded successfully');
+}
+
+async function seedJobOrderServices(db: PostgresJsDatabase<SchemaType>) {
+  const jobordertypesIDs = await db.select().from(jobordertype);
+  const joborderIDs = await db.select().from(jobOrder);
+
+  const joborderservicesRecords = Array.from({ length: 70 }).map(() => ({
+    joborder_types_id:
+      faker.helpers.arrayElement(jobordertypesIDs).joborder_type_id,
+    job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
+    created_at: faker.date.recent(),
+    last_updated: faker.date.recent(),
+  }));
+
+  await db.insert(joborder_services).values(joborderservicesRecords);
+
+  log.info('Job Order Services records seeded successfully');
 }
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
@@ -2159,6 +2181,7 @@ async function main() {
     // Job Order and related data
     await seedJobOrderTypes(db);
     await seedJobOrder(db);
+    await seedJobOrderServices(db);
 
     // Pass employee IDs to seedRemarkTickets
     await seedRemarkType(db);

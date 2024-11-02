@@ -1,5 +1,5 @@
 {
-  "id": "33c9bd64-527d-4c7c-9200-1b8111aa031a",
+  "id": "d4760837-7948-4ed0-83f4-1dd2ece9509c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1693,6 +1693,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "total_cost_price": {
+          "name": "total_cost_price",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1738,6 +1744,81 @@
           ],
           "columnsTo": [
             "service_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.joborder_services": {
+      "name": "joborder_services",
+      "schema": "",
+      "columns": {
+        "joborder_services_id": {
+          "name": "joborder_services_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "joborder_types_id": {
+          "name": "joborder_types_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "job_order_id": {
+          "name": "job_order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk": {
+          "name": "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk",
+          "tableFrom": "joborder_services",
+          "tableTo": "jobordertype",
+          "columnsFrom": [
+            "joborder_types_id"
+          ],
+          "columnsTo": [
+            "joborder_type_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "joborder_services_job_order_id_joborder_job_order_id_fk": {
+          "name": "joborder_services_job_order_id_joborder_job_order_id_fk",
+          "tableFrom": "joborder_services",
+          "tableTo": "joborder",
+          "columnsFrom": [
+            "job_order_id"
+          ],
+          "columnsTo": [
+            "job_order_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3317,8 +3398,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "sales_items_id": {
-          "name": "sales_items_id",
+        "item_id": {
+          "name": "item_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -3352,15 +3433,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "remarkitems_sales_items_id_sales_items_sales_item_id_fk": {
-          "name": "remarkitems_sales_items_id_sales_items_sales_item_id_fk",
+        "remarkitems_item_id_item_item_id_fk": {
+          "name": "remarkitems_item_id_item_item_id_fk",
           "tableFrom": "remarkitems",
-          "tableTo": "sales_items",
+          "tableTo": "item",
           "columnsFrom": [
-            "sales_items_id"
+            "item_id"
           ],
           "columnsTo": [
-            "sales_item_id"
+            "item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
