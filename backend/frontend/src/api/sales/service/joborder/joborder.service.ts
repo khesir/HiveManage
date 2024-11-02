@@ -20,6 +20,7 @@ export class JobOrderService {
   }
 
   async getAllJobOrder(
+    uuid: string | undefined,
     service_id: string | undefined,
     joborder_status: string | undefined,
     sort: string,
@@ -59,7 +60,9 @@ export class JobOrderService {
     if (service_id) {
       conditions.push(eq(jobOrder.service_id, Number(service_id)));
     }
-
+    if (uuid) {
+      conditions.push(sql`${jobOrder.uuid} LIKE ${'%' + uuid + '%'}`);
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,

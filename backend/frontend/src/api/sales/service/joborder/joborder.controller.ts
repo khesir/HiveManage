@@ -12,6 +12,7 @@ export class JobOrderController {
   }
 
   async getAllJobOrder(req: Request, res: Response, next: NextFunction) {
+    const uuid = (req.query.uuid as string) || undefined;
     const service_id = (req.params.service_id as string) || undefined;
     const joborder_status = (req.query.joborder_status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
@@ -20,6 +21,7 @@ export class JobOrderController {
 
     try {
       const data = await this.joborderService.getAllJobOrder(
+        uuid,
         service_id,
         joborder_status,
         sort,
