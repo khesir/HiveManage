@@ -1,3 +1,4 @@
+import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
 import {ServiceWithDetails} from '@/lib/sales-zod-schema';
 import {z} from 'zod';
 
@@ -18,6 +19,7 @@ export const joborderSchema = z.object({
 		'Rejected',
 		'Closed',
 	]),
+	total_cost_price: z.number().min(1),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
@@ -29,9 +31,11 @@ export type JobOrderWithDetails = {
 	joborder_id?: number;
 	service: ServiceWithDetails;
 	joborder_type: JobOrderType;
+	joborder_assign: AssignEmployeeWithDetails[];
 	uuid: string;
 	fee: number;
 	joborder_status: string;
+	total_cost_price: number;
 	created_at?: string;
 	last_updated?: string;
 	deleted_at?: string;
@@ -48,3 +52,24 @@ export const joborderTypeschema = z.object({
 });
 
 export type JobOrderType = z.infer<typeof joborderTypeschema>;
+
+export const assignedEmployeesSchema = z.object({
+	assigned_employee_id: z.number().optional(),
+	job_order_id: z.number().optional(),
+	employee_id: z.number().min(1),
+	assigned_by: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type AssignEmployee = z.infer<typeof assignedEmployeesSchema>;
+
+export type AssignEmployeeWithDetails = {
+	assigned_employee_id?: number;
+	job_order_id: number;
+	employee: EmployeeBasicInformation;
+	assigned_by: string;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};

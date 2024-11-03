@@ -1,3 +1,4 @@
+import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
 import {cn} from '@/lib/util/utils';
 
 interface AvatarCirclesProps {
@@ -7,7 +8,7 @@ interface AvatarCirclesProps {
 }
 
 export const AvatarCircles = ({
-	numPeople,
+	numPeople = 0,
 	className,
 	avatarUrls,
 }: AvatarCirclesProps) => {
@@ -17,18 +18,39 @@ export const AvatarCircles = ({
 				<img
 					key={index}
 					className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-					src={'/img/placeholder.jpg'}
+					src={url !== '#' ? url : '/img/placeholder.jpg'}
 					width={40}
 					height={40}
 					alt={`Avatar ${index + 1}`}
 				/>
 			))}
-			<a
-				className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-center text-xs font-medium text-white hover:bg-gray-600 dark:border-gray-800 dark:bg-white dark:text-black"
-				href="#"
-			>
-				+{numPeople}
-			</a>
+			{numPeople > 0 && (
+				<a
+					className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-center text-xs font-medium text-white hover:bg-gray-600 dark:border-gray-800 dark:bg-white dark:text-black"
+					href="#"
+				>
+					+{numPeople}
+				</a>
+			)}
 		</div>
 	);
+};
+
+interface EmployeeAvatarCirclesProps {
+	employees: EmployeeBasicInformation[];
+	isTable?: boolean;
+}
+
+export const EmployeeAvatarCircles = ({
+	employees,
+	isTable = false,
+}: EmployeeAvatarCirclesProps) => {
+	// TODO: Replace # to img_url of employee
+	const maxVisibleAvatars = isTable ? 3 : 5;
+
+	const avatarUrls = employees.slice(0, maxVisibleAvatars).map((emp) => '#');
+	const totalEmployees = employees.length;
+	const numPeople =
+		totalEmployees > maxVisibleAvatars ? totalEmployees - maxVisibleAvatars : 0;
+	return <AvatarCircles avatarUrls={avatarUrls} numPeople={numPeople} />;
 };

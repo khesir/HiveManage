@@ -32,8 +32,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {TaskWithDetails} from '../../validation/task';
-import useAddFormStatus from '../../hook/use-ticket-form';
+import {TaskWithDetails} from '../../../../_components/validation/task';
+import useAddFormStatus from '../../../../_components/hooks/use-ticket-form';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -44,6 +44,7 @@ interface DataTableProps<TData, TValue> {
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
+	task_status: string[];
 }
 
 export function TaskTable<TData extends TaskWithDetails, TValue>({
@@ -51,7 +52,10 @@ export function TaskTable<TData extends TaskWithDetails, TValue>({
 	data,
 	pageCount,
 	pageSizeOptions = [10, 20, 30, 40, 50],
+	task_status,
 }: DataTableProps<TData, TValue>) {
+	// ====================================================================================
+	// Table setup
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [searchParams] = useSearchParams();
@@ -113,12 +117,52 @@ export function TaskTable<TData extends TaskWithDetails, TValue>({
 		manualPagination: true,
 		manualFiltering: true,
 	});
-
+	// ====================================================================================
 	// Editing form
-	const {addStatus, setAddStatus} = useAddFormStatus();
-	const [filter, setFilter] = useState(false);
+	// Handles Interactivity Clicks
+	const {setAddStatus} = useAddFormStatus();
 	const handleAdding = () => {
-		setAddStatus(!addStatus);
+		setAddStatus('add');
+	};
+	// ====================================================================================
+	// Filter functions
+	const [filter, setFilter] = useState(false);
+	const [statusFilter, setStatusFilter] = useState<string | null>(
+		searchParams.get('status'),
+	);
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
+		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
+	);
+	const handleStatusFilterChange = (status: string | null) => {
+		if (status === statusFilter) return;
+
+		const newStatus = status === 'Not set' ? null : status;
+		setStatusFilter(newStatus);
+		// Reset to the first page on filter change and update the URL
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: 1,
+				limit: pageSize,
+				status: newStatus,
+				sort: sortOrder,
+			})}`,
+			{replace: true},
+		);
+		setPagination((prev) => ({...prev, pageIndex: 0}));
+	};
+	const handleSortOrderChange = (order: 'asc' | 'desc') => {
+		if (sortOrder === order) return;
+
+		setSortOrder(order);
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1,
+				limit: pageSize,
+				status: statusFilter,
+				sort: order,
+			})}`,
+			{replace: true},
+		);
 	};
 	return (
 		<>
@@ -135,21 +179,39 @@ export function TaskTable<TData extends TaskWithDetails, TValue>({
 							</Button>
 							<DropdownMenu>
 								<DropdownMenuTrigger>
-									<Button variant={'outline'}>Status</Button>
+									<Button variant={'outline'}>
+										Status: {statusFilter ? statusFilter : 'Not set'}
+									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>No set</Button>
-									<Button variant={'ghost'}>Active</Button>
-									<Button variant={'ghost'}>Inactive</Button>
+									{task_status.map((data, index) => (
+										<Button
+											key={index}
+											variant={statusFilter === data ? 'default' : 'ghost'}
+											onClick={() => handleStatusFilterChange(data)}
+										>
+											{data}
+										</Button>
+									))}
 								</DropdownMenuContent>
 							</DropdownMenu>
 							<DropdownMenu>
 								<DropdownMenuTrigger>
-									<Button variant={'outline'}>isAssigned: True</Button>
+									<Button variant={'outline'}>Sort: {sortOrder}</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>True</Button>
-									<Button variant={'ghost'}>False</Button>
+									<Button
+										variant={sortOrder === 'asc' ? 'default' : 'ghost'}
+										onClick={() => handleSortOrderChange('asc')}
+									>
+										Ascending
+									</Button>
+									<Button
+										variant={sortOrder === 'desc' ? 'default' : 'ghost'}
+										onClick={() => handleSortOrderChange('desc')}
+									>
+										Descending
+									</Button>
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</>

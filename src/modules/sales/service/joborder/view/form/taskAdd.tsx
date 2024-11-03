@@ -1,8 +1,11 @@
 import {useEffect, useState} from 'react';
-import {useJoborderStore} from '../../hook/useJoborderStore';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {Task, taskSchema, TaskType} from '../../validation/task';
+import {
+	Task,
+	taskSchema,
+	TaskType,
+} from '../../../../_components/validation/task';
 import {TicketsSettings} from '@/modules/_configSettings/config';
 import {
 	Form,
@@ -23,13 +26,14 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {ApiRequest, request} from '@/api/axios';
-import useAddFormStatus from '../../hook/use-ticket-form';
+import useAddFormStatus from '../../../../_components/hooks/use-ticket-form';
 import {Textarea} from '@/components/ui/textarea';
 import {ItemLisitingModal} from '@/modules/sales/_components/modal/item-listing-modal';
 import {X} from 'lucide-react';
 import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
-import {SubmitTicket} from '../api/submit-ticket';
 import {toast} from 'sonner';
+import {useJoborderStore} from '@/modules/sales/_components/hooks/use-joborder-store';
+import {SubmitTicket} from '@/modules/sales/_components/api/submit-ticket';
 
 export function TaskAdd() {
 	const {joborderData} = useJoborderStore();
@@ -44,7 +48,7 @@ export function TaskAdd() {
 	} = useItemWithDetailsStore();
 	useEffect(() => {
 		const setSettings = () => {
-			const settings_status = new TicketsSettings();
+			const settings_status = TicketsSettings.getInstance();
 			setStatus(settings_status.getRemarkTicketStatus());
 		};
 		const fetchData = async () => {
@@ -66,9 +70,9 @@ export function TaskAdd() {
 	const processForm = async (formdata: Task) => {
 		try {
 			setLoading(true);
-			await SubmitTicket(formdata);
-			console.log(joborderData);
-			toast('Error updating employment information:');
+			await SubmitTicket(formdata, selectedItemWithDetails);
+			toast('Ticket Created');
+			setAddStatus('main');
 		} catch (error) {
 			console.log(error);
 			toast('Error updating employment information:', {
@@ -92,7 +96,8 @@ export function TaskAdd() {
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(processForm)}>
 					<Card className="flex flex-col">
-						<div className="flex flex-col gap-3  p-5">
+						<p className="p-5 text-xl font-semibold">Create Ticket</p>
+						<div className="flex flex-col gap-3  p-5 pt-0">
 							<FormField
 								control={form.control}
 								name="title"
@@ -103,6 +108,7 @@ export function TaskAdd() {
 												type="text"
 												placeholder="Ticket Title"
 												disabled={loading}
+												onChange={field.onChange}
 												value={field.value}
 											/>
 										</FormControl>
@@ -120,6 +126,7 @@ export function TaskAdd() {
 												type="text"
 												placeholder="Item Description"
 												disabled={loading}
+												onChange={field.onChange}
 												value={field.value}
 											/>
 										</FormControl>
@@ -206,6 +213,7 @@ export function TaskAdd() {
 												type="date"
 												disabled={loading}
 												value={field.value}
+												onChange={field.onChange}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -223,6 +231,7 @@ export function TaskAdd() {
 												<Textarea
 													placeholder="Instructions and all, write here this is a markdown : TODO: Implement Markdown"
 													{...field}
+													onChange={field.onChange}
 												/>
 											</FormControl>
 											<FormMessage />

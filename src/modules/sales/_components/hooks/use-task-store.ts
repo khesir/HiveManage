@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {TaskWithDetails} from '../../service/joborder/validation/task';
+import {TaskWithDetails} from '../validation/task';
 
 type TaskStoreProps = {
 	data: TaskWithDetails | null;

@@ -1,48 +1,45 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {PaginationResponse, request} from '@/api/axios';
-import {Card, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {ScrollArea} from '@/components/ui/scroll-area';
-import {useState, useEffect} from 'react';
-import {TaskWithDetails} from '../../_components/validation/task';
 import {Button} from '@/components/ui/button';
+import {Card, CardHeader, CardTitle, CardFooter} from '@/components/ui/card';
+import {ScrollArea} from '@/components/ui/scroll-area';
+import {dateParser} from '@/lib/util/utils';
+
+import {JobOrderWithDetails} from '@/modules/sales/_components/validation/joborder';
+import {ReportsWithDetails} from '@/modules/sales/_components/validation/reports';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
-import {useNavigate, useLocation} from 'react-router-dom';
-import useTicketStore from '../../_components/hooks/use-ticket-store';
-import useTaskStore from '../../_components/hooks/use-task-store';
-import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
-import {JobOrderWithDetails} from '../../_components/validation/joborder';
+import {useState, useEffect} from 'react';
 
-interface JoborderTaskListProps {
-	joborderData: JobOrderWithDetails;
+interface ReportsHistoryProps {
+	data: JobOrderWithDetails;
 }
-export function JoborderTaskList({joborderData}: JoborderTaskListProps) {
-	const [fullRemarkTickets, setFullRemarkTickets] = useState<TaskWithDetails[]>(
-		[],
-	);
-	const [remarkTickets, setRemarkTickets] = useState<TaskWithDetails[]>([]);
+
+export function ReportsHistory({data}: ReportsHistoryProps) {
+	const [fullReports, setFullReports] = useState<ReportsWithDetails[]>([]);
+	const [reports, setReports] = useState<ReportsWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageIndex, setPageIndex] = useState<number>(0);
-	const [pageSize, setPageSize] = useState<number>(10);
+	const [pageSize, setPageSize] = useState<number>(5);
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
-			const res = await request<PaginationResponse<TaskWithDetails>>(
+			const res = await request<PaginationResponse<ReportsWithDetails>>(
 				'GET',
-				`/api/v1/sms/service/${joborderData?.service.service_id}/joborder/${joborderData.joborder_id}/remark-tickets?no_pagination=true`,
+				`/api/v1/sms/service/${data?.service.service_id}/joborder/${data.joborder_id}/reports?no_pagination=true`,
 			);
-			setFullRemarkTickets(res.data);
+			console.log(res.data);
+			setFullReports(res.data);
 			setPageCount(Math.ceil(res.total_data / pageSize));
 		};
 
 		fetchEmployees();
-	}, [joborderData]);
+	}, [data]);
 
 	useEffect(() => {
 		const offset = pageIndex * pageSize;
-		const paginatedData = fullRemarkTickets.slice(offset, offset + pageSize);
-		setRemarkTickets(paginatedData);
-	}, [remarkTickets, pageIndex, pageSize]);
+		const paginatedData = fullReports.slice(offset, offset + pageSize);
+		setReports(paginatedData);
+	}, [reports, pageIndex, pageSize]);
 
 	const handlePaginationChange = (newPageIndex: number) => {
 		setPageIndex(newPageIndex);
@@ -93,26 +90,22 @@ export function JoborderTaskList({joborderData}: JoborderTaskListProps) {
 					</Button>
 				</div>
 			</div>
-			<ScrollArea className="h-[calc(80vh-210px)] px-2">
+			<ScrollArea className="h-[calc(90vh-210px)] px-2">
 				<div className="flex flex-col gap-3">
-					{remarkTickets.length !== 0 ? (
-						remarkTickets.map((ticket, index) => (
+					{reports.length !== 0 ? (
+						reports.map((data, index) => (
 							<Card
-								className="relative w-full h-[120px] flex flex-col"
+								className="relative w-full h-full flex flex-col"
 								key={index}
 							>
 								<CardHeader className="flex flex-col justify-start">
 									<CardTitle className="font-semibold text-sm  hover:underline">
-										{`#${ticket.remark_id}, ${ticket.title} - ${ticket.remarkticket_status}`}
+										{`#${data.reports_id} ${data.reports_title}`}
 									</CardTitle>
 								</CardHeader>
 								<CardFooter className="flex justify-between">
-									<EmployeeAvatarCircles
-										employees={ticket.remark_assign.map(
-											(assign) => assign.employee,
-										)}
-									/>
-									<ActionsCell {...ticket} />
+									<p className="text-sm text-gray-600">{`Report date: ${dateParser(data.created_at ?? '')}`}</p>
+									<ActionsCell {...data} />
 								</CardFooter>
 								{/* <div className="absolute bottom-1 right-3 gap-2 flex items-center justify-end">
 								<Button>Remove</Button>
@@ -127,30 +120,31 @@ export function JoborderTaskList({joborderData}: JoborderTaskListProps) {
 		</>
 	);
 }
+const ActionsCell = (data: ReportsWithDetails) => {
+	// const {setTaskStoreData} = useTaskStore();
+	// const navigate = useNavigate();
+	// const location = useLocation();
+	const handleClick = (clickData: ReportsWithDetails) => {
+		// const data_id = Number(clickData.remark_id);
+		// usedataStore.getState().setdataStore(clickData);
+		// if (location.pathname.includes('/sales')) {
+		// 	navigate(
+		// 		`/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${data_id}`,
+		// 	);
+		// } else if (location.pathname.includes('/admin')) {
+		// 	navigate(
+		// 		`/admin/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${data_id}`,
+		// 	);
+		// } else if (location.pathname.includes('/tech')) {
+		// 	navigate(
+		// 		`/tech/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${data_id}`,
+		// 	);
+		// }
 
-const ActionsCell = (data: TaskWithDetails) => {
-	const {setTaskStoreData} = useTaskStore();
-	const navigate = useNavigate();
-	const location = useLocation();
-	const handleClick = (clickData: TaskWithDetails) => {
-		const ticket_id = Number(clickData.remark_id);
-		useTicketStore.getState().setTicketStore(clickData);
-		if (location.pathname.includes('/sales')) {
-			navigate(
-				`/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
-			);
-		} else if (location.pathname.includes('/admin')) {
-			navigate(
-				`/admin/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
-			);
-		} else if (location.pathname.includes('/tech')) {
-			navigate(
-				`/tech/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
-			);
-		}
-
-		setTaskStoreData(data);
+		// setTaskStoreData(data);
+		console.log(clickData);
 	};
+
 	return (
 		<Button onClick={() => handleClick(data)} variant={'outline'}>
 			View

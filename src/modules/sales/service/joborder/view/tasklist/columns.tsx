@@ -2,8 +2,9 @@ import {ColumnDef} from '@tanstack/react-table';
 import useServiceFormStore from '@/components/hooks/use-service-store';
 import {Button} from '@/components/ui/button';
 import {useNavigate, useLocation} from 'react-router-dom';
-import {TaskWithDetails} from '../../validation/task';
-import useTicketStore from '../../hook/use-ticket-store';
+import {TaskWithDetails} from '../../../../_components/validation/task';
+import useTicketStore from '../../../../_components/hooks/use-ticket-store';
+import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
 
 export const ActionsCell = (data: TaskWithDetails) => {
 	const {setServiceFormData} = useServiceFormStore();
@@ -49,12 +50,22 @@ export const columns: ColumnDef<TaskWithDetails>[] = [
 		header: 'Type',
 	},
 	{
-		accessorKey: 'description',
-		header: 'Description',
-	},
-	{
 		accessorKey: 'remarkticket_status',
 		header: 'Status',
+	},
+	{
+		id: 'remark_assign',
+		header: 'Assigned',
+		cell: ({row}) => {
+			// Render the EmployeeAvatarCircles component with filtered employees
+			return (
+				<EmployeeAvatarCircles
+					employees={row.original.remark_assign.map(
+						(assign) => assign.employee,
+					)}
+				/>
+			);
+		},
 	},
 	{
 		id: 'actions',

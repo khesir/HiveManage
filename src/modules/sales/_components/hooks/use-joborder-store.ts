@@ -1,5 +1,5 @@
-import {JobOrderWithDetails} from '@/lib/sales-zod-schema';
 import {create} from 'zustand';
+import {JobOrderWithDetails} from '../validation/joborder';
 
 type JoborderStore = {
 	joborderData: JobOrderWithDetails | null;

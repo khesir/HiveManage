@@ -17,13 +17,16 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Joborder, joborderSchema} from '@/lib/sales-zod-schema';
 import {generateCustomUUID} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 
 import {JoborderSetting} from '@/modules/_configSettings/config';
+import {
+	Joborder,
+	joborderSchema,
+} from '@/modules/sales/_components/validation/joborder';
 
 interface JoborderProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;

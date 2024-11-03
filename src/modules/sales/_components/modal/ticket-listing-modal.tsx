@@ -8,14 +8,8 @@ import {
 } from '@/components/ui/dialog';
 
 import {PaginationResponse, request} from '@/api/axios';
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
 import {useState, useEffect} from 'react';
-import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-} from '@/components/ui/card';
+import {Card, CardHeader, CardTitle, CardFooter} from '@/components/ui/card';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {
@@ -26,64 +20,57 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import {Badge} from '@/components/ui/badge';
 import {Input} from '@/components/ui/input';
-import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
+import {TaskWithDetails} from '../validation/task';
+import {JobOrderWithDetails} from '../validation/joborder';
+import useTicketArrayStore from '../hooks/use-ticket-array-store';
+import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
 
 interface ItemListingModal {
 	title: string;
+	joborder: JobOrderWithDetails;
 }
 
-export function ItemLisitingModal({title}: ItemListingModal) {
-	const {addItemWithDetails} = useItemWithDetailsStore();
-	const [fullItems, setFullItems] = useState<ItemWithDetails[]>([]);
+export function TaskListingModal({title, joborder}: ItemListingModal) {
+	const {addTicketStoreWithDetails} = useTicketArrayStore();
 
-	const [items, setItems] = useState<ItemWithDetails[]>([]);
+	const [fullRemarkTickets, setFullRemarkTickets] = useState<TaskWithDetails[]>(
+		[],
+	);
+	const [remarkTickets, setRemarkTickets] = useState<TaskWithDetails[]>([]);
 
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageIndex, setPageIndex] = useState<number>(0);
 	const [pageSize, setPageSize] = useState<number>(5);
 
 	const pageSizeOptions = [10, 20, 30, 50, 100];
-	const [searchValue, setSearchValue] = useState<string>('');
-	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
 
 	useEffect(() => {
 		const fetchItems = async () => {
-			const res = await request<PaginationResponse<ItemWithDetails>>(
+			const res = await request<PaginationResponse<TaskWithDetails>>(
 				'GET',
-				`/api/v1/ims/item?on_listing=true&no_pagination=true` +
-					(searchValue ? `&product_name=${searchValue}` : ''),
+				`/api/v1/sms/service/${joborder.service.service_id}/joborder/${joborder.joborder_id}/remark-tickets?no_pagination=true`,
 			);
-			setFullItems(res.data);
+			setFullRemarkTickets(res.data);
 			setPageCount(Math.ceil(res.total_data / pageSize));
 		};
 		fetchItems();
-	}, [debouncedSearchValue, pageSize]);
+	}, [joborder]);
 
 	useEffect(() => {
 		const offset = pageIndex * pageSize;
-		const paginatedData = fullItems.slice(offset, offset + pageSize);
-		setItems(paginatedData);
-	}, [fullItems, pageIndex, pageSize]);
+		const paginatedData = fullRemarkTickets.slice(offset, offset + pageSize);
+		setRemarkTickets(paginatedData);
+	}, [fullRemarkTickets, pageIndex, pageSize]);
 
 	const handlePaginationChange = (newPageIndex: number) => {
 		setPageIndex(newPageIndex);
 	};
 
-	useEffect(() => {
-		const handler = setTimeout(() => {
-			setDebouncedSearchValue(searchValue);
-		}, 500); // Adjust debounce delay as needed
-		return () => clearTimeout(handler);
-	}, [searchValue]);
-	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchValue(event.target.value);
-	};
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="outline">Add Item</Button>
+				<Button variant="outline">Add Ticket</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-2xl">
 				<DialogHeader className="font-semibold text-lg">{title}</DialogHeader>
@@ -91,41 +78,35 @@ export function ItemLisitingModal({title}: ItemListingModal) {
 					Just Click Add, and it will be added to the items
 				</DialogDescription>
 				<div className="w-full">
-					<Input
-						placeholder="Search Product name"
-						className="w-full"
-						value={searchValue ?? ''}
-						onChange={handleSearchChange}
-					/>
+					<Input placeholder="Search Something" className="w-full" />
 				</div>
 				<ScrollArea className="h-[calc(90vh-210px)] px-2">
 					<div className="flex flex-col gap-3">
-						{items.map((item) => (
+						{remarkTickets.map((ticket) => (
 							<Card
 								className="relative w-full h-[100px] overflow-hidden"
-								key={item.item_id}
+								key={ticket.remark_id}
 							>
 								<div className="flex justify-start">
 									<CardHeader className="flex flex-col justify-start">
 										<CardTitle className="font-semibold text-sm  hover:underline">
-											{item.product.name} - {item.product.supplier.name}
+											{`#${ticket.remark_id}, ${ticket.title} - ${ticket.remarkticket_status}`}
 										</CardTitle>
-										<CardDescription>
-											<div className="space-x-1">
-												<Badge>{item.product.category.name}</Badge>
-												<Badge>{item.tag}</Badge>
-											</div>
-										</CardDescription>
 									</CardHeader>
 								</div>
-								<div className="absolute bottom-1 right-3 gap-2 flex items-center justify-end">
+								<CardFooter className="flex justify-between">
+									<EmployeeAvatarCircles
+										employees={ticket.remark_assign.map(
+											(assign) => assign.employee,
+										)}
+									/>
 									<Button
 										className="bg-green-400 hover:bg-green-200"
-										onClick={() => addItemWithDetails(item)}
+										onClick={() => addTicketStoreWithDetails(ticket)}
 									>
 										Add
 									</Button>
-								</div>
+								</CardFooter>
 							</Card>
 						))}
 					</div>

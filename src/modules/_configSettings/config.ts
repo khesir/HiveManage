@@ -71,6 +71,7 @@ class JoborderSetting extends ConfigManager {
 class TicketsSettings extends ConfigManager {
 	private ticketSettingsTitle: string;
 	private remarkTicketsStatus: string[] = [
+		'Not set',
 		'Resolved',
 		'Pending',
 		'In Progress',

@@ -13,7 +13,7 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion';
 import {Separator} from '@/components/ui/separator';
-import {useJoborderStore} from '../hook/useJoborderStore';
+import {useJoborderStore} from '../../../_components/hooks/use-joborder-store.ts';
 
 export function TaskListProfile() {
 	const {joborderData} = useJoborderStore();

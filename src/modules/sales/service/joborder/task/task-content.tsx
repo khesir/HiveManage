@@ -8,7 +8,7 @@ import {
 	CardFooter,
 } from '@/components/ui/card';
 import {Ticket} from 'lucide-react';
-import useTicketStore from '../hook/use-ticket-store';
+import useTicketStore from '../../../_components/hooks/use-ticket-store';
 import {dateParser} from '@/lib/util/utils';
 
 export function TaskContent() {

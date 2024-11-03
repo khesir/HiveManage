@@ -5,8 +5,8 @@ import {useState, useEffect} from 'react';
 import {Button} from '@/components/ui/button';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
-import {useJoborderStore} from '../hook/useJoborderStore';
-import {TaskWithDetails} from '../validation/task';
+import {useJoborderStore} from '../../../_components/hooks/use-joborder-store.ts';
+import {TaskWithDetails} from '../../../_components/validation/task';
 
 export function TaskItems() {
 	const {joborderData} = useJoborderStore();

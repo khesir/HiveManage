@@ -11,7 +11,7 @@ export const taskSchema = z.object({
 	content: z.string().optional(),
 	remarkticket_status: z.string().min(1),
 	deadline: z.string().optional(),
-	created_by: z.number().min(1),
+	created_by: z.number().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
@@ -22,6 +22,7 @@ export type Task = z.infer<typeof taskSchema>;
 export type TaskWithDetails = {
 	remark_id: number;
 	remark_type: TaskType;
+	remark_assign: TaskAssignWithDetails[];
 	joborder: Joborder;
 	description: string;
 	title: string;
@@ -52,3 +53,22 @@ export const taskTypeSchema = z.object({
 	deleted_at: z.string().optional(),
 });
 export type TaskType = z.infer<typeof taskTypeSchema>;
+
+export const taskAssignSchema = z.object({
+	remarkassigned_id: z.number().optional(),
+	remark_id: z.number(),
+	employee_id: z.number(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type TaskAssign = z.infer<typeof taskAssignSchema>;
+
+export type TaskAssignWithDetails = {
+	remarkassigned_id?: number;
+	remark_id: number;
+	employee: EmployeeBasicInformation;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};

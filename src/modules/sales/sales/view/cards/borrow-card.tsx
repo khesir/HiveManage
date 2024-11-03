@@ -40,14 +40,16 @@ import {
 } from '@/components/ui/select';
 import {Borrow, borrowItemSchema} from '@/lib/sales-zod-schema';
 import {dateParser} from '@/lib/util/utils';
+import {
+	CreateBorrow,
+	DeleteBorrow,
+	UpdateBorrow,
+} from '@/modules/sales/_components/api/submit-borrow';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-import {DeleteBorrow} from '../api/delete-borrow';
-import {UpdateBorrow} from '../api/update-borrow';
-import {CreateBorrow} from '../api/create-borrow';
 
 export function BorrrowCard() {
 	const {data} = useServiceFormStore();

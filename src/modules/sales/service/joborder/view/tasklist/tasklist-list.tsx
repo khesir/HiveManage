@@ -1,10 +1,11 @@
 import {PaginationResponse, request} from '@/api/axios';
 import {useState, useEffect} from 'react';
 import {useSearchParams} from 'react-router-dom';
-import {useJoborderStore} from '../../hook/useJoborderStore';
+import {useJoborderStore} from '../../../../_components/hooks/use-joborder-store.ts';
 import {columns} from './columns';
 import {TaskTable} from './tasklist-table';
-import {TaskWithDetails} from '../../validation/task';
+import {TaskWithDetails} from '../../../../_components/validation/task';
+import {TicketsSettings} from '@/modules/_configSettings/config';
 
 export function TaskList() {
 	const {joborderData} = useJoborderStore();
@@ -24,7 +25,7 @@ export function TaskList() {
 			const res = await request<PaginationResponse<TaskWithDetails>>(
 				'GET',
 				`/api/v1/sms/service/${joborderData?.service.service_id}/joborder/${joborderData?.joborder_id}/remark-tickets?limit=${pageLimit}&offset=${offset}` +
-					(status ? `&joborder_status=${status}` : '') +
+					(status ? `&remarktickets_status=${status}` : '') +
 					(sort ? `&sort=${sort}` : ''),
 			);
 			setRemarkTickets(res.data);
@@ -33,13 +34,16 @@ export function TaskList() {
 
 		fetchEmployees();
 	}, [offset, pageLimit, sort, status]);
-	console.log(remarkTickets);
+
+	const task = TicketsSettings.getInstance();
+
 	return (
 		<TaskTable
 			columns={columns}
 			data={remarkTickets}
 			searchKey={'uuid'}
 			pageCount={pageCount}
+			task_status={task.getRemarkTicketStatus()}
 		/>
 	);
 }

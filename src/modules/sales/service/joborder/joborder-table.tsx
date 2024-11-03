@@ -29,13 +29,13 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {JobOrderWithDetails} from '@/lib/sales-zod-schema';
-import {useJoborderStore} from './hook/useJoborderStore';
+import {useJoborderStore} from '../../_components/hooks/use-joborder-store.ts';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {JobOrderWithDetails} from '../../_components/validation/joborder';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

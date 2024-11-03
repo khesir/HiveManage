@@ -26,26 +26,31 @@ import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon, UserCircle} from 'lucide-react';
 import {useState, useEffect} from 'react';
 import {useSearchParams, useNavigate, useParams} from 'react-router-dom';
-import {useEmployeeStore} from '../hooks/use-employee-list';
 import {Badge} from '@/components/ui/badge';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import {ProcessAssignEmployee} from '../api/process-assign-employee';
 import {toast} from 'sonner';
 import {AssignEmployeeWithDetails} from '@/lib/sales-zod-schema';
+import {ProcessAssignEmployee} from '../api/process-assign-employee';
+import {useEmployeeStore} from '../../sales/view/hooks/use-employee-list';
 
 interface AssignEmployeeProps {
 	joborder_id: number | null;
 	assignEmployee: AssignEmployeeWithDetails[];
+	prevEmployees: EmployeeBasicInformation[];
+	isService?: boolean;
 }
 
 export function AssignEmployeeModal({
 	joborder_id,
 	assignEmployee,
+	prevEmployees,
+	isService = true,
 }: AssignEmployeeProps) {
 	const [searchParams] = useSearchParams();
 	const {id} = useParams();
 	const navigate = useNavigate();
-	const {selectedEmployee, addEmployee, removeEmployee} = useEmployeeStore();
+	const {selectedEmployee, addEmployee, removeEmployee, setSelectedEmployee} =
+		useEmployeeStore();
 	const [employee, setEmployee] = useState<EmployeeBasicInformation[]>([]);
 
 	const [pageCount, setPageCount] = useState<number>(0);
@@ -58,7 +63,13 @@ export function AssignEmployeeModal({
 	const sort = searchParams.get('sort') || null;
 	const currentPage = offset / pageLimit + 1;
 	const pageSizeOptions = [10, 20, 30, 50, 100];
-
+	useEffect(() => {
+		if (prevEmployees) {
+			setSelectedEmployee(prevEmployees);
+		} else {
+			setSelectedEmployee([]);
+		}
+	}, [prevEmployees]);
 	useEffect(() => {
 		const fetchItems = async () => {
 			const res = await request<PaginationResponse<EmployeeBasicInformation>>(
@@ -120,16 +131,27 @@ export function AssignEmployeeModal({
 	const closeModal = () => {
 		setIsModalOpen(false);
 	};
+
+	console.log(selectedEmployee);
 	return (
 		<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
 			<DialogTrigger asChild>
-				<Button variant="secondary" className="group relative w-[200px]">
-					<div className="group-hover:hidden  space-x-3 flex">
-						<span>{`${selectedEmployee.length} : Employee Assigned`}</span>
-						<UserCircle />
-					</div>
-					<span className="hidden group-hover:inline">Add employee</span>
-				</Button>
+				{isService ? (
+					<Button variant="secondary" className="group relative w-[200px]">
+						<div className="group-hover:hidden  space-x-3 flex">
+							<span>{`${selectedEmployee.length} : Employee Assigned`}</span>
+							<UserCircle />
+						</div>
+						<span className="hidden group-hover:inline">Add employee</span>
+					</Button>
+				) : (
+					<Button size="sm" variant="default" className="h-8 gap-1">
+						<UserCircle className="h-3.5 w-3.5" />
+						<p className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+							Manage Employees
+						</p>
+					</Button>
+				)}
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-5xl">
 				<DialogHeader className="font-semibold text-lg">

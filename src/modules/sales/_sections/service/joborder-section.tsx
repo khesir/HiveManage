@@ -1,23 +1,12 @@
 import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
-import {useNavigate, useSearchParams} from 'react-router-dom';
+import {useSearchParams} from 'react-router-dom';
 import {JoborderList} from '../../service/joborder/joborder-list';
 import {JoborderTabsList} from '../../service/joborder/joborder-tabs';
-import {useJoborderStore} from '../../service/joborder/hook/useJoborderStore';
-import {Button} from '@/components/ui/button';
-import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-} from '@/components/ui/card';
-import {dateParser} from '@/lib/util/utils';
-import {File} from 'lucide-react';
+import {JoborderDirectCard} from '../../service/joborder/joborder-direct-card';
 
 export default function JoborderSection() {
-	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const {joborderData} = useJoborderStore();
 
 	return (
 		<div className="flex flex-col sm:gap-4">
@@ -38,33 +27,7 @@ export default function JoborderSection() {
 					<div className="flex lg:hidden">
 						<Separator />
 					</div>
-					<Card>
-						<CardHeader className="flex flex-col items-start bg-muted/50">
-							<div className="grid gap-0.5">
-								<CardTitle className="group flex items-center gap-2 text-lg">
-									{`#${joborderData?.joborder_id} ${joborderData?.uuid}`}
-								</CardTitle>
-								<CardDescription>
-									Created date: {dateParser(joborderData?.created_at ?? '')}
-								</CardDescription>
-							</div>
-							<div className="flex items-center gap-1">
-								<Button
-									size="sm"
-									variant="default"
-									className="h-8 gap-1"
-									onClick={() => {
-										navigate(`view/${joborderData?.joborder_id}`);
-									}}
-								>
-									<File className="h-3.5 w-3.5" />
-									<span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-										View More
-									</span>
-								</Button>
-							</div>
-						</CardHeader>
-					</Card>
+					<JoborderDirectCard />
 					<JoborderTabsList />
 				</div>
 			</div>

@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
 import {JoborderTable} from './joborder-table';
-import {JobOrderWithDetails} from '@/lib/sales-zod-schema';
 import {PaginationResponse, request} from '@/api/axios';
 import {columns} from './columns';
 import {JoborderSetting} from '@/modules/_configSettings/config';
+import {JobOrderWithDetails} from '../../_components/validation/joborder';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;

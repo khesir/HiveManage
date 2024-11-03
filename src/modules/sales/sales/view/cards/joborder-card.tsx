@@ -38,25 +38,29 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {
-	AssignEmployeeWithDetails,
-	Joborder,
-	joborderSchema,
-	JobOrderType,
-	JobOrderWithDetails,
-} from '@/lib/sales-zod-schema';
 import {generateCustomUUID} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-import {CreateJoborder} from '../api/create-joborder';
-import {UpdateJobOrder} from '../api/update-joborder';
-import {DeleteJobOrder} from '../api/delete-joborder';
-import {useParams} from 'react-router-dom';
-import {AssignEmployeeModal} from '../modal/assign-employee-modal';
-import {useEmployeeStore} from '../hooks/use-employee-list';
+
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {
+	AssignEmployeeWithDetails,
+	Joborder,
+	joborderSchema,
+	JobOrderType,
+	JobOrderWithDetails,
+} from '@/modules/sales/_components/validation/joborder';
+import {AssignEmployeeModal} from '@/modules/sales/_components/modal/assign-employee-modal';
+import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {
+	CreateJoborder,
+	DeleteJobOrder,
+	UpdateJobOrder,
+} from '@/modules/sales/_components/api/submit-joborder';
+import {JoborderSetting} from '@/modules/_configSettings/config';
 
 export function JobOrderCard() {
 	const {id} = useParams();
@@ -69,10 +73,11 @@ export function JobOrderCard() {
 	const fee = 100;
 	const generatedUUID = generateCustomUUID();
 	const [joborderType, setJoborderType] = useState<JobOrderType[] | null>(null);
-	const {setSelectedEmployee, resetEmployee} = useEmployeeStore();
+	const [employee, setEmployee] = useState<EmployeeBasicInformation[]>([]);
 	const [assignEmployee, setAssignEmployees] = useState<
 		AssignEmployeeWithDetails[]
 	>([]);
+	const [status, setStatus] = useState<string[]>();
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
@@ -103,7 +108,7 @@ export function JobOrderCard() {
 					);
 
 					setAssignEmployees(assignedEmployees);
-					setSelectedEmployee(employeeData);
+					setEmployee(employeeData);
 					setJoborder(joborderData);
 				}
 				setJoborderType((joborderTypeRes.data as JobOrderType[]) || null);
@@ -117,8 +122,8 @@ export function JobOrderCard() {
 				setLoading(false);
 			}
 		};
-		resetEmployee();
 		fetchData();
+		setStatus(JoborderSetting.getInstance().getJoborderStatus());
 	}, [data]);
 
 	const openModal = () => {
@@ -160,7 +165,7 @@ export function JobOrderCard() {
 				joborder_type_id: Number(joborder.joborder_type?.joborder_type_id),
 				uuid: joborder?.uuid,
 				fee: joborder?.fee,
-				status: joborder?.status as
+				joborder_status: joborder?.joborder_status as
 					| 'Pending'
 					| 'In Progress'
 					| 'Completed'
@@ -176,7 +181,7 @@ export function JobOrderCard() {
 				joborder_type_id: undefined,
 				uuid: generatedUUID,
 				fee: fee,
-				status: undefined,
+				joborder_status: undefined,
 			});
 		}
 	};
@@ -217,18 +222,13 @@ export function JobOrderCard() {
 	// 	}
 	// 	fetchData();
 	// },[])
-	const status = [
-		'Pending',
-		'In Progress',
-		'Completed',
-		'On Hold',
-		'Cancelled',
-		'Awaiting Approval',
-		'Approved',
-		'Rejected',
-		'Closed',
-	];
-	console.log(joborder);
+	if (!joborder || !status) {
+		return (
+			<Card>
+				<p>Joborder does not exist or something went wrong with form data</p>
+			</Card>
+		);
+	}
 	return (
 		<Accordion
 			type="single"
@@ -359,7 +359,7 @@ export function JobOrderCard() {
 									/>
 									<FormField
 										control={form.control}
-										name="status"
+										name="joborder_status"
 										render={({field}) => (
 											<FormItem>
 												<FormLabel>Joborder Status</FormLabel>
@@ -377,7 +377,7 @@ export function JobOrderCard() {
 														</SelectTrigger>
 													</FormControl>
 													<SelectContent>
-														{status.map((data, index) => (
+														{status?.map((data, index) => (
 															<SelectItem key={index} value={data}>
 																{data}
 															</SelectItem>
@@ -416,10 +416,13 @@ export function JobOrderCard() {
 					) : (
 						<div className="flex flex-col gap-3">
 							<div className="flex justify-between">
-								<Button>View Full Details</Button>
+								{joborder?.joborder_id !== undefined && (
+									<ActionsCell id={joborder.joborder_id} />
+								)}
 								<AssignEmployeeModal
 									assignEmployee={assignEmployee}
-									joborder_id={joborder?.joborder_id ?? null}
+									joborder_id={joborder.joborder_id ?? null}
+									prevEmployees={employee}
 								/>
 							</div>
 							<Card
@@ -441,7 +444,7 @@ export function JobOrderCard() {
 									</li>
 									<li className="flex items-center justify-between">
 										<span className="text-muted-foreground">Status</span>
-										<span>{joborder?.status}</span>
+										<span>{joborder?.joborder_status}</span>
 									</li>
 								</ul>
 							</Card>
@@ -471,3 +474,22 @@ export function JobOrderCard() {
 		</Accordion>
 	);
 }
+const ActionsCell = ({id}: {id: number}) => {
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	const handleClick = (id: number) => {
+		if (location.pathname.includes('/sales')) {
+			navigate(`/sales/services/joborders/view/${id}`);
+		} else if (location.pathname.includes('/admin')) {
+			navigate(`/admin/sales/services/joborders/view/${id}`);
+		} else if (location.pathname.includes('/tech')) {
+			navigate(`/tech/services/joborders/view/${id}`);
+		}
+	};
+	return (
+		<Button onClick={() => handleClick(id)} variant={'outline'}>
+			View Full details
+		</Button>
+	);
+};
