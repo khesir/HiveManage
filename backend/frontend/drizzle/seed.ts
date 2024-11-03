@@ -1002,7 +1002,6 @@ async function seedRemarkContent(db: PostgresJsDatabase<SchemaType>) {
 // =================================== JOB ORDER ==========================================
 
 async function seedJobOrder(db: PostgresJsDatabase<SchemaType>) {
-  const jobordertypeIDs = await db.select().from(jobordertype);
   const serviceIDs = await db.select().from(service);
 
   const statuses: (
@@ -1028,8 +1027,6 @@ async function seedJobOrder(db: PostgresJsDatabase<SchemaType>) {
   ];
 
   const joborderRecords = Array.from({ length: 10 }).map(() => ({
-    joborder_type_id:
-      faker.helpers.arrayElement(jobordertypeIDs).joborder_type_id,
     service_id: faker.helpers.arrayElement(serviceIDs).service_id,
     uuid: faker.string.uuid(),
     fee: faker.number.int({ min: 1, max: 100 }),

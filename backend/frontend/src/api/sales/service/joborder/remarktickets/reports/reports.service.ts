@@ -54,7 +54,6 @@ export class ReportsService {
       reports_id: row.reports.reports_id,
       jobOrder: {
         jobOrder_id: row.joborder?.job_order_id,
-        joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,
@@ -85,7 +84,6 @@ export class ReportsService {
         reports_id: row.reports.reports_id,
         jobOrder: {
           jobOrder_id: row.joborder?.job_order_id,
-          joborder_type_id: row.joborder?.joborder_type_id,
           service_id: row.joborder?.service_id,
           uuid: row.joborder?.uuid,
           fee: row.joborder?.fee,

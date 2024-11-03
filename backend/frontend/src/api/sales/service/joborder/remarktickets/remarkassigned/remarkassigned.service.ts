@@ -23,6 +23,7 @@ export class RemarkAssignedService {
   }
 
   async getAllRemarkAssigned(
+    remark_id: string | undefined,
     employee_id: string | undefined,
     sort: string,
     limit: number,
@@ -32,6 +33,10 @@ export class RemarkAssignedService {
 
     if (employee_id) {
       conditions.push(eq(remarkassigned.employee_id, Number(employee_id)));
+    }
+
+    if (remark_id) {
+      conditions.push(eq(remarkassigned.remark_id, Number(remark_id)));
     }
 
     const totalCountQuery = await this.db

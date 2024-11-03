@@ -404,7 +404,6 @@ CREATE TABLE IF NOT EXISTS "item" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "joborder" (
 	"job_order_id" serial PRIMARY KEY NOT NULL,
-	"joborder_type_id" integer,
 	"service_id" integer,
 	"uuid" varchar(255),
 	"fee" integer,
@@ -891,12 +890,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "item" ADD CONSTRAINT "item_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "joborder" ADD CONSTRAINT "joborder_joborder_type_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("joborder_type_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

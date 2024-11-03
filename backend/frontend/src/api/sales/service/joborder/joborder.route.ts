@@ -5,13 +5,8 @@ import { validateRequest } from '@/src/middlewares';
 import { JobOrderController } from './joborder.controller';
 import { validateJobOrderID } from './joborder.middleware';
 import { CreateJobOrder, UpdateJobOrder } from './joborder.model';
-import reportsRoute from './reports/reports.route';
 import assignedEmployeeRoute from './assignedemployees/assignedemployees.route';
 import remarkTicketsRoute from './remarktickets/remarkticket.route';
-import remarkItemsRoute from './remarkitems/remarkitem.route';
-import remarkReportsRoute from './remarkreports/remarkreports.route';
-import remarkassignedRoute from './remarkassigned/remarkassigned.route';
-import remarkContentRoute from './remarkcontent/remarkcontent.route';
 import joborderServiceRoute from './joborderservice/joborderservice.route';
 
 const joborderRoute = Router({ mergeParams: true });
@@ -51,9 +46,6 @@ joborderRoute.delete(
 );
 log.info('DELETE /joborder/:job_order_id set');
 
-joborderRoute.use('/:job_order_id/reports', validateJobOrderID, reportsRoute);
-log.info('ROUTE Job order reports set');
-
 joborderRoute.use(
   '/:job_order_id/assigned-employee',
   validateJobOrderID,
@@ -67,34 +59,6 @@ joborderRoute.use(
   remarkTicketsRoute,
 );
 log.info('ROUTE Job order remark tickets set');
-
-joborderRoute.use(
-  '/:job_order_id/remark-items',
-  validateJobOrderID,
-  remarkItemsRoute,
-);
-log.info('ROUTE Job order remark items set');
-
-joborderRoute.use(
-  '/:job_order_id/remark-reports',
-  validateJobOrderID,
-  remarkReportsRoute,
-);
-log.info('ROUTE Job order remark reports set');
-
-joborderRoute.use(
-  '/:job_order_id/remark-assigned',
-  validateJobOrderID,
-  remarkassignedRoute,
-);
-log.info('ROUTE Job order remark assigned set');
-
-joborderRoute.use(
-  '/:job_order_id/remark-content',
-  validateJobOrderID,
-  remarkContentRoute,
-);
-log.info('ROUTE Job order remark content set');
 
 joborderRoute.use(
   '/:job_order_id/joborderservices',

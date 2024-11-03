@@ -570,9 +570,6 @@ export const attendance = pgTable('attendance', {
 //JobOrder
 export const jobOrder = pgTable('joborder', {
   job_order_id: serial('job_order_id').primaryKey(),
-  joborder_type_id: integer('joborder_type_id').references(
-    () => jobordertype.joborder_type_id,
-  ),
   service_id: integer('service_id').references(() => service.service_id),
   uuid: varchar('uuid', { length: 255 }),
   fee: integer('fee'),

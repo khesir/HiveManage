@@ -133,7 +133,6 @@ export class RemarkTicketsService {
       remark_assign: assignmentsByRemarkId[row.remarktickets.remark_id] || [],
       job_order: {
         job_order_id: row.joborder?.job_order_id,
-        joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,
@@ -180,7 +179,6 @@ export class RemarkTicketsService {
       },
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
-        joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,

@@ -1,5 +1,5 @@
 {
-  "id": "49c6ff80-d9bd-432d-a547-b1c41afe92ae",
+  "id": "1712ae97-80eb-4e77-ac7d-bb6c160c0b61",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1662,12 +1662,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "joborder_type_id": {
-          "name": "joborder_type_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "service_id": {
           "name": "service_id",
           "type": "integer",
@@ -1722,19 +1716,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "joborder_joborder_type_id_jobordertype_joborder_type_id_fk": {
-          "name": "joborder_joborder_type_id_jobordertype_joborder_type_id_fk",
-          "tableFrom": "joborder",
-          "tableTo": "jobordertype",
-          "columnsFrom": [
-            "joborder_type_id"
-          ],
-          "columnsTo": [
-            "joborder_type_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "joborder_service_id_service_service_id_fk": {
           "name": "joborder_service_id_service_service_id_fk",
           "tableFrom": "joborder",

@@ -74,7 +74,6 @@ export class JobOrderServicesService {
       },
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
-        joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,
@@ -128,7 +127,6 @@ export class JobOrderServicesService {
       },
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
-        joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,

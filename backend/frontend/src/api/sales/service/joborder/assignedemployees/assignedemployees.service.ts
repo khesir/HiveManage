@@ -47,7 +47,6 @@ export class AssignedEmployeeService {
       assigned_employee_id: row.assignedemployees.assigned_employee_id,
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
-        joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,
@@ -101,7 +100,6 @@ export class AssignedEmployeeService {
       assigned_employee_id: row.assignedemployees.assigned_employee_id,
       jobOrder: {
         job_order_id: row.joborder?.job_order_id,
-        joborder_type_id: row.joborder?.joborder_type_id,
         service_id: row.joborder?.service_id,
         uuid: row.joborder?.uuid,
         fee: row.joborder?.fee,

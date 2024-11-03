@@ -4,6 +4,7 @@ import {
   customer,
   employee,
   jobOrder,
+  joborder_services,
   jobordertype,
   SchemaType,
   service,
@@ -79,10 +80,6 @@ export class JobOrderService {
     const query = this.db
       .select()
       .from(jobOrder)
-      .leftJoin(
-        jobordertype,
-        eq(jobordertype.joborder_type_id, jobOrder.joborder_type_id),
-      )
       .leftJoin(service, eq(service.service_id, jobOrder.service_id))
       .leftJoin(employee, eq(employee.employee_id, service.employee_id))
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
@@ -129,18 +126,42 @@ export class JobOrderService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<number, any[]>,
     );
+
+    const jotypes = await this.db
+      .select()
+      .from(joborder_services)
+      .leftJoin(
+        jobordertype,
+        eq(jobordertype.joborder_type_id, joborder_services.joborder_types_id),
+      )
+      .where(isNull(joborder_services.deleted_at));
+    const typesByJoService = jotypes.reduce(
+      (acc, type) => {
+        if (
+          type.joborder_services.job_order_id !== null &&
+          !(type.joborder_services.job_order_id in acc)
+        ) {
+          acc[type.joborder_services.job_order_id] = [];
+        }
+        if (type.joborder_services.job_order_id !== null) {
+          acc[type.joborder_services.job_order_id].push({
+            ...type.joborder_services,
+            joborder_type: {
+              ...type.jobordertype,
+            },
+          });
+        }
+        return acc;
+      },
+      // Too much work to write a typing for this
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {} as Record<number, any[]>,
+    );
+
     const joborderitemWithDetails = result.map((row) => ({
       joborder_id: row.joborder.job_order_id,
-      joborder_type: {
-        joborder_type_id: row.jobordertype?.joborder_type_id,
-        name: row.jobordertype?.name,
-        description: row.jobordertype?.description,
-        joborder_types_status: row.jobordertype?.joborder_types_status,
-        created_at: row.jobordertype?.created_at,
-        last_updated: row.jobordertype?.last_updated,
-        deleted_at: row.jobordertype?.deleted_at,
-      },
       joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
+      joborder_type: typesByJoService[row.joborder.job_order_id] || [],
       service: {
         service_id: row.service?.service_id,
         employee: {
@@ -191,10 +212,6 @@ export class JobOrderService {
     const result = await this.db
       .select()
       .from(jobOrder)
-      .leftJoin(
-        jobordertype,
-        eq(jobordertype.joborder_type_id, jobOrder.joborder_type_id),
-      )
       .leftJoin(service, eq(service.service_id, jobOrder.service_id))
       .leftJoin(employee, eq(employee.employee_id, service.employee_id))
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
@@ -232,18 +249,41 @@ export class JobOrderService {
       {} as Record<number, any[]>,
     );
 
+    const jotypes = await this.db
+      .select()
+      .from(joborder_services)
+      .leftJoin(
+        jobordertype,
+        eq(jobordertype.joborder_type_id, joborder_services.joborder_types_id),
+      )
+      .where(isNull(joborder_services.deleted_at));
+    const typesByJoService = jotypes.reduce(
+      (acc, type) => {
+        if (
+          type.joborder_services.job_order_id !== null &&
+          !(type.joborder_services.job_order_id in acc)
+        ) {
+          acc[type.joborder_services.job_order_id] = [];
+        }
+        if (type.joborder_services.job_order_id !== null) {
+          acc[type.joborder_services.job_order_id].push({
+            ...type.joborder_services,
+            joborder_type: {
+              ...type.jobordertype,
+            },
+          });
+        }
+        return acc;
+      },
+      // Too much work to write a typing for this
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {} as Record<number, any[]>,
+    );
+
     const joborderitemWithDetails = result.map((row) => ({
       joborder_id: row.joborder.job_order_id,
-      joborder_type: {
-        joborder_type_id: row.jobordertype?.joborder_type_id,
-        name: row.jobordertype?.name,
-        description: row.jobordertype?.description,
-        joborder_types_status: row.jobordertype?.joborder_types_status,
-        created_at: row.jobordertype?.created_at,
-        last_updated: row.jobordertype?.last_updated,
-        deleted_at: row.jobordertype?.deleted_at,
-      },
       joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
+      joborder_type: typesByJoService[row.joborder.job_order_id] || [],
       service: {
         service_id: row.service?.service_id,
         employee: {

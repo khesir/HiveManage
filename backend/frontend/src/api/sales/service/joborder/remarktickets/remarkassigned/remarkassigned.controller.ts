@@ -12,13 +12,15 @@ export class RemarkAssignedController {
   }
 
   async getAllRemarkAssigned(req: Request, res: Response, next: NextFunction) {
-    const employee_id = (req.params.employee_id as string) || undefined;
+    const remark_id = (req.params.remark_id as string) || undefined;
+    const employee_id = (req.query.employee_id as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
       const data = await this.remarkassignedService.getAllRemarkAssigned(
+        remark_id,
         employee_id,
         sort,
         limit,
