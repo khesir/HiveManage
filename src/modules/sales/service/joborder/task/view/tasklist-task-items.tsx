@@ -1,60 +1,71 @@
 import {PaginationResponse, request} from '@/api/axios';
-import {Card, CardHeader, CardTitle} from '@/components/ui/card';
+import {
+	Card,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useState, useEffect} from 'react';
 import {Button} from '@/components/ui/button';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
-import {useJoborderStore} from '../../../_components/hooks/use-joborder-store.ts';
-import {TaskWithDetails} from '../../../_components/validation/task';
+import {TaskItemsWithDetails} from '../../../../_components/validation/task.ts';
+import useTicketStore from '@/modules/sales/_components/hooks/use-ticket-store.ts';
+import {useParams} from 'react-router-dom';
+import {Checkbox} from '@/components/ui/checkbox.tsx';
 
 export function TaskItems() {
-	const {joborderData} = useJoborderStore();
-	const [fullRemarkTickets, setFullRemarkTickets] = useState<TaskWithDetails[]>(
-		[],
-	);
-	const [remarkTickets, setRemarkTickets] = useState<TaskWithDetails[]>([]);
+	const {data} = useTicketStore();
+	const {task_id} = useParams();
+	const [fullRemarkItems, setFullRemarkItems] = useState<
+		TaskItemsWithDetails[]
+	>([]);
+	const [remarkItems, setRemarkItems] = useState<TaskItemsWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageIndex, setPageIndex] = useState<number>(0);
-	const [pageSize, setPageSize] = useState<number>(10);
-
+	const pageSize = 5;
 	useEffect(() => {
 		const fetchEmployees = async () => {
-			const res = await request<PaginationResponse<TaskWithDetails>>(
+			const res = await request<PaginationResponse<TaskItemsWithDetails>>(
 				'GET',
-				`/api/v1/sms/service/${joborderData?.service.service_id}/joborder/${joborderData?.joborder_id}/remark-items?no_pagination=true`,
+				`/api/v1/sms/remark-tickets/${data ? data.remark_id : task_id}/remark-items?no_pagination=true`,
 			);
-			setFullRemarkTickets(res.data);
+			setFullRemarkItems(res.data);
 			setPageCount(Math.ceil(res.total_data / pageSize));
 		};
 
 		fetchEmployees();
-	}, [joborderData]);
-
+	}, [data, task_id]);
 	useEffect(() => {
 		const offset = pageIndex * pageSize;
-		const paginatedData = fullRemarkTickets.slice(offset, offset + pageSize);
-		setRemarkTickets(paginatedData);
-	}, [remarkTickets, pageIndex, pageSize]);
+		const paginatedData = fullRemarkItems.slice(offset, offset + pageSize);
+		setRemarkItems(paginatedData);
+	}, [fullRemarkItems, pageIndex, pageSize]);
 
 	const handlePaginationChange = (newPageIndex: number) => {
 		setPageIndex(newPageIndex);
 	};
 	return (
 		<>
-			<ScrollArea className="h-[calc(70vh-210px)] px-2">
+			<ScrollArea className="h-[calc(85vh-220px)] px-2">
 				<div className="flex flex-col gap-3">
-					{remarkTickets.length !== 0 ? (
-						remarkTickets.map((ticket, index) => (
+					{remarkItems.length !== 0 ? (
+						remarkItems.map((data, index) => (
 							<Card
 								className="relative w-full h-[120px] flex flex-col"
 								key={index}
 							>
 								<CardHeader className="flex flex-col justify-start">
 									<CardTitle className="font-semibold text-sm  hover:underline">
-										test
+										{data.item?.product?.name}
 									</CardTitle>
+									<CardDescription>qty: 3</CardDescription>
 								</CardHeader>
+								<CardFooter className="flex justify-end">
+									<Checkbox />
+								</CardFooter>
 								{/* <div className="absolute bottom-1 right-3 gap-2 flex items-center justify-end">
 								<Button>Remove</Button>
 							</div> */}

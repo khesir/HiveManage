@@ -33,10 +33,12 @@ import Terminal from './pages/general/terminal';
 import ChatSystem from './modules/chat/chat';
 import InquiryPage from './pages/sales/systems/inquiry';
 import JoborderListsPage from './pages/tech/systems/service/joborder-page';
-import JoborderViewPage from './pages/tech/systems/service/joborder/view-page';
+import JoborderViewPage from './pages/tech/systems/service/view/view-page';
 import InventoryOverview from './pages/inventory/overview/admin-overview';
 import ItemPage from './pages/inventory/items/items-page';
 import ReadTask from './pages/sales/systems/service/tickets/task-detail';
+import TicketsPage from './pages/tech/systems/service/task-page';
+import ReportsPage from './pages/tech/systems/service/reports-page';
 
 function App() {
 	return (
@@ -106,20 +108,30 @@ function App() {
 					<Route path="terminal" element={<Terminal />} />
 
 					{/* Systems */}
-					<Route path="overview" element={<TechOverview />} />
-					<Route path="services/joborders" element={<JoborderListsPage />} />
-					<Route
-						path="services/joborders/view/:id"
-						element={<JoborderViewPage />}
-					/>
-					<Route
-						path="services/joborders/view/:id/task/:task_id"
-						element={<ReadTask />}
-					/>
-					<Route path="services/joborders/view/:id/report" />
-					<Route path="customer" element={<CustomerDatabasePage />} />
-					<Route path="customer/view/:id" element={<CustomerViewPage />} />
-					<Route path="customer/create" element={<CustomerCreatePage />} />
+					<Route path="services">
+						<Route path="overview" element={<TechOverview />} />
+						{/* Joborder */}
+						<Route path="joborders">
+							<Route index element={<JoborderListsPage />} />
+							<Route path="view/:id" element={<JoborderViewPage />} />
+							{/* Tickets */}
+							<Route path="tasks">
+								<Route index element={<TicketsPage />} />
+								<Route path="view/:task_id" element={<ReadTask />} />
+							</Route>
+							{/* Report route */}
+							<Route path="reports">
+								<Route index element={<ReportsPage />} />
+								<Route path="view/:report_id" />
+							</Route>
+						</Route>
+					</Route>
+
+					<Route path="customer">
+						<Route index element={<CustomerDatabasePage />} />
+						<Route path="view/:customer_id" element={<CustomerViewPage />} />
+						<Route path="create" element={<CustomerCreatePage />} />
+					</Route>
 
 					<Route path="inquiry" element={<InquiryPage />} />
 				</Route>

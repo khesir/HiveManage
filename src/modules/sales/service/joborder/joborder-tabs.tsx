@@ -20,7 +20,7 @@ export function JoborderTabsList() {
 		<Tabs defaultValue="Profile">
 			<TabsList>
 				<TabsTrigger value="Profile">Profile</TabsTrigger>
-				<TabsTrigger value="Services">Tasks</TabsTrigger>
+				<TabsTrigger value="Services">Tickets</TabsTrigger>
 			</TabsList>
 			<TabsContent value="Profile">
 				<JoborderProfiler data={joborderData} />

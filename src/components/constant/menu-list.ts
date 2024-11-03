@@ -208,24 +208,54 @@ export function getSalesMenuList(pathname: string): Group[] {
 				},
 				{
 					href: '/sales/services',
-					label: 'Services & Sales',
+					label: 'Business Service',
 					active: pathname.includes('/sales/services'),
 					icon: PackageOpenIcon,
-					submenus: [],
+					submenus: [
+						{
+							href: '/sales/services/sales',
+							label: 'Sales',
+							active: pathname === '/sales/services/sales',
+						},
+						{
+							href: '/sales/services/joborders',
+							label: 'Joborder',
+							active: pathname === '/sales/services/joborders',
+						},
+						{
+							href: '/sales/services/borrow',
+							label: 'Borrow',
+							active: pathname === '/sales/services/borrow',
+						},
+						{
+							href: '/sales/services/reservation',
+							label: 'Reservation',
+							active: pathname === '/sales/services/reservation',
+						},
+					],
 				},
 				{
 					href: '/sales/customer',
-					label: 'Customer Database',
+					label: 'Customer Service',
 					active: pathname.includes('/sales/customer'),
 					icon: Users,
-					submenus: [],
-				},
-				{
-					href: '/sales/inquiry',
-					label: 'Inquiries',
-					active: pathname.includes('/sales/inquiry'),
-					icon: BotMessageSquareIcon,
-					submenus: [],
+					submenus: [
+						{
+							href: '/sales/customer/overview',
+							label: 'Customer Database',
+							active: pathname === '/sales/services/overview',
+						},
+						{
+							href: '/sales/customer/payments',
+							label: 'Payments History',
+							active: pathname === '/sales/customer/payments',
+						},
+						{
+							href: '/sales/customer/inquiry',
+							label: 'Customer Inquiries',
+							active: pathname === '/sales/customer/inquiry',
+						},
+					],
 				},
 			],
 		},
@@ -284,10 +314,26 @@ export function getTechMenuList(pathname: string): Group[] {
 				},
 				{
 					href: '/tech/services/joborders',
-					label: 'Joborders',
+					label: 'Joborder Service',
 					active: pathname.includes('/tech/services/joborders'),
 					icon: Package,
-					submenus: [],
+					submenus: [
+						{
+							href: '/tech/services/joborders',
+							label: 'Joborders',
+							active: pathname === '/tech/services/joborders',
+						},
+						{
+							href: '/tech/services/joborders/tasks',
+							label: 'Tickets',
+							active: pathname === '/tech/services/joborders/tasks',
+						},
+						{
+							href: '/tech/services/joborders/reports',
+							label: 'Reports',
+							active: pathname === '/tech/services/joborders/reports',
+						},
+					],
 				},
 				{
 					href: '/tech/customer',

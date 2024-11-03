@@ -4,6 +4,7 @@ import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useState} from 'react';
 import {JobOrderWithDetails} from '../../_components/validation/joborder';
+import {Badge} from '@/components/ui/badge';
 
 interface JoborderProfileProps {
 	data: JobOrderWithDetails;
@@ -24,7 +25,13 @@ export function JoborderProfiler({data}: JoborderProfileProps) {
 							<ul className="grid gap-3">
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Joborder Type</span>
-									<span>{data.joborder_type.name}</span>
+									<span>
+										{data.joborder_type.map((type) => (
+											<Badge key={type.joborder_service_id}>
+												{type.joborder_type.name}
+											</Badge>
+										))}
+									</span>
 								</li>
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Status</span>

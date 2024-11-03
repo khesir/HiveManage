@@ -14,17 +14,11 @@ export const ActionsCell = (data: TaskWithDetails) => {
 		const ticket_id = Number(clickData.remark_id);
 		useTicketStore.getState().setTicketStore(clickData);
 		if (location.pathname.includes('/sales')) {
-			navigate(
-				`/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
-			);
+			navigate(`/sales/services/joborders/tasks/view/${ticket_id}`);
 		} else if (location.pathname.includes('/admin')) {
-			navigate(
-				`/admin/sales/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
-			);
+			navigate(`/admin/sales/services/joborders/tasks/view/${ticket_id}`);
 		} else if (location.pathname.includes('/tech')) {
-			navigate(
-				`/tech/services/joborders/view/${clickData.joborder?.jobrder_id}/task/${ticket_id}`,
-			);
+			navigate(`/tech/services/joborders/tasks/view/${ticket_id}`);
 		}
 
 		setServiceFormData(data);

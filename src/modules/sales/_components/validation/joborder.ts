@@ -30,12 +30,30 @@ export type Joborder = z.infer<typeof joborderSchema>;
 export type JobOrderWithDetails = {
 	joborder_id?: number;
 	service: ServiceWithDetails;
-	joborder_type: JobOrderType;
+	joborder_type: JoborderServiceWithDetails[];
 	joborder_assign: AssignEmployeeWithDetails[];
 	uuid: string;
 	fee: number;
 	joborder_status: string;
 	total_cost_price: number;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};
+export const joborderServiceSchema = z.object({
+	joborder_service_id: z.number().optional(),
+	joborder_id: z.number().min(1),
+	joborder_type_id: z.number().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type JoborderService = z.infer<typeof joborderServiceSchema>;
+
+export type JoborderServiceWithDetails = {
+	joborder_service_id?: number;
+	joborder_id: number;
+	joborder_type: JobOrderType;
 	created_at?: string;
 	last_updated?: string;
 	deleted_at?: string;

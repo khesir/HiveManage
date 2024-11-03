@@ -1,8 +1,8 @@
 import {Separator} from '@/components/ui/separator';
 
-import {TaskListProfile} from '../../service/joborder/task/task-profile';
-import {TaskContent} from '../../service/joborder/task/task-content';
-import {TaskItems} from '../../service/joborder/task/tasklist-task-items';
+import {TaskListProfile} from '../../service/joborder/task/view/task-profile';
+import {TaskContent} from '../../service/joborder/task/view/task-content';
+import {TaskItems} from '../../service/joborder/task/view/tasklist-task-items';
 
 export default function ViewTask() {
 	return (

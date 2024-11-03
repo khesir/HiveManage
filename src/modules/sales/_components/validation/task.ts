@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import {Joborder} from './joborder';
 import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {ItemWithDetails} from '@/lib/inventory-zod-schema';
 
 export const taskSchema = z.object({
 	remark_id: z.number().optional(),
@@ -68,6 +69,26 @@ export type TaskAssignWithDetails = {
 	remarkassigned_id?: number;
 	remark_id: number;
 	employee: EmployeeBasicInformation;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};
+
+export const taskItemsSchema = z.object({
+	remark_items_id: z.number().optional(),
+	items_id: z.number().min(1),
+	remark_id: z.number().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type TaskItems = z.infer<typeof taskItemsSchema>;
+
+export type TaskItemsWithDetails = {
+	remark_items_id?: number;
+	item: ItemWithDetails;
+	remark_id: number;
 	created_at?: string;
 	last_updated?: string;
 	deleted_at?: string;

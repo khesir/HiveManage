@@ -2,6 +2,7 @@ import {ColumnDef} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
 import {JobOrderWithDetails} from '../../_components/validation/joborder';
 import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
+import {Badge} from '@/components/ui/badge';
 
 export const columns: ColumnDef<JobOrderWithDetails>[] = [
 	{
@@ -9,12 +10,23 @@ export const columns: ColumnDef<JobOrderWithDetails>[] = [
 		header: 'UUID',
 	},
 	{
-		accessorKey: 'joborder_type.name',
-		header: 'Joborder Type',
-	},
-	{
 		accessorKey: 'joborder_status',
 		header: 'Status',
+	},
+	{
+		id: 'joborder_type',
+		header: 'Type',
+		cell: ({row}) => {
+			return (
+				<>
+					{row.original.joborder_type.map((type) => (
+						<Badge key={type.joborder_service_id}>
+							{type.joborder_type.name}
+						</Badge>
+					))}
+				</>
+			);
+		},
 	},
 	{
 		id: 'joborder_assign',
