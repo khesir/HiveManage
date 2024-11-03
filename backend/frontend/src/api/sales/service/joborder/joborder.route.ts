@@ -5,6 +5,7 @@ import { validateRequest } from '@/src/middlewares';
 import { JobOrderController } from './joborder.controller';
 import { validateJobOrderID } from './joborder.middleware';
 import { CreateJobOrder, UpdateJobOrder } from './joborder.model';
+import reportsRoute from './remarktickets/reports/reports.route';
 import assignedEmployeeRoute from './assignedemployees/assignedemployees.route';
 import remarkTicketsRoute from './remarktickets/remarkticket.route';
 import joborderServiceRoute from './joborderservice/joborderservice.route';
@@ -45,6 +46,9 @@ joborderRoute.delete(
   joborderController.deleteJobOrder.bind(joborderController),
 );
 log.info('DELETE /joborder/:job_order_id set');
+
+joborderRoute.use('/:job_order_id/reports', validateJobOrderID, reportsRoute);
+log.info('ROUTE Job order reports set');
 
 joborderRoute.use(
   '/:job_order_id/assigned-employee',
