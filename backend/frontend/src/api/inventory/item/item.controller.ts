@@ -12,6 +12,7 @@ export class ItemsController {
   }
 
   async getAllItem(req: Request, res: Response, next: NextFunction) {
+    const no_pagination = req.query.no_pagination === 'true';
     const on_listing = (req.query.on_listing as string) || 'false';
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -19,6 +20,7 @@ export class ItemsController {
 
     try {
       const data = await this.itemService.getAllItem(
+        no_pagination,
         on_listing,
         sort,
         limit,

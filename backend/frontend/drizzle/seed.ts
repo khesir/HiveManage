@@ -1049,10 +1049,8 @@ async function seedJobOrder(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedReports(db: PostgresJsDatabase<SchemaType>) {
   const joborderIDs = await db.select().from(jobOrder);
-  const customerIDs = await db.select().from(customer);
 
   const reportsRecords = Array.from({ length: 70 }).map(() => ({
-    customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
     job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
     reports_title: faker.lorem.sentence(),
     remarks: faker.lorem.sentence(),

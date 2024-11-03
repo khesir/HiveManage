@@ -26,7 +26,6 @@ export async function validateJobOrderID(
           isNull(jobOrder.deleted_at),
         ),
       );
-    console.log(JobOrder);
     if (!JobOrder[0]) {
       return res.status(404).json({ message: 'Job Order not found' });
     }

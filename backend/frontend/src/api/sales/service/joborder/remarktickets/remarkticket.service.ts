@@ -1,5 +1,7 @@
 import {
+  employee,
   jobOrder,
+  remarkassigned,
   remarktickets,
   remarktype,
   SchemaType,
@@ -89,6 +91,35 @@ export class RemarkTicketsService {
 
     const result = await query;
 
+    // Handles Other related data
+    const remarkAssign = await this.db
+      .select()
+      .from(remarkassigned)
+      .leftJoin(employee, eq(remarkassigned.employee_id, employee.employee_id))
+      .where(and(isNull(remarkassigned.deleted_at)));
+
+    const assignmentsByRemarkId = remarkAssign.reduce(
+      (acc, assignment) => {
+        if (
+          assignment.remarkassigned.remark_id !== null &&
+          !(assignment.remarkassigned.remark_id in acc)
+        ) {
+          acc[assignment.remarkassigned.remark_id] = [];
+        }
+        if (assignment.remarkassigned.remark_id !== null) {
+          acc[assignment.remarkassigned.remark_id].push({
+            ...assignment.remarkassigned,
+            employee: {
+              ...assignment.employee,
+            },
+          });
+        }
+        return acc;
+      },
+      // Too much work to write a typing for this
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {} as Record<number, any[]>,
+    );
     const remarkticketitemWithDetails = result.map((row) => ({
       remark_id: row.remarktickets.remark_id,
       remark_type: {
@@ -99,6 +130,7 @@ export class RemarkTicketsService {
         last_updated: row.remarktype?.last_updated,
         deleted_at: row.remarktype?.deleted_at,
       },
+      remark_assign: assignmentsByRemarkId[row.remarktickets.remark_id] || [],
       job_order: {
         job_order_id: row.joborder?.job_order_id,
         joborder_type_id: row.joborder?.joborder_type_id,

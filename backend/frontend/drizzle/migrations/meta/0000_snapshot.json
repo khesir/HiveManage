@@ -1,5 +1,5 @@
 {
-  "id": "d4760837-7948-4ed0-83f4-1dd2ece9509c",
+  "id": "49c6ff80-d9bd-432d-a547-b1c41afe92ae",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1756,14 +1756,14 @@
       "name": "joborder_services",
       "schema": "",
       "columns": {
-        "joborder_services_id": {
-          "name": "joborder_services_id",
+        "joservices_id": {
+          "name": "joservices_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "joborder_types_id": {
-          "name": "joborder_types_id",
+        "jotypes_id": {
+          "name": "jotypes_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1797,12 +1797,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk": {
-          "name": "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk",
+        "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk": {
+          "name": "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk",
           "tableFrom": "joborder_services",
           "tableTo": "jobordertype",
           "columnsFrom": [
-            "joborder_types_id"
+            "jotypes_id"
           ],
           "columnsTo": [
             "joborder_type_id"
@@ -1849,12 +1849,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "joborder_types_status": {
-          "name": "joborder_types_status",
-          "type": "joborderTypeStatusEnum",
-          "typeSchema": "public",
+        "status": {
+          "name": "status",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "fee": {
           "name": "fee",
@@ -3734,12 +3733,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "customer_id": {
-          "name": "customer_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "job_order_id": {
           "name": "job_order_id",
           "type": "integer",
@@ -3781,19 +3774,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "reports_customer_id_customer_customer_id_fk": {
-          "name": "reports_customer_id_customer_customer_id_fk",
-          "tableFrom": "reports",
-          "tableTo": "customer",
-          "columnsFrom": [
-            "customer_id"
-          ],
-          "columnsTo": [
-            "customer_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "reports_job_order_id_joborder_job_order_id_fk": {
           "name": "reports_job_order_id_joborder_job_order_id_fk",
           "tableFrom": "reports",

@@ -589,7 +589,6 @@ export const jobOrder = pgTable('joborder', {
 //Reports
 export const reports = pgTable('reports', {
   reports_id: serial('reports_id').primaryKey(),
-  customer_id: integer('customer_id').references(() => customer.customer_id),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
   reports_title: varchar('reports_title', { length: 255 }),
   remarks: varchar('remarks', { length: 255 }),
@@ -606,9 +605,7 @@ export const jobordertype = pgTable('jobordertype', {
   joborder_type_id: serial('joborder_type_id').primaryKey(),
   name: varchar('name', { length: 255 }),
   description: varchar('description', { length: 255 }),
-  joborder_types_status: joborderTypeStatusEnum(
-    'joborder_types_status',
-  ).notNull(),
+  joborder_types_status: varchar('status'),
   fee: integer('fee'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -620,8 +617,8 @@ export const jobordertype = pgTable('jobordertype', {
 
 //Job Order Services
 export const joborder_services = pgTable('joborder_services', {
-  joborder_services_id: serial('joborder_services_id').primaryKey(),
-  joborder_types_id: integer('joborder_types_id').references(
+  joborder_services_id: serial('joservices_id').primaryKey(),
+  joborder_types_id: integer('jotypes_id').references(
     () => jobordertype.joborder_type_id,
   ),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),

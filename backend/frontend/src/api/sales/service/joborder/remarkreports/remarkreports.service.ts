@@ -60,7 +60,6 @@ export class RemarkReportsService {
     const remarkreportsWithDetails = result.map((row) => ({
       remark_reports_id: row.remarkreports.remark_reports_id,
       reports: {
-        customer_id: row.reports?.customer_id,
         job_order_id: row.reports?.job_order_id,
         reports_title: row.reports?.reports_title,
         remarks: row.reports?.remarks,
@@ -104,7 +103,6 @@ export class RemarkReportsService {
     const remarkreportsWithDetails = result.map((row) => ({
       remark_reports_id: row.remarkreports.remark_reports_id,
       reports: {
-        customer_id: row.reports?.customer_id,
         job_order_id: row.reports?.job_order_id,
         reports_title: row.reports?.reports_title,
         remarks: row.reports?.remarks,

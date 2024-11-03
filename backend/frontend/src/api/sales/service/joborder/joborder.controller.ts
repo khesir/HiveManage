@@ -12,6 +12,7 @@ export class JobOrderController {
   }
 
   async getAllJobOrder(req: Request, res: Response, next: NextFunction) {
+    const no_pagination = req.query.no_pagination === 'true';
     const uuid = (req.query.uuid as string) || undefined;
     const service_id = (req.params.service_id as string) || undefined;
     const joborder_status = (req.query.joborder_status as string) || undefined;
@@ -21,6 +22,7 @@ export class JobOrderController {
 
     try {
       const data = await this.joborderService.getAllJobOrder(
+        no_pagination,
         uuid,
         service_id,
         joborder_status,

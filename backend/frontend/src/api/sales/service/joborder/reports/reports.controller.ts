@@ -15,9 +15,17 @@ export class ReportsController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
+    const no_pagination = req.query.no_pagination === 'true';
+    const joborder_id = req.params.job_order_id as string;
 
     try {
-      const data = await this.reportsService.getAllReports(sort, limit, offset);
+      const data = await this.reportsService.getAllReports(
+        joborder_id,
+        no_pagination,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
@@ -49,10 +57,9 @@ export class ReportsController {
 
   async createReports(req: Request, res: Response, next: NextFunction) {
     try {
-      const { customer_id, job_order_id, reports_title, remarks } = req.body;
+      const { job_order_id, reports_title, remarks } = req.body;
 
       await this.reportsService.createReports({
-        customer_id,
         job_order_id,
         reports_title,
         remarks,
@@ -74,10 +81,10 @@ export class ReportsController {
   async updateReports(req: Request, res: Response, next: NextFunction) {
     try {
       const { reports_id } = req.params;
-      const { customer_id, job_order_id, reports_title, remarks } = req.body;
+      const { job_order_id, reports_title, remarks } = req.body;
 
       await this.reportsService.updateReports(
-        { customer_id, job_order_id, reports_title, remarks },
+        { job_order_id, reports_title, remarks },
         Number(reports_id),
       );
       res.status(HttpStatus.OK.code).json({

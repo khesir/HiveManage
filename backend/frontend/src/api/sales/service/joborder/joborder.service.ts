@@ -1,5 +1,8 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import {
+  assignedemployees,
+  customer,
+  employee,
   jobOrder,
   jobordertype,
   SchemaType,
@@ -20,6 +23,7 @@ export class JobOrderService {
   }
 
   async getAllJobOrder(
+    no_pagination: boolean,
     uuid: string | undefined,
     service_id: string | undefined,
     joborder_status: string | undefined,
@@ -72,7 +76,7 @@ export class JobOrderService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(jobOrder)
       .leftJoin(
@@ -80,13 +84,51 @@ export class JobOrderService {
         eq(jobordertype.joborder_type_id, jobOrder.joborder_type_id),
       )
       .leftJoin(service, eq(service.service_id, jobOrder.service_id))
+      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
+      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(jobOrder.created_at) : desc(jobOrder.created_at),
-      )
-      .limit(limit)
-      .offset(offset);
+      );
 
+    // Control Pagination
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+
+    const result = await query;
+
+    const joAssign = await this.db
+      .select()
+      .from(assignedemployees)
+      .leftJoin(
+        employee,
+        eq(employee.employee_id, assignedemployees.employee_id),
+      )
+      .where(isNull(assignedemployees.deleted_at));
+
+    const assignmentsByJoID = joAssign.reduce(
+      (acc, assignment) => {
+        if (
+          assignment.assignedemployees.job_order_id !== null &&
+          !(assignment.assignedemployees.job_order_id in acc)
+        ) {
+          acc[assignment.assignedemployees.job_order_id] = [];
+        }
+        if (assignment.assignedemployees.job_order_id !== null) {
+          acc[assignment.assignedemployees.job_order_id].push({
+            ...assignment.assignedemployees,
+            employee: {
+              ...assignment.employee,
+            },
+          });
+        }
+        return acc;
+      },
+      // Too much work to write a typing for this
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {} as Record<number, any[]>,
+    );
     const joborderitemWithDetails = result.map((row) => ({
       joborder_id: row.joborder.job_order_id,
       joborder_type: {
@@ -98,8 +140,30 @@ export class JobOrderService {
         last_updated: row.jobordertype?.last_updated,
         deleted_at: row.jobordertype?.deleted_at,
       },
+      joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
       service: {
         service_id: row.service?.service_id,
+        employee: {
+          employee_id: row.employee?.employee_id,
+          firstname: row.employee?.firstname,
+          middlename: row.employee?.middlename,
+          lastname: row.employee?.lastname,
+          status: row.employee?.status,
+          created_at: row.employee?.created_at,
+          last_updated: row.employee?.last_updated,
+          deleted_at: row.employee?.deleted_at,
+        },
+        customer: {
+          customer_id: row.customer?.customer_id,
+          firstname: row.customer?.firstname,
+          lastname: row.customer?.lastname,
+          contact_phone: row.customer?.contact_phone,
+          socials: row.customer?.socials,
+          address_line: row.customer?.address_line,
+          baranay: row.customer?.address_line,
+          province: row.customer?.province,
+          standing: row.customer?.standing,
+        },
         service_title: row.service?.service_title,
         service_description: row.service?.service_description,
         service_status: row.service?.service_status,
@@ -132,7 +196,42 @@ export class JobOrderService {
         eq(jobordertype.joborder_type_id, jobOrder.joborder_type_id),
       )
       .leftJoin(service, eq(service.service_id, jobOrder.service_id))
+      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
+      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
       .where(eq(jobOrder.job_order_id, Number(job_order_id)));
+
+    const joAssign = await this.db
+      .select()
+      .from(assignedemployees)
+      .leftJoin(
+        employee,
+        eq(employee.employee_id, assignedemployees.employee_id),
+      )
+      .where(isNull(assignedemployees.deleted_at));
+
+    const assignmentsByJoID = joAssign.reduce(
+      (acc, assignment) => {
+        if (
+          assignment.assignedemployees.job_order_id !== null &&
+          !(assignment.assignedemployees.job_order_id in acc)
+        ) {
+          acc[assignment.assignedemployees.job_order_id] = [];
+        }
+        if (assignment.assignedemployees.job_order_id !== null) {
+          acc[assignment.assignedemployees.job_order_id].push({
+            ...assignment.assignedemployees,
+            employee: {
+              ...assignment.employee,
+            },
+          });
+        }
+        return acc;
+      },
+      // Too much work to write a typing for this
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {} as Record<number, any[]>,
+    );
+
     const joborderitemWithDetails = result.map((row) => ({
       joborder_id: row.joborder.job_order_id,
       joborder_type: {
@@ -144,8 +243,30 @@ export class JobOrderService {
         last_updated: row.jobordertype?.last_updated,
         deleted_at: row.jobordertype?.deleted_at,
       },
+      joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
       service: {
         service_id: row.service?.service_id,
+        employee: {
+          employee_id: row.employee?.employee_id,
+          firstname: row.employee?.firstname,
+          middlename: row.employee?.middlename,
+          lastname: row.employee?.lastname,
+          status: row.employee?.status,
+          created_at: row.employee?.created_at,
+          last_updated: row.employee?.last_updated,
+          deleted_at: row.employee?.deleted_at,
+        },
+        customer: {
+          customer_id: row.customer?.customer_id,
+          firstname: row.customer?.firstname,
+          lastname: row.customer?.lastname,
+          contact_phone: row.customer?.contact_phone,
+          socials: row.customer?.socials,
+          address_line: row.customer?.address_line,
+          baranay: row.customer?.address_line,
+          province: row.customer?.province,
+          standing: row.customer?.standing,
+        },
         service_title: row.service?.service_title,
         service_description: row.service?.service_description,
         service_status: row.service?.service_status,

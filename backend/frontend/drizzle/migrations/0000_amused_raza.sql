@@ -416,8 +416,8 @@ CREATE TABLE IF NOT EXISTS "joborder" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "joborder_services" (
-	"joborder_services_id" serial PRIMARY KEY NOT NULL,
-	"joborder_types_id" integer,
+	"joservices_id" serial PRIMARY KEY NOT NULL,
+	"jotypes_id" integer,
 	"job_order_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -428,7 +428,7 @@ CREATE TABLE IF NOT EXISTS "jobordertype" (
 	"joborder_type_id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255),
 	"description" varchar(255),
-	"joborder_types_status" "joborderTypeStatusEnum" NOT NULL,
+	"status" varchar,
 	"fee" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -689,7 +689,6 @@ CREATE TABLE IF NOT EXISTS "remarktype" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "reports" (
 	"reports_id" serial PRIMARY KEY NOT NULL,
-	"customer_id" integer,
 	"job_order_id" integer,
 	"reports_title" varchar(255),
 	"remarks" varchar(255),
@@ -909,7 +908,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("joborder_types_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("jotypes_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1114,12 +1113,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "remarktickets" ADD CONSTRAINT "remarktickets_created_by_employee_employee_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "reports" ADD CONSTRAINT "reports_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

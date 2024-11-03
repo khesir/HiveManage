@@ -21,6 +21,7 @@ export class ItemService {
   }
 
   async getAllItem(
+    no_pagination: boolean,
     on_lisitng: string,
     sort: string,
     limit: number,
@@ -41,16 +42,20 @@ export class ItemService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(item)
       .leftJoin(product, eq(item.product_id, product.product_id))
       .leftJoin(category, eq(product.category_id, category.category_id))
       .leftJoin(supplier, eq(product.supplier_id, supplier.supplier_id))
       .where(and(...conditions))
-      .orderBy(sort === 'asc' ? asc(item.created_at) : desc(item.created_at))
-      .limit(limit)
-      .offset(offset);
+      .orderBy(sort === 'asc' ? asc(item.created_at) : desc(item.created_at));
+
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+
+    const result = await query;
 
     const itemsWithDetails = result.map((row) => ({
       item_id: row.item.item_id,
