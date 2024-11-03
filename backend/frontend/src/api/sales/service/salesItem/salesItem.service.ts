@@ -23,10 +23,10 @@ export class SalesItemService {
 
   // Create Sales Item function
   async createSalesItem(data: z.infer<typeof CreateSalesItem>) {
-    // Convert total_price to string for the database
+    // Keep total_price as a number
     const salesItemData = {
       ...data,
-      total_price: data.total_price.toString(), // Convert number to string
+      // No need to convert total_price to string here
     };
 
     await this.db.insert(sales_items).values(salesItemData);
