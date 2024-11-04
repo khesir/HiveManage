@@ -54,6 +54,5 @@ serviceRoute.use('/:service_id/borrow', validateServiceID, borrowRoute);
 serviceRoute.use('/:service_id/reserve', validateServiceID, reserveRoute);
 serviceRoute.use('/:service_id/customer', validateServiceID, customerRoute);
 serviceRoute.use('/:service_id/sales-item', validateServiceID, salesitemRoute);
-log.info('ROUTE salesitem set');
 
 export default serviceRoute;

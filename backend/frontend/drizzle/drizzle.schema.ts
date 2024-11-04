@@ -247,7 +247,7 @@ export const employee_role = pgTable('employee_role', {
 export const employee_account = pgTable('employee_account', {
   employee_account_id: serial('employee_account_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
-  account_name: varchar('account_name', { length: 255 }),
+  account_name: varchar('account_name', { length: 255 }).unique(),
   password: varchar('password', { length: 255 }),
   salt: varchar('salt', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
@@ -628,8 +628,8 @@ export const jobordertype = pgTable('jobordertype', {
 
 //Job Order Services
 export const joborder_services = pgTable('joborder_services', {
-  joborder_services_id: serial('joborder_services_id').primaryKey(),
-  joborder_types_id: integer('joborder_types_id').references(
+  joborder_services_id: serial('joservices_id').primaryKey(),
+  joborder_types_id: integer('jotypes_id').references(
     () => jobordertype.joborder_type_id,
   ),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),

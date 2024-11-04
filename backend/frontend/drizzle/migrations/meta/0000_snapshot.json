@@ -1,5 +1,5 @@
 {
-  "id": "b9cae304-045c-4396-b3ef-acbf08cc2ba3",
+  "id": "36d7a2ec-b134-40c5-90de-e74565ced604",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1244,7 +1244,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "employee_account_account_name_unique": {
+          "name": "employee_account_account_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "account_name"
+          ]
+        }
+      }
     },
     "public.employee_role": {
       "name": "employee_role",
@@ -1810,14 +1818,14 @@
       "name": "joborder_services",
       "schema": "",
       "columns": {
-        "joborder_services_id": {
-          "name": "joborder_services_id",
+        "joservices_id": {
+          "name": "joservices_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "joborder_types_id": {
-          "name": "joborder_types_id",
+        "jotypes_id": {
+          "name": "jotypes_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1851,12 +1859,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk": {
-          "name": "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk",
+        "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk": {
+          "name": "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk",
           "tableFrom": "joborder_services",
           "tableTo": "jobordertype",
           "columnsFrom": [
-            "joborder_types_id"
+            "jotypes_id"
           ],
           "columnsTo": [
             "joborder_type_id"
