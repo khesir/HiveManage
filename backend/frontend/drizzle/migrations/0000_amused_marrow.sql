@@ -333,6 +333,17 @@ CREATE TABLE IF NOT EXISTS "employee" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "employee_account" (
+	"employee_account_id" serial PRIMARY KEY NOT NULL,
+	"employee_id" integer,
+	"account_name" varchar(255),
+	"password" varchar(255),
+	"salt" varchar(255),
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "employee_role" (
 	"employee_role_id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255),
@@ -344,7 +355,7 @@ CREATE TABLE IF NOT EXISTS "employee_role" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "employment_info" (
 	"employment_information_id" serial PRIMARY KEY NOT NULL,
-	"hireDate" timestamp DEFAULT now(),
+	"hireDate" varchar,
 	"department_id" integer,
 	"designation_id" integer,
 	"employee_type" "employee_type" NOT NULL,
@@ -415,8 +426,8 @@ CREATE TABLE IF NOT EXISTS "joborder" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "joborder_services" (
-	"joservices_id" serial PRIMARY KEY NOT NULL,
-	"jotypes_id" integer,
+	"joborder_services_id" serial PRIMARY KEY NOT NULL,
+	"joborder_types_id" integer,
 	"job_order_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -428,7 +439,6 @@ CREATE TABLE IF NOT EXISTS "jobordertype" (
 	"name" varchar(255),
 	"description" varchar(255),
 	"status" varchar,
-	"fee" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -562,7 +572,7 @@ CREATE TABLE IF NOT EXISTS "personal_info" (
 	"personal_information_id" serial PRIMARY KEY NOT NULL,
 	"employee_id" integer,
 	"birthday" varchar(255),
-	"gender" "gender",
+	"gender" varchar,
 	"phone" varchar(255),
 	"email" varchar(255),
 	"address_line" varchar(255),
@@ -638,6 +648,7 @@ CREATE TABLE IF NOT EXISTS "remarkassigned" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "remarkcontent" (
 	"remarkcontent_id" serial PRIMARY KEY NOT NULL,
+	"name" varchar,
 	"markdown" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -648,6 +659,8 @@ CREATE TABLE IF NOT EXISTS "remarkitems" (
 	"remark_items_id" serial PRIMARY KEY NOT NULL,
 	"item_id" integer,
 	"remark_id" integer,
+	"remark_status" varchar,
+	"quantity" real,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -722,7 +735,7 @@ CREATE TABLE IF NOT EXISTS "sales_items" (
 	"service_id" integer,
 	"quantity" integer,
 	"sales_item_type" "salesitemTypeEnum" NOT NULL,
-	"total_price" numeric(50, 2),
+	"total_price" real,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -853,6 +866,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "employee_account" ADD CONSTRAINT "employee_account_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "employment_info" ADD CONSTRAINT "employment_info_department_id_department_department_id_fk" FOREIGN KEY ("department_id") REFERENCES "public"."department"("department_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -901,7 +920,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("jotypes_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("joborder_types_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

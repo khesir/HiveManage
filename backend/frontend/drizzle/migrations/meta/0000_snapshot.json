@@ -1,5 +1,5 @@
 {
-  "id": "1712ae97-80eb-4e77-ac7d-bb6c160c0b61",
+  "id": "b9cae304-045c-4396-b3ef-acbf08cc2ba3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1172,6 +1172,80 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.employee_account": {
+      "name": "employee_account",
+      "schema": "",
+      "columns": {
+        "employee_account_id": {
+          "name": "employee_account_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "account_name": {
+          "name": "account_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "salt": {
+          "name": "salt",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "employee_account_employee_id_employee_employee_id_fk": {
+          "name": "employee_account_employee_id_employee_employee_id_fk",
+          "tableFrom": "employee_account",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "employee_id"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.employee_role": {
       "name": "employee_role",
       "schema": "",
@@ -1232,10 +1306,9 @@
         },
         "hireDate": {
           "name": "hireDate",
-          "type": "timestamp",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
+          "notNull": false
         },
         "department_id": {
           "name": "department_id",
@@ -1737,14 +1810,14 @@
       "name": "joborder_services",
       "schema": "",
       "columns": {
-        "joservices_id": {
-          "name": "joservices_id",
+        "joborder_services_id": {
+          "name": "joborder_services_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "jotypes_id": {
-          "name": "jotypes_id",
+        "joborder_types_id": {
+          "name": "joborder_types_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1778,12 +1851,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk": {
-          "name": "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk",
+        "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk": {
+          "name": "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk",
           "tableFrom": "joborder_services",
           "tableTo": "jobordertype",
           "columnsFrom": [
-            "jotypes_id"
+            "joborder_types_id"
           ],
           "columnsTo": [
             "joborder_type_id"
@@ -1833,12 +1906,6 @@
         "status": {
           "name": "status",
           "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fee": {
-          "name": "fee",
-          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -2772,8 +2839,7 @@
         },
         "gender": {
           "name": "gender",
-          "type": "gender",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -3336,6 +3402,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "markdown": {
           "name": "markdown",
           "type": "varchar",
@@ -3387,6 +3459,18 @@
         "remark_id": {
           "name": "remark_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "remark_status": {
+          "name": "remark_status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "real",
           "primaryKey": false,
           "notNull": false
         },
@@ -3960,7 +4044,7 @@
         },
         "total_price": {
           "name": "total_price",
-          "type": "numeric(50, 2)",
+          "type": "real",
           "primaryKey": false,
           "notNull": false
         },
