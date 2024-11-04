@@ -5,31 +5,33 @@ import { SchemaType } from '@/drizzle/drizzle.schema';
 import { EmployeeAccountService } from './employeeaccount.service';
 
 export class EmployeeAccountController {
-  private employeeaccountservice: EmployeeAccountService;
+  private employeeaccountService: EmployeeAccountService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.employeeaccountservice = new EmployeeAccountService(pool);
+    this.employeeaccountService = new EmployeeAccountService(pool);
   }
 
   async getAllEmployeeAccount(req: Request, res: Response, next: NextFunction) {
-    const employee_account_id =
-      (req.query.employee_account_id as string) || undefined;
+    const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
+    const employee_role_id =
+      (req.query.employee_role_id as string) || undefined;
 
     try {
-      const data = await this.employeeaccountservice.getAllEmployeeAccount(
-        employee_account_id,
+      const data = await this.employeeaccountService.getAllEmployeeAccount(
+        sort,
         limit,
         offset,
+        employee_role_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.employeeaccountWithDetails,
       });
     } catch (error) {
       res
@@ -46,10 +48,11 @@ export class EmployeeAccountController {
   ) {
     try {
       const { employee_account_id } = req.params;
-      const data = await this.employeeaccountservice.getEmployeeAccountById(
-        Number(employee_account_id),
-      );
-      res.status(200).json({ status: 'Success', message: data });
+      const data =
+        await this.employeeaccountService.getEmployeeAccountById(
+          employee_account_id,
+        );
+      res.status(200).json({ message: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -60,13 +63,22 @@ export class EmployeeAccountController {
 
   async createEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, account_name, password, salt } = req.body;
-
-      await this.employeeaccountservice.createEmployeeAccount({
+      const {
         employee_id,
+        employee_role_id,
         account_name,
+        email,
+        salt,
         password,
-        salt, // Convert true/false to 1/0 before passing to the service
+      } = req.body;
+
+      await this.employeeaccountService.createEmployeeAccount({
+        employee_id,
+        employee_role_id,
+        account_name,
+        email,
+        salt,
+        password,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -85,14 +97,23 @@ export class EmployeeAccountController {
   async updateEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_account_id } = req.params;
-      const { employee_id, account_name, password, salt } = req.body;
+      const {
+        employee_id,
+        employee_role_id,
+        account_name,
+        email,
+        salt,
+        password,
+      } = req.body;
 
-      await this.employeeaccountservice.updateEmployeeAccount(
+      await this.employeeaccountService.updateEmployeeAccount(
         {
           employee_id,
+          employee_role_id,
           account_name,
-          password,
+          email,
           salt,
+          password,
         },
         Number(employee_account_id),
       );
@@ -111,7 +132,7 @@ export class EmployeeAccountController {
   async deleteEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_account_id } = req.params;
-      await this.employeeaccountservice.deleteEmployeeAccount(
+      await this.employeeaccountService.deleteEmployeeAccount(
         Number(employee_account_id),
       );
       res.status(200).json({

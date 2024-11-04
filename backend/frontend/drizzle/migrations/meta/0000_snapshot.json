@@ -1,5 +1,5 @@
 {
-  "id": "b9cae304-045c-4396-b3ef-acbf08cc2ba3",
+  "id": "fc6c7251-b9f1-4fa5-9954-83feeb72e6a9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1188,6 +1188,18 @@
           "primaryKey": false,
           "notNull": false
         },
+        "employee_role_id": {
+          "name": "employee_role_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
         "account_name": {
           "name": "account_name",
           "type": "varchar(255)",
@@ -1238,6 +1250,19 @@
           ],
           "columnsTo": [
             "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "employee_account_employee_role_id_employee_role_employee_role_id_fk": {
+          "name": "employee_account_employee_role_id_employee_role_employee_role_id_fk",
+          "tableFrom": "employee_account",
+          "tableTo": "employee_role",
+          "columnsFrom": [
+            "employee_role_id"
+          ],
+          "columnsTo": [
+            "employee_role_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
