@@ -7,7 +7,12 @@ import {
 	getPaginationRowModel,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import {
+	Link,
+	useLocation,
+	useNavigate,
+	useSearchParams,
+} from 'react-router-dom';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -161,7 +166,17 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 	return (
 		<>
 			<div className="flex justify-between gap-3">
-				<div className="space-x-2">
+				<div className="space-x-2 flex">
+					{!isDetails && (
+						<Input
+							placeholder={`Find employee...`}
+							// value={searchValue ?? ''} // Bind the input value to the current filter value
+							// onChange={(event) =>
+							// 	table.getColumn(searchKey)?.setFilterValue(event.target.value)
+							// } // Update filter value}
+							className="w-[300px]"
+						/>
+					)}
 					{filter ? (
 						<Button variant={'outline'} onClick={() => setFilter(!filter)}>
 							Filter
@@ -220,15 +235,21 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 						</>
 					)}
 				</div>
-				{!isDetails && (
-					<Input
-						placeholder={`Find employee...`}
-						// value={searchValue ?? ''} // Bind the input value to the current filter value
-						// onChange={(event) =>
-						// 	table.getColumn(searchKey)?.setFilterValue(event.target.value)
-						// } // Update filter value}
-						className="w-full md:max-w-sm"
-					/>
+				{filter && (
+					<div className="flex items-center gap-2">
+						<Link to="">
+							<Button variant={'ghost'}>View Sales</Button>
+						</Link>
+						<Link to="">
+							<Button variant={'ghost'}>View Joborder</Button>
+						</Link>
+						<Link to="">
+							<Button variant={'ghost'}>View Borrow</Button>
+						</Link>
+						<Link to="">
+							<Button variant={'ghost'}>View Reservation</Button>
+						</Link>
+					</div>
 				)}
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">

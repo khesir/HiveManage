@@ -10,9 +10,13 @@ import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
 
 interface EmployeeCardCountProps {
 	employee: EmployeeBasicInformation[];
+	children?: React.ReactNode;
 }
 
-export function EmployeeCardCount({employee}: EmployeeCardCountProps) {
+export function EmployeeCardCount({
+	employee,
+	children,
+}: EmployeeCardCountProps) {
 	const maxVisibleAvatars = 5;
 
 	const avatarUrls = employee.slice(0, maxVisibleAvatars);
@@ -20,7 +24,7 @@ export function EmployeeCardCount({employee}: EmployeeCardCountProps) {
 	const numPeople =
 		totalEmployees > maxVisibleAvatars ? totalEmployees - maxVisibleAvatars : 0;
 	return (
-		<Card className="w-[40%]" x-chunk="dashboard-05-chunk-1">
+		<Card className="w-[40%] h-[180px]" x-chunk="dashboard-05-chunk-1">
 			<CardHeader className="pb-2">
 				<CardTitle>Employees</CardTitle>
 			</CardHeader>
@@ -29,10 +33,9 @@ export function EmployeeCardCount({employee}: EmployeeCardCountProps) {
 					{numPeople ? numPeople + avatarUrls.length : avatarUrls.length}{' '}
 					employee is in this JO
 				</div>
-			</CardContent>
-			<CardFooter>
 				<EmployeeAvatarCircles employees={employee} />
-			</CardFooter>
+			</CardContent>
+			<CardFooter>{children}</CardFooter>
 		</Card>
 	);
 }

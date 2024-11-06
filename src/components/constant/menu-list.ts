@@ -6,7 +6,6 @@ import {
 	LucideIcon,
 	PackageOpenIcon,
 	Terminal,
-	Network,
 	LayoutPanelLeft,
 	MessageSquare,
 	BotMessageSquareIcon,
@@ -45,27 +44,11 @@ export function getAdminMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/admin/activity',
-					label: 'Activity',
-					active: pathname.includes('/activity'),
-					icon: Network,
-					submenus: [
-						{
-							href: '/admin/activity/overview',
-							label: 'Overview',
-							active: pathname === '/admin/activity/overview',
-						},
-						{
-							href: '/admin/activity/attendance',
-							label: 'Attendance',
-							active: pathname === '/admin/activity/attendance',
-						},
-						{
-							href: '/admin/activity/interchat',
-							label: 'Chat',
-							active: pathname === '/activity/chat',
-						},
-					],
+					href: '/admin/inquiry',
+					label: 'Inquiry',
+					active: pathname.includes('/inquiry'),
+					icon: MessageSquare,
+					submenus: [],
 				},
 			],
 		},
@@ -120,11 +103,6 @@ export function getAdminMenuList(pathname: string): Group[] {
 							href: '/admin/sales/customer',
 							label: 'Customer Database',
 							active: pathname === '/admin/sales/customer',
-						},
-						{
-							href: '/admin/sales/inquiry',
-							label: 'Inquiries',
-							active: pathname === '/admin/sales/inquiry',
 						},
 					],
 				},
@@ -188,9 +166,9 @@ export function getSalesMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/sales/activity/interchat',
-					label: 'Chat',
-					active: pathname === '/activity/chat',
+					href: '/admin/inquiry',
+					label: 'Inquiry',
+					active: pathname.includes('/inquiry'),
 					icon: MessageSquare,
 					submenus: [],
 				},
@@ -208,67 +186,37 @@ export function getSalesMenuList(pathname: string): Group[] {
 				},
 				{
 					href: '/sales/services',
-					label: 'Business Service',
+					label: 'Service Transactions',
 					active: pathname.includes('/sales/services'),
 					icon: PackageOpenIcon,
-					submenus: [
-						{
-							href: '/sales/services/sales',
-							label: 'Sales',
-							active: pathname === '/sales/services/sales',
-						},
-						{
-							href: '/sales/services/joborders',
-							label: 'Joborder',
-							active: pathname === '/sales/services/joborders',
-						},
-						{
-							href: '/sales/services/borrow',
-							label: 'Borrow',
-							active: pathname === '/sales/services/borrow',
-						},
-						{
-							href: '/sales/services/reservation',
-							label: 'Reservation',
-							active: pathname === '/sales/services/reservation',
-						},
-					],
+					submenus: [],
 				},
 				{
 					href: '/sales/customer',
-					label: 'Customer Service',
+					label: 'Customer Database',
 					active: pathname.includes('/sales/customer'),
 					icon: Users,
-					submenus: [
-						{
-							href: '/sales/customer/overview',
-							label: 'Customer Database',
-							active: pathname === '/sales/services/overview',
-						},
-						{
-							href: '/sales/customer/payments',
-							label: 'Payments History',
-							active: pathname === '/sales/customer/payments',
-						},
-						{
-							href: '/sales/customer/inquiry',
-							label: 'Customer Inquiries',
-							active: pathname === '/sales/customer/inquiry',
-						},
-					],
+					submenus: [],
+				},
+				{
+					href: '/sales/inquiry',
+					label: 'Inquiries',
+					active: pathname.includes('/sales/inquiry'),
+					icon: PackageOpenIcon,
+					submenus: [],
 				},
 			],
 		},
 		{
 			groupLabel: 'Settings',
 			menus: [
-				{
-					href: '/sales/terminal',
-					label: 'Terminal',
-					active: pathname.includes('/sales/terminal'),
-					icon: Terminal,
-					submenus: [],
-				},
+				// {
+				// 	href: '/sales/terminal',
+				// 	label: 'Terminal',
+				// 	active: pathname.includes('/sales/terminal'),
+				// 	icon: Terminal,
+				// 	submenus: [],
+				// },
 				{
 					href: '/sales/settings',
 					label: 'Settings',
@@ -294,9 +242,9 @@ export function getTechMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/tech/chat',
-					label: 'Chat',
-					active: pathname === '/tech/chat',
+					href: '/admin/inquiry',
+					label: 'Inquiry',
+					active: pathname.includes('/inquiry'),
 					icon: MessageSquare,
 					submenus: [],
 				},
@@ -317,23 +265,7 @@ export function getTechMenuList(pathname: string): Group[] {
 					label: 'Joborder Service',
 					active: pathname.includes('/tech/services/joborders'),
 					icon: Package,
-					submenus: [
-						{
-							href: '/tech/services/joborders',
-							label: 'Joborders',
-							active: pathname === '/tech/services/joborders',
-						},
-						{
-							href: '/tech/services/joborders/tasks',
-							label: 'Tickets',
-							active: pathname === '/tech/services/joborders/tasks',
-						},
-						{
-							href: '/tech/services/joborders/reports',
-							label: 'Reports',
-							active: pathname === '/tech/services/joborders/reports',
-						},
-					],
+					submenus: [],
 				},
 				{
 					href: '/tech/customer',
@@ -354,13 +286,13 @@ export function getTechMenuList(pathname: string): Group[] {
 		{
 			groupLabel: 'Settings',
 			menus: [
-				{
-					href: '/tech/terminal',
-					label: 'Terminal',
-					active: pathname.includes('/terminal'),
-					icon: Terminal,
-					submenus: [],
-				},
+				// {
+				// 	href: '/tech/terminal',
+				// 	label: 'Terminal',
+				// 	active: pathname.includes('/terminal'),
+				// 	icon: Terminal,
+				// 	submenus: [],
+				// },
 				{
 					href: '/tech/settings',
 					label: 'Settings',
@@ -385,29 +317,29 @@ export function getDefaultMenuList(pathname: string): Group[] {
 					icon: LayoutGrid,
 					submenus: [],
 				},
-				{
-					href: '/admin/activity',
-					label: 'Activity',
-					active: pathname.includes('/activity'),
-					icon: Network,
-					submenus: [
-						{
-							href: '/admin/activity/overview',
-							label: 'Overview',
-							active: pathname === '/admin/activity/overview',
-						},
-						{
-							href: '/admin/activity/attendance',
-							label: 'Attendance',
-							active: pathname === '/admin/activity/attendance',
-						},
-						{
-							href: '/admin/activity/interchat',
-							label: 'Chat',
-							active: pathname === '/activity/chat',
-						},
-					],
-				},
+				// {
+				// 	href: '/admin/activity',
+				// 	label: 'Activity',
+				// 	active: pathname.includes('/activity'),
+				// 	icon: Network,
+				// 	submenus: [
+				// 		{
+				// 			href: '/admin/activity/overview',
+				// 			label: 'Overview',
+				// 			active: pathname === '/admin/activity/overview',
+				// 		},
+				// 		{
+				// 			href: '/admin/activity/attendance',
+				// 			label: 'Attendance',
+				// 			active: pathname === '/admin/activity/attendance',
+				// 		},
+				// 		{
+				// 			href: '/admin/activity/interchat',
+				// 			label: 'Chat',
+				// 			active: pathname === '/activity/chat',
+				// 		},
+				// 	],
+				// },
 			],
 		},
 		{

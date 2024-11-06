@@ -63,7 +63,10 @@ export default function JoborderView() {
 						<>
 							<div className="flex flex-col gap-4">
 								<div className="flex justify-between gap-3">
-									<Card className="w-[60%]" x-chunk="dashboard-05-chunk-1">
+									<Card
+										className="w-[60%] h-[180px]"
+										x-chunk="dashboard-05-chunk-1"
+									>
 										<CardHeader className="pb-3">
 											<CardTitle>Joborder</CardTitle>
 											<div className="flex flex-col gap-3">
@@ -90,7 +93,14 @@ export default function JoborderView() {
 											</div>
 										</CardHeader>
 									</Card>
-									<EmployeeCardCount employee={employee} />
+									<EmployeeCardCount employee={employee}>
+										<AssignEmployeeModal
+											assignEmployee={assignEmployee}
+											joborder_id={joborderData?.joborder_id ?? null}
+											prevEmployees={employee}
+											isService={false}
+										/>
+									</EmployeeCardCount>
 								</div>
 							</div>
 							<ViewJoborderTasks />
@@ -129,12 +139,6 @@ export default function JoborderView() {
 										Create Reports
 									</span>
 								</Button>
-								<AssignEmployeeModal
-									assignEmployee={assignEmployee}
-									joborder_id={joborderData?.joborder_id ?? null}
-									prevEmployees={employee}
-									isService={false}
-								/>
 							</div>
 						</CardHeader>
 					</Card>
