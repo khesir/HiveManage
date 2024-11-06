@@ -169,11 +169,15 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
 async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
   // Define real employee roles with specific names and access levels
   const employeeIDs = await db.select().from(employee);
+  const employeeroleIDs = await db.select().from(employee_role);
 
   // Hardcoded realistic data for employee accounts
   const employeeAccountRecords = [
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isActive',
       account_name: 'jdoe@example.com', // Realistic email format
       password: 'password123!', // Example password
       salt: 'a1b2c3d4e5f6g7h8', // Example salt
@@ -182,6 +186,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isNonActive',
       account_name: 'asmith@example.com',
       password: 'secureP@ssw0rd', // Example password
       salt: 'h8g7f6e5d4c3b2a1',
@@ -190,6 +197,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isActive',
       account_name: 'mjones@example.com',
       password: '1234abcd!', // Example password
       salt: 'g7f6e5d4c3b2a1h8',
@@ -198,6 +208,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isActive',
       account_name: 'klim@example.com',
       password: 'mypassword2024$', // Example password
       salt: 'f6e5d4c3b2a1g7h8',
@@ -206,6 +219,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isNonActive',
       account_name: 'bjackson@example.com',
       password: 'Password#123', // Example password
       salt: 'e5d4c3b2a1g7h8f6',
@@ -214,6 +230,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isNonActive',
       account_name: 'tdavis@example.com',
       password: 'Davis@2024!', // Example password
       salt: 'd4c3b2a1g7h8f6e5',
@@ -222,6 +241,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isActive',
       account_name: 'cwhite@example.com',
       password: 'Wh1tePassword!', // Example password
       salt: 'c3b2a1g7h8f6e5d4',
@@ -230,6 +252,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isNonActive',
       account_name: 'mjames@example.com',
       password: 'James#2024', // Example password
       salt: 'b2a1g7h8f6e5d4c3',
@@ -238,6 +263,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isActive',
       account_name: 'rgreen@example.com',
       password: 'Green@Pass2024', // Example password
       salt: 'a1g7h8f6e5d4c3b2',
@@ -246,6 +274,9 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
+      employee_role_id:
+        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
+      email: 'isNonActive',
       account_name: 'lwilliams@example.com',
       password: 'Lw2024#Password', // Example password
       salt: 'h8f6e5d4c3b2a1g7',

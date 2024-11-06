@@ -247,7 +247,11 @@ export const employee_role = pgTable('employee_role', {
 export const employee_account = pgTable('employee_account', {
   employee_account_id: serial('employee_account_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
-  account_name: varchar('account_name', { length: 255 }).unique(),
+  employee_role_id: integer('employee_role_id').references(
+    () => employee_role.employee_role_id,
+  ),
+  email: jsonb('email'),
+  account_name: varchar('account_name', { length: 255 }),
   password: varchar('password', { length: 255 }),
   salt: varchar('salt', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),

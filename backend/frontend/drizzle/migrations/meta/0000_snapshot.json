@@ -1,5 +1,5 @@
 {
-  "id": "36d7a2ec-b134-40c5-90de-e74565ced604",
+  "id": "6f516d0a-3ebb-4817-aad7-65fdb1f8e740",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1188,6 +1188,18 @@
           "primaryKey": false,
           "notNull": false
         },
+        "employee_role_id": {
+          "name": "employee_role_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
         "account_name": {
           "name": "account_name",
           "type": "varchar(255)",
@@ -1241,18 +1253,23 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "employee_account_employee_role_id_employee_role_employee_role_id_fk": {
+          "name": "employee_account_employee_role_id_employee_role_employee_role_id_fk",
+          "tableFrom": "employee_account",
+          "tableTo": "employee_role",
+          "columnsFrom": [
+            "employee_role_id"
+          ],
+          "columnsTo": [
+            "employee_role_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "employee_account_account_name_unique": {
-          "name": "employee_account_account_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "account_name"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "public.employee_role": {
       "name": "employee_role",
