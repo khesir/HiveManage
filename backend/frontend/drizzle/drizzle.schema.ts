@@ -632,8 +632,8 @@ export const jobordertype = pgTable('jobordertype', {
 
 //Job Order Services
 export const joborder_services = pgTable('joborder_services', {
-  joborder_services_id: serial('joborder_services_id').primaryKey(),
-  joborder_types_id: integer('joborder_types_id').references(
+  joborder_services_id: serial('joservices_id').primaryKey(),
+  joborder_types_id: integer('jotypes_id').references(
     () => jobordertype.joborder_type_id,
   ),
   job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),

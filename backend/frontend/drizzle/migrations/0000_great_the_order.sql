@@ -428,8 +428,8 @@ CREATE TABLE IF NOT EXISTS "joborder" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "joborder_services" (
-	"joborder_services_id" serial PRIMARY KEY NOT NULL,
-	"joborder_types_id" integer,
+	"joservices_id" serial PRIMARY KEY NOT NULL,
+	"jotypes_id" integer,
 	"job_order_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -928,7 +928,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_joborder_types_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("joborder_types_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "joborder_services" ADD CONSTRAINT "joborder_services_jotypes_id_jobordertype_joborder_type_id_fk" FOREIGN KEY ("jotypes_id") REFERENCES "public"."jobordertype"("joborder_type_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
