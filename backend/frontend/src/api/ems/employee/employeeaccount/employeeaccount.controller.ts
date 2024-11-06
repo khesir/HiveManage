@@ -63,20 +63,13 @@ export class EmployeeAccountController {
 
   async createEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        employee_id,
-        employee_role_id,
-        account_name,
-        email,
-        salt,
-        password,
-      } = req.body;
+      const { employee_id, employee_role_id, account_name, salt, password } =
+        req.body;
 
       await this.employeeaccountService.createEmployeeAccount({
         employee_id,
         employee_role_id,
         account_name,
-        email,
         salt,
         password,
       });
@@ -97,21 +90,14 @@ export class EmployeeAccountController {
   async updateEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_account_id } = req.params;
-      const {
-        employee_id,
-        employee_role_id,
-        account_name,
-        email,
-        salt,
-        password,
-      } = req.body;
+      const { employee_id, employee_role_id, account_name, salt, password } =
+        req.body;
 
       await this.employeeaccountService.updateEmployeeAccount(
         {
           employee_id,
           employee_role_id,
           account_name,
-          email,
           salt,
           password,
         },

@@ -245,9 +245,9 @@ export const employee_role = pgTable('employee_role', {
 
 // Employee Role
 export const employee_account = pgTable('employee_account', {
-  employee_account_id: serial('employee_account_id').primaryKey(),
-  employee_id: integer('employee_id').references(() => employee.employee_id),
-  employee_role_id: integer('employee_role_id').references(
+  employee_account_id: serial('emp_account_id').primaryKey(),
+  employee_id: integer('emp_id').references(() => employee.employee_id),
+  employee_role_id: integer('emp_role_id').references(
     () => employee_role.employee_role_id,
   ),
   email: jsonb('email'),

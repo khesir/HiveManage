@@ -1,5 +1,5 @@
 {
-  "id": "6f516d0a-3ebb-4817-aad7-65fdb1f8e740",
+  "id": "015dcfc4-4d33-42f8-ba13-c00ed3fc03b1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1176,20 +1176,20 @@
       "name": "employee_account",
       "schema": "",
       "columns": {
-        "employee_account_id": {
-          "name": "employee_account_id",
+        "emp_account_id": {
+          "name": "emp_account_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "employee_id": {
-          "name": "employee_id",
+        "emp_id": {
+          "name": "emp_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "employee_role_id": {
-          "name": "employee_role_id",
+        "emp_role_id": {
+          "name": "emp_role_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1241,12 +1241,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "employee_account_employee_id_employee_employee_id_fk": {
-          "name": "employee_account_employee_id_employee_employee_id_fk",
+        "employee_account_emp_id_employee_employee_id_fk": {
+          "name": "employee_account_emp_id_employee_employee_id_fk",
           "tableFrom": "employee_account",
           "tableTo": "employee",
           "columnsFrom": [
-            "employee_id"
+            "emp_id"
           ],
           "columnsTo": [
             "employee_id"
@@ -1254,12 +1254,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "employee_account_employee_role_id_employee_role_employee_role_id_fk": {
-          "name": "employee_account_employee_role_id_employee_role_employee_role_id_fk",
+        "employee_account_emp_role_id_employee_role_employee_role_id_fk": {
+          "name": "employee_account_emp_role_id_employee_role_employee_role_id_fk",
           "tableFrom": "employee_account",
           "tableTo": "employee_role",
           "columnsFrom": [
-            "employee_role_id"
+            "emp_role_id"
           ],
           "columnsTo": [
             "employee_role_id"
