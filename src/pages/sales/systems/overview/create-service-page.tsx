@@ -1,4 +1,4 @@
-import {ContentLayout} from '@/components/layout/content-layout';
+import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
 import {SalesCreateService} from '@/modules/sales/_sections/overview/sales/sales-create-service';
 

@@ -20,12 +20,22 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {request} from '@/api/axios';
+import {useEmployeeRoleDetailsStore} from '../../../modules/authentication/hooks/use-sign-in-userdata';
 
 export function UserNav() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const firstSegment = location.pathname.split('/')[1]; // 'sales'
-
+	const {user} = useEmployeeRoleDetailsStore();
+	const handleClick = async () => {
+		try {
+			await request('GET', '/auth/sign-out');
+			navigate('/');
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<DropdownMenu>
 			<TooltipProvider disableHoverableContent>
@@ -50,9 +60,9 @@ export function UserNav() {
 			<DropdownMenuContent className="w-56" align="end" forceMount>
 				<DropdownMenuLabel className="font-normal">
 					<div className="flex flex-col space-y-1">
-						<p className="text-sm font-medium leading-none">John Doe</p>
+						<p className="text-sm font-medium leading-none">{`${user?.employee.lastname}, ${user?.employee.firstname} ${user?.employee.middlename}`}</p>
 						<p className="text-xs leading-none text-muted-foreground">
-							johndoe@example.com
+							{user?.employee.email}
 						</p>
 					</div>
 				</DropdownMenuLabel>
@@ -77,7 +87,7 @@ export function UserNav() {
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					className="hover:cursor-pointer"
-					onClick={() => navigate('/')}
+					onClick={() => handleClick()}
 				>
 					<LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
 					Sign out

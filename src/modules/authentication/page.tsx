@@ -1,4 +1,4 @@
-import UserAuthForm from '@/components/forms/user-auth-form';
+import UserAuthForm from '@/modules/authentication/forms/user-auth-form';
 import {buttonVariants} from '@/components/ui/button';
 import {cn} from '@/lib/util/utils';
 import {Link} from 'react-router-dom';

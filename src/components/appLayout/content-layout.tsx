@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import useHeaderTitle from '../hooks/use-head-title';
+import useHeaderTitle from './hooks/use-head-title';
 
 interface ContentLayoutProps {
 	title: string;

@@ -71,16 +71,6 @@ export function getAdminMenuList(pathname: string): Group[] {
 							label: 'Employees',
 							active: pathname === '/admin/ems/employees',
 						},
-						{
-							href: '/admin/ems/payroll',
-							label: 'Payroll',
-							active: pathname === '/admin/ems/payroll',
-						},
-						{
-							href: '/admin/ems/leave',
-							label: 'Leave Requests',
-							active: pathname === '/admin/leave',
-						},
 					],
 				},
 				{

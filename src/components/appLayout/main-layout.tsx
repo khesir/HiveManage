@@ -1,8 +1,8 @@
 'use client';
 
 import {cn} from '@/lib/util/utils';
-import {useStore} from '@/components/hooks/use-store';
-import {useSidebarToggle} from '@/components/hooks/use-sidebar-toggle';
+import {useStore} from '@/components/appLayout/hooks/use-store';
+import {useSidebarToggle} from '@/components/appLayout/hooks/use-sidebar-toggle';
 import {Outlet, useLocation} from 'react-router-dom';
 import {Sidebar} from './components/sidebar';
 import {
@@ -10,11 +10,11 @@ import {
 	getDefaultMenuList,
 	getSalesMenuList,
 	getTechMenuList,
-} from '../constant/menu-list';
+} from './data/menu-list';
 import {SheetMenu} from './components/sheet-menu';
-import {ModeToggle} from '../providers/mode-toggle';
+import {ModeToggle} from './providers/mode-toggle';
 import {UserNav} from './components/user-nav';
-import useHeaderTitle from '../hooks/use-head-title';
+import useHeaderTitle from './hooks/use-head-title';
 import {Toaster} from '../ui/sonner';
 
 export default function MainLayout({userType}: {userType: string}) {

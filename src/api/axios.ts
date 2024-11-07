@@ -10,6 +10,7 @@ export interface PaginationResponse<T> {
 
 export interface ApiRequest<T> {
 	status: string;
+	message: string;
 	data: T | T[];
 }
 

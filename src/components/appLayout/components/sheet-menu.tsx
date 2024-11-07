@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/sheet';
 import {Link} from 'react-router-dom';
 import {Menu} from './menu';
-import {Group} from '@/components/constant/menu-list';
+import {Group} from '@/components/appLayout/data/menu-list';
 interface SheetMenuProps {
 	menuList: Group[]; // Menu list is passed as a prop
 }

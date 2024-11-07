@@ -1,5 +1,5 @@
 import {ApiRequest, request} from '@/api/axios';
-import useConfirmStore from '@/components/hooks/use-confirm-store';
+import useConfirmStore from '@/components/confirmationModal/use-confirm-store';
 import useEmployeeFormStore from '@/components/hooks/use-create-employee-view';
 import {Button} from '@/components/ui/button';
 import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';

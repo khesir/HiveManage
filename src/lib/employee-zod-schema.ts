@@ -5,6 +5,8 @@ export const employeeBasicInformationSchema = z.object({
 	firstname: z.string().min(1, 'First name is required'), // Validate that it's a non-empty string
 	middlename: z.string().optional(), // Optional middlename
 	lastname: z.string().min(1, 'Last name is required'), // Validate that it's a non-empty string
+	email: z.string().min(1),
+	profile_link: z.string().optional(),
 	status: z.string().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),

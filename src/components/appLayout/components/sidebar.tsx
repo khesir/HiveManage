@@ -1,11 +1,11 @@
 import {cn} from '@/lib/util/utils';
-import {useStore} from '@/components/hooks/use-store';
+import {useStore} from '@/components/appLayout/hooks/use-store';
 import {Button} from '@/components/ui/button';
-import {useSidebarToggle} from '@/components/hooks/use-sidebar-toggle';
+import {useSidebarToggle} from '@/components/appLayout/hooks/use-sidebar-toggle';
 import {Link} from 'react-router-dom';
 import {SidebarToggle} from './sidebar-toggle';
 import {Menu} from './menu';
-import {Group} from '../../constant/menu-list';
+import {Group} from '../data/menu-list';
 
 interface SidebarProps {
 	menuList: Group[];

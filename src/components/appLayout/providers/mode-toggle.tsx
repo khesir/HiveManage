@@ -1,6 +1,4 @@
-'use client';
-
-import {useTheme} from '@/components/providers/theme-provider';
+import {useTheme} from '@/components/appLayout/providers/theme-provider';
 import {Button} from '@/components/ui/button';
 import {
 	Tooltip,

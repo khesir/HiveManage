@@ -7,6 +7,7 @@ import {
 	employeeBasicInformationSchema,
 	OnPayrollSchema,
 	PayollApprovalSchema,
+	EmployeeBasicInformation,
 } from './employee-zod-schema';
 
 // Used on Create Employee Form
@@ -70,3 +71,32 @@ export const deductionAddmoreSchema = z.object({
 	),
 });
 export type DeductionAddMore = z.infer<typeof deductionAddmoreSchema>;
+
+export const employeeRolesSchema = z.object({
+	employee_roles_id: z.number().optional(),
+	employe_id: z.number().min(1),
+	role_id: z.number().min(1),
+	last_updated: z.string().optional(),
+	created_at: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+export type EmployeeRoles = z.infer<typeof employeeRolesSchema>;
+
+export type EmployeeRolesWithDetails = {
+	employee_roles_id: number;
+	employee: EmployeeBasicInformation;
+	role: Role;
+	created_at: string;
+	last_updated: string;
+	deleted_at: string;
+};
+
+export const roleSchema = z.object({
+	role_id: z.number().optional(),
+	name: z.string().min(1),
+	last_updated: z.string().optional(),
+	created_at: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type Role = z.infer<typeof roleSchema>;

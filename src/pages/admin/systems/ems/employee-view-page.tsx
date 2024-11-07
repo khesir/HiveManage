@@ -1,4 +1,4 @@
-import {ContentLayout} from '@/components/layout/content-layout';
+import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
 import EmployeeViewSection from '@/modules/ems/_sections/employee/view-employee-section';
 
