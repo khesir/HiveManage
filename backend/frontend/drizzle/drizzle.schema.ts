@@ -214,14 +214,15 @@ export const TagEnum = pgEnum('tag_supplier', [
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
-  employee_role_id: integer('employee_role_id').references(
-    () => employee_role.employee_role_id,
+  department_id: integer('department_id').references(
+    () => department.department_id,
   ),
   firstname: varchar('firstname', { length: 255 }),
   middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
-  email: varchar('email', { length: 255 }),
+  email: varchar('email', { length: 255 }).notNull(),
   status: varchar('status', { length: 255 }),
+  profile_link: varchar('profile_link'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -230,11 +231,10 @@ export const employee = pgTable('employee', {
   deleted_at: timestamp('deleted_at'),
 });
 
-// Employee Role
-export const employee_role = pgTable('employee_role', {
-  employee_role_id: serial('employee_role_id').primaryKey(),
+// Roles
+export const roles = pgTable('roles', {
+  role_id: serial('role_id').primaryKey(),
   name: varchar('name', { length: 255 }),
-  access_level: integer('access_level'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -243,17 +243,12 @@ export const employee_role = pgTable('employee_role', {
   deleted_at: timestamp('deleted_at'),
 });
 
-// Employee Role
-export const employee_account = pgTable('employee_account', {
-  employee_account_id: serial('emp_account_id').primaryKey(),
-  employee_id: integer('emp_id').references(() => employee.employee_id),
-  employee_role_id: integer('emp_role_id').references(
-    () => employee_role.employee_role_id,
-  ),
-  email: jsonb('email'),
-  account_name: varchar('account_name', { length: 255 }),
-  password: varchar('password', { length: 255 }),
-  salt: varchar('salt', { length: 255 }),
+// Employee Roles
+export const employee_roles = pgTable('employee_roles', {
+  employee_roles_id: serial('employee_roles_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
+  role_id: integer('role_id').references(() => roles.role_id),
+  user_id: varchar('user_id'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -1113,8 +1108,8 @@ export type SchemaType = {
 export const schema: SchemaType = {
   // EMS
   employee,
-  employee_role,
-  employee_account,
+  employee_roles,
+  roles,
   personalInformation,
   financialInformation,
   salaryInformation,

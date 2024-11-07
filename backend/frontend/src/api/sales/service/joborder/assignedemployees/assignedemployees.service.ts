@@ -58,7 +58,6 @@ export class AssignedEmployeeService {
       },
       employee: {
         employee_id: row.employee?.employee_id,
-        employee_role_id: row.employee?.employee_role_id,
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,
@@ -111,7 +110,6 @@ export class AssignedEmployeeService {
       },
       employee: {
         employee_id: row.employee?.employee_id,
-        employee_role_id: row.employee?.employee_role_id,
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,

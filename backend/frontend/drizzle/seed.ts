@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker';
 import {
   employee,
@@ -50,36 +51,27 @@ import {
   remarkreports,
   remarktype,
   remarkassigned,
-  employee_role,
+  employee_roles,
   remarkcontent,
   product_category,
   price_history,
   inventory_record,
   joborder_services,
-  employee_account,
+  roles,
 } from './drizzle.schema';
 import log from '../lib/logger';
 import { db, pool } from './pool';
 import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-
-// ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
+import { SupabaseService } from '../supabase/supabase.service';
+// ===================== EMPLOYEE BASE =========================
 
 async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
-  const employeeStatus: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
+  const employeeStatus: ('Online' | 'Offline')[] = ['Online', 'Offline'];
+  const departments = await db.select().from(department);
 
-  // Fetch employee roles and check if any exist
-  const employeeroleIDs = await db.select().from(employee_role);
-
-  if (employeeroleIDs.length === 0) {
-    throw new Error(
-      "No employee roles found. Seed the 'employee_role' table first.",
-    );
-  }
-
-  // Generate employee data
   const employees = [
     {
-      employee_role_id: employeeroleIDs[0]?.employee_role_id,
+      department_id: faker.helpers.arrayElement(departments).department_id,
       firstname: 'John',
       middlename: 'Michael',
       lastname: 'Doe',
@@ -87,7 +79,7 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
       status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      employee_role_id: employeeroleIDs[1]?.employee_role_id,
+      department_id: faker.helpers.arrayElement(departments).department_id,
       firstname: 'Jane',
       middlename: 'Ann',
       lastname: 'Smith',
@@ -95,7 +87,7 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
       status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      employee_role_id: employeeroleIDs[2]?.employee_role_id,
+      department_id: faker.helpers.arrayElement(departments).department_id,
       firstname: 'Jacob',
       middlename: 'Ann',
       lastname: 'Thompson',
@@ -103,7 +95,7 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
       status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      employee_role_id: employeeroleIDs[3]?.employee_role_id,
+      department_id: faker.helpers.arrayElement(departments).department_id,
       firstname: 'Olivia ',
       middlename: 'Ann',
       lastname: 'Martinez',
@@ -111,200 +103,51 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
       status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      employee_role_id: employeeroleIDs[4]?.employee_role_id,
+      department_id: faker.helpers.arrayElement(departments).department_id,
       firstname: 'Ethan',
       middlename: 'Ann',
       lastname: 'Lewis',
       email: 'Ethan.Lewis@example.com',
       status: faker.helpers.arrayElement(employeeStatus),
     },
-    {
-      employee_role_id: employeeroleIDs[5]?.employee_role_id,
-      firstname: 'Ava',
-      middlename: 'Ann',
-      lastname: 'Robinson',
-      email: 'Ava.Robinson@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
-    },
-    {
-      employee_role_id: employeeroleIDs[6]?.employee_role_id,
-      firstname: 'Mason',
-      middlename: 'Ann',
-      lastname: 'Walker',
-      email: 'Mason.Walker@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
-    },
-    {
-      employee_role_id: employeeroleIDs[7]?.employee_role_id,
-      firstname: 'Sophia',
-      middlename: 'Ann',
-      lastname: 'Clark',
-      email: 'Sophia.Clark@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
-    },
-    {
-      employee_role_id: employeeroleIDs[8]?.employee_role_id,
-      firstname: 'Liam',
-      middlename: 'Ann',
-      lastname: 'Harris',
-      email: 'Liam.Harris@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
-    },
-    {
-      employee_role_id: employeeroleIDs[8]?.employee_role_id,
-      firstname: 'Isabella',
-      middlename: 'Ann',
-      lastname: 'Young',
-      email: 'Isabella.Young@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
-    },
-    // Add more employee records here as needed
   ];
 
-  // Insert into the employee table
   await db.insert(employee).values(employees);
-  log.info('Employee records seeded successfully.');
 }
 
 async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
-  // Define real employee roles with specific names and access levels
   const employeeIDs = await db.select().from(employee);
-  const employeeroleIDs = await db.select().from(employee_role);
+  const employeeroleIDs = await db.select().from(roles);
+  const supabaseService = SupabaseService.getInstance();
 
-  // Hardcoded realistic data for employee accounts
-  const employeeAccountRecords = [
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isActive',
-      account_name: 'jdoe@example.com', // Realistic email format
-      password: 'password123!', // Example password
-      salt: 'a1b2c3d4e5f6g7h8', // Example salt
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isNonActive',
-      account_name: 'asmith@example.com',
-      password: 'secureP@ssw0rd', // Example password
-      salt: 'h8g7f6e5d4c3b2a1',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isActive',
-      account_name: 'mjones@example.com',
-      password: '1234abcd!', // Example password
-      salt: 'g7f6e5d4c3b2a1h8',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isActive',
-      account_name: 'klim@example.com',
-      password: 'mypassword2024$', // Example password
-      salt: 'f6e5d4c3b2a1g7h8',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isNonActive',
-      account_name: 'bjackson@example.com',
-      password: 'Password#123', // Example password
-      salt: 'e5d4c3b2a1g7h8f6',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isNonActive',
-      account_name: 'tdavis@example.com',
-      password: 'Davis@2024!', // Example password
-      salt: 'd4c3b2a1g7h8f6e5',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isActive',
-      account_name: 'cwhite@example.com',
-      password: 'Wh1tePassword!', // Example password
-      salt: 'c3b2a1g7h8f6e5d4',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isNonActive',
-      account_name: 'mjames@example.com',
-      password: 'James#2024', // Example password
-      salt: 'b2a1g7h8f6e5d4c3',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isActive',
-      account_name: 'rgreen@example.com',
-      password: 'Green@Pass2024', // Example password
-      salt: 'a1g7h8f6e5d4c3b2',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      employee_role_id:
-        faker.helpers.arrayElement(employeeroleIDs).employee_role_id,
-      email: 'isNonActive',
-      account_name: 'lwilliams@example.com',
-      password: 'Lw2024#Password', // Example password
-      salt: 'h8f6e5d4c3b2a1g7',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
+  const users = await Promise.all(
+    employeeIDs.map(async (emp) => {
+      const email = emp.email;
+      const password = '123456789';
+      const user = await supabaseService.createSupabaseUser(email, password);
+      const data = {
+        employee_id: emp.employee_id,
+        role_id: faker.helpers.arrayElement(employeeroleIDs).role_id,
+        user_id: user.data.user?.id,
+      };
+      return data;
+    }),
+  );
 
-  // Insert employee accounts into the database
-  await db.insert(employee_account).values(employeeAccountRecords);
-
-  log.info('Employee Account records seeded successfully.');
+  await db.insert(employee_roles).values(users);
 }
 
 async function seedEmployeesRole(db: PostgresJsDatabase<SchemaType>) {
-  // Define real employee roles with specific names and access levels
   const employeesRole = [
-    { name: 'Administrator', access_level: 5 },
-    { name: 'Manager', access_level: 4 },
-    { name: 'Supervisor', access_level: 3 },
-    { name: 'Staff', access_level: 2 },
-    { name: 'Intern', access_level: 1 },
+    { name: 'Administrator' },
+    { name: 'Manager' },
+    { name: 'Staff' },
   ];
 
-  // Insert into the employee_role table
-  await db.insert(employee_role).values(employeesRole);
-  log.info('Employee Role records seeded successfully.');
+  await db.insert(roles).values(employeesRole);
 }
+
+// ===================== Employee Informations =========================
 
 async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
   const allowedGenders: ('Male' | 'Female' | 'Others')[] = [
@@ -765,36 +608,37 @@ async function seedDepartments(db: PostgresJsDatabase<SchemaType>) {
   const departmentStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
   const departments = [
     {
-      name: 'Human Resources',
+      name: 'Technical Support',
       status: faker.helpers.arrayElement(departmentStatuses),
-    }, // Still using random status for variety },
-    { name: 'Finance', status: faker.helpers.arrayElement(departmentStatuses) }, // Still using random status for variety },
+    },
     {
-      name: 'Marketing',
+      name: 'Maintenance and Repair',
       status: faker.helpers.arrayElement(departmentStatuses),
-    }, // Still using random status for variety },
+    },
     {
-      name: 'Information Technology',
+      name: 'Field Service',
       status: faker.helpers.arrayElement(departmentStatuses),
-    }, // Still using random status for variety },
+    },
     {
-      name: 'Customer Service',
+      name: 'IT Support',
       status: faker.helpers.arrayElement(departmentStatuses),
-    }, // Still using random status for variety },
-    { name: 'Sales', status: faker.helpers.arrayElement(departmentStatuses) }, // Still using random status for variety },
+    },
     {
-      name: 'Research and Development',
+      name: 'Production/Operations ',
       status: faker.helpers.arrayElement(departmentStatuses),
-    }, // Still using random status for variety },
+    },
     {
-      name: 'Operations',
+      name: 'Retail Sales',
       status: faker.helpers.arrayElement(departmentStatuses),
-    }, // Still using random status for variety },
-    { name: 'Legal', status: faker.helpers.arrayElement(departmentStatuses) }, // Still using random status for variety },
+    },
     {
-      name: 'Procurement',
+      name: 'Sales Support',
       status: faker.helpers.arrayElement(departmentStatuses),
-    }, // Still using random status for variety },
+    },
+    {
+      name: 'Inside Sales',
+      status: faker.helpers.arrayElement(departmentStatuses),
+    },
   ];
 
   await db.insert(department).values(departments);
@@ -4800,37 +4644,34 @@ async function main() {
     await seedDesignations(db);
 
     await seedEmployeesRole(db);
-    await seedEmployees(db); // Capture employee IDs
+    await seedEmployees(db);
     await seedEmployeesAccount(db);
 
-    await seedAuditLogs(db);
-    await seedPersonalInformations(db);
-    await seedFinancialInformations(db);
-    await seedSalaryInformations(db);
-    await seedEmploymentInformations(db);
-    await seedLeaveLimits(db);
+    // await seedAuditLogs(db);
+    // await seedPersonalInformations(db);
+    // await seedFinancialInformations(db);
+    // await seedSalaryInformations(db);
+    // await seedEmploymentInformations(db);
+    // await seedLeaveLimits(db);
 
-    await seedLeaveRequests(db);
+    // await seedLeaveRequests(db);
 
-    await seedPayrolls(db);
-    await seedOnPayrolls(db);
-    await seedSignatory(db);
-    await seedPayrollApprovals(db);
-    await seedPayrollReportRecords(db);
+    // await seedPayrolls(db);
+    // await seedOnPayrolls(db);
+    // await seedSignatory(db);
+    // await seedPayrollApprovals(db);
+    // await seedPayrollReportRecords(db);
 
-    await seedBenefits(db);
-    await seedDeductions(db);
-    await seedAdditionalPay(db);
-    await seedAdjustments(db);
-    await seedAttendance(db);
+    // await seedBenefits(db);
+    // await seedDeductions(db);
+    // await seedAdditionalPay(db);
+    // await seedAdjustments(db);
+    // await seedAttendance(db);
 
     // Inventory
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
-    await seedOrder(db);
-    await seedArrivedItems(db);
-    await seedOrderItem(db);
     await seedProductAttachment(db);
     await seedProductCategory(db);
     await seedItem(db);
@@ -4838,36 +4679,39 @@ async function main() {
     await seedPriceHistory(db);
     await seedStockLogs(db);
 
+    // await seedOrder(db);
+    // await seedArrivedItems(db);
+    // await seedOrderItem(db);
     // Participants and related data
     await seedCustomer(db); // Seed customers first
-    await seedInquiry(db);
-    await seedChannel(db);
-    await seedParticipants(db);
-    await seedMessage(db);
+    // await seedInquiry(db);
+    // await seedChannel(db);
+    // await seedParticipants(db);
+    // await seedMessage(db);
 
     // Sales and related data
-    await seedService(db);
-    await seedPayment(db);
-    await seedReceipt(db);
-    await seedSalesItem(db); // Seed sales items first
-    await seedBorrow(db); // Now seed borrow after sales items
-    await seedReserve(db);
+    // await seedService(db);
+    // await seedPayment(db);
+    // await seedReceipt(db);
+    // await seedSalesItem(db); // Seed sales items first
+    // await seedBorrow(db); // Now seed borrow after sales items
+    // await seedReserve(db);
 
     // Job Order and related data
     await seedJobOrderTypes(db);
-    await seedJobOrder(db);
-    await seedJobOrderServices(db);
+    // await seedJobOrder(db);
+    // await seedJobOrderServices(db);
 
     // Pass employee IDs to seedRemarkTickets
     await seedRemarkType(db);
-    await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
-    await seedRemarkItems(db);
-    await seedReports(db); // Make sure this also properly references customer IDs
-    await seedRemarkReports(db);
-    await seedRemarkAssigned(db);
+    // await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    // await seedRemarkItems(db);
+    // await seedReports(db); // Make sure this also properly references customer IDs
+    // await seedRemarkReports(db);
+    // await seedRemarkAssigned(db);
 
-    await seedAssignedEmployees(db);
-    await seedRemarkContent(db);
+    // await seedAssignedEmployees(db);
+    // await seedRemarkContent(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

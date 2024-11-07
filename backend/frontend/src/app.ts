@@ -6,6 +6,8 @@ import baseRoute from './api';
 import * as middlewares from './middlewares';
 import MessageResponse from './interfaces/MessageResponse';
 import log from '../lib/logger';
+import { AuthGuard } from './api/auth/auth.middleware';
+import authRoute from './api/auth/auth.route';
 
 dotenv.config();
 const app = express();
@@ -13,7 +15,9 @@ const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-app.use('/api/v1', baseRoute);
+app.use('/auth', authRoute);
+
+app.use('/api/v1', AuthGuard, baseRoute);
 log.info('Api base route set');
 
 app.get<object, MessageResponse>('/', (req, res) => {

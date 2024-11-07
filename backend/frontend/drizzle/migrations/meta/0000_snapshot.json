@@ -1,5 +1,5 @@
 {
-  "id": "015dcfc4-4d33-42f8-ba13-c00ed3fc03b1",
+  "id": "8dbfb48d-efce-49cf-b379-7332b0b6da48",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1096,8 +1096,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "employee_role_id": {
-          "name": "employee_role_id",
+        "department_id": {
+          "name": "department_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1124,7 +1124,7 @@
           "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "status": {
           "name": "status",
@@ -1132,6 +1132,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "profile_link": {
+          "name": "profile_link",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1155,15 +1161,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "employee_employee_role_id_employee_role_employee_role_id_fk": {
-          "name": "employee_employee_role_id_employee_role_employee_role_id_fk",
+        "employee_department_id_department_department_id_fk": {
+          "name": "employee_department_id_department_department_id_fk",
           "tableFrom": "employee",
-          "tableTo": "employee_role",
+          "tableTo": "department",
           "columnsFrom": [
-            "employee_role_id"
+            "department_id"
           ],
           "columnsTo": [
-            "employee_role_id"
+            "department_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1172,49 +1178,31 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.employee_account": {
-      "name": "employee_account",
+    "public.employee_roles": {
+      "name": "employee_roles",
       "schema": "",
       "columns": {
-        "emp_account_id": {
-          "name": "emp_account_id",
+        "employee_roles_id": {
+          "name": "employee_roles_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "emp_id": {
-          "name": "emp_id",
+        "employee_id": {
+          "name": "employee_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "emp_role_id": {
-          "name": "emp_role_id",
+        "role_id": {
+          "name": "role_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "email": {
-          "name": "email",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "account_name": {
-          "name": "account_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "password": {
-          "name": "password",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "salt": {
-          "name": "salt",
-          "type": "varchar(255)",
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -1241,12 +1229,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "employee_account_emp_id_employee_employee_id_fk": {
-          "name": "employee_account_emp_id_employee_employee_id_fk",
-          "tableFrom": "employee_account",
+        "employee_roles_employee_id_employee_employee_id_fk": {
+          "name": "employee_roles_employee_id_employee_employee_id_fk",
+          "tableFrom": "employee_roles",
           "tableTo": "employee",
           "columnsFrom": [
-            "emp_id"
+            "employee_id"
           ],
           "columnsTo": [
             "employee_id"
@@ -1254,68 +1242,20 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "employee_account_emp_role_id_employee_role_employee_role_id_fk": {
-          "name": "employee_account_emp_role_id_employee_role_employee_role_id_fk",
-          "tableFrom": "employee_account",
-          "tableTo": "employee_role",
+        "employee_roles_role_id_roles_role_id_fk": {
+          "name": "employee_roles_role_id_roles_role_id_fk",
+          "tableFrom": "employee_roles",
+          "tableTo": "roles",
           "columnsFrom": [
-            "emp_role_id"
+            "role_id"
           ],
           "columnsTo": [
-            "employee_role_id"
+            "role_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.employee_role": {
-      "name": "employee_role",
-      "schema": "",
-      "columns": {
-        "employee_role_id": {
-          "name": "employee_role_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "access_level": {
-          "name": "access_level",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -3960,6 +3900,48 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.roles": {
+      "name": "roles",
+      "schema": "",
+      "columns": {
+        "role_id": {
+          "name": "role_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },

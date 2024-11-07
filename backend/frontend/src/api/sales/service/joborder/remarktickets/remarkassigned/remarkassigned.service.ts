@@ -80,7 +80,6 @@ export class RemarkAssignedService {
       },
       employee: {
         employee_id: row.employee?.employee_id,
-        employee_role_id: row.employee?.employee_role_id,
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,
@@ -124,7 +123,6 @@ export class RemarkAssignedService {
       },
       employee: {
         employee_id: row.employee?.employee_id,
-        employee_role_id: row.employee?.employee_role_id,
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,

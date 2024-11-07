@@ -1,6 +1,7 @@
 import { asc, desc, eq, isNull, and, sql, like, or } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { employee, SchemaType } from '@/drizzle/drizzle.schema';
+import { CreateEmployee, UpdateEmployee } from './employee.model';
 
 export class EmployeeService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -58,7 +59,7 @@ export class EmployeeService {
     };
   }
 
-  async createEmployee(data: object): Promise<void> {
+  async createEmployee(data: CreateEmployee): Promise<void> {
     await this.db.insert(employee).values(data);
   }
 
@@ -70,7 +71,7 @@ export class EmployeeService {
     return result;
   }
 
-  async updateEmployee(data: object, paramsId: number) {
+  async updateEmployee(data: UpdateEmployee, paramsId: number) {
     await this.db
       .update(employee)
       .set(data)

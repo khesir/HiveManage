@@ -59,9 +59,8 @@ export class EmployeeController {
 
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { uuid, firstname, middlename, lastname, email, status } = req.body;
+      const { firstname, middlename, lastname, email, status } = req.body;
       await this.employeeService.createEmployee({
-        uuid,
         firstname,
         middlename,
         lastname,
@@ -81,11 +80,10 @@ export class EmployeeController {
   async updateEmployee(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_id } = req.params;
-      const { uuid, firstname, middlename, lastname, email, status } = req.body;
+      const { firstname, middlename, lastname, email, status } = req.body;
 
       await this.employeeService.updateEmployee(
         {
-          uuid,
           firstname,
           middlename,
           lastname,

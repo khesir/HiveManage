@@ -322,34 +322,23 @@ CREATE TABLE IF NOT EXISTS "designation" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "employee" (
 	"employee_id" serial PRIMARY KEY NOT NULL,
-	"employee_role_id" integer,
+	"department_id" integer,
 	"firstname" varchar(255),
 	"middlename" varchar(255),
 	"lastname" varchar(255),
-	"email" varchar(255),
+	"email" varchar(255) NOT NULL,
 	"status" varchar(255),
+	"profile_link" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "employee_account" (
-	"emp_account_id" serial PRIMARY KEY NOT NULL,
-	"emp_id" integer,
-	"emp_role_id" integer,
-	"email" jsonb,
-	"account_name" varchar(255),
-	"password" varchar(255),
-	"salt" varchar(255),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "employee_role" (
-	"employee_role_id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(255),
-	"access_level" integer,
+CREATE TABLE IF NOT EXISTS "employee_roles" (
+	"employee_roles_id" serial PRIMARY KEY NOT NULL,
+	"employee_id" integer,
+	"role_id" integer,
+	"user_id" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -721,6 +710,14 @@ CREATE TABLE IF NOT EXISTS "reserve" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "roles" (
+	"role_id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(255),
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "salary_info" (
 	"salary_information_id" serial PRIMARY KEY NOT NULL,
 	"employee_id" integer,
@@ -862,19 +859,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "employee" ADD CONSTRAINT "employee_employee_role_id_employee_role_employee_role_id_fk" FOREIGN KEY ("employee_role_id") REFERENCES "public"."employee_role"("employee_role_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "employee" ADD CONSTRAINT "employee_department_id_department_department_id_fk" FOREIGN KEY ("department_id") REFERENCES "public"."department"("department_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "employee_account" ADD CONSTRAINT "employee_account_emp_id_employee_employee_id_fk" FOREIGN KEY ("emp_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "employee_roles" ADD CONSTRAINT "employee_roles_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "employee_account" ADD CONSTRAINT "employee_account_emp_role_id_employee_role_employee_role_id_fk" FOREIGN KEY ("emp_role_id") REFERENCES "public"."employee_role"("employee_role_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "employee_roles" ADD CONSTRAINT "employee_roles_role_id_roles_role_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("role_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

@@ -5,7 +5,7 @@ import { db } from '@/drizzle/pool';
 import { validateRequest } from '@/src/middlewares';
 
 import { EmployeeController } from './employee.controller';
-import { Employee, UpdateEmployee } from './employee.model';
+import { CreateEmployee, UpdateEmployee } from './employee.model';
 import { validateEmployeeId } from './employee.middlewares';
 import personalInformationRoute from '../personal_information/personalInformation.route';
 import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
@@ -15,7 +15,7 @@ import benefitRoute from '../benefits/benefits.route';
 import deductionRoute from '../deductions/deductions.route';
 import additionalPayRoute from '../additional_pay/additionalPay.route';
 import adjustmentsRoute from '../adjustments/adjustments.route';
-import employeeaccountRoute from '../employeeaccount/employeeaccount.route';
+import employeeaccountRoute from '../employeeRoles/employeeRoles.route';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);
@@ -36,7 +36,7 @@ log.info('GET /employee/:employee_id set');
 employeeRoute.post(
   '/',
   validateRequest({
-    body: Employee,
+    body: CreateEmployee,
   }),
   employeeController.createEmployee.bind(employeeController),
 );
@@ -46,7 +46,7 @@ employeeRoute.put(
   '/:employee_id',
   [
     validateRequest({
-      body: Employee,
+      body: CreateEmployee,
     }),
     validateEmployeeId,
   ],

@@ -1,10 +1,23 @@
-import { SchemaType } from '@/drizzle/drizzle.schema';
-import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { SupabaseService } from '@/supabase/supabase.service';
+import { Login } from './auth.model';
 
 export class AuthenticationService {
-  private db: PostgresJsDatabase<SchemaType>;
+  private supabaseService: SupabaseService;
 
-  constructor(db: PostgresJsDatabase<SchemaType>) {
-    this.db = db;
+  constructor() {
+    this.supabaseService = SupabaseService.getInstance();
+  }
+
+  async login(data: Login) {
+    return await this.supabaseService.signInSupabaseUser(data);
+  }
+
+  async logout() {
+    await this.supabaseService.signOutSupabaseUser();
+  }
+
+  async getCurrentUser() {
+    const user = await this.supabaseService.getCurrentUser();
+    return user;
   }
 }

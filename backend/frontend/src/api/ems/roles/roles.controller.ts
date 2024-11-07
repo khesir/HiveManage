@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/drizzle.schema';
-import { EmployeeRoleService } from './employeerole.service';
+import { EmployeeRoleService } from './roles.service';
 
 export class EmployeeRoleController {
   private employeeroleService: EmployeeRoleService;
@@ -53,11 +53,10 @@ export class EmployeeRoleController {
 
   async createEmployeeRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, access_level } = req.body;
+      const { name } = req.body;
 
       await this.employeeroleService.createEmployeeRole({
         name,
-        access_level,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -76,10 +75,10 @@ export class EmployeeRoleController {
   async updateEmployeeRole(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_role_id } = req.params;
-      const { name, access_level } = req.body;
+      const { name } = req.body;
 
       await this.employeeroleService.updateEmployeeRole(
-        { name, access_level },
+        { name },
         Number(employee_role_id),
       );
       res.status(HttpStatus.OK.code).json({

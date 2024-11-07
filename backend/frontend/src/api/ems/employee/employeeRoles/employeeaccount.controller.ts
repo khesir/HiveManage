@@ -2,28 +2,27 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/drizzle.schema';
-import { EmployeeAccountService } from './employeeaccount.service';
+import { EmployeeRolesService } from './employeeRoles.service';
 
-export class EmployeeAccountController {
-  private employeeaccountService: EmployeeAccountService;
+export class EmployeeRolesController {
+  private employeeaccountService: EmployeeRolesService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.employeeaccountService = new EmployeeAccountService(pool);
+    this.employeeaccountService = new EmployeeRolesService(pool);
   }
 
   async getAllEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    const employee_role_id =
-      (req.query.employee_role_id as string) || undefined;
+    const role_id = (req.query.role_id as string) || undefined;
 
     try {
       const data = await this.employeeaccountService.getAllEmployeeAccount(
         sort,
         limit,
         offset,
-        employee_role_id,
+        role_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -63,15 +62,12 @@ export class EmployeeAccountController {
 
   async createEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_id, employee_role_id, account_name, salt, password } =
-        req.body;
+      const { employee_id, role_id, user_id } = req.body;
 
       await this.employeeaccountService.createEmployeeAccount({
         employee_id,
-        employee_role_id,
-        account_name,
-        salt,
-        password,
+        role_id,
+        user_id,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -89,19 +85,16 @@ export class EmployeeAccountController {
 
   async updateEmployeeAccount(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_account_id } = req.params;
-      const { employee_id, employee_role_id, account_name, salt, password } =
-        req.body;
+      const { employee_role_id } = req.params;
+      const { employee_id, role_id, user_id } = req.body;
 
       await this.employeeaccountService.updateEmployeeAccount(
         {
           employee_id,
-          employee_role_id,
-          account_name,
-          salt,
-          password,
+          role_id,
+          user_id,
         },
-        Number(employee_account_id),
+        employee_role_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

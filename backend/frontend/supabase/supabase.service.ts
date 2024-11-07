@@ -2,6 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Login } from '../src/api/auth/auth.model';
 
 export class SupabaseService {
+  private static instance: SupabaseService;
   private supabase: SupabaseClient;
 
   constructor() {
@@ -13,7 +14,14 @@ export class SupabaseService {
     this.supabase = createClient(supabaseURL, supabaseAPIkey);
   }
 
-  getSupabase() {
+  public static getInstance(): SupabaseService {
+    if (!SupabaseService.instance) {
+      SupabaseService.instance = new SupabaseService();
+    }
+    return SupabaseService.instance;
+  }
+
+  public getSupabase() {
     return this.supabase;
   }
   async getCurrentUser() {
@@ -25,6 +33,14 @@ export class SupabaseService {
       throw new Error('Invalid Credentials');
     }
     return user;
+  }
+
+  public async getUserFromToken(token: string) {
+    const { data, error } = await this.supabase.auth.getUser(token);
+    if (error || !data.user) {
+      throw new Error('Invalid or expired token');
+    }
+    return data.user;
   }
 
   async getCurrentSession() {
@@ -45,14 +61,23 @@ export class SupabaseService {
     if (error) {
       throw new Error('Invalid email or password');
     }
-    return data;
+    return {
+      success: true,
+      data,
+    };
   }
 
   async signOutSupabaseUser() {
     const { error } = await this.supabase.auth.signOut();
+
     if (error) {
       throw Error('Failed to sign out');
     }
+
+    return {
+      success: true,
+      message: 'Successfully signed out',
+    };
   }
 
   async createSupabaseUser(email: string, password: string) {
@@ -65,6 +90,9 @@ export class SupabaseService {
       throw new Error(`Supabase signup failed: ${error.message}`);
     }
 
-    return data;
+    return {
+      success: true,
+      data,
+    };
   }
 }

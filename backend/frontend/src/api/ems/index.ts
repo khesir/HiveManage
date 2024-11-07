@@ -11,7 +11,7 @@ import signatoryRoute from './payroll/signatory/signatory.route';
 import payrollApprovalRoute from './payroll/payroll_approval/payrollApproval.route';
 import payrollReportRoute from './payroll/payroll_reports/payrollReports.route';
 import auditRoute from './company/auditlogs/auditlogs.route';
-import employeeroleRoute from './employeerole/employeerole.route';
+import employeeroleRoute from './roles/roles.route';
 
 const emsRoute = Router({ mergeParams: true });
 

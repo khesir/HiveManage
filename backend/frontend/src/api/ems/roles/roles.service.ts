@@ -1,7 +1,7 @@
 import { eq, isNull } from 'drizzle-orm';
-import { employee_role, SchemaType } from '@/drizzle/drizzle.schema';
+import { roles, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { CreateEmployeeRole } from './employeerole.model';
+import { CreateEmployeeRole } from './roles.model';
 
 export class EmployeeRoleService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -11,14 +11,14 @@ export class EmployeeRoleService {
   }
 
   async createEmployeeRole(data: CreateEmployeeRole) {
-    await this.db.insert(employee_role).values(data);
+    await this.db.insert(roles).values(data);
   }
 
   async getAllEmployeeRole(limit: number, offset: number) {
     const result = await this.db
       .select()
-      .from(employee_role)
-      .where(isNull(employee_role.deleted_at))
+      .from(roles)
+      .where(isNull(roles.deleted_at))
       .limit(limit)
       .offset(offset);
     return result;
@@ -27,22 +27,19 @@ export class EmployeeRoleService {
   async getEmployeeRoleById(paramsId: number) {
     const result = await this.db
       .select()
-      .from(employee_role)
-      .where(eq(employee_role.employee_role_id, paramsId));
+      .from(roles)
+      .where(eq(roles.role_id, paramsId));
     return result[0];
   }
 
   async updateEmployeeRole(data: object, paramsId: number) {
-    await this.db
-      .update(employee_role)
-      .set(data)
-      .where(eq(employee_role.employee_role_id, paramsId));
+    await this.db.update(roles).set(data).where(eq(roles.role_id, paramsId));
   }
 
   async deleteEmployeeRole(paramsId: number): Promise<void> {
     await this.db
-      .update(employee_role)
+      .update(roles)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(employee_role.employee_role_id, paramsId));
+      .where(eq(roles.role_id, paramsId));
   }
 }
