@@ -7,13 +7,14 @@ const authRoute = Router();
 const authController = new AuthenticationController();
 
 authRoute.post(
-  '/login',
+  '/sign-in',
   validateRequest({ body: loginSchema }),
   authController.login.bind(authController),
 );
 
-authRoute.get('/logout', authController.logout.bind(authController));
+authRoute.get('/sign-out', authController.logout.bind(authController));
 
 authRoute.get('/user', authController.getUser.bind(authController));
+authRoute.get('/session', authController.getSession.bind(authController));
 
 export default authRoute;

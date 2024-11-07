@@ -40,4 +40,14 @@ export class AuthenticationController {
       res.status(403).json({ message: 'Unable to fetch user' });
     }
   }
+  async getSession(req: Request, res: Response) {
+    try {
+      const session = await this.authService.getCurrentSession();
+
+      res.status(200).json({ data: session });
+    } catch (error) {
+      console.log(error);
+      res.status(403).json({ message: 'Unable to fetch session' });
+    }
+  }
 }

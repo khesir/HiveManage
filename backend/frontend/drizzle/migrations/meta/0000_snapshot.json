@@ -1,5 +1,5 @@
 {
-  "id": "8dbfb48d-efce-49cf-b379-7332b0b6da48",
+  "id": "c0ab5219-a116-4570-a39c-4b4efc0979bb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1096,6 +1096,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "position_id": {
+          "name": "position_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "department_id": {
           "name": "department_id",
           "type": "integer",
@@ -1132,6 +1138,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "position": {
+          "name": "position",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "profile_link": {
           "name": "profile_link",
           "type": "varchar",
@@ -1161,6 +1173,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "employee_position_id_position_position_id_fk": {
+          "name": "employee_position_id_position_position_id_fk",
+          "tableFrom": "employee",
+          "tableTo": "position",
+          "columnsFrom": [
+            "position_id"
+          ],
+          "columnsTo": [
+            "position_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "employee_department_id_department_department_id_fk": {
           "name": "employee_department_id_department_department_id_fk",
           "tableFrom": "employee",
@@ -2887,6 +2912,48 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.position": {
+      "name": "position",
+      "schema": "",
+      "columns": {
+        "position_id": {
+          "name": "position_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },

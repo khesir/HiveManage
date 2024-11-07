@@ -12,6 +12,7 @@ import payrollApprovalRoute from './payroll/payroll_approval/payrollApproval.rou
 import payrollReportRoute from './payroll/payroll_reports/payrollReports.route';
 import auditRoute from './company/auditlogs/auditlogs.route';
 import employeeroleRoute from './roles/roles.route';
+import employeeRolesRoute from './employeeRoles/employeeRoles.route';
 
 const emsRoute = Router({ mergeParams: true });
 
@@ -45,6 +46,9 @@ log.info('ROUTE /payrollApproval set');
 emsRoute.use('/payrollReports', payrollReportRoute);
 log.info('ROUTE /payrollReports set');
 
-emsRoute.use('/employeeRole', employeeroleRoute);
-log.info('ROUTE /employeeRole set');
+emsRoute.use('/roles', employeeroleRoute);
+log.info('ROUTE /roles set');
+
+emsRoute.use('/employee-roles', employeeRolesRoute);
+
 export default emsRoute;

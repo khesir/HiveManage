@@ -15,7 +15,6 @@ import benefitRoute from '../benefits/benefits.route';
 import deductionRoute from '../deductions/deductions.route';
 import additionalPayRoute from '../additional_pay/additionalPay.route';
 import adjustmentsRoute from '../adjustments/adjustments.route';
-import employeeaccountRoute from '../employeeRoles/employeeRoles.route';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);
@@ -92,6 +91,5 @@ employeeRoute.use('/:employee_id/benefits', benefitRoute);
 employeeRoute.use('/:employee_id/deductions', deductionRoute);
 employeeRoute.use('/:employee_id/additionalPays', additionalPayRoute);
 employeeRoute.use('/:employee_id/adjustments', adjustmentsRoute);
-employeeRoute.use('/:employee_id/employeeaccount', employeeaccountRoute);
 
 export default employeeRoute;

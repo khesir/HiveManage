@@ -1,7 +1,9 @@
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import {
+  department,
   employee,
   employee_roles,
+  position,
   roles,
   SchemaType,
 } from '@/drizzle/drizzle.schema';
@@ -27,12 +29,17 @@ export class EmployeeRolesService {
     limit: number,
     offset: number,
     employee_id: string | undefined,
+    user_id: string | undefined,
   ) {
     const conditions = [isNull(employee_roles.deleted_at)];
 
     if (employee_id) {
       conditions.push(eq(employee_roles.employee_id, Number(employee_id)));
     }
+    if (user_id) {
+      conditions.push(eq(employee_roles.user_id, user_id));
+    }
+
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -47,6 +54,11 @@ export class EmployeeRolesService {
       .from(employee_roles)
       .leftJoin(employee, eq(employee.employee_id, employee_roles.employee_id))
       .leftJoin(roles, eq(roles.role_id, employee_roles.role_id))
+      .leftJoin(
+        department,
+        eq(department.department_id, employee.department_id),
+      )
+      .leftJoin(position, eq(position.position_id, employee.position_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -60,6 +72,21 @@ export class EmployeeRolesService {
       employee_roles_id: row.employee_roles.employee_roles_id,
       employee: {
         employee_id: row.employee?.employee_id,
+        department: {
+          department_id: row.department?.department_id,
+          name: row.department?.name,
+          status: row.department?.status,
+          created_at: row.department?.created_at,
+          last_updated: row.department?.last_updated,
+          deleted_at: row.department?.deleted_at,
+        },
+        position: {
+          position_id: row.position?.position_id,
+          name: row.position?.name,
+          created_at: row.position?.created_at,
+          last_updated: row.position?.last_updated,
+          deleted_at: row.position?.deleted_at,
+        },
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,

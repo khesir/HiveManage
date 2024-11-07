@@ -214,6 +214,7 @@ export const TagEnum = pgEnum('tag_supplier', [
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
+  position_id: integer('position_id').references(() => position.position_id),
   department_id: integer('department_id').references(
     () => department.department_id,
   ),
@@ -222,6 +223,7 @@ export const employee = pgTable('employee', {
   lastname: varchar('lastname', { length: 255 }),
   email: varchar('email', { length: 255 }).notNull(),
   status: varchar('status', { length: 255 }),
+  position: varchar('position'),
   profile_link: varchar('profile_link'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -234,6 +236,17 @@ export const employee = pgTable('employee', {
 // Roles
 export const roles = pgTable('roles', {
   role_id: serial('role_id').primaryKey(),
+  name: varchar('name', { length: 255 }),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+export const position = pgTable('position', {
+  position_id: serial('position_id').primaryKey(),
   name: varchar('name', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

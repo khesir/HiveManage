@@ -20,4 +20,8 @@ export class AuthenticationService {
     const user = await this.supabaseService.getCurrentUser();
     return user;
   }
+  async getCurrentSession() {
+    const session = await this.supabaseService.getCurrentSession();
+    return session;
+  }
 }

@@ -6,8 +6,8 @@ import baseRoute from './api';
 import * as middlewares from './middlewares';
 import MessageResponse from './interfaces/MessageResponse';
 import log from '../lib/logger';
-import { AuthGuard } from './api/auth/auth.middleware';
-import authRoute from './api/auth/auth.route';
+import { AuthGuard } from './auth/auth.middleware';
+import authRoute from './auth/auth.route';
 
 dotenv.config();
 const app = express();

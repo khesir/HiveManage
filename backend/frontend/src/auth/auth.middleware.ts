@@ -9,7 +9,7 @@ export async function AuthGuard(
   try {
     const environment = process.env.NODE_ENV || 'development';
     if (environment === 'development') {
-      next();
+      return next();
     }
     const supabaseService = SupabaseService.getInstance();
     const authHeader = req.headers.authorization;

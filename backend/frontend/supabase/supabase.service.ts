@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Login } from '../src/api/auth/auth.model';
+import { Login } from '../src/auth/auth.model';
 
 export class SupabaseService {
   private static instance: SupabaseService;

@@ -58,6 +58,7 @@ import {
   inventory_record,
   joborder_services,
   roles,
+  position,
 } from './drizzle.schema';
 import log from '../lib/logger';
 import { db, pool } from './pool';
@@ -145,6 +146,16 @@ async function seedEmployeesRole(db: PostgresJsDatabase<SchemaType>) {
   ];
 
   await db.insert(roles).values(employeesRole);
+}
+
+async function seedEmployeePosition(db: PostgresJsDatabase<SchemaType>) {
+  const employeePosition = [
+    { name: 'Admin' },
+    { name: 'Technician' },
+    { name: 'Sales' },
+  ];
+
+  await db.insert(position).values(employeePosition);
 }
 
 // ===================== Employee Informations =========================
@@ -4643,6 +4654,7 @@ async function main() {
     await seedDepartments(db);
     await seedDesignations(db);
 
+    await seedEmployeePosition(db);
     await seedEmployeesRole(db);
     await seedEmployees(db);
     await seedEmployeesAccount(db);

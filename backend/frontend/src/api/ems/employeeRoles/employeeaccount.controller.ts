@@ -16,6 +16,7 @@ export class EmployeeRolesController {
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const role_id = (req.query.role_id as string) || undefined;
+    const user_id = (req.query.user_id as string) || undefined;
 
     try {
       const data = await this.employeeaccountService.getAllEmployeeAccount(
@@ -23,6 +24,7 @@ export class EmployeeRolesController {
         limit,
         offset,
         role_id,
+        user_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

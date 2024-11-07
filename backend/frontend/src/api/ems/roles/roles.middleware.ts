@@ -22,7 +22,6 @@ export async function validateEmployeeRoleID(
       .where(
         and(eq(roles.role_id, Number(roles_id)), isNull(roles.deleted_at)),
       );
-    console.log(EmployeeRole);
     if (!EmployeeRole[0]) {
       return res.status(404).json({ message: 'Employee Role not found' });
     }
