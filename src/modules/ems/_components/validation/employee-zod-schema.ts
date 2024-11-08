@@ -2,6 +2,8 @@ import {z} from 'zod';
 
 export const employeeBasicInformationSchema = z.object({
 	employee_id: z.number().optional(),
+	position_id: z.number().min(1),
+	department_id: z.number().min(1),
 	firstname: z.string().min(1, 'First name is required'), // Validate that it's a non-empty string
 	middlename: z.string().optional(), // Optional middlename
 	lastname: z.string().min(1, 'Last name is required'), // Validate that it's a non-empty string
@@ -12,9 +14,33 @@ export const employeeBasicInformationSchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
+
 export type EmployeeBasicInformation = z.infer<
 	typeof employeeBasicInformationSchema
 >;
+export type EmployeeWithDetails = {
+	employee_id: number;
+	position: Position;
+	department: Department;
+	firstname: string;
+	middlename: string;
+	lastname: string;
+	email: string;
+	profile_link: string;
+	status: string;
+	created_at?: string;
+	last_updated?: string;
+	deleted_at?: string;
+};
+
+export const positionSchema = z.object({
+	position_id: z.number().optional(),
+	name: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+export type Position = z.infer<typeof positionSchema>;
 
 export const personalInformationSchema = z.object({
 	personal_information_id: z.number().optional(),

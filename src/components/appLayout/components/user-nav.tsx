@@ -20,22 +20,42 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {request} from '@/api/axios';
+import {PaginationResponse, request} from '@/api/axios';
 import {useEmployeeRoleDetailsStore} from '../../../modules/authentication/hooks/use-sign-in-userdata';
+import {useEffect} from 'react';
+import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employee-custom-form-schema';
 
 export function UserNav() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const firstSegment = location.pathname.split('/')[1]; // 'sales'
-	const {user} = useEmployeeRoleDetailsStore();
+	const {user, setUser, clearUser} = useEmployeeRoleDetailsStore();
+
 	const handleClick = async () => {
 		try {
 			await request('GET', '/auth/sign-out');
+			clearUser();
 			navigate('/');
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	useEffect(() => {
+		if (!user) {
+			const fetchData = async () => {
+				const result = (await request('GET', '/auth/user')) as {
+					data: {id: string};
+				};
+				const empRoleData = await request<
+					PaginationResponse<EmployeeRolesWithDetails>
+				>('GET', `/api/v1/ems/employee-roles?user_id=${result.data.id}`);
+				setUser(empRoleData.data[0]);
+			};
+			fetchData();
+		}
+	}, [user, setUser]);
+
 	return (
 		<DropdownMenu>
 			<TooltipProvider disableHoverableContent>

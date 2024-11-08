@@ -20,8 +20,8 @@ import {Separator} from '@/components/ui/separator';
 import {
 	employeeFormSchema,
 	EmployeeFormSchema,
-} from '@/lib/employee-custom-form-schema';
-import {Department, Designation} from '@/lib/employee-zod-schema';
+} from '@/modules/ems/_components/validation/employee-custom-form-schema';
+import {Department, Designation} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';
 import {SubmitHandler, useForm} from 'react-hook-form';

@@ -2,7 +2,7 @@ import {Checkbox} from '@/components/ui/checkbox';
 import {ColumnDef} from '@tanstack/react-table';
 import {CellAction} from './cel-action';
 import {dateParser} from '@/lib/util/utils';
-import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
 
 export const columns: ColumnDef<EmployeeBasicInformation>[] = [
 	{

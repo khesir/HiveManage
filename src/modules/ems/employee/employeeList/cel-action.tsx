@@ -8,7 +8,7 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {Edit, MoreHorizontal, Trash} from 'lucide-react';
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';

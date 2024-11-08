@@ -6,7 +6,7 @@ import {
 	CardContent,
 	CardFooter,
 } from '@/components/ui/card';
-import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
 
 interface EmployeeCardCountProps {
 	employee: EmployeeBasicInformation[];

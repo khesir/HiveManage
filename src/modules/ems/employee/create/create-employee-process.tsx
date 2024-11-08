@@ -2,7 +2,7 @@ import {ApiRequest, request} from '@/api/axios';
 import useConfirmStore from '@/components/confirmationModal/use-confirm-store';
 import useEmployeeFormStore from '@/components/hooks/use-create-employee-view';
 import {Button} from '@/components/ui/button';
-import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 

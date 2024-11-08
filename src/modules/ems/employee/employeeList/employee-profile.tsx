@@ -27,7 +27,7 @@ import {
 	FinancialInformation,
 	PersonalInformation,
 	SalaryInformation,
-} from '@/lib/employee-zod-schema';
+} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {
 	ChevronLeft,
 	ChevronRight,

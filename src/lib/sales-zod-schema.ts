@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import {EmployeeBasicInformation} from './employee-zod-schema';
+import {EmployeeBasicInformation} from '../modules/ems/_components/validation/employee-zod-schema';
 import {Customer} from './cms-zod-schema';
 import {ItemWithDetails} from './inventory-zod-schema';
 

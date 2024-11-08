@@ -30,7 +30,6 @@ import CustomerViewPage from './pages/sales/systems/customer/customer-view-page'
 import TechOverview from './pages/tech/systems/overview/overview-page';
 import Settings from './pages/general/settings';
 import Terminal from './pages/general/terminal';
-import ChatSystem from './modules/chat/chat';
 import InquiryPage from './pages/sales/systems/inquiry';
 import JoborderListsPage from './pages/tech/systems/service/joborder-page';
 import JoborderViewPage from './pages/tech/systems/service/view/view-page';
@@ -40,6 +39,7 @@ import ReadTask from './pages/sales/systems/service/tickets/task-detail';
 import TicketsPage from './pages/tech/systems/service/task-page';
 import ReportsPage from './pages/tech/systems/service/reports-page';
 import RequireAuth from './modules/authentication/auth-layout';
+import Unauthorized from './pages/_auth/unauthorized';
 
 function App() {
 	return (
@@ -49,9 +49,8 @@ function App() {
 
 				{/* Admin Layout */}
 				<Route path="admin" element={<MainLayout userType={'admin'} />}>
-					<Route element={<RequireAuth allowedRoles={['Administrator']} />}>
+					<Route element={<RequireAuth allowedRoles={['Admin']} />}>
 						<Route path="dashboard" element={<DashboardPage />} />
-						<Route path="chat" element={<ChatSystem />} />
 						<Route path="settings" element={<Settings />} />
 						<Route path="terminal" element={<Terminal />} />
 
@@ -105,9 +104,8 @@ function App() {
 
 				{/* Technical Layout */}
 				<Route path="tech" element={<MainLayout userType={'tech'} />}>
-					<Route element={<RequireAuth allowedRoles={['Manager', 'Staff']} />}>
+					<Route element={<RequireAuth allowedRoles={['Technician']} />}>
 						<Route path="dashboard" element={<DashboardPage />} />
-						<Route path="chat" element={<ChatSystem />} />
 						<Route path="settings" element={<Settings />} />
 						<Route path="terminal" element={<Terminal />} />
 
@@ -143,9 +141,8 @@ function App() {
 
 				{/* TODO: Sales Layout */}
 				<Route path="sales" element={<MainLayout userType={'sales'} />}>
-					<Route element={<RequireAuth allowedRoles={['Manager', 'Staff']} />}>
+					<Route element={<RequireAuth allowedRoles={['Sales']} />}>
 						<Route path="dashboard" element={<SalesDashboardPage />} />
-						<Route path="chat" element={<ChatSystem />} />
 						<Route path="settings" element={<Settings />} />
 						<Route path="terminal" element={<Terminal />} />
 						{/* Systems */}
@@ -171,8 +168,9 @@ function App() {
 
 						<Route path="inquiry" element={<InquiryPage />} />
 					</Route>
-					<Route path="*" element={<NotFound />} />
 				</Route>
+				<Route path="*" element={<NotFound />} />
+				<Route path="unauthorized" element={<Unauthorized />} />
 			</Router>
 		</BrowserRouter>
 	);

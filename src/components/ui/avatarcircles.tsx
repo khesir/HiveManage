@@ -1,4 +1,4 @@
-import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {cn} from '@/lib/util/utils';
 
 interface AvatarCirclesProps {

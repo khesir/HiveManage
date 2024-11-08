@@ -1,4 +1,3 @@
-import {Services} from '@/components/constant/constant';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {
@@ -11,6 +10,27 @@ import {useState} from 'react';
 import {ReservationForm} from './serviceForm/reservation-form';
 import {JoborderForm} from './serviceForm/joborder-form';
 import {BorrowForm} from './serviceForm/borrow-form';
+
+export const Services = [
+	{
+		name: 'Borrow',
+		description: 'Borrow 1 Take 2',
+		fee: 100,
+		status: 'Active',
+	},
+	{
+		name: 'Reserve',
+		description: 'Reserve Item and get notified later',
+		fee: 0,
+		status: 'Active',
+	},
+	{
+		name: 'Joborder',
+		description: 'All tasks related to repairs, cleaning and moree',
+		fee: 100,
+		status: 'Active',
+	},
+];
 
 export function ServiceList() {
 	const [isEditing, setIsEditing] = useState<{

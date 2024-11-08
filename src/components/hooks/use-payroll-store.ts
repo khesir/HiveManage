@@ -1,4 +1,4 @@
-import {Payroll} from '@/lib/employee-zod-schema';
+import {Payroll} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {create} from 'zustand';
 
 interface PayrollStore {

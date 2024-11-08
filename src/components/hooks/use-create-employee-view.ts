@@ -1,4 +1,4 @@
-import {EmployeeFormSchema} from '@/lib/employee-custom-form-schema'; // Import your schema
+import {EmployeeFormSchema} from '@/modules/ems/_components/validation/employee-custom-form-schema'; // Import your schema
 import {create} from 'zustand';
 
 type EmployeeFormStore = {

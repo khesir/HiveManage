@@ -18,7 +18,7 @@ import {formatDate} from '@/lib/util/utils';
 import {
 	PersonalInformation,
 	personalInformationSchema,
-} from '@/lib/employee-zod-schema';
+} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {MoreVertical} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {

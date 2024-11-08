@@ -1,5 +1,5 @@
 import {request} from '@/api/axios';
-import {EmployeeBasicInformation} from '@/lib/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {AssignEmployeeWithDetails} from '@/lib/sales-zod-schema';
 
 export const ProcessAssignEmployee = async (

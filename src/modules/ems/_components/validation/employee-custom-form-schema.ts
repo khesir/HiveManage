@@ -7,7 +7,7 @@ import {
 	employeeBasicInformationSchema,
 	OnPayrollSchema,
 	PayollApprovalSchema,
-	EmployeeBasicInformation,
+	EmployeeWithDetails,
 } from './employee-zod-schema';
 
 // Used on Create Employee Form
@@ -85,7 +85,7 @@ export type EmployeeRoles = z.infer<typeof employeeRolesSchema>;
 
 export type EmployeeRolesWithDetails = {
 	employee_roles_id: number;
-	employee: EmployeeBasicInformation;
+	employee: EmployeeWithDetails;
 	role: Role;
 	created_at: string;
 	last_updated: string;

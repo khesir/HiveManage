@@ -10,7 +10,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {EmployeeRolesWithDetails} from '@/lib/employee-custom-form-schema';
+import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employee-custom-form-schema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useState} from 'react';
 import {useForm} from 'react-hook-form';
@@ -42,16 +42,30 @@ export default function UserAuthForm() {
 			data: {user: {id: string}; session: {access_token: string}};
 		};
 		setAuthHeader(result.data.session.access_token);
-		const empData = await request<PaginationResponse<EmployeeRolesWithDetails>>(
+		const employeeData = await request<PaginationResponse<EmployeeRolesWithDetails>>(
 			'GET',
 			`/api/v1/ems/employee-roles?user_id=${result.data.user.id}`,
 		);
-		useEmployeeRoleDetailsStore.getState().setUser(empData.data[0]);
-
+		const res  = employeeData.data[0];
+		useEmployeeRoleDetailsStore.getState().setUser(res);
+		console.log(res.employee.position.name);
 		if (window.history.state && window.history.state.idx > 0) {
 			navigate(-1);
 		} else {
-			navigate('/dashboard');
+			switch(res.employee.position.name) {
+				case 'Admin': 
+					navigate('admin/dashboard');
+					break;
+				case 'Technician': 
+					navigate('tech/dashboard');
+					break;
+				case 'Sales': 
+					navigate('sales/dashboard');
+					break;
+				default:
+					navigate('/')
+					break;
+			}
 		}
 	};
 
