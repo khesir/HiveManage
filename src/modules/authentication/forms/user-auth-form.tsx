@@ -12,7 +12,7 @@ import {
 import {Input} from '@/components/ui/input';
 import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employee-custom-form-schema';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useNavigate} from 'react-router-dom';
 import * as z from 'zod';
@@ -28,6 +28,7 @@ type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+	const { setUser, user } = useEmployeeRoleDetailsStore();
 	const defaultValues = {
 		email: '',
 		password: '',
@@ -36,6 +37,25 @@ export default function UserAuthForm() {
 		resolver: zodResolver(formSchema),
 		defaultValues,
 	});
+  useEffect(() => {
+    if (user) {
+      // User data has been set, navigate based on role
+      switch (user.employee.position.name) {
+        case 'Admin':
+          navigate('admin/dashboard');
+          break;
+        case 'Technician':
+          navigate('tech/dashboard');
+          break;
+        case 'Sales':
+          navigate('sales/dashboard');
+          break;
+        default:
+          navigate('/');
+          break;
+      }
+    }
+  }, [user, navigate]); // This effect will run whenever 'user' changes
 
 	const onSubmit = async (data: UserFormValue) => {
 		setLoading(true);
@@ -52,32 +72,7 @@ export default function UserAuthForm() {
     );
 
     const res = employeeData.data[0];
-    useEmployeeRoleDetailsStore.getState().setUser(res);
-
-    console.log(res.employee.position.name);
-
-    // Navigate based on role after data is set
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      switch (res.employee.position.name) {
-        case 'Admin':
-          console.log('logging in Admin dashboard');
-          navigate('admin/dashboard');
-          break;
-        case 'Technician':
-          console.log('logging in Tech dashboard');
-          navigate('tech/dashboard');
-          break;
-        case 'Sales':
-          console.log('logging in sales dashboard');
-          navigate('sales/dashboard');
-          break;
-        default:
-          navigate('/');
-          break;
-      }
-    }
+    setUser(res);
   } finally {
     // Stop loading
     setLoading(false);
