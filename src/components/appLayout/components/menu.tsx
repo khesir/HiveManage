@@ -1,6 +1,6 @@
 'use client';
 
-import {Ellipsis, LogOut} from 'lucide-react';
+import {Ellipsis} from 'lucide-react';
 
 import {cn} from '@/lib/util/utils';
 import {Button} from '@/components/ui/button';
@@ -11,17 +11,15 @@ import {
 	TooltipContent,
 	TooltipProvider,
 } from '@/components/ui/tooltip';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {Group} from '@/components/appLayout/data/menu-list';
 import {CollapseMenuButton} from './collapse-menu-button';
-
 interface MenuProps {
 	isOpen: boolean | undefined;
 	menuList: Group[];
 }
 
 export function Menu({isOpen, menuList}: MenuProps) {
-	const navigate = useNavigate();
 	return (
 		<ScrollArea className="[&>div>div[style]]:!block">
 			<nav className="mt-8 h-full w-full">
@@ -101,36 +99,6 @@ export function Menu({isOpen, menuList}: MenuProps) {
 							)}
 						</li>
 					))}
-					<li className="w-full grow flex items-end">
-						<TooltipProvider disableHoverableContent>
-							<Tooltip delayDuration={100}>
-								<TooltipTrigger asChild>
-									<Button
-										onClick={() => navigate('/')}
-										variant="outline"
-										className="w-full justify-center h-10 mt-5"
-									>
-										<span className={cn(isOpen === false ? '' : 'mr-4')}>
-											<LogOut size={18} />
-										</span>
-										<p
-											className={cn(
-												'whitespace-nowrap',
-												isOpen === false ? 'opacity-0 hidden' : 'opacity-100',
-											)}
-										>
-											Sign out
-										</p>
-									</Button>
-								</TooltipTrigger>
-								{isOpen === false && (
-									<TooltipContent side="right" onClick={() => navigate('/')}>
-										Sign out
-									</TooltipContent>
-								)}
-							</Tooltip>
-						</TooltipProvider>
-					</li>
 				</ul>
 			</nav>
 		</ScrollArea>

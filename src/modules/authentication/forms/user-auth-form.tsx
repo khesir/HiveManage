@@ -26,7 +26,7 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
-	const [loading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const defaultValues = {
 		email: '',
@@ -38,35 +38,50 @@ export default function UserAuthForm() {
 	});
 
 	const onSubmit = async (data: UserFormValue) => {
-		const result = (await request('POST', '/auth/sign-in', data)) as {
-			data: {user: {id: string}; session: {access_token: string}};
-		};
-		setAuthHeader(result.data.session.access_token);
-		const employeeData = await request<PaginationResponse<EmployeeRolesWithDetails>>(
-			'GET',
-			`/api/v1/ems/employee-roles?user_id=${result.data.user.id}`,
-		);
-		const res  = employeeData.data[0];
-		useEmployeeRoleDetailsStore.getState().setUser(res);
-		console.log(res.employee.position.name);
-		if (window.history.state && window.history.state.idx > 0) {
-			navigate(-1);
-		} else {
-			switch(res.employee.position.name) {
-				case 'Admin': 
-					navigate('admin/dashboard');
-					break;
-				case 'Technician': 
-					navigate('tech/dashboard');
-					break;
-				case 'Sales': 
-					navigate('sales/dashboard');
-					break;
-				default:
-					navigate('/')
-					break;
-			}
-		}
+		setLoading(true);
+  try {
+    const result = (await request('POST', '/auth/sign-in', data)) as {
+      data: { user: { id: string }; session: { access_token: string } };
+    };
+    setAuthHeader(result.data.session.access_token);
+
+    // Fetch employee data
+    const employeeData = await request<PaginationResponse<EmployeeRolesWithDetails>>(
+      'GET',
+      `/api/v1/ems/employee-roles?user_id=${result.data.user.id}`,
+    );
+
+    const res = employeeData.data[0];
+    useEmployeeRoleDetailsStore.getState().setUser(res);
+
+    console.log(res.employee.position.name);
+
+    // Navigate based on role after data is set
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      switch (res.employee.position.name) {
+        case 'Admin':
+          console.log('logging in Admin dashboard');
+          navigate('admin/dashboard');
+          break;
+        case 'Technician':
+          console.log('logging in Tech dashboard');
+          navigate('tech/dashboard');
+          break;
+        case 'Sales':
+          console.log('logging in sales dashboard');
+          navigate('sales/dashboard');
+          break;
+        default:
+          navigate('/');
+          break;
+      }
+    }
+  } finally {
+    // Stop loading
+    setLoading(false);
+  }
 	};
 
 	return (

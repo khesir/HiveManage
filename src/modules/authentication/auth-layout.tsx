@@ -9,7 +9,7 @@ export default function RequireAuth({allowedRoles}: RequireAuthProps) {
 	const {user} = useEmployeeRoleDetailsStore();
 	const location = useLocation();
 	const userRoleName = user?.employee.position.name;
-
+	console.log(userRoleName);
 	if (!user) {
 		return <Navigate to="/" state={{from: location}} replace />;
 	} else if (
