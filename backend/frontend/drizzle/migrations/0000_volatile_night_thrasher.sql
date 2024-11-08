@@ -329,7 +329,6 @@ CREATE TABLE IF NOT EXISTS "employee" (
 	"lastname" varchar(255),
 	"email" varchar(255) NOT NULL,
 	"status" varchar(255),
-	"position" varchar,
 	"profile_link" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,

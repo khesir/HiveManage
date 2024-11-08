@@ -223,7 +223,6 @@ export const employee = pgTable('employee', {
   lastname: varchar('lastname', { length: 255 }),
   email: varchar('email', { length: 255 }).notNull(),
   status: varchar('status', { length: 255 }),
-  position: varchar('position'),
   profile_link: varchar('profile_link'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

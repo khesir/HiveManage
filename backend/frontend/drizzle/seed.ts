@@ -69,18 +69,21 @@ import { SupabaseService } from '../supabase/supabase.service';
 async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
   const employeeStatus: ('Online' | 'Offline')[] = ['Online', 'Offline'];
   const departments = await db.select().from(department);
+  const employeePositions = await db.select().from(position);
 
   const employees = [
     {
       department_id: faker.helpers.arrayElement(departments).department_id,
-      firstname: 'John',
-      middlename: 'Michael',
-      lastname: 'Doe',
-      email: 'john.doe@example.com',
+      position_id: faker.helpers.arrayElement(employeePositions).position_id,
+      firstname: 'Aj',
+      middlename: 'Rizaldo',
+      lastname: 'Tollo',
+      email: 'ajrizaldo1@example.com',
       status: faker.helpers.arrayElement(employeeStatus),
     },
     {
       department_id: faker.helpers.arrayElement(departments).department_id,
+      position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Jane',
       middlename: 'Ann',
       lastname: 'Smith',
@@ -89,6 +92,7 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       department_id: faker.helpers.arrayElement(departments).department_id,
+      position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Jacob',
       middlename: 'Ann',
       lastname: 'Thompson',
@@ -97,6 +101,7 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       department_id: faker.helpers.arrayElement(departments).department_id,
+      position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Olivia ',
       middlename: 'Ann',
       lastname: 'Martinez',
@@ -105,6 +110,7 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       department_id: faker.helpers.arrayElement(departments).department_id,
+      position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Ethan',
       middlename: 'Ann',
       lastname: 'Lewis',
