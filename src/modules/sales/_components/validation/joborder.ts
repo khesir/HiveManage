@@ -1,4 +1,4 @@
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee';
 import {ServiceWithDetails} from '@/lib/sales-zod-schema';
 import {z} from 'zod';
 

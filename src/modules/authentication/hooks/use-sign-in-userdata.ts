@@ -1,4 +1,4 @@
-import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employee-custom-form-schema';
+import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employeeRoles';
 import {create} from 'zustand';
 import {persist} from 'zustand/middleware';
 

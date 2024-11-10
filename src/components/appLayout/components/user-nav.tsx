@@ -23,7 +23,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {PaginationResponse, request} from '@/api/axios';
 import {useEmployeeRoleDetailsStore} from '../../../modules/authentication/hooks/use-sign-in-userdata';
 import {useEffect} from 'react';
-import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employee-custom-form-schema';
+import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employeeRoles';
 
 export function UserNav() {
 	const navigate = useNavigate();
@@ -34,6 +34,14 @@ export function UserNav() {
 	const handleClick = async () => {
 		try {
 			await request('GET', '/auth/sign-out');
+			console.log(
+				`/api/v1/ems/employee-roles/${user?.employee_roles_id}/status`,
+			);
+			await request(
+				'PATCH',
+				`/api/v1/ems/employee-roles/${user?.employee_roles_id}/status`,
+				{status: 'Offline'},
+			);
 			clearUser();
 			navigate('/');
 		} catch (error) {
@@ -68,7 +76,15 @@ export function UserNav() {
 							>
 								<Avatar className="h-8 w-8">
 									<AvatarImage src="#" alt="Avatar" />
-									<AvatarFallback className="bg-transparent">JD</AvatarFallback>
+									<AvatarFallback className="bg-transparent">
+										<img
+											src={
+												user?.employee.profile_link
+													? user.employee.profile_link
+													: `https://api.dicebear.com/7.x/lorelei/svg?seed=${user?.employee.firstname}${user?.employee.lastname}`
+											}
+										/>
+									</AvatarFallback>
 								</Avatar>
 							</Button>
 						</DropdownMenuTrigger>

@@ -21,7 +21,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon, UserCircle} from 'lucide-react';
 import {useState, useEffect} from 'react';

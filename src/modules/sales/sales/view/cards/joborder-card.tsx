@@ -54,7 +54,7 @@ import {
 	JobOrderWithDetails,
 } from '@/modules/sales/_components/validation/joborder';
 import {AssignEmployeeModal} from '@/modules/sales/_components/modal/assign-employee-modal';
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee';
 import {
 	CreateJoborder,
 	DeleteJobOrder,

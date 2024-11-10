@@ -15,215 +15,48 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Separator} from '@/components/ui/separator';
-
 import {
 	employeeFormSchema,
 	EmployeeFormSchema,
-} from '@/modules/ems/_components/validation/employee-custom-form-schema';
-import {Department, Designation} from '@/modules/ems/_components/validation/employee-zod-schema';
+} from '@/modules/ems/_components/validation/custom-validation';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';
-import {SubmitHandler, useForm} from 'react-hook-form';
-import {CreateEmployeeProcess} from './create-employee-process';
-import useEmployeeFormStore from '@/components/hooks/use-create-employee-view';
+import {useForm} from 'react-hook-form';
 import {ApiRequest, request} from '@/api/axios';
+import {Department} from '../../_components/validation/department';
+import {Designation} from '../../_components/validation/designation';
+import {Position} from '../../_components/validation/position';
+import {Button} from '@/components/ui/button';
+import {Role} from '../../_components/validation/role';
+import {appendFormData} from '@/lib/util/utils';
+import {AxiosError} from 'axios';
+import {toast} from 'sonner';
+import {Skeleton} from '@/components/ui/skeleton';
+import {useNavigate} from 'react-router-dom';
 
 export function CreateEmployeeForm() {
-	const [previousStep, setPreviousStep] = useState(0);
-	const [currentStep, setCurrentStep] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
-	const {setEmployeeFormData} = useEmployeeFormStore();
-	const defaultValues = {
-		employeeBasicInformation: {
-			firstname: '',
-			middlename: '',
-			lastname: '',
-		},
-		personalInformation: {
-			birthday: '',
-			gender: 'Male' as 'Male' | 'Female',
-			phone: '',
-			email: '',
-			address_line: '',
-			postal_code: '',
-		},
-		employmentInformation: {
-			department_id: '',
-			designation_id: '',
-			employee_type: 'Regular' as
-				| 'Regular'
-				| 'Probationary'
-				| 'Contractual'
-				| 'Seasonal'
-				| 'Temporary',
-			employee_status: 'Active' as
-				| 'Active'
-				| 'Terminated'
-				| 'OnLeave'
-				| 'Resigned'
-				| 'Suspended'
-				| 'Retired'
-				| 'Inactive',
-		},
-		salaryInformation: {
-			payroll_frequency: 'Monthly' as
-				| 'Daily'
-				| 'Weekly'
-				| 'Bi Weekly'
-				| 'Semi Monthly'
-				| 'Monthly',
-			base_salary: '0',
-		},
-		financialInformation: {
-			pag_ibig_id: '',
-			sss_id: '',
-			philhealth_id: '',
-			tin: '',
-			bank_account_number: '',
-		},
-	};
-
-	const form = useForm<EmployeeFormSchema>({
-		resolver: zodResolver(employeeFormSchema),
-		defaultValues,
-		mode: 'onChange',
-	});
-
-	const steps = [
-		{
-			id: 'Step 1',
-			name: 'Basic Information',
-			fields: [
-				'employeeBasicInformation.firstname',
-				'employeeBasicInformation.middlename',
-				'employeeBasicInformation.lastname',
-			],
-		},
-		{
-			id: 'Step 2',
-			name: 'Personal Information',
-			fields: [
-				'personalInformation.birthday',
-				'personalInformation.gender',
-				'personalInformation.phone',
-				'personalInformation.email',
-				'personalInformation.address_line',
-				'personalInformation.postal_code',
-			],
-		},
-		{
-			id: 'Step 3',
-			name: 'Employment Information',
-			fields: [
-				'employmentInformation.department',
-				'employmentInformation.designation',
-				'employmentInformation.employee_type',
-				'employmentInformation.employee_status',
-			],
-		},
-		{
-			id: 'Step 4',
-			name: 'Salary Information',
-			fields: [
-				'salaryInformation.payroll_frequency',
-				'salaryInformation.base_salary',
-			],
-		},
-		{
-			id: 'Step 5',
-			name: 'Financial Information',
-			fields: [
-				'financialInformation.pag_ibig_id',
-				'financialInformation.sss_id',
-				'financialInformation.philhealth_id',
-				'financialInformation.tin',
-				'financialInformation.bank_account_number',
-			],
-		},
-		{id: 'Step 6', name: 'Complete'},
-	];
-
-	const processForm: SubmitHandler<EmployeeFormSchema> = (data) => {
-		console.log('data ==>', data);
-	};
-
-	type FieldName = keyof EmployeeFormSchema;
-
-	const next = async () => {
-		const fields = steps[currentStep].fields;
-
-		const output = await form.trigger(fields as FieldName[], {
-			shouldFocus: true,
-		});
-
-		if (!output) return;
-
-		const organizedData = {
-			employeeBasicInformation: {
-				firstname: form.getValues('employeeBasicInformation.firstname'),
-				middlename: form.getValues('employeeBasicInformation.middlename'),
-				lastname: form.getValues('employeeBasicInformation.lastname'),
-			},
-			personalInformation: {
-				birthday: form.getValues('personalInformation.birthday'),
-				gender: form.getValues('personalInformation.gender'),
-				phone: form.getValues('personalInformation.phone'),
-				email: form.getValues('personalInformation.email'),
-				address_line: form.getValues('personalInformation.address_line'),
-				postal_code: form.getValues('personalInformation.postal_code'),
-			},
-			employmentInformation: {
-				department_id: form.getValues('employmentInformation.department_id'),
-				designation_id: form.getValues('employmentInformation.designation_id'),
-				employee_type: form.getValues('employmentInformation.employee_type'),
-				employee_status: form.getValues(
-					'employmentInformation.employee_status',
-				),
-			},
-			salaryInformation: {
-				payroll_frequency: form.getValues(
-					'salaryInformation.payroll_frequency',
-				),
-				base_salary: form.getValues('salaryInformation.base_salary'),
-			},
-			financialInformation: {
-				pag_ibig_id: form.getValues('financialInformation.pag_ibig_id'),
-				sss_id: form.getValues('financialInformation.sss_id'),
-				philhealth_id: form.getValues('financialInformation.philhealth_id'),
-				tin: form.getValues('financialInformation.tin'),
-				bank_account_number: form.getValues(
-					'financialInformation.bank_account_number',
-				),
-			},
-		};
-		setEmployeeFormData(organizedData);
-		if (currentStep < steps.length - 1) {
-			if (currentStep === steps.length - 2) {
-				await form.handleSubmit(processForm)();
-			}
-			setPreviousStep(currentStep);
-			setCurrentStep((step) => step + 1);
-		}
-	};
-
-	const prev = () => {
-		if (currentStep > 0) {
-			setPreviousStep(currentStep);
-			setCurrentStep((step) => step - 1);
-		}
-	};
+	const navigate = useNavigate();
 	const [department, setDepartment] = useState<Department[]>([]);
 	const [designation, setDesignation] = useState<Designation[]>([]);
+	const [position, setPosition] = useState<Position[]>([]);
+	const [roles, setRoles] = useState<Role[]>([]);
 
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
 			try {
-				const [departmentResponse, designationResponse] = await Promise.all([
+				const [
+					departmentResponse,
+					designationResponse,
+					positionResponse,
+					roleResponse,
+				] = await Promise.all([
 					request<ApiRequest<Department>>('GET', '/api/v1/ems/departments'),
 					request<ApiRequest<Designation>>('GET', '/api/v1/ems/designations'),
+					request<ApiRequest<Position>>('GET', '/api/v1/ems/position'),
+					request<ApiRequest<Role>>('GET', '/api/v1/ems/roles'),
 				]);
 				setDepartment(
 					Array.isArray(departmentResponse.data)
@@ -234,6 +67,16 @@ export function CreateEmployeeForm() {
 					Array.isArray(designationResponse.data)
 						? designationResponse.data
 						: [designationResponse.data],
+				);
+				setPosition(
+					Array.isArray(positionResponse.data)
+						? positionResponse.data
+						: [positionResponse.data],
+				);
+				setRoles(
+					Array.isArray(roleResponse.data)
+						? roleResponse.data
+						: [roleResponse.data],
 				);
 			} catch (e) {
 				console.log(e);
@@ -248,6 +91,65 @@ export function CreateEmployeeForm() {
 		};
 		fetchData();
 	}, []);
+
+	const defaultValues = {
+		employee_position_id: undefined as number | undefined,
+		employee_firstname: '',
+		employee_middlename: '',
+		employee_lastname: '',
+		employee_email: '',
+		employee_profile_link: undefined as File | undefined,
+
+		personal_information_birthday: '',
+		personal_information_sex: '',
+		personal_information_phone: '',
+		personal_information_address_line: '',
+		personal_information_postal_code: '',
+
+		employment_information_department_id: '',
+		employment_information_designation_id: '',
+		employment_information_employee_type: '',
+		employment_information_employee_status: '',
+		employee_role_role_id: undefined as number | undefined,
+	};
+
+	const form = useForm<EmployeeFormSchema>({
+		resolver: zodResolver(employeeFormSchema),
+		defaultValues,
+		mode: 'onChange',
+	});
+
+	const processForm = async (data: EmployeeFormSchema) => {
+		try {
+			const formData = new FormData();
+			appendFormData(data, formData);
+			console.log('FormData contents:', ...formData.entries());
+			await request(
+				'POST',
+				`/api/v1/ems/employee-roles?email=${data.employee_email}`,
+				formData,
+			);
+			toast.success('Employee Added');
+			navigate(-1);
+		} catch (error) {
+			console.log(error);
+			toast.error((error as AxiosError).response?.data as string);
+		}
+	};
+
+	const [selectedImage, setSelectedImage] = useState<string | null>(null);
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			const reader = new FileReader();
+
+			reader.onloadend = () => {
+				setSelectedImage(reader.result as string);
+			};
+
+			reader.readAsDataURL(file);
+		}
+	};
 
 	const gender = [
 		{id: 1, name: 'Male'},
@@ -271,125 +173,211 @@ export function CreateEmployeeForm() {
 		{id: 6, name: 'Retired'},
 		{id: 7, name: 'Inactive'},
 	];
-
-	const payroll_frequency = [
-		{id: 1, name: 'Daily'},
-		{id: 2, name: 'Weekly'},
-		{id: 3, name: 'Bi-Weekly'},
-		{id: 4, name: 'Semi-Monthly'},
-		{id: 5, name: 'Monthly'},
-	];
 	if (res) {
-		return <div> {res} </div>;
+		return <Card className="flex gap-5"> {res} </Card>;
 	}
 	if (loading) {
-		return <div>Fechting data...</div>;
+		return <Skeleton className="flex h-[600px]" />;
 	}
 	return (
 		<>
-			<div>
-				<ul className="flex gap-4">
-					{steps.map((step, index) => (
-						<li key={step.name} className="md:flex-1">
-							{currentStep > index ? (
-								<div className="group flex w-full flex-col border-l-4 border-sky-600 py-2 pl-4 transition-colors md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
-									<span className="text-sm font-medium text-sky-600 transition-colors ">
-										{step.id}
-									</span>
-									<span className="text-sm font-medium">{step.name}</span>
-								</div>
-							) : currentStep === index ? (
-								<div
-									className="flex w-full flex-col border-l-4 border-sky-600 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4"
-									aria-current="step"
-								>
-									<span className="text-sm font-medium text-sky-600">
-										{step.id}
-									</span>
-									<span className="text-sm font-medium">{step.name}</span>
-								</div>
-							) : (
-								<div className="group flex h-full w-full flex-col border-l-4 border-gray-200 py-2 pl-4 transition-colors md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4">
-									<span className="text-sm font-medium text-gray-500 transition-colors">
-										{step.id}
-									</span>
-									<span className="text-sm font-medium">{step.name}</span>
-								</div>
-							)}
-						</li>
-					))}
-				</ul>
-			</div>
-			<Separator />
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(processForm)}
 					className="w-full space-y-8"
 				>
-					<Card className="gap-8 md:grid md:grid-cols-3 p-5">
-						{currentStep === 0 && (
-							<>
-								<FormField
-									control={form.control}
-									name="employeeBasicInformation.firstname"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>First Name</FormLabel>
-											<FormControl>
-												<Input
+					<Card className="flex flex-col p-5 gap-5">
+						<div className="flex flex-col gap-5 mb-5">
+							<p className="text-lg font-semibold">Base Information</p>
+							<div className="flex gap-5 px-5">
+								<div className="flex-1 gap-8 md:grid md:grid-cols-3 h-full">
+									<FormField
+										control={form.control}
+										name="employee_firstname"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>First Name</FormLabel>
+												<FormControl>
+													<Input
+														disabled={loading}
+														placeholder="John"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="employee_middlename"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Middle Name</FormLabel>
+												<FormControl>
+													<Input
+														disabled={loading}
+														placeholder="Mike (Optional)"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="employee_lastname"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Last Name</FormLabel>
+												<FormControl>
+													<Input
+														disabled={loading}
+														placeholder="Doe"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="employee_email"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Email</FormLabel>
+												<FormControl>
+													<Input
+														type="text"
+														disabled={loading}
+														placeholder="john@example.com"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="employee_position_id"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Position</FormLabel>
+												<Select
 													disabled={loading}
-													placeholder="John"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="employeeBasicInformation.middlename"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Middle Name</FormLabel>
-											<FormControl>
-												<Input
+													onValueChange={(value) =>
+														field.onChange(Number(value))
+													}
+													value={field.value?.toString()}
+													defaultValue={field.value?.toString()}
+												>
+													<FormControl>
+														<SelectTrigger>
+															<SelectValue
+																defaultValue={field.value}
+																placeholder="Select a Position"
+															/>
+														</SelectTrigger>
+													</FormControl>
+													<SelectContent>
+														{position.map((data, key) => (
+															<SelectItem
+																key={key}
+																value={data.position_id?.toString() ?? ''}
+															>
+																{data.name}
+															</SelectItem>
+														))}
+													</SelectContent>
+												</Select>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="employee_role_role_id"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Role</FormLabel>
+												<Select
 													disabled={loading}
-													placeholder="Mike (Optional)"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+													onValueChange={(value) =>
+														field.onChange(Number(value))
+													}
+													value={field.value?.toString()}
+													defaultValue={field.value?.toString()}
+												>
+													<FormControl>
+														<SelectTrigger>
+															<SelectValue
+																defaultValue={field.value}
+																placeholder="Select a Role"
+															/>
+														</SelectTrigger>
+													</FormControl>
+													<SelectContent>
+														{roles.map((data, key) => (
+															<SelectItem
+																key={key}
+																value={data.role_id?.toString() ?? ''}
+															>
+																{data.name}
+															</SelectItem>
+														))}
+													</SelectContent>
+												</Select>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+								<div className="relative flex-0 flex flex-col items-center gap-5">
+									<div className="overflow-hidden rounded-full w-[300px] h-[300px] border-2">
+										<img
+											src={
+												selectedImage
+													? selectedImage
+													: `https://api.dicebear.com/7.x/lorelei/svg?seed=JD`
+											}
+											alt="Selected profile"
+											className="object-cover w-full h-full"
+										/>
+									</div>
+									<FormField
+										control={form.control}
+										name="employee_profile_link"
+										render={({field}) => (
+											<FormItem>
+												<FormControl>
+													<Input
+														type="file"
+														disabled={loading}
+														onChange={(e) => {
+															field.onChange(e.target.files?.[0]);
+															handleFileChange(e);
+														}}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+							</div>
+						</div>
+						<div className="flex flex-col gap-5  mb-5">
+							<p className="text-lg font-semibold">Personal Information</p>
+							<div className="gap-8 md:grid md:grid-cols-3 px-5">
 								<FormField
 									control={form.control}
-									name="employeeBasicInformation.lastname"
+									name="personal_information_sex"
 									render={({field}) => (
 										<FormItem>
-											<FormLabel>Last Name</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="Doe"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</>
-						)}
-						{currentStep === 1 && (
-							<>
-								<FormField
-									control={form.control}
-									name="personalInformation.gender"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Gender</FormLabel>
+											<FormLabel>Sex</FormLabel>
 											<Select
 												disabled={loading}
 												onValueChange={field.onChange}
@@ -400,7 +388,7 @@ export function CreateEmployeeForm() {
 													<SelectTrigger>
 														<SelectValue
 															defaultValue={field.value}
-															placeholder="Select a country"
+															placeholder="Select a sex"
 														/>
 													</SelectTrigger>
 												</FormControl>
@@ -418,24 +406,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="personalInformation.email"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Email</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="johndoe@gmail.com"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="personalInformation.phone"
+									name="personal_information_phone"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Contact Number</FormLabel>
@@ -453,7 +424,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="personalInformation.birthday"
+									name="personal_information_birthday"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Birthday</FormLabel>
@@ -466,7 +437,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="personalInformation.address_line"
+									name="personal_information_address_line"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Address Line</FormLabel>
@@ -483,7 +454,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="personalInformation.postal_code"
+									name="personal_information_postal_code"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Postal code</FormLabel>
@@ -492,13 +463,14 @@ export function CreateEmployeeForm() {
 										</FormItem>
 									)}
 								/>
-							</>
-						)}
-						{currentStep === 2 && (
-							<>
+							</div>
+						</div>
+						<div className="flex flex-col gap-5">
+							<p className="text-lg font-semibold">Employment Information</p>
+							<div className="gap-8 md:grid md:grid-cols-3 px-5">
 								<FormField
 									control={form.control}
-									name="employmentInformation.department_id"
+									name="employment_information_department_id"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Department</FormLabel>
@@ -533,7 +505,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="employmentInformation.designation_id"
+									name="employment_information_designation_id"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Designation</FormLabel>
@@ -570,7 +542,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="employmentInformation.employee_type"
+									name="employment_information_employee_type"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Employee Type</FormLabel>
@@ -584,7 +556,7 @@ export function CreateEmployeeForm() {
 													<SelectTrigger>
 														<SelectValue
 															defaultValue={field.value}
-															placeholder="Select a country"
+															placeholder="Select a Type"
 														/>
 													</SelectTrigger>
 												</FormControl>
@@ -605,7 +577,7 @@ export function CreateEmployeeForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="employmentInformation.employee_status"
+									name="employment_information_employee_status"
 									render={({field}) => (
 										<FormItem>
 											<FormLabel>Employment Status</FormLabel>
@@ -619,7 +591,7 @@ export function CreateEmployeeForm() {
 													<SelectTrigger>
 														<SelectValue
 															defaultValue={field.value}
-															placeholder="Select a country"
+															placeholder="Select a Status"
 														/>
 													</SelectTrigger>
 												</FormControl>
@@ -638,217 +610,14 @@ export function CreateEmployeeForm() {
 										</FormItem>
 									)}
 								/>
-							</>
-						)}
-						{currentStep === 3 && (
-							<>
-								<FormField
-									control={form.control}
-									name="salaryInformation.payroll_frequency"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Payroll Frequency</FormLabel>
-											<Select
-												disabled={loading}
-												onValueChange={field.onChange}
-												value={field.value}
-												defaultValue={field.value}
-											>
-												<FormControl>
-													<SelectTrigger>
-														<SelectValue
-															defaultValue={field.value}
-															placeholder="Select a Frequency"
-														/>
-													</SelectTrigger>
-												</FormControl>
-												<SelectContent>
-													{payroll_frequency.map((payroll_frequency) => (
-														<SelectItem
-															key={payroll_frequency.id}
-															value={payroll_frequency.name}
-														>
-															{payroll_frequency.name}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="salaryInformation.base_salary"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Base Salary</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="Base salary"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</>
-						)}
-						{currentStep === 4 && (
-							<>
-								<FormField
-									control={form.control}
-									name="financialInformation.pag_ibig_id"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Pag Ibig ID</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="1234"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="financialInformation.sss_id"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>SSS ID</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="1234"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="financialInformation.philhealth_id"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Philhealth</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="1234"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="financialInformation.tin"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>TIN ID</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="1234"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="financialInformation.bank_account_number"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Bank Account Number</FormLabel>
-											<FormControl>
-												<Input
-													disabled={loading}
-													placeholder="1234
-                          "
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</>
-						)}
-						{currentStep === 5 && (
-							<>
-								<h1 className="font-bold col-span-3">
-									Confirm the Data on the given page
-								</h1>
-								<div className="flex flex-col col-span-3 items-center gap-5">
-									<CreateEmployeeProcess />
-								</div>
-							</>
-						)}
+							</div>
+						</div>
+						<Button disabled={loading} className="ml-auto" type="submit">
+							Submit
+						</Button>
 					</Card>
-
-					{/* <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button> */}
 				</form>
 			</Form>
-			<div className="mt-8 pt-5">
-				<div className="flex justify-between">
-					<button
-						type="button"
-						onClick={prev}
-						disabled={currentStep === 0}
-						className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-inset ring-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth="1.5"
-							stroke="currentColor"
-							className="h-6 w-6"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M15.75 19.5L8.25 12l7.5-7.5"
-							/>
-						</svg>
-					</button>
-					<button
-						type="button"
-						onClick={next}
-						disabled={currentStep === steps.length - 1}
-						className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-inset ring-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth="1.5"
-							stroke="currentColor"
-							className="h-6 w-6"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M8.25 4.5l7.5 7.5-7.5 7.5"
-							/>
-						</svg>
-					</button>
-				</div>
-			</div>
 		</>
 	);
 }

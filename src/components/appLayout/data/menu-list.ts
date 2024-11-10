@@ -10,6 +10,7 @@ import {
 	MessageSquare,
 	BotMessageSquareIcon,
 	Package,
+	UserSquareIcon,
 } from 'lucide-react';
 
 type Submenu = {
@@ -56,49 +57,29 @@ export function getAdminMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
-					href: '/admin/ems',
-					label: 'EMS',
+					href: '/admin/ems/employees',
+					label: 'Employees & Accounts',
 					active: pathname.includes('/admin/ems'),
-					icon: Users,
-					submenus: [
-						{
-							href: '/admin/ems/overview',
-							label: 'Overview',
-							active: pathname === '/admin/ems/overview',
-						},
-						{
-							href: '/admin/ems/employees',
-							label: 'Employees',
-							active: pathname === '/admin/ems/employees',
-						},
-					],
+					icon: UserSquareIcon,
+					submenus: [],
 				},
 				{
-					href: '/admin/sales',
-					label: 'Sales',
-					active: pathname.includes('/admin/sales'),
+					href: '/admin/sales/services',
+					label: 'Services & Sales',
+					active: pathname.includes('/admin/sales/services'),
 					icon: Tag,
-					submenus: [
-						{
-							href: '/admin/sales/dashboard',
-							label: 'Overview',
-							active: pathname === '/admin/sales/overview',
-						},
-						{
-							href: '/admin/sales/services',
-							label: 'Services & Sales',
-							active: pathname === '/admin/sales/services',
-						},
-						{
-							href: '/admin/sales/customer',
-							label: 'Customer Database',
-							active: pathname === '/admin/sales/customer',
-						},
-					],
+					submenus: [],
+				},
+				{
+					href: '/admin/sales/customer',
+					label: 'Customer Database',
+					active: pathname.includes('/admin/sales/customer'),
+					icon: Users,
+					submenus: [],
 				},
 				{
 					href: '/admin/inventory',
-					label: 'Inventory',
+					label: 'Inventory System',
 					active: pathname.includes('/admin/inventory'),
 					icon: PackageOpenIcon,
 					submenus: [

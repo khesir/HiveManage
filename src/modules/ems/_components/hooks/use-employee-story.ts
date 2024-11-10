@@ -1,9 +1,9 @@
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
 import {create} from 'zustand';
+import {EmployeeRolesWithDetails} from '../validation/employeeRoles';
 
 interface EmployeeStore {
-	selectedEmployee: EmployeeBasicInformation | null;
-	setSelectedEmployee: (employee: EmployeeBasicInformation | null) => void;
+	selectedEmployee: EmployeeRolesWithDetails | null;
+	setSelectedEmployee: (employee: EmployeeRolesWithDetails | null) => void;
 }
 
 export const useEmployeeStore = create<EmployeeStore>((set) => ({

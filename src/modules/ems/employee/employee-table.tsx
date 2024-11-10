@@ -8,12 +8,7 @@ import {
 	Row,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {
-	Link,
-	useLocation,
-	useNavigate,
-	useSearchParams,
-} from 'react-router-dom';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import {Input} from '@/components/ui/input';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
@@ -31,12 +26,16 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Button, buttonVariants} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {cn} from '@/lib/util/utils';
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
-import {useEmployeeStore} from '@/components/hooks/use-employee-story';
+import {useEmployeeStore} from '@/modules/ems/_components/hooks/use-employee-story';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {EmployeeRolesWithDetails} from '../_components/validation/employeeRoles';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -49,7 +48,7 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
+export function EmployeeTable<TData extends EmployeeRolesWithDetails, TValue>({
 	columns,
 	data,
 	searchKey,
@@ -59,7 +58,6 @@ export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [searchParams] = useSearchParams();
-	// Search Params
 	const page = searchParams.get('page') || '1';
 	const pageAsNumber = Number(page);
 	const fallbackPage =
@@ -69,7 +67,6 @@ export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 	const perPageAsNumber = Number(per_page);
 	const fallBackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
 
-	// Create query string
 	const createQueryString = useCallback(
 		(params: {[s: string]: unknown} | ArrayLike<unknown>) => {
 			const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -86,7 +83,6 @@ export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 		[searchParams],
 	);
 
-	// Handle server-side pagination
 	const [{pageIndex, pageSize}, setPagination] = useState({
 		pageIndex: fallbackPage - 1,
 		pageSize: fallBackPerPage,
@@ -102,7 +98,6 @@ export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 		);
 	}, [pageIndex, pageSize, navigate, location.pathname, createQueryString]);
 
-	// Initialize the table
 	const table = useReactTable({
 		data,
 		columns,
@@ -120,49 +115,6 @@ export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 
 	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
 
-	// Debounced search value to avoid triggering requests too frequently
-	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-	// console.log(debouncedSearchValue);
-	// useEffect(() => {
-	// 	const handler = setTimeout(() => {
-	// 		setDebouncedSearchValue(searchValue);
-	// 	}, 500); // Adjust debounce delay as needed
-	// 	return () => clearTimeout(handler);
-	// }, [searchValue]);
-
-	// // Update the URL with the search query when the searchValue changes
-	// useEffect(() => {
-	// 	if (debouncedSearchValue?.length > 0) {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null, // Reset page when searching
-	// 				limit: pageSize,
-	// 				fullname: debouncedSearchValue, // Add search param to URL
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	} else {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null,
-	// 				limit: pageSize,
-	// 				fullname: null, // Remove search param from URL if empty
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	}
-
-	// 	// Reset pagination to first page on search change
-	// 	setPagination((prev) => ({...prev, pageIndex: 0}));
-	// }, [
-	// 	debouncedSearchValue,
-	// 	pageSize,
-	// 	navigate,
-	// 	location.pathname,
-	// 	createQueryString,
-	// ]);
-
-	// Set the first employee data to Zustand on initial render
 	useEffect(() => {
 		if (data.length > 0) {
 			const firstEmployee = data[0];
@@ -173,17 +125,85 @@ export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 	// This handles the employee viewing by click
 	const handleRowClick = (row: Row<TData>) => {
 		// Access the data of the clicked row
-		const rowData: EmployeeBasicInformation = row.original;
+		const rowData: EmployeeRolesWithDetails = row.original;
 
 		// Do something with the row data
 		console.log('Clicked row data:', rowData);
 
 		useEmployeeStore.getState().setSelectedEmployee(rowData);
 	};
+	// ====================================================================================
+	// Search Funtion
+
+	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			setDebouncedSearchValue(searchValue);
+		}, 500);
+		return () => clearTimeout(handler);
+	}, [searchValue]);
+
+	useEffect(() => {
+		if (debouncedSearchValue?.length > 0) {
+			navigate(
+				`${location.pathname}?${createQueryString({
+					page: null,
+					limit: pageSize,
+					fullname: debouncedSearchValue,
+				})}`,
+				{replace: true},
+			);
+		} else {
+			navigate(
+				`${location.pathname}?${createQueryString({
+					page: null,
+					limit: pageSize,
+					uuid: null, // Remove search param from URL if empty
+				})}`,
+				{replace: true},
+			);
+		}
+
+		// Reset pagination to first page on search change
+		setPagination((prev) => ({...prev, pageIndex: 0}));
+	}, [
+		debouncedSearchValue,
+		pageSize,
+		navigate,
+		location.pathname,
+		createQueryString,
+	]);
+
+	// ====================================================================================
+	// Filters
+	const [filter, setFilter] = useState<boolean>(true);
 
 	return (
 		<>
 			<div className="flex justify-between gap-3 md:gap-0">
+				<div className="flex gap-3">
+					{filter ? (
+						<Button variant={'outline'} onClick={() => setFilter(!filter)}>
+							Filter
+						</Button>
+					) : (
+						<>
+							<Button variant={'outline'} onClick={() => setFilter(!filter)}>
+								Filter
+							</Button>
+							<DropdownMenu>
+								<DropdownMenuTrigger>
+									<Button variant={'outline'}>Status: Online</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="flex flex-col">
+									<Button variant={'ghost'}>No set</Button>
+									<Button variant={'ghost'}>Active</Button>
+									<Button variant={'ghost'}>Inactive</Button>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</>
+					)}
+				</div>
 				<Input
 					placeholder={`Find employee...`}
 					value={searchValue ?? ''} // Bind the input value to the current filter value
@@ -192,12 +212,6 @@ export function EmployeeTable<TData extends EmployeeBasicInformation, TValue>({
 					} // Update filter value}
 					className="w-full md:max-w-sm"
 				/>
-				<Link
-					to={'create'}
-					className={cn(buttonVariants({variant: 'default'}))}
-				>
-					<Plus className="mr-2 h-4 w-4" /> Add New
-				</Link>
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">

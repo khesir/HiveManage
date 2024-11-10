@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {Joborder} from './joborder';
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee';
 import {ItemWithDetails} from '@/lib/inventory-zod-schema';
 
 export const taskSchema = z.object({

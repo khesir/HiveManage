@@ -24,7 +24,7 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import {ApiRequest, request} from '@/api/axios';
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema.ts';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee.ts';
 import {AssignEmployeeWithDetails} from '@/lib/sales-zod-schema';
 import {CreateReport} from '../../service/joborder/view/form/create-report';
 import {AssignEmployeeModal} from '../../_components/modal/assign-employee-modal.tsx';

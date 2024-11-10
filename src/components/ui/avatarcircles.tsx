@@ -1,4 +1,4 @@
-import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee-zod-schema';
+import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee';
 import {cn} from '@/lib/util/utils';
 
 interface AvatarCirclesProps {
@@ -48,7 +48,9 @@ export const EmployeeAvatarCircles = ({
 	// TODO: Replace # to img_url of employee
 	const maxVisibleAvatars = isTable ? 3 : 5;
 
-	const avatarUrls = employees.slice(0, maxVisibleAvatars).map((emp) => '#');
+	const avatarUrls = employees
+		.slice(0, maxVisibleAvatars)
+		.map((emp) => emp.profile_link as unknown as string);
 	const totalEmployees = employees.length;
 	const numPeople =
 		totalEmployees > maxVisibleAvatars ? totalEmployees - maxVisibleAvatars : 0;

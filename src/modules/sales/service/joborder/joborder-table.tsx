@@ -131,6 +131,13 @@ export function JoborderTable<TData extends JobOrderWithDetails, TValue>({
 		useJoborderStore.getState().setJoborderData(rowData);
 	};
 
+	// Set the first employee data to Zustand on initial render
+	useEffect(() => {
+		if (data.length > 0) {
+			const joborder: JobOrderWithDetails = data[0];
+			useJoborderStore.getState().setJoborderData(joborder);
+		}
+	}, [data]);
 	// ====================================================================================
 	// Search Funtion
 	// Debounced search value to avoid triggering requests too frequently
@@ -174,13 +181,6 @@ export function JoborderTable<TData extends JobOrderWithDetails, TValue>({
 		createQueryString,
 	]);
 
-	// Set the first employee data to Zustand on initial render
-	useEffect(() => {
-		if (data.length > 0) {
-			const joborder: JobOrderWithDetails = data[0];
-			useJoborderStore.getState().setJoborderData(joborder);
-		}
-	}, [data]);
 	// ====================================================================================
 	// Filters
 	const [filter, setFilter] = useState<boolean>(true);

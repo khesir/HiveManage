@@ -7,12 +7,7 @@ import {
 	getPaginationRowModel,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {
-	Link,
-	useLocation,
-	useNavigate,
-	useSearchParams,
-} from 'react-router-dom';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -169,7 +164,7 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 				<div className="space-x-2 flex">
 					{!isDetails && (
 						<Input
-							placeholder={`Find employee...`}
+							placeholder={`Find Customer...`}
 							// value={searchValue ?? ''} // Bind the input value to the current filter value
 							// onChange={(event) =>
 							// 	table.getColumn(searchKey)?.setFilterValue(event.target.value)
@@ -187,6 +182,15 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 								Filter
 							</Button>
 							<DropdownMenu>
+								<DropdownMenu>
+									<DropdownMenuTrigger>
+										<Button variant={'outline'}>Sort</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent className="flex flex-col">
+										<Button variant={'ghost'}>Asc</Button>
+										<Button variant={'ghost'}>Desc</Button>
+									</DropdownMenuContent>
+								</DropdownMenu>
 								<DropdownMenuTrigger>
 									<Button variant={'outline'}>Status</Button>
 								</DropdownMenuTrigger>
@@ -235,22 +239,6 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 						</>
 					)}
 				</div>
-				{filter && (
-					<div className="flex items-center gap-2">
-						<Link to="">
-							<Button variant={'ghost'}>View Sales</Button>
-						</Link>
-						<Link to="">
-							<Button variant={'ghost'}>View Joborder</Button>
-						</Link>
-						<Link to="">
-							<Button variant={'ghost'}>View Borrow</Button>
-						</Link>
-						<Link to="">
-							<Button variant={'ghost'}>View Reservation</Button>
-						</Link>
-					</div>
-				)}
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">

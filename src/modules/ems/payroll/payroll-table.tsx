@@ -17,7 +17,7 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import {cn} from '@/lib/util/utils';
-import {Payroll} from '@/modules/ems/_components/validation/employee-zod-schema';
+import {Payroll} from '@/modules/ems/_components/validation/employee';
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,

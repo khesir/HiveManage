@@ -9,6 +9,8 @@ export type paramsProps = {
 	searchParams: URLSearchParams;
 	customer_id?: number;
 	service_status?: string;
+	showSubtables: boolean;
+	employee_id?: number;
 };
 
 export default function ServiceList({
@@ -16,6 +18,7 @@ export default function ServiceList({
 	isDetails,
 	customer_id,
 	service_status,
+	employee_id,
 }: paramsProps) {
 	const [service, setService] = useState<ServiceWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
@@ -27,6 +30,8 @@ export default function ServiceList({
 	const offset = (page - 1) * pageLimit;
 	const customer =
 		Number(searchParams.get('customer_id')) || customer_id || undefined;
+	const employee =
+		Number(searchParams.get('employee_id')) || employee_id || undefined;
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
@@ -35,7 +40,8 @@ export default function ServiceList({
 				`/api/v1/sms/service?sort=desc&limit=${pageLimit}&offset=${offset}` +
 					(status ? `&service_status=${status}` : '') +
 					(sort ? `&sort=${sort}` : '') +
-					(customer ? `&customer_id=${customer}` : ''),
+					(customer ? `&customer_id=${customer}` : '') +
+					(employee ? `&employee_id=${employee}` : ''),
 			);
 			setService(res.data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));

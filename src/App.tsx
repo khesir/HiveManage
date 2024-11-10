@@ -8,9 +8,6 @@ import AuthenticationPage from './pages/_auth/login';
 import {
 	DashboardPage,
 	EmployeeCreatePage,
-	EmployeeOverviewPage,
-	EmployeePage,
-	EmployeePayrollPage,
 	EmployeeUpdatePage,
 	EmployeeViewPage,
 } from './pages/admin';
@@ -40,6 +37,7 @@ import TicketsPage from './pages/tech/systems/service/task-page';
 import ReportsPage from './pages/tech/systems/service/reports-page';
 import RequireAuth from './modules/authentication/auth-layout';
 import Unauthorized from './pages/_auth/unauthorized';
+import EmployeePage from './pages/admin/systems/ems/employee-page';
 
 function App() {
 	return (
@@ -55,50 +53,38 @@ function App() {
 						<Route path="terminal" element={<Terminal />} />
 
 						<Route path="ems">
-							<Route path="overview" element={<EmployeeOverviewPage />} />
-
 							<Route path="employees">
 								<Route index element={<EmployeePage />} />
 								<Route path="create" element={<EmployeeCreatePage />} />
 								<Route path="update" element={<EmployeeUpdatePage />} />
 								<Route path="view/:id" element={<EmployeeViewPage />} />
 							</Route>
-
-							<Route path="payroll">
-								<Route index element={<EmployeePayrollPage />} />
-								<Route path="payroll/:id/details" />
-								<Route path="payroll/:id/create/" />
-							</Route>
-
-							<Route path="leave" />
 						</Route>
-					</Route>
+						<Route path="sales">
+							<Route path="dashboard" element={<DashboardPage />} />
+							<Route path="services" element={<ServicePages />} />
+							<Route path="services/view/:id" element={<ViewServicePage />} />
+							<Route path="services/create" element={<CreateServicePage />} />
+							<Route
+								path="services/joborders/view/:id"
+								element={<JoborderViewPage />}
+							/>
+							<Route
+								path="services/joborders/view/:id/task/:task_id"
+								element={<ReadTask />}
+							/>
+							<Route path="services/joborders/view/:id/report" />
+							<Route path="customer" element={<CustomerDatabasePage />} />
+							<Route path="customer/view/:id" element={<CustomerViewPage />} />
+							<Route path="customer/create" element={<CustomerCreatePage />} />
+							<Route path="inquiry" element={<InquiryPage />} />
+						</Route>
 
-					{/* Sales Layout */}
-					<Route path="sales">
-						<Route path="dashboard" element={<DashboardPage />} />
-						<Route path="services" element={<ServicePages />} />
-						<Route path="services/view/:id" element={<ViewServicePage />} />
-						<Route path="services/create" element={<CreateServicePage />} />
-						<Route
-							path="services/joborders/view/:id"
-							element={<JoborderViewPage />}
-						/>
-						<Route
-							path="services/joborders/view/:id/task/:task_id"
-							element={<ReadTask />}
-						/>
-						<Route path="services/joborders/view/:id/report" />
-						<Route path="customer" element={<CustomerDatabasePage />} />
-						<Route path="customer/view/:id" element={<CustomerViewPage />} />
-						<Route path="customer/create" element={<CustomerCreatePage />} />
-						<Route path="inquiry" element={<InquiryPage />} />
-					</Route>
-
-					<Route path="inventory">
-						<Route path="overview" element={<InventoryOverview />} />
-						<Route path="items" element={<ItemPage />} />
-						<Route path="orders" />
+						<Route path="inventory">
+							<Route path="overview" element={<InventoryOverview />} />
+							<Route path="items" element={<ItemPage />} />
+							<Route path="orders" />
+						</Route>
 					</Route>
 				</Route>
 

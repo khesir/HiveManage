@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {PayrollTable} from './payroll-table';
 import {payrollColumn} from './columns';
 import {PaginationResponse, request} from '@/api/axios';
-import {Payroll} from '@/modules/ems/_components/validation/employee-zod-schema';
+import {Payroll} from '@/modules/ems/_components/validation/employee';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;

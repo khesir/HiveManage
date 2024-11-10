@@ -10,13 +10,13 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employee-custom-form-schema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useNavigate} from 'react-router-dom';
 import * as z from 'zod';
 import {useEmployeeRoleDetailsStore} from '../hooks/use-sign-in-userdata';
+import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employeeRoles';
 
 const formSchema = z.object({
 	email: z.string().email({message: 'Enter a valid email address'}),
@@ -28,7 +28,7 @@ type UserFormValue = z.infer<typeof formSchema>;
 export default function UserAuthForm() {
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
-	const { setUser, user } = useEmployeeRoleDetailsStore();
+	const {setUser, user} = useEmployeeRoleDetailsStore();
 	const defaultValues = {
 		email: '',
 		password: '',
@@ -37,46 +37,50 @@ export default function UserAuthForm() {
 		resolver: zodResolver(formSchema),
 		defaultValues,
 	});
-  useEffect(() => {
-    if (user) {
-      // User data has been set, navigate based on role
-      switch (user.employee.position.name) {
-        case 'Admin':
-          navigate('admin/dashboard');
-          break;
-        case 'Technician':
-          navigate('tech/dashboard');
-          break;
-        case 'Sales':
-          navigate('sales/dashboard');
-          break;
-        default:
-          navigate('/');
-          break;
-      }
-    }
-  }, [user, navigate]); // This effect will run whenever 'user' changes
+	useEffect(() => {
+		if (user) {
+			// User data has been set, navigate based on role
+			switch (user.employee.position.name) {
+				case 'Admin':
+					navigate('admin/dashboard');
+					break;
+				case 'Technician':
+					navigate('tech/dashboard');
+					break;
+				case 'Sales':
+					navigate('sales/dashboard');
+					break;
+				default:
+					navigate('/');
+					break;
+			}
+		}
+	}, [user, navigate]); // This effect will run whenever 'user' changes
 
 	const onSubmit = async (data: UserFormValue) => {
 		setLoading(true);
-  try {
-    const result = (await request('POST', '/auth/sign-in', data)) as {
-      data: { user: { id: string }; session: { access_token: string } };
-    };
-    setAuthHeader(result.data.session.access_token);
+		try {
+			const result = (await request('POST', '/auth/sign-in', data)) as {
+				data: {user: {id: string}; session: {access_token: string}};
+			};
+			setAuthHeader(result.data.session.access_token);
 
-    // Fetch employee data
-    const employeeData = await request<PaginationResponse<EmployeeRolesWithDetails>>(
-      'GET',
-      `/api/v1/ems/employee-roles?user_id=${result.data.user.id}`,
-    );
+			// Fetch employee data
+			const employeeData = await request<
+				PaginationResponse<EmployeeRolesWithDetails>
+			>('GET', `/api/v1/ems/employee-roles?user_id=${result.data.user.id}`);
 
-    const res = employeeData.data[0];
-    setUser(res);
-  } finally {
-    // Stop loading
-    setLoading(false);
-  }
+			const res = employeeData.data[0];
+			setUser({...res, status: 'Online'});
+			await request(
+				'PATCH',
+				`/api/v1/ems/employee-roles/${res.employee_roles_id}/status`,
+				{status: 'Online'},
+			);
+		} finally {
+			// Stop loading
+			setLoading(false);
+		}
 	};
 
 	return (

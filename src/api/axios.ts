@@ -27,7 +27,6 @@ export const setAuthHeader = (token: string | null): void => {
 };
 
 axios.defaults.baseURL = configManager.getBaseURL();
-axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const request = async <T>(
 	method: AxiosRequestConfig['method'],
@@ -39,6 +38,11 @@ export const request = async <T>(
 	const authToken = getAuthToken();
 	if (authToken !== null && authToken !== 'null') {
 		headers.Authorization = `Bearer ${authToken}`;
+	}
+	if (data instanceof FormData) {
+		headers['Content-Type'] = 'multipart/form-data';
+	} else {
+		headers['Content-Type'] = 'application/json';
 	}
 
 	return axios({

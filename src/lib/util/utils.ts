@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {format, parseISO} from 'date-fns';
@@ -33,7 +34,10 @@ export function generateCustomUUID() {
 	return finalUUID;
 }
 
-export function dateParser(isoString: string): string {
+export function dateParser(
+	isoString: string,
+	includeTime: boolean = false,
+): string {
 	try {
 		// Parse the ISO string into a Date object
 		const date = parseISO(isoString);
@@ -44,8 +48,10 @@ export function dateParser(isoString: string): string {
 			return 'Invalid Date';
 		}
 
-		// Format the date into a human-readable string
-		const formattedDate = format(date, 'MMMM dd, yyyy');
+		// Determine the format based on includeTime
+		const dateFormat = includeTime ? 'MMMM dd, yyyy hh:mm a' : 'MMMM dd, yyyy';
+		const formattedDate = format(date, dateFormat);
+
 		return formattedDate;
 	} catch (error) {
 		console.error('Error parsing date:', isoString, error);
@@ -60,3 +66,47 @@ export const formatDate = (date: string) => {
 	const day = String(d.getDate()).padStart(2, '0');
 	return `${year}-${month}-${day}`;
 };
+
+export const formDataToObject = (formData: FormData): Record<string, any> => {
+	const object: Record<string, any> = {};
+
+	formData.forEach((value, key) => {
+		if (value instanceof File) {
+			object[key] = value;
+		} else {
+			if (object[key]) {
+				if (Array.isArray(object[key])) {
+					object[key].push(value);
+				} else {
+					object[key] = [object[key], value];
+				}
+			} else {
+				object[key] = value;
+			}
+		}
+	});
+
+	return object;
+};
+
+export function appendFormData(
+	data: Record<string, any>,
+	formData: FormData,
+): void {
+	Object.keys(data).forEach((key) => {
+		const value = data[key];
+
+		if (value instanceof File) {
+			formData.append(key, value);
+			console.log(key);
+			console.log(value);
+		} else if (value instanceof FileList) {
+			Array.from(value).forEach((file) => formData.append(key, file));
+		} else if (typeof value === 'object' && value !== null) {
+			formData.append(key, JSON.stringify(value));
+		} else {
+			formData.append(key, String(value));
+		}
+	});
+	console.log(formData);
+}
