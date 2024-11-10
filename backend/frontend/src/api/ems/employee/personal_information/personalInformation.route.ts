@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
-import log from '@/lib/logger';
 import { PersonalInformationController } from './personalInformation.controller';
 import { PersonalInformation } from './personalInformation.model';
 import {
@@ -17,7 +16,6 @@ personalInformationRoute.get(
   validateEmployeeId,
   controller.getPersonalInformation.bind(controller),
 );
-log.info('GET /personalInformation/ set');
 
 personalInformationRoute.get(
   '/:personalInfo_id',
@@ -25,7 +23,6 @@ personalInformationRoute.get(
   validateEmployeeId,
   controller.getPersonalInformation.bind(controller),
 );
-log.info('GET /personalInformation/:personalInfo_id set');
 
 personalInformationRoute.post(
   '/',
@@ -37,7 +34,6 @@ personalInformationRoute.post(
   ],
   controller.createPersonalInformation.bind(controller),
 );
-log.info('POST /personalInformation/ set');
 
 personalInformationRoute.put(
   '/:personalInfo_id',
@@ -50,7 +46,6 @@ personalInformationRoute.put(
   ],
   controller.updatePersonalInformation.bind(controller),
 );
-log.info('PUT /personalInformation/:personalInfo_id set');
 
 personalInformationRoute.delete(
   '/:personalInfo_id',
@@ -58,6 +53,5 @@ personalInformationRoute.delete(
   validateEmployeeId,
   controller.deleteEmploymentInformation.bind(controller),
 );
-log.info('DELETE /personalInformation/:personalInfo_id set');
 
 export default personalInformationRoute;

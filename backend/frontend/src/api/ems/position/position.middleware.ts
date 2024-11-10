@@ -3,30 +3,30 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { employee_roles } from '@/drizzle/drizzle.schema';
+import { position } from '@/drizzle/drizzle.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
 
-export async function validateEmployeeAccountID(
+export async function validatePositionID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { employee_id } = req.params;
+  const { position_id } = req.params;
 
   try {
-    const EmployeeAccount = await db
+    const EmployeeRole = await db
       .select()
-      .from(employee_roles)
+      .from(position)
       .where(
         and(
-          eq(employee_roles.employee_id, Number(employee_id)),
-          isNull(employee_roles.deleted_at),
+          eq(position.position_id, Number(position_id)),
+          isNull(position.deleted_at),
         ),
       );
-    if (!EmployeeAccount[0]) {
-      return res.status(404).json({ message: 'Employee Account not found' });
+    if (!EmployeeRole[0]) {
+      return res.status(404).json({ message: 'Employee Role not found' });
     }
     next();
   } catch (error) {

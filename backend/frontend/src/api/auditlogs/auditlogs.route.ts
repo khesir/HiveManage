@@ -7,7 +7,6 @@ import {
   validateAuditID,
 } from './auditlogs.middleware';
 import { validateRequest } from '@/src/middlewares';
-import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
 
 const auditRoute = Router({ mergeParams: true });
@@ -18,14 +17,12 @@ auditRoute.get(
   '/',
   auditLogsController.getAllAuditLogs.bind(auditLogsController),
 );
-log.info('GET /auditLogs set');
 
 auditRoute.get(
   '/:auditlog_id',
   validateAuditID,
   auditLogsController.getAuditLogsById.bind(auditLogsController),
 );
-log.info('GET /auditLogs/:auditlog_id set');
 
 auditRoute.patch(
   '/',
@@ -37,7 +34,6 @@ auditRoute.patch(
   ],
   auditLogsController.createAuditLogs.bind(auditLogsController),
 );
-log.info('POST /auditLogs/ set');
 
 auditRoute.put(
   '/:auditlog_id',
@@ -50,13 +46,11 @@ auditRoute.put(
   ],
   auditLogsController.updateAuditLogs.bind(auditLogsController),
 );
-log.info('PUT /auditLogs/:auditlog_id set');
 
 auditRoute.delete(
   '/:auditlog_id',
   validateAuditID,
   auditLogsController.deleteAuditLogbyID.bind(auditLogsController),
 );
-log.info('DELETE /auditLogs/:auditlog_id set');
 
 export default auditRoute;

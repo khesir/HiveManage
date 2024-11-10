@@ -1,6 +1,5 @@
 import { Router } from 'express';
 
-import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
 import { validateRequest } from '@/src/middlewares';
 
@@ -23,14 +22,12 @@ employeeRoute.get(
   '/',
   employeeController.getAllEmployee.bind(employeeController),
 );
-log.info('GET /employee set');
 
 employeeRoute.get(
   '/:employee_id',
   validateEmployeeId,
   employeeController.getEmployeeById.bind(employeeController),
 );
-log.info('GET /employee/:employee_id set');
 
 employeeRoute.post(
   '/',
@@ -39,7 +36,6 @@ employeeRoute.post(
   }),
   employeeController.createEmployee.bind(employeeController),
 );
-log.info('POST /employee set');
 
 employeeRoute.put(
   '/:employee_id',
@@ -51,7 +47,6 @@ employeeRoute.put(
   ],
   employeeController.updateEmployee.bind(employeeController),
 );
-log.info('PUT /employee/:employee_id set');
 
 employeeRoute.patch(
   '/:employee_id',
@@ -63,15 +58,14 @@ employeeRoute.patch(
   ],
   employeeController.updateEmployee.bind(employeeController),
 );
-log.info('PATCH /employee set');
 
 employeeRoute.delete(
   '/:employee_id',
   validateEmployeeId,
   employeeController.deleteEmployeeById.bind(employeeController),
 );
-log.info('DELETE /employee/:employee_id set');
 
+// ========================== Sub Modules ==========================
 employeeRoute.use(
   '/:employee_id/personalInformation',
   personalInformationRoute,

@@ -64,62 +64,139 @@ import log from '../lib/logger';
 import { db, pool } from './pool';
 import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SupabaseService } from '../supabase/supabase.service';
+import * as fs from 'fs';
+import * as path from 'path';
+import { generateUniqueFileName } from '@/lib/datefns';
+import mime from 'mime';
+const supabase = new SupabaseService();
+// Create file samples
+
+const samplePosters = fs
+  .readdirSync(path.resolve(__dirname, './seed-file'))
+  .map((file) => {
+    const filePath = path.resolve(__dirname, './seed-file', file);
+
+    const fileStat = fs.statSync(filePath);
+
+    return {
+      fieldname: 'employee_profile_link',
+      originalname: file,
+      encoding: '7bit',
+      mimetype: mime.lookup(filePath) || 'image/jpeg',
+      size: fileStat.size,
+      destination: path.resolve(__dirname, './seed_files'),
+      filename: file,
+      path: filePath,
+      buffer: fs.readFileSync(filePath),
+    };
+  });
+async function createProfileBucketIfNotExists() {
+  try {
+    const imageBucketName = process.env.PROFILE_BUCKET;
+    if (!imageBucketName) {
+      throw new Error(
+        'Image Bucket Name is not set in the env variables(PROFILE_BUCKET)',
+      );
+    }
+    const { data: buckets, error: listError } = await supabase
+      .getSupabase()
+      .storage.listBuckets();
+
+    if (listError) {
+      throw new Error(`Failed to list buckets: ${listError.message}`);
+    }
+
+    const bucketExists = buckets.some(
+      (bucket) => bucket.name === imageBucketName,
+    );
+    if (!bucketExists) {
+      const { data, error } = await supabase
+        .getSupabase()
+        .storage.createBucket(imageBucketName, {
+          public: true,
+          allowedMimeTypes: [
+            'image/jpeg',
+            'image/png',
+            'image/jpg',
+            'image/pjpeg',
+          ],
+        });
+
+      if (error) {
+        throw new Error(`Failed to create image bucket: ${error.message}`);
+      }
+
+      return `Image bucket created successfully: ${JSON.stringify(data)}`;
+    } else {
+      return `Image bucket '${imageBucketName}' already exists.`;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 // ===================== EMPLOYEE BASE =========================
 
 async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
-  const employeeStatus: ('Online' | 'Offline')[] = ['Online', 'Offline'];
   const departments = await db.select().from(department);
   const employeePositions = await db.select().from(position);
 
   const employees = [
     {
-      department_id: faker.helpers.arrayElement(departments).department_id,
       position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Aj',
       middlename: 'Rizaldo',
       lastname: 'Tollo',
       email: 'ajrizaldo1@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      department_id: faker.helpers.arrayElement(departments).department_id,
       position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Jane',
       middlename: 'Ann',
       lastname: 'Smith',
       email: 'jane.smith@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      department_id: faker.helpers.arrayElement(departments).department_id,
       position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Jacob',
       middlename: 'Ann',
       lastname: 'Thompson',
       email: 'Jacob.Thompson@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      department_id: faker.helpers.arrayElement(departments).department_id,
       position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Olivia ',
       middlename: 'Ann',
       lastname: 'Martinez',
       email: 'Olivia.Martinez@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
     },
     {
-      department_id: faker.helpers.arrayElement(departments).department_id,
       position_id: faker.helpers.arrayElement(employeePositions).position_id,
       firstname: 'Ethan',
       middlename: 'Ann',
       lastname: 'Lewis',
       email: 'Ethan.Lewis@example.com',
-      status: faker.helpers.arrayElement(employeeStatus),
     },
   ];
+  const employeesWithProfileLinks = await Promise.all(
+    employees.map(async (data) => {
+      const baseName = `${data.firstname} - ${data.middlename} - ${data.lastname}`;
 
-  await db.insert(employee).values(employees);
+      // Select a random file from samplePosters
+      const randomFile =
+        samplePosters[Math.floor(Math.random() * samplePosters.length)];
+
+      // Upload image and set the file URL
+      const fileUrl = await supabase.uploadImageToBucket(
+        randomFile as Express.Multer.File,
+      );
+
+      return {
+        ...data,
+        profile_link: fileUrl,
+      };
+    }),
+  );
+  await db.insert(employee).values(employeesWithProfileLinks);
 }
 
 async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
@@ -136,6 +213,7 @@ async function seedEmployeesAccount(db: PostgresJsDatabase<SchemaType>) {
         employee_id: emp.employee_id,
         role_id: faker.helpers.arrayElement(employeeroleIDs).role_id,
         user_id: user.data.user?.id,
+        status: 'Offline',
       };
       return data;
     }),
@@ -183,7 +261,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
     {
       employee_id: employees[0].employee_id,
       birthday: '1985-03-15',
-      gender: faker.helpers.arrayElement(allowedGenders),
+      sex: faker.helpers.arrayElement(allowedGenders),
       phone: '09171234567',
       email: 'john.doe@example.com',
       address_line: '1234 Elm Street',
@@ -196,7 +274,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
     {
       employee_id: employees[1].employee_id,
       birthday: '1990-06-20',
-      gender: faker.helpers.arrayElement(allowedGenders),
+      sex: faker.helpers.arrayElement(allowedGenders),
       phone: '09171234568',
       email: 'alice.smith@example.com',
       address_line: '5678 Oak Avenue',
@@ -209,7 +287,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
     {
       employee_id: employees[2].employee_id,
       birthday: '1990-06-20',
-      gender: faker.helpers.arrayElement(allowedGenders),
+      sex: faker.helpers.arrayElement(allowedGenders),
       phone: '09171234568',
       email: 'alice.smith@example.com',
       address_line: '5678 Oak Avenue',
@@ -222,7 +300,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
     {
       employee_id: employees[3].employee_id,
       birthday: '1990-06-20',
-      gender: faker.helpers.arrayElement(allowedGenders),
+      sex: faker.helpers.arrayElement(allowedGenders),
       phone: '09171234568',
       email: 'alice.smith@example.com',
       address_line: '5678 Oak Avenue',
@@ -235,7 +313,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
     {
       employee_id: employees[4].employee_id,
       birthday: '1990-06-20',
-      gender: faker.helpers.arrayElement(allowedGenders),
+      sex: faker.helpers.arrayElement(allowedGenders),
       phone: '09171234568',
       email: 'alice.smith@example.com',
       address_line: '5678 Oak Avenue',
@@ -248,7 +326,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
     {
       employee_id: employees[5].employee_id,
       birthday: '1990-06-20',
-      gender: faker.helpers.arrayElement(allowedGenders),
+      sex: faker.helpers.arrayElement(allowedGenders),
       phone: '09171234568',
       email: 'alice.smith@example.com',
       address_line: '5678 Oak Avenue',
@@ -261,7 +339,7 @@ async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
     {
       employee_id: employees[6].employee_id,
       birthday: '1990-06-20',
-      gender: faker.helpers.arrayElement(allowedGenders),
+      sex: faker.helpers.arrayElement(allowedGenders),
       phone: '09171234568',
       email: 'alice.smith@example.com',
       address_line: '5678 Oak Avenue',
@@ -726,7 +804,7 @@ async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
 
   const auditlogs = [
     {
-      employee_id: employees[0].employee_id, // Assuming employee_id is valid
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       entity_id: 1,
       entity_type: faker.helpers.arrayElement(entity_type),
       action: 'Added new employee to the system.',
@@ -740,7 +818,7 @@ async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
       },
     },
     {
-      employee_id: employees[1].employee_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       entity_id: 2,
       entity_type: faker.helpers.arrayElement(entity_type),
       action: 'Created a new job order.',
@@ -754,7 +832,7 @@ async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
       },
     },
     {
-      employee_id: employees[2].employee_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       entity_id: 3,
       entity_type: faker.helpers.arrayElement(entity_type),
       action: 'Processed a sale transaction.',
@@ -768,7 +846,7 @@ async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
       },
     },
     {
-      employee_id: employees[3].employee_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       entity_id: 4,
       entity_type: faker.helpers.arrayElement(entity_type),
       action: 'Performed a service request.',
@@ -782,7 +860,7 @@ async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
       },
     },
     {
-      employee_id: employees[4].employee_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       entity_id: 5,
       entity_type: faker.helpers.arrayElement(entity_type),
       action: 'Added new inventory item.',
@@ -796,7 +874,7 @@ async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
       },
     },
     {
-      employee_id: employees[5].employee_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       entity_id: 6,
       entity_type: faker.helpers.arrayElement(entity_type),
       action: 'Updated order details.',
@@ -4657,6 +4735,8 @@ async function seedArrivedItems(db: PostgresJsDatabase<SchemaType>) {
 
 async function main() {
   try {
+    await createProfileBucketIfNotExists();
+
     await seedDepartments(db);
     await seedDesignations(db);
 
@@ -4664,8 +4744,8 @@ async function main() {
     await seedEmployeesRole(db);
     await seedEmployees(db);
     await seedEmployeesAccount(db);
+    await seedAuditLogs(db);
 
-    // await seedAuditLogs(db);
     // await seedPersonalInformations(db);
     // await seedFinancialInformations(db);
     // await seedSalaryInformations(db);
@@ -4708,28 +4788,28 @@ async function main() {
     // await seedMessage(db);
 
     // Sales and related data
-    // await seedService(db);
-    // await seedPayment(db);
-    // await seedReceipt(db);
-    // await seedSalesItem(db); // Seed sales items first
-    // await seedBorrow(db); // Now seed borrow after sales items
-    // await seedReserve(db);
+    await seedService(db);
+    await seedPayment(db);
+    await seedReceipt(db);
+    await seedSalesItem(db);
+    await seedBorrow(db);
+    await seedReserve(db);
 
     // Job Order and related data
     await seedJobOrderTypes(db);
-    // await seedJobOrder(db);
-    // await seedJobOrderServices(db);
+    await seedJobOrder(db);
+    await seedJobOrderServices(db);
 
     // Pass employee IDs to seedRemarkTickets
     await seedRemarkType(db);
-    // await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
-    // await seedRemarkItems(db);
-    // await seedReports(db); // Make sure this also properly references customer IDs
-    // await seedRemarkReports(db);
-    // await seedRemarkAssigned(db);
+    await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    await seedRemarkItems(db);
+    await seedReports(db); // Make sure this also properly references customer IDs
+    await seedRemarkReports(db);
+    await seedRemarkAssigned(db);
 
-    // await seedAssignedEmployees(db);
-    // await seedRemarkContent(db);
+    await seedAssignedEmployees(db);
+    await seedRemarkContent(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

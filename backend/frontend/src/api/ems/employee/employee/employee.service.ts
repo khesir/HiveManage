@@ -1,6 +1,13 @@
 import { asc, desc, eq, isNull, and, sql, like, or } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { employee, SchemaType } from '@/drizzle/drizzle.schema';
+import {
+  department,
+  designation,
+  employee,
+  employmentInformation,
+  personalInformation,
+  SchemaType,
+} from '@/drizzle/drizzle.schema';
 import { CreateEmployee, UpdateEmployee } from './employee.model';
 
 export class EmployeeService {
@@ -13,14 +20,9 @@ export class EmployeeService {
     limit: number,
     sort: string,
     offset: number,
-    status: string | undefined,
     fullname: string | undefined,
   ) {
     const conditions = [isNull(employee.deleted_at)];
-
-    if (status) {
-      conditions.push(eq(employee.status, status));
-    }
 
     if (fullname) {
       const likeFullname = `%${fullname}%`; // Partial match
@@ -47,15 +49,44 @@ export class EmployeeService {
       .select()
       .from(employee)
       .where(and(...conditions))
+      .leftJoin(
+        personalInformation,
+        eq(personalInformation.employee_id, employee.employee_id),
+      )
+      .leftJoin(
+        employmentInformation,
+        eq(employmentInformation.employee_id, employee.employee_id),
+      )
+      .leftJoin(
+        department,
+        eq(department.department_id, employmentInformation.department_id),
+      )
+      .leftJoin(
+        designation,
+        eq(designation.designation_id, employmentInformation.designation_id),
+      )
       .orderBy(
         sort === 'asc' ? asc(employee.created_at) : desc(employee.created_at),
       )
       .limit(limit)
       .offset(offset);
 
+    const employeeWithRelatedData = result.map((row) => ({
+      employee: row.employee,
+      personal_information: row.personal_info,
+      employment_information: {
+        ...row.employment_info,
+        department: {
+          ...row.department,
+        },
+        designation: {
+          ...row.designation,
+        },
+      },
+    }));
     return {
       totalData,
-      result,
+      employeeWithRelatedData,
     };
   }
 
@@ -67,8 +98,38 @@ export class EmployeeService {
     const result = await this.db
       .select()
       .from(employee)
-      .where(eq(employee.employee_id, paramsId));
-    return result;
+      .where(eq(employee.employee_id, paramsId))
+      .leftJoin(
+        personalInformation,
+        eq(personalInformation.employee_id, employee.employee_id),
+      )
+      .leftJoin(
+        employmentInformation,
+        eq(employmentInformation.employee_id, employee.employee_id),
+      )
+      .leftJoin(
+        department,
+        eq(department.department_id, employmentInformation.department_id),
+      )
+      .leftJoin(
+        designation,
+        eq(designation.designation_id, employmentInformation.designation_id),
+      );
+
+    const employeeWithRelatedData = result.map((row) => ({
+      employee: row.employee,
+      personal_information: row.personal_info,
+      employment_information: {
+        ...row.employment_info,
+        department: {
+          ...row.department,
+        },
+        designation: {
+          ...row.designation,
+        },
+      },
+    }));
+    return employeeWithRelatedData;
   }
 
   async updateEmployee(data: UpdateEmployee, paramsId: number) {

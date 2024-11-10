@@ -45,9 +45,8 @@ export class PersonalInformationController {
     try {
       const {
         birthday,
-        gender,
+        sex,
         phone,
-        email,
         address_line,
         postal_code,
         emergency_contact_name,
@@ -60,9 +59,8 @@ export class PersonalInformationController {
         Number(employee_id),
         {
           birthday,
-          gender,
+          sex,
           phone,
-          email,
           address_line,
           postal_code,
           emergency_contact_name,
@@ -90,9 +88,8 @@ export class PersonalInformationController {
       const { personalInfo_id, employee_id } = req.params;
       const {
         birthday,
-        gender,
+        sex,
         phone,
-        email,
         address_line,
         postal_code,
         emergency_contact_name,
@@ -103,9 +100,8 @@ export class PersonalInformationController {
         {
           employee_id,
           birthday,
-          gender,
+          sex,
           phone,
-          email,
           address_line,
           postal_code,
           emergency_contact_name,

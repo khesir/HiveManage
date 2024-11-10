@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Login } from '../src/auth/auth.model';
+import { generateUniqueFileName } from '@/lib/datefns';
 
 export class SupabaseService {
   private static instance: SupabaseService;
@@ -94,5 +95,31 @@ export class SupabaseService {
       success: true,
       data,
     };
+  }
+  async uploadImageToBucket(file: Express.Multer.File) {
+    const uniqueFilename = generateUniqueFileName(file.originalname);
+    const bucketname = process.env.PROFILE_BUCKET;
+
+    if (!bucketname) {
+      throw new Error(
+        'Image Bucket Name is not set in the env variables(PROFILE_BUCKET)',
+      );
+    }
+
+    const { error } = await this.supabase.storage
+      .from(bucketname)
+      .upload(uniqueFilename, file.buffer, {
+        contentType: file.mimetype,
+      });
+
+    const getUrl = await this.supabase.storage
+      .from(bucketname)
+      .getPublicUrl(uniqueFilename);
+
+    if (error) {
+      throw new Error(`Failed to upload file: ${error.message}`);
+    }
+
+    return getUrl.data.publicUrl;
   }
 }

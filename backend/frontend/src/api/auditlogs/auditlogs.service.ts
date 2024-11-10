@@ -1,4 +1,4 @@
-import { asc, desc, eq, isNull, and, sql } from 'drizzle-orm';
+import { asc, desc, eq, isNull, and, sql, inArray } from 'drizzle-orm';
 
 import { auditLog, employee, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
@@ -17,13 +17,14 @@ export class AuditLogService {
 
   async getAllAuditLog(
     entity_type: string | undefined,
+    employee_id: string | undefined,
     limit: number,
     sort: string,
     offset: number,
   ) {
     const conditions = [isNull(auditLog.deleted_at)];
 
-    if (auditLog) {
+    if (entity_type) {
       conditions.push(
         eq(
           auditLog.entity_type,
@@ -36,6 +37,23 @@ export class AuditLogService {
             | 'Order',
         ),
       );
+    }
+    if (employee_id) {
+      const employeeIds: number[] = [];
+
+      const employeeData = await this.db
+        .select()
+        .from(employee)
+        .where(
+          and(
+            eq(employee.employee_id, Number(employee_id)),
+            isNull(employee.deleted_at),
+          ),
+        );
+      employeeIds.push(...employeeData.map((emp) => emp.employee_id));
+      if (employeeIds.length > 0) {
+        conditions.push(inArray(auditLog.employee_id, employeeIds));
+      }
     }
 
     const totalCountQuery = await this.db
@@ -54,6 +72,7 @@ export class AuditLogService {
       )
       .limit(limit)
       .offset(offset);
+
     const dataWithDetails = result.map((row) => ({
       activity_id: row.auditLog.auditlog_id,
       employee: {
@@ -61,7 +80,8 @@ export class AuditLogService {
         firstname: row.employee?.firstname,
         middlename: row.employee?.middlename,
         lastname: row.employee?.lastname,
-        status: row.employee?.status,
+        email: row.employee?.email,
+        profile_link: row.employee?.profile_link,
         created_at: row.employee?.created_at,
         last_updated: row.employee?.last_updated,
         deleted_at: row.employee?.deleted_at,
@@ -79,8 +99,28 @@ export class AuditLogService {
     const result = await this.db
       .select()
       .from(auditLog)
+      .leftJoin(employee, eq(auditLog.employee_id, employee.employee_id))
       .where(eq(auditLog.auditlog_id, paramsId));
-    return result[0];
+    const dataWithDetails = result.map((row) => ({
+      activity_id: row.auditLog.auditlog_id,
+      employee: {
+        employee_id: row.employee?.employee_id,
+        firstname: row.employee?.firstname,
+        middlename: row.employee?.middlename,
+        lastname: row.employee?.lastname,
+        email: row.employee?.email,
+        profile_link: row.employee?.profile_link,
+        created_at: row.employee?.created_at,
+        last_updated: row.employee?.last_updated,
+        deleted_at: row.employee?.deleted_at,
+      },
+      entity_id: row.auditLog?.entity_id,
+      entity_type: row.auditLog?.entity_type,
+      action: row.auditLog?.action,
+      created_at: row.auditLog.created_at,
+      deleted_at: row.auditLog.deleted_at,
+    }));
+    return dataWithDetails;
   }
 
   async updateAuditLog(data: object, paramsId: number) {

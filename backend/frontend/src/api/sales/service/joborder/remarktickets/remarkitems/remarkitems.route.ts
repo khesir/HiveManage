@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { db } from '@/drizzle/pool';
-import log from '@/lib/logger';
 import { validateRequest } from '@/src/middlewares';
 import { RemarkItemsController } from './remarkitems.controller';
 import { validateRemarkItemsID } from './remarkitems.middleware';
@@ -13,34 +12,29 @@ remarkItemsRoute.get(
   '/',
   remarkItemsController.getAllRemarkItems.bind(remarkItemsController),
 );
-log.info('GET /remarkitems set');
 
 remarkItemsRoute.get(
   '/:remark_items_id',
   validateRemarkItemsID,
   remarkItemsController.getRemarkItemsById.bind(remarkItemsController),
 );
-log.info('GET /remarkitems/:remark_items_id set');
 
 remarkItemsRoute.post(
   '/',
   [validateRequest({ body: CreateRemarkItems })],
   remarkItemsController.createRemarkItems.bind(remarkItemsController),
 );
-log.info('POST /remarkitems/ set ');
 
 remarkItemsRoute.put(
   '/:remark_items_id',
   [validateRequest({ body: UpdateRemarkItems }), validateRemarkItemsID],
   remarkItemsController.updateRemarkItems.bind(remarkItemsController),
 );
-log.info('PUT /remarkitems/:remark_items_id set ');
 
 remarkItemsRoute.delete(
   '/:remark_items_id',
   validateRemarkItemsID,
   remarkItemsController.deleteRemarkItems.bind(remarkItemsController),
 );
-log.info('DELETE /remarkitems/:remark_items_id set');
 
 export default remarkItemsRoute;

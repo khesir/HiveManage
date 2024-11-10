@@ -8,24 +8,27 @@ import imsRoute from './inventory/inventory.route';
 import log from '@/lib/logger';
 import cmsRoute from './cms/cms.route';
 import smsRoute from './sales/sales.route';
+import auditRoute from './auditlogs/auditlogs.route';
 
 const baseRoute = express.Router({ mergeParams: true });
 
-// Employee Management System API
 baseRoute.use('/ems', emsRoute);
-log.info('ROUTE /ems route set');
+log.info('Employee Management System endpoints ready');
 
 // // Inventory Management System API
 baseRoute.use('/ims', imsRoute);
-log.info('ROUTE /ims route set');
+log.info('Inventory Management System endpoints ready');
 
 // // Sales Management System API
 baseRoute.use('/sms', smsRoute);
-log.info('ROUTE /sms route set');
+log.info('Sales Management System endpoints ready');
 
 // // Customer Management System API
 baseRoute.use('/cms', cmsRoute);
-log.info('ROUTE /cms set');
+log.info('Customer Managment System endpoints ready');
+
+baseRoute.use('/auditLogs', auditRoute);
+log.info('Loggings Ready');
 
 baseRoute.get('/', (req, res) => {
   res.send({

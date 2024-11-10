@@ -1,13 +1,17 @@
 import { Router } from 'express';
 import { db } from '@/drizzle/pool';
-import log from '@/lib/logger';
 import { validateRequest } from '@/src/middlewares';
-import { EmployeeRolesController } from './employeeaccount.controller';
-import { validateEmployeeAccountID } from './employeeaccount.middleware';
+import { EmployeeRolesController } from './employeeRoles.controller';
+import {
+  formDataToObject,
+  multerbase,
+  validateEmployeeEmail,
+  validatEmployeeRoleID,
+} from './employeeRoles.middleware';
 import {
   CreateEmployeeRoles,
   UpdateEmployeeRoles,
-} from './employeeaccount.model';
+} from './employeeRoles.model';
 
 const employeeRolesRoute = Router({ mergeParams: true });
 const employeeRolesController = new EmployeeRolesController(db);
@@ -16,34 +20,39 @@ employeeRolesRoute.get(
   '/',
   employeeRolesController.getAllEmployeeAccount.bind(employeeRolesController),
 );
-log.info('GET /employeeaccount set');
 
 employeeRolesRoute.get(
   '/:employee_role_id',
-  validateEmployeeAccountID,
+  validatEmployeeRoleID,
   employeeRolesController.getEmployeeAccountById.bind(employeeRolesController),
 );
-log.info('GET /employeeaccount/:employee_role_id set');
 
 employeeRolesRoute.post(
   '/',
-  [validateRequest({ body: CreateEmployeeRoles })],
+  [
+    multerbase.single('employee_profile_link'),
+    formDataToObject,
+    validateEmployeeEmail,
+    validateRequest({ body: CreateEmployeeRoles }),
+  ],
   employeeRolesController.createEmployeeAccount.bind(employeeRolesController),
 );
-log.info('POST /employeeaccount/ set ');
 
 employeeRolesRoute.put(
   '/:employee_role_id',
-  [validateRequest({ body: UpdateEmployeeRoles }), validateEmployeeAccountID],
+  [validateRequest({ body: UpdateEmployeeRoles }), validatEmployeeRoleID],
   employeeRolesController.updateEmployeeAccount.bind(employeeRolesController),
 );
-log.info('PUT /employeeaccount/:employee_role_id set ');
+employeeRolesRoute.patch(
+  '/:employee_role_id/status',
+  validatEmployeeRoleID,
+  employeeRolesController.updateStatus.bind(employeeRolesController),
+);
 
 employeeRolesRoute.delete(
   '/:employee_role_id',
-  validateEmployeeAccountID,
+  validatEmployeeRoleID,
   employeeRolesController.deleteEmployeeAccount.bind(employeeRolesController),
 );
-log.info('DELETE /employeeaccount/:employee_role_id set');
 
 export default employeeRolesRoute;

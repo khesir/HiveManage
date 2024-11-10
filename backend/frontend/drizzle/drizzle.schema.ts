@@ -215,14 +215,10 @@ export const TagEnum = pgEnum('tag_supplier', [
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
   position_id: integer('position_id').references(() => position.position_id),
-  department_id: integer('department_id').references(
-    () => department.department_id,
-  ),
   firstname: varchar('firstname', { length: 255 }),
   middlename: varchar('middlename', { length: 255 }),
   lastname: varchar('lastname', { length: 255 }),
-  email: varchar('email', { length: 255 }).notNull(),
-  status: varchar('status', { length: 255 }),
+  email: varchar('email', { length: 255 }).notNull().unique(),
   profile_link: varchar('profile_link'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -261,6 +257,7 @@ export const employee_roles = pgTable('employee_roles', {
   employee_id: integer('employee_id').references(() => employee.employee_id),
   role_id: integer('role_id').references(() => roles.role_id),
   user_id: varchar('user_id'),
+  status: varchar('status', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -274,7 +271,7 @@ export const personalInformation = pgTable('personal_info', {
   personal_information_id: serial('personal_information_id').primaryKey(),
   employee_id: integer('employee_id').references(() => employee.employee_id),
   birthday: varchar('birthday', { length: 255 }),
-  gender: varchar('gender'),
+  sex: varchar('sex'),
   phone: varchar('phone', { length: 255 }),
   email: varchar('email', { length: 255 }),
   address_line: varchar('address_line', { length: 255 }),
@@ -326,6 +323,7 @@ export const salaryInformation = pgTable('salary_info', {
 // Employment Information Table
 export const employmentInformation = pgTable('employment_info', {
   employment_information_id: serial('employment_information_id').primaryKey(),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   hireDate: varchar('hireDate'),
   department_id: integer('department_id').references(
     () => department.department_id,
@@ -333,8 +331,8 @@ export const employmentInformation = pgTable('employment_info', {
   designation_id: integer('designation_id').references(
     () => designation.designation_id,
   ),
-  employee_type: employeeTypeEnum('employee_type').notNull(),
-  employee_status: employeeStatusEnum('employee_status').notNull(),
+  employee_type: varchar('employee_type'),
+  employee_status: varchar('employee_status'),
   message: varchar('message', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

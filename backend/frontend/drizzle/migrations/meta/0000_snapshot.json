@@ -1,5 +1,5 @@
 {
-  "id": "20c8a149-4e3a-4893-9305-f86831711b01",
+  "id": "860590b2-809e-4274-b17c-07503822a2b1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1102,12 +1102,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "department_id": {
-          "name": "department_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "firstname": {
           "name": "firstname",
           "type": "varchar(255)",
@@ -1131,12 +1125,6 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
         },
         "profile_link": {
           "name": "profile_link",
@@ -1179,23 +1167,18 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
-        },
-        "employee_department_id_department_department_id_fk": {
-          "name": "employee_department_id_department_department_id_fk",
-          "tableFrom": "employee",
-          "tableTo": "department",
-          "columnsFrom": [
-            "department_id"
-          ],
-          "columnsTo": [
-            "department_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "employee_email_unique": {
+          "name": "employee_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     },
     "public.employee_roles": {
       "name": "employee_roles",
@@ -1222,6 +1205,12 @@
         "user_id": {
           "name": "user_id",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1288,6 +1277,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "hireDate": {
           "name": "hireDate",
           "type": "varchar",
@@ -1308,17 +1303,15 @@
         },
         "employee_type": {
           "name": "employee_type",
-          "type": "employee_type",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "employee_status": {
           "name": "employee_status",
-          "type": "employee_status",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "message": {
           "name": "message",
@@ -1349,6 +1342,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "employment_info_employee_id_employee_employee_id_fk": {
+          "name": "employment_info_employee_id_employee_employee_id_fk",
+          "tableFrom": "employment_info",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "employee_id"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "employment_info_department_id_department_department_id_fk": {
           "name": "employment_info_department_id_department_department_id_fk",
           "tableFrom": "employment_info",
@@ -2821,8 +2827,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "gender": {
-          "name": "gender",
+        "sex": {
+          "name": "sex",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false

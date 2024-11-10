@@ -13,7 +13,6 @@ export class EmployeeController {
   }
 
   async getAllEmployee(req: Request, res: Response, next: NextFunction) {
-    const status = (req.query.status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit) || 10;
     const offset = Number(req.query.offset) || 0;
@@ -23,7 +22,6 @@ export class EmployeeController {
         limit,
         sort,
         offset,
-        status,
         fullname,
       );
       res.status(HttpStatus.OK.code).json({
@@ -31,7 +29,7 @@ export class EmployeeController {
         limit: limit,
         offset: offset,
         total_data: data.totalData,
-        data: data.result,
+        data: data.employeeWithRelatedData,
       });
     } catch (error) {
       res
@@ -59,13 +57,13 @@ export class EmployeeController {
 
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { firstname, middlename, lastname, email, status } = req.body;
+      const { firstname, middlename, lastname, email, profile_link } = req.body;
       await this.employeeService.createEmployee({
         firstname,
         middlename,
         lastname,
         email,
-        status,
+        profile_link,
       });
       res.status(HttpStatus.CREATED.code).json({
         message: 'Employee Created successfully',
@@ -80,7 +78,7 @@ export class EmployeeController {
   async updateEmployee(req: Request, res: Response, next: NextFunction) {
     try {
       const { employee_id } = req.params;
-      const { firstname, middlename, lastname, email, status } = req.body;
+      const { firstname, middlename, lastname, email, profile_link } = req.body;
 
       await this.employeeService.updateEmployee(
         {
@@ -88,7 +86,7 @@ export class EmployeeController {
           middlename,
           lastname,
           email,
-          status,
+          profile_link,
         },
         Number(employee_id),
       );

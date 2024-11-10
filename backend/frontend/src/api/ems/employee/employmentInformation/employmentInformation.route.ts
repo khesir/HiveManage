@@ -7,7 +7,6 @@ import {
 } from './employmentInformation.middlewares';
 import { validateRequest } from '@/src/middlewares';
 import { EmploymentInformation } from './employmentInformation.model';
-import log from '@/lib/logger';
 
 const employmentInformationRoute = Router({ mergeParams: true });
 const controller = new EmploymentInformationController(db);
@@ -17,14 +16,12 @@ employmentInformationRoute.get(
   validateEmployeeId,
   controller.getEmploymentInformation.bind(controller),
 );
-log.info('GET /employmentInformation/ set');
 
 employmentInformationRoute.get(
   '/:employment_id',
   [validateEmploymentId, validateEmployeeId],
   controller.getEmploymentInformation.bind(controller),
 );
-log.info('GET /employmentInformation/:employee_id set');
 
 employmentInformationRoute.post(
   '/',
@@ -36,7 +33,6 @@ employmentInformationRoute.post(
   ],
   controller.createEmploymentInformation.bind(controller),
 );
-log.info('POST /employmentInformation set');
 
 employmentInformationRoute.put(
   '/:employment_id',
@@ -49,7 +45,6 @@ employmentInformationRoute.put(
   ],
   controller.updateEmploymentInformation.bind(controller),
 );
-log.info('PUT /employmentInformation/:employment_id set');
 
 employmentInformationRoute.delete(
   '/:employment_id',
@@ -57,6 +52,5 @@ employmentInformationRoute.delete(
   validateEmployeeId,
   controller.deleteEmploymentInformation.bind(controller),
 );
-log.info('DELETE /employmentInformation/:employment_id set');
 
 export default employmentInformationRoute;

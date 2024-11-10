@@ -14,12 +14,17 @@ export class AuditLogController {
 
   async getAllAuditLogs(req: Request, res: Response, next: NextFunction) {
     const entity_type = (req.query.entity_type as string) || undefined;
+    const employee_id = (req.query.employee_id as string) || undefined;
+
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit) || 10;
     const offset = Number(req.query.offset) || 0;
+    console.log({ entity_type, employee_id, limit, sort, offset });
+
     try {
       const data = await this.auditLogService.getAllAuditLog(
         entity_type,
+        employee_id,
         limit,
         sort,
         offset,

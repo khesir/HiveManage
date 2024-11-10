@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
-import log from '@/lib/logger';
 import { AssignedEmployeeController } from './assignedemployees.controller';
 import { validateAssignedEmployeeID } from './assignedemployees.middleware';
 import {
@@ -18,7 +17,6 @@ assignedEmployeeRoute.get(
     assignedEmployeeController,
   ),
 );
-log.info('GET /assignedemployee set');
 
 assignedEmployeeRoute.get(
   '/:assigned_employee_id',
@@ -27,7 +25,6 @@ assignedEmployeeRoute.get(
     assignedEmployeeController,
   ),
 );
-log.info('GET /assignedemployee/:assigned_employee_id set');
 
 assignedEmployeeRoute.post(
   '/',
@@ -36,7 +33,6 @@ assignedEmployeeRoute.post(
     assignedEmployeeController,
   ),
 );
-log.info('POST /assignedemployee/ set ');
 
 assignedEmployeeRoute.put(
   '/:assigned_employee_id',
@@ -48,7 +44,6 @@ assignedEmployeeRoute.put(
     assignedEmployeeController,
   ),
 );
-log.info('PUT /assignedemployee/:assigned_employee_id set ');
 
 assignedEmployeeRoute.delete(
   '/:assigned_employee_id',
@@ -57,6 +52,5 @@ assignedEmployeeRoute.delete(
     assignedEmployeeController,
   ),
 );
-log.info('DELETE /assignedemployee/:assigned_employee_id set');
 
 export default assignedEmployeeRoute;
