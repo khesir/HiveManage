@@ -18,12 +18,11 @@ export class PersonalInformationController {
     next: NextFunction,
   ) {
     try {
-      const { personalInfo_id } = req.params;
-      const { employee_id } = req.params;
+      const { personalInfo_id, employee_id } = req.params;
       const result =
         await this.personalInformationService.getPersonalInformation(
-          Number(personalInfo_id),
-          Number(employee_id),
+          personalInfo_id,
+          employee_id,
         );
 
       res.status(HttpStatus.OK.code).json({

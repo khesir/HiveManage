@@ -10,21 +10,22 @@ export class PersonalInformationService {
     this.db = db;
   }
 
-  async getPersonalInformation(personalID: number, employeeID: number) {
+  async getPersonalInformation(
+    personalID: string,
+    employeeID: string | undefined,
+  ) {
     const conditions = [isNull(personalInformation.deleted_at)];
-
-    if (!isNaN(employeeID) && !isNaN(personalID)) {
+    console.log(employeeID);
+    if (personalID && !isNaN(Number(personalID))) {
       conditions.push(
-        eq(personalInformation.employee_id, employeeID),
-        eq(personalInformation.personal_information_id, personalID),
+        eq(personalInformation.personal_information_id, Number(personalID)),
       );
-    } else if (!isNaN(personalID)) {
-      conditions.push(
-        eq(personalInformation.personal_information_id, personalID),
-      );
-    } else if (!isNaN(employeeID)) {
-      conditions.push(eq(personalInformation.employee_id, employeeID));
     }
+
+    if (employeeID && !isNaN(Number(employeeID))) {
+      conditions.push(eq(personalInformation.employee_id, Number(employeeID)));
+    }
+
     const result = await this.db
       .select()
       .from(personalInformation)

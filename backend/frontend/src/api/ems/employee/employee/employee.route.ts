@@ -5,7 +5,11 @@ import { validateRequest } from '@/src/middlewares';
 
 import { EmployeeController } from './employee.controller';
 import { CreateEmployee, UpdateEmployee } from './employee.model';
-import { validateEmployeeId } from './employee.middlewares';
+import {
+  formDataToObject,
+  multerbase,
+  validateEmployeeId,
+} from './employee.middlewares';
 import personalInformationRoute from '../personal_information/personalInformation.route';
 import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
 import financiallInformationRoute from '../financialInformation/financialInformation.route';
@@ -29,6 +33,7 @@ employeeRoute.get(
   employeeController.getEmployeeById.bind(employeeController),
 );
 
+// Very rare case to use
 employeeRoute.post(
   '/',
   validateRequest({
@@ -40,10 +45,12 @@ employeeRoute.post(
 employeeRoute.put(
   '/:employee_id',
   [
-    validateRequest({
-      body: CreateEmployee,
-    }),
+    multerbase.single('profile_link'),
+    formDataToObject,
     validateEmployeeId,
+    validateRequest({
+      body: UpdateEmployee,
+    }),
   ],
   employeeController.updateEmployee.bind(employeeController),
 );

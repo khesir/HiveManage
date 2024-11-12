@@ -4,17 +4,21 @@ import {
   department,
   designation,
   employee,
+  employee_roles,
   employmentInformation,
   personalInformation,
   SchemaType,
 } from '@/drizzle/drizzle.schema';
 import { CreateEmployee, UpdateEmployee } from './employee.model';
+import { SupabaseService } from '@/supabase/supabase.service';
 
 export class EmployeeService {
   private db: PostgresJsDatabase<SchemaType>;
+  private supabaseSerivce: SupabaseService;
 
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
+    this.supabaseSerivce = SupabaseService.getInstance();
   }
   async getAllEmployee(
     limit: number,
@@ -132,11 +136,38 @@ export class EmployeeService {
     return employeeWithRelatedData;
   }
 
-  async updateEmployee(data: UpdateEmployee, paramsId: number) {
-    await this.db
-      .update(employee)
-      .set(data)
-      .where(eq(employee.employee_id, paramsId));
+  async updateEmployee(
+    paramsId: number,
+    data: UpdateEmployee,
+    file: Express.Multer.File | undefined,
+  ) {
+    return this.db.transaction(async (tx) => {
+      // Update EmployeeRoles
+      if (data.role_id) {
+        await tx
+          .update(employee_roles)
+          .set({ role_id: Number(data.role_id) })
+          .where(eq(employee_roles.employee_id, paramsId));
+      }
+      // Upload file
+      let filePath = undefined;
+      const empNewData = {
+        ...data,
+        position_id: data.position_id ? Number(data.position_id) : undefined,
+      };
+      delete empNewData['role_id'];
+      if (file) {
+        filePath = await this.supabaseSerivce.uploadImageToBucket(file);
+        empNewData['profile_link'] = filePath;
+      } else if (data.remove_image === 'true') {
+        empNewData['profile_link'] = undefined;
+      }
+      //Update employee
+      await tx
+        .update(employee)
+        .set(empNewData)
+        .where(eq(employee.employee_id, paramsId));
+    });
   }
 
   async deleteEmployeeById(employeeId: number): Promise<void> {

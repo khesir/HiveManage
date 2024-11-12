@@ -273,7 +273,6 @@ export const personalInformation = pgTable('personal_info', {
   birthday: varchar('birthday', { length: 255 }),
   sex: varchar('sex'),
   phone: varchar('phone', { length: 255 }),
-  email: varchar('email', { length: 255 }),
   address_line: varchar('address_line', { length: 255 }),
   postal_code: varchar('postal_code', { length: 255 }),
   emergency_contact_name: varchar('emergency_contact_name', { length: 255 }),
@@ -333,7 +332,6 @@ export const employmentInformation = pgTable('employment_info', {
   ),
   employee_type: varchar('employee_type'),
   employee_status: varchar('employee_status'),
-  message: varchar('message', { length: 255 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

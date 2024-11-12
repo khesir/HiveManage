@@ -25,7 +25,6 @@ export async function validateAuditID(
           isNull(auditLog.deleted_at),
         ),
       );
-    console.log(audit);
     if (!audit[0]) {
       return res.status(404).json({ message: 'Audit Log not found' });
     }

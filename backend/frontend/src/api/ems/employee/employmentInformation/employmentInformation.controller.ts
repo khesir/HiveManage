@@ -18,11 +18,11 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const { employment_id, employee_id } = req.params;
+      const { employee_id, employment_id } = req.params;
       const result =
         await this.employmentInformationService.getEmploymentInformation(
-          Number(employment_id),
-          Number(employee_id),
+          employment_id,
+          employee_id,
         );
 
       res.status(HttpStatus.OK.code).json({
@@ -42,21 +42,19 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const {
-        department_id,
-        designation_id,
-        employee_type,
-        employee_status,
-        message,
-      } = req.body;
+      const { employee_id } = req.params;
+      const { department_id, designation_id, employee_type, employee_status } =
+        req.body;
 
-      await this.employmentInformationService.createEmploymentInformation({
-        department_id,
-        designation_id,
-        employee_type,
-        employee_status,
-        message,
-      });
+      await this.employmentInformationService.createEmploymentInformation(
+        Number(employee_id),
+        {
+          department_id,
+          designation_id,
+          employee_type,
+          employee_status,
+        },
+      );
       res.status(HttpStatus.OK.code).json({
         message: 'Employment Information created successfully',
       });
@@ -74,13 +72,8 @@ export class EmploymentInformationController {
   ) {
     try {
       const { employment_id } = req.params;
-      const {
-        department_id,
-        designation_id,
-        employee_type,
-        employee_status,
-        message,
-      } = req.body;
+      const { department_id, designation_id, employee_type, employee_status } =
+        req.body;
       await this.employmentInformationService.updateEmploymentInformation(
         Number(employment_id),
         {
@@ -88,7 +81,6 @@ export class EmploymentInformationController {
           designation_id,
           employee_type,
           employee_status,
-          message,
         },
       );
       res.status(HttpStatus.OK.code).json({
@@ -107,9 +99,9 @@ export class EmploymentInformationController {
     next: NextFunction,
   ) {
     try {
-      const { employment_id } = req.params;
+      const { employee_id } = req.params;
       await this.employmentInformationService.deleteEmployementInformation(
-        Number(employment_id),
+        Number(employee_id),
       );
       res
         .status(HttpStatus.OK.code)

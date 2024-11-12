@@ -19,7 +19,6 @@ export class AuditLogController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit) || 10;
     const offset = Number(req.query.offset) || 0;
-    console.log({ entity_type, employee_id, limit, sort, offset });
 
     try {
       const data = await this.auditLogService.getAllAuditLog(

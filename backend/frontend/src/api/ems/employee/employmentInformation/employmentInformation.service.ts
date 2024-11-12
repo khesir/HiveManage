@@ -15,19 +15,24 @@ export class EmploymentInformationService {
     this.db = db;
   }
 
-  async getEmploymentInformation(employmentID: number, employeeID: number) {
+  async getEmploymentInformation(
+    employmentID: string,
+    employeeID: string | undefined,
+  ) {
     const conditions = [isNull(employmentInformation.deleted_at)];
 
-    if (!isNaN(employeeID) && !isNaN(employmentID)) {
+    if (employmentID && !isNaN(Number(employmentID))) {
       conditions.push(
-        eq(employmentInformation.employment_information_id, employmentID),
+        eq(
+          employmentInformation.employment_information_id,
+          Number(employmentID),
+        ),
       );
-    } else if (!isNaN(employmentID)) {
+    } else if (employeeID && !isNaN(Number(employeeID))) {
       conditions.push(
-        eq(employmentInformation.employment_information_id, employmentID),
+        eq(employmentInformation.employee_id, Number(employeeID)),
       );
     }
-
     const result = await this.db
       .select()
       .from(employmentInformation)
@@ -42,35 +47,24 @@ export class EmploymentInformationService {
       .where(and(...conditions));
 
     const mergedDetails = result.map((row) => ({
-      employment_information_id: row.employment_info.employment_information_id,
-      hireDate: row.employment_info.hireDate,
+      ...row.employment_info,
       department: {
-        department_id: row.department?.department_id,
-        name: row.department?.name,
-        status: row.department?.status,
-        created_at: row.department?.created_at,
-        last_updated: row.department?.last_updated,
-        deleted_at: row.department?.deleted_at,
+        ...row.department,
       },
       designation: {
-        department_id: row.designation?.designation_id,
-        title: row.designation?.title,
-        status: row.designation?.status,
-        created_at: row.designation?.created_at,
-        last_updated: row.designation?.last_updated,
-        deleted_at: row.designation?.deleted_at,
+        ...row.designation,
       },
-      employee_type: row.employment_info.employee_type,
-      employee_status: row.employment_info.employee_status,
-      created_at: row.employment_info?.created_at,
-      last_updated: row.employment_info?.last_updated,
-      deleted_at: row.employment_info?.deleted_at,
     }));
     return mergedDetails;
   }
 
-  async createEmploymentInformation(data: EmploymentInformation) {
-    await this.db.insert(employmentInformation).values(data);
+  async createEmploymentInformation(
+    employee_id: number,
+    data: EmploymentInformation,
+  ) {
+    await this.db
+      .insert(employmentInformation)
+      .values({ employee_id: employee_id, ...data });
   }
   async updateEmploymentInformation(
     employmentID: number,

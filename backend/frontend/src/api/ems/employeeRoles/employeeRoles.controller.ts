@@ -86,7 +86,6 @@ export class EmployeeRolesController {
         employment_information_employee_status,
         employee_role_role_id,
       } = req.body;
-      console.log(req.body);
       await this.employeeaccountService.createEmployeeAccount(
         {
           employee_position_id,

@@ -535,7 +535,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Employed since January 2022.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -543,7 +542,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Currently on maternity leave.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -551,7 +549,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Contract extended until December 2024.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -559,7 +556,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Left the company for personal reasons.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -567,7 +563,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Hired for the summer season.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -575,7 +570,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Temporary position for 3 months.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -583,7 +577,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Retired after 30 years of service.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -591,7 +584,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Terminated due to performance issues.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -599,7 +591,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'On probation for the first 6 months.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -607,7 +598,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Suspended pending investigation.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -615,7 +605,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Promoted to Senior Developer.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -623,7 +612,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'On sick leave.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -631,7 +619,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Recognized for excellence in service.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -639,7 +626,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Last day on the job was last week.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -647,7 +633,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Hired for the winter season.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -655,7 +640,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Retired after 25 years of service.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -663,7 +647,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Contract not renewed.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -671,7 +654,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'New hire, excited to join the team.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -679,7 +661,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'On vacation for two weeks.',
     },
     {
       employee_id: faker.helpers.arrayElement(employees).employee_id,
@@ -687,7 +668,6 @@ async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
       designation_id: faker.helpers.arrayElement(designations).designation_id,
       employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
       employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-      message: 'Currently assisting during peak season.',
     },
     // Continue adding more realistic entries until you reach 50...
   ];
