@@ -14,22 +14,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {
-	AssignEmployeeWithDetails,
-	RemarkTicketWithDetails,
-} from '@/lib/sales-zod-schema';
+import {AssignEmployeeWithDetails} from '@/lib/sales-zod-schema';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {Badge, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useSearchParams, useNavigate} from 'react-router-dom';
+import {TaskWithDetails} from '../../_components/validation/task';
 
 export function TaskListOverview() {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 
-	const [remarkTickets, setRemarkTickets] = useState<RemarkTicketWithDetails[]>(
-		[],
-	);
+	const [remarkTickets, setRemarkTickets] = useState<TaskWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageLimit, setPageLimit] = useState<number>(
 		Number(searchParams.get('limit')) || 10,
@@ -57,7 +53,7 @@ export function TaskListOverview() {
 							const joborderId = item.job_order_id;
 							const employeeId = item.employee.employee_id;
 							if (joborderId) {
-								return request<ApiRequest<RemarkTicketWithDetails>>(
+								return request<ApiRequest<TaskWithDetails>>(
 									'GET',
 									`/api/v1/sms/joborder/${joborderId}/remark-tickets?employee_id=${employeeId}`,
 								);
@@ -70,7 +66,7 @@ export function TaskListOverview() {
 				const remarkTicketsData = allRequests
 					.filter((response) => response !== null)
 					.map((response) => response!.data);
-				setRemarkTickets(remarkTicketsData as RemarkTicketWithDetails[]);
+				setRemarkTickets(remarkTicketsData as TaskWithDetails[]);
 				setPageCount(Math.ceil(res.total_data));
 			} catch (error) {
 				console.log(error);
@@ -123,7 +119,7 @@ export function TaskListOverview() {
 									</CardTitle>
 									<CardDescription>
 										<div className="space-x-1">
-											<Badge>{ticket.status}</Badge>
+											<Badge>{ticket.remarkticket_status}</Badge>
 										</div>
 										<div className="w-[90%]">{ticket.description}</div>
 									</CardDescription>

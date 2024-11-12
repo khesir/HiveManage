@@ -1,4 +1,7 @@
+import {ApiRequest, request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {DropdownMenu, DropdownMenuContent} from '@/components/ui/dropdown-menu';
 import {
 	Form,
 	FormControl,
@@ -16,69 +19,125 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Textarea} from '@/components/ui/textarea';
-import {toast} from '@/components/ui/use-toast';
-import {cn} from '@/lib/util/utils';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {useFieldArray, useForm} from 'react-hook-form';
-import {Link} from 'react-router-dom';
-import {z} from 'zod';
 import {Separator} from '@/components/ui/separator';
+import {appendFormData} from '@/lib/util/utils';
+import {UpdateEmployee} from '@/modules/ems/_components/api/employee';
+import {
+	EmployeeBasicInformation,
+	employeeSchema,
+} from '@/modules/ems/_components/validation/employee';
+import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employeeRoles';
+import {Position} from '@/modules/ems/_components/validation/position';
+import {Role} from '@/modules/ems/_components/validation/role';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {DropdownMenuTrigger} from '@radix-ui/react-dropdown-menu';
+import {useEffect, useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {toast} from 'sonner';
 
-const profileFormSchema = z.object({
-	username: z
-		.string()
-		.min(2, {
-			message: 'Username must be at least 2 characters.',
-		})
-		.max(30, {
-			message: 'Username must not be longer than 30 characters.',
-		}),
-	email: z
-		.string({
-			required_error: 'Please select an email to display.',
-		})
-		.email(),
-	bio: z.string().max(160).min(4),
-	urls: z
-		.array(
-			z.object({
-				value: z.string().url({message: 'Please enter a valid URL.'}),
-			}),
-		)
-		.optional(),
-});
+interface Props {
+	selectedEmployee: EmployeeRolesWithDetails;
+}
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+export function ProfileForm({selectedEmployee}: Props) {
+	const [profileData, setProfileData] =
+		useState<EmployeeRolesWithDetails>(selectedEmployee);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [position, setPosition] = useState<Position[]>([]);
+	const [roles, setRoles] = useState<Role[]>([]);
+	const [selectedImage, setSelectedImage] = useState<string | null>(
+		selectedEmployee?.employee.profile_link ?? null,
+	);
+	const [removeImage, setRemoveImage] = useState<boolean>(false);
+	useEffect(() => {
+		setLoading(true);
+		const fetchData = async () => {
+			try {
+				const [positionResponse, roleResponse] = await Promise.all([
+					request<ApiRequest<Position>>('GET', '/api/v1/ems/position'),
+					request<ApiRequest<Role>>('GET', '/api/v1/ems/roles'),
+				]);
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-	bio: 'I own a computer.',
-	urls: [{value: 'https://shadcn.com'}, {value: 'http://twitter.com/shadcn'}],
-};
+				setPosition(
+					Array.isArray(positionResponse.data)
+						? positionResponse.data
+						: [positionResponse.data],
+				);
+				setRoles(
+					Array.isArray(roleResponse.data)
+						? roleResponse.data
+						: [roleResponse.data],
+				);
+			} catch (e) {
+				console.log(e);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchData();
+	}, []);
 
-export function ProfileForm() {
-	const form = useForm<ProfileFormValues>({
-		resolver: zodResolver(profileFormSchema),
-		defaultValues,
+	const form = useForm<EmployeeBasicInformation>({
+		resolver: zodResolver(employeeSchema),
+		defaultValues: {
+			position_id: profileData.employee.position.position_id?.toString(),
+			firstname: profileData.employee.firstname,
+			middlename: profileData.employee.middlename,
+			lastname: profileData.employee.lastname,
+			email: profileData.employee.email,
+			profile_link: undefined as File | undefined,
+			role_id: profileData.role.role_id?.toString(),
+		},
 		mode: 'onChange',
 	});
 
-	const {fields, append} = useFieldArray({
-		name: 'urls',
-		control: form.control,
-	});
+	const processForm = async (data: EmployeeBasicInformation) => {
+		try {
+			setLoading(true);
+			const formData = new FormData();
+			appendFormData(
+				{
+					...data,
+					remove_image: removeImage,
+					profile_link: removeImage ? undefined : data.profile_link,
+				},
+				formData,
+			);
+			console.log('FormData contents:', ...formData.entries());
+			const res = await UpdateEmployee(
+				formData,
+				profileData.employee.employee_id,
+			);
+			setProfileData(res);
+			toast.success('Profile Updated');
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-	function onSubmit(data: ProfileFormValues) {
-		toast({
-			title: 'You submitted the following values:',
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
-		});
-	}
+	const handleFileChange = (
+		e: React.ChangeEvent<HTMLInputElement> | undefined,
+		remove_image: boolean,
+	) => {
+		if (remove_image) {
+			setSelectedImage(null);
+			setRemoveImage(true);
+		} else {
+			const file = e!.target.files?.[0];
+			if (file) {
+				const reader = new FileReader();
+
+				reader.onloadend = () => {
+					setSelectedImage(reader.result as string);
+				};
+
+				reader.readAsDataURL(file);
+				setRemoveImage(false);
+			}
+		}
+	};
 
 	return (
 		<div className="space-y-6">
@@ -90,107 +149,226 @@ export function ProfileForm() {
 			</div>
 			<Separator />
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					<FormField
-						control={form.control}
-						name="username"
-						render={({field}) => (
-							<FormItem>
-								<FormLabel>Username</FormLabel>
-								<FormControl>
-									<Input placeholder="shadcn" {...field} />
-								</FormControl>
-								<FormDescription>
-									This is your public display name. It can be your real name or
-									a pseudonym. You can only change this once every 30 days.
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="email"
-						render={({field}) => (
-							<FormItem>
-								<FormLabel>Email</FormLabel>
-								<Select
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder="Select a verified email to display" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectItem value="m@example.com">m@example.com</SelectItem>
-										<SelectItem value="m@google.com">m@google.com</SelectItem>
-										<SelectItem value="m@support.com">m@support.com</SelectItem>
-									</SelectContent>
-								</Select>
-								<FormDescription>
-									You can manage verified email addresses in your{' '}
-									<Link to="/examples/forms">email settings</Link>.
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="bio"
-						render={({field}) => (
-							<FormItem>
-								<FormLabel>Bio</FormLabel>
-								<FormControl>
-									<Textarea
-										placeholder="Tell us a little bit about yourself"
-										className="resize-none"
-										{...field}
-									/>
-								</FormControl>
-								<FormDescription>
-									You can <span>@mention</span> other users and organizations to
-									link to them.
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<div>
-						{fields.map((field, index) => (
+				<form
+					onSubmit={form.handleSubmit(processForm)}
+					className="w-full space-y-6"
+				>
+					<div className="flex flex-col gap-5">
+						<div className="flex-1 gap-8 md:grid md:grid-cols-3 h-full">
 							<FormField
 								control={form.control}
-								key={field.id}
-								name={`urls.${index}.value`}
+								name="firstname"
 								render={({field}) => (
 									<FormItem>
-										<FormLabel className={cn(index !== 0 && 'sr-only')}>
-											URLs
-										</FormLabel>
-										<FormDescription className={cn(index !== 0 && 'sr-only')}>
-											Add links to your website, blog, or social media profiles.
-										</FormDescription>
+										<FormLabel>First Name</FormLabel>
 										<FormControl>
-											<Input {...field} />
+											<Input disabled={loading} placeholder="John" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-						))}
-						<Button
-							type="button"
-							variant="outline"
-							size="sm"
-							className="mt-2"
-							onClick={() => append({value: ''})}
-						>
-							Add URL
-						</Button>
+							<FormField
+								control={form.control}
+								name="middlename"
+								render={({field}) => (
+									<FormItem>
+										<FormLabel>Middle Name</FormLabel>
+										<FormControl>
+											<Input
+												disabled={loading}
+												placeholder="Mike (Optional)"
+												{...field}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="lastname"
+								render={({field}) => (
+									<FormItem>
+										<FormLabel>Last Name</FormLabel>
+										<FormControl>
+											<Input disabled={loading} placeholder="Doe" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+						<div className="flex gap-5 items-center">
+							<div className="flex-1 grid gap-4 h-full">
+								<Card>
+									<CardHeader>
+										<CardTitle className="text-lg font-medium">
+											Account Information
+										</CardTitle>
+									</CardHeader>
+									<CardContent className="space-y-5">
+										<FormField
+											control={form.control}
+											name="email"
+											render={({field}) => (
+												<FormItem>
+													<FormLabel>Email</FormLabel>
+													<FormControl>
+														<Input
+															type="text"
+															disabled={loading}
+															placeholder="john@example.com"
+															{...field}
+														/>
+													</FormControl>
+													<FormDescription>
+														This is an email account that will be used for login
+													</FormDescription>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="position_id"
+											render={({field}) => (
+												<FormItem>
+													<FormLabel>Position</FormLabel>
+													<Select
+														disabled={loading}
+														onValueChange={(value) => field.onChange(value)}
+														value={field.value?.toString()}
+														defaultValue={field.value?.toString()}
+													>
+														<FormControl>
+															<SelectTrigger>
+																<SelectValue
+																	defaultValue={field.value}
+																	placeholder="Select a Position"
+																/>
+															</SelectTrigger>
+														</FormControl>
+														<SelectContent>
+															{position.map((data, key) => (
+																<SelectItem
+																	key={key}
+																	value={data.position_id?.toString() ?? ''}
+																>
+																	{data.name}
+																</SelectItem>
+															))}
+														</SelectContent>
+													</Select>
+													<FormDescription>
+														Admin only, change positions to access other role
+														specific pages, only 1 position at a time
+													</FormDescription>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="role_id"
+											render={({field}) => (
+												<FormItem>
+													<FormLabel>Role</FormLabel>
+													<Select
+														disabled={loading}
+														onValueChange={(value) => field.onChange(value)}
+														value={field.value?.toString()}
+														defaultValue={field.value?.toString()}
+													>
+														<FormControl>
+															<SelectTrigger>
+																<SelectValue
+																	defaultValue={field.value}
+																	placeholder="Select a Role"
+																/>
+															</SelectTrigger>
+														</FormControl>
+														<SelectContent>
+															{roles.map((data, key) => (
+																<SelectItem
+																	key={key}
+																	value={data.role_id?.toString() ?? ''}
+																>
+																	{data.name}
+																</SelectItem>
+															))}
+														</SelectContent>
+													</Select>
+													<FormDescription>
+														Admin only, change role to access other role
+														specific features
+													</FormDescription>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									</CardContent>
+								</Card>
+							</div>
+
+							<div className="relative flex-0 flex flex-col items-center gap-5">
+								<div className="overflow-hidden rounded-full w-[250px] h-[250px] border-2">
+									<img
+										src={
+											selectedImage
+												? selectedImage
+												: `https://api.dicebear.com/7.x/lorelei/svg?seed=JD`
+										}
+										alt="Selected profile"
+										className="object-cover w-full h-full"
+									/>
+								</div>
+								<div className="absolute bottom-0 left-0">
+									<DropdownMenu>
+										<DropdownMenuTrigger>
+											<Button className="w-full min-w-[100px] max-w-full">
+												{removeImage ? 'Add Profile picture' : 'Edit'}
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent className="space-y-2 p-3">
+											<FormField
+												control={form.control}
+												name="profile_link"
+												render={({field}) => (
+													<FormItem>
+														<FormControl>
+															<Input
+																type="file"
+																disabled={loading}
+																onChange={(e) => {
+																	field.onChange(e.target.files?.[0]);
+																	handleFileChange(e, false);
+																}}
+															/>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+											<Button
+												className="w-full"
+												variant={'destructive'}
+												onClick={() => handleFileChange(undefined, true)}
+											>
+												Remove Image
+											</Button>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</div>
+							</div>
+						</div>
 					</div>
-					<Button type="submit">Update profile</Button>
+
+					<div className="flex justify-end">
+						<div className="space-x-2">
+							<Button type="submit">Save</Button>
+						</div>
+					</div>
 				</form>
 			</Form>
 		</div>

@@ -1,10 +1,10 @@
 import {ApiRequest, request} from '@/api/axios';
-import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {Skeleton} from '@/components/ui/skeleton';
 import {PersonalInformation} from '@/modules/ems/_components/validation/employee';
 import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employeeRoles';
 import {useEffect, useState} from 'react';
+import {PersonalDialogeForm} from '../dialouge/personal-dialog-form';
 
 interface Props {
 	selectedEmployee: EmployeeRolesWithDetails;
@@ -48,7 +48,7 @@ export function EmployeePersonalInformationCard({selectedEmployee}: Props) {
 		<>
 			{personalInfo === undefined ? (
 				<div className="flex justify-center h-full items-center">
-					<Button>Add Personal Info Data</Button>
+					<PersonalDialogeForm selectedEmployee={selectedEmployee} />
 				</div>
 			) : (
 				<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid">

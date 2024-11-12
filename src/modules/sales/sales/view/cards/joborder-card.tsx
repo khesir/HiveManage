@@ -162,7 +162,7 @@ export function JobOrderCard() {
 		setIsEditing((prev) => !prev);
 		if (joborder) {
 			form.reset({
-				joborder_type_id: Number(joborder.joborder_type?.joborder_type_id),
+				joborder_type_id: undefined,
 				uuid: joborder?.uuid,
 				fee: joborder?.fee,
 				joborder_status: joborder?.joborder_status as
@@ -440,7 +440,7 @@ export function JobOrderCard() {
 									</li>
 									<li className="flex items-center justify-between">
 										<span className="text-muted-foreground">Type</span>
-										<span>{joborder?.joborder_type?.name}</span>
+										<span>type</span>
 									</li>
 									<li className="flex items-center justify-between">
 										<span className="text-muted-foreground">Status</span>

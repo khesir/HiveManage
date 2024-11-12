@@ -19,7 +19,7 @@ export function ReportsHistory({data}: ReportsHistoryProps) {
 	const [reports, setReports] = useState<ReportsWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageIndex, setPageIndex] = useState<number>(0);
-	const [pageSize, setPageSize] = useState<number>(5);
+	const pageSize = 5;
 
 	useEffect(() => {
 		const fetchEmployees = async () => {

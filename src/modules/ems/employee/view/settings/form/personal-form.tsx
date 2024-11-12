@@ -1,4 +1,11 @@
+import {ApiRequest, request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
+import {formatDate} from '@/lib/util/utils';
+import {
+	PersonalInformation,
+	personalInformationSchema,
+} from '@/modules/ems/_components/validation/employee';
+import {useEffect, useState} from 'react';
 import {
 	Form,
 	FormControl,
@@ -8,7 +15,8 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useForm} from 'react-hook-form';
 import {
 	Select,
 	SelectContent,
@@ -16,181 +24,223 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import {toast} from 'sonner';
+import {Input} from '@/components/ui/input';
+import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/employeeRoles';
 import {Separator} from '@/components/ui/separator';
-import {Textarea} from '@/components/ui/textarea';
-import {toast} from '@/components/ui/use-toast';
-import {cn} from '@/lib/util/utils';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {useFieldArray, useForm} from 'react-hook-form';
-import {Link} from 'react-router-dom';
-import {z} from 'zod';
+import {
+	CreatePersonal,
+	UpdatePersonal,
+} from '@/modules/ems/_components/api/employee';
 
-const profileFormSchema = z.object({
-	username: z
-		.string()
-		.min(2, {
-			message: 'Username must be at least 2 characters.',
-		})
-		.max(30, {
-			message: 'Username must not be longer than 30 characters.',
-		}),
-	email: z
-		.string({
-			required_error: 'Please select an email to display.',
-		})
-		.email(),
-	bio: z.string().max(160).min(4),
-	urls: z
-		.array(
-			z.object({
-				value: z.string().url({message: 'Please enter a valid URL.'}),
-			}),
-		)
-		.optional(),
-});
+interface Props {
+	selectedEmployee: EmployeeRolesWithDetails;
+	onSubmit?: () => void;
+}
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+export function PersonalForm({selectedEmployee, onSubmit}: Props) {
+	const [loading, setLoading] = useState<boolean>(false);
+	const [personalInfo, setPersonalInfo] = useState<PersonalInformation>();
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-	bio: 'I own a computer.',
-	urls: [{value: 'https://shadcn.com'}, {value: 'http://twitter.com/shadcn'}],
-};
+	useEffect(() => {
+		if (!selectedEmployee || !selectedEmployee.employee.employee_id) return; // Guard clause
 
-export function PersonalForm() {
-	const form = useForm<ProfileFormValues>({
-		resolver: zodResolver(profileFormSchema),
-		defaultValues,
+		const fetchEmploymentData = async () => {
+			setLoading(true);
+			try {
+				const response = await request<ApiRequest<PersonalInformation[]>>(
+					'GET',
+					`api/v1/ems/employees/${selectedEmployee.employee.employee_id}/personalInformation`,
+				);
+				const data = response.data as PersonalInformation[];
+				setPersonalInfo(data.length > 0 ? data[0] : undefined);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		if (selectedEmployee.employee.employee_id) {
+			fetchEmploymentData();
+		}
+	}, [selectedEmployee.employee.employee_id]); // Only depend on selectedEmployee
+
+	// Form
+	const form = useForm<PersonalInformation>({
+		resolver: zodResolver(personalInformationSchema),
 		mode: 'onChange',
 	});
 
-	const {fields, append} = useFieldArray({
-		name: 'urls',
-		control: form.control,
-	});
+	useEffect(() => {
+		if (personalInfo) {
+			form.reset({
+				birthday: formatDate(personalInfo.birthday),
+				sex: personalInfo.sex as 'Male' | 'Female',
+				phone: personalInfo.phone,
+				address_line: personalInfo.address_line,
+				postal_code: personalInfo.postal_code,
+			});
+		}
+	}, [personalInfo, form]);
+	const gender = [
+		{id: 1, name: 'Male'},
+		{id: 2, name: 'Female'},
+	];
 
-	function onSubmit(data: ProfileFormValues) {
-		toast({
-			title: 'You submitted the following values:',
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
-		});
+	const processForm = async (formData: PersonalInformation) => {
+		try {
+			setLoading(true);
+			if (!selectedEmployee) {
+				throw new Error('No Employee is selected');
+			}
+			if (personalInfo) {
+				const response = await UpdatePersonal(
+					formData,
+					selectedEmployee.employee.employee_id,
+					personalInfo!.personal_information_id!,
+				);
+				setPersonalInfo(response);
+			} else {
+				const response = await CreatePersonal(
+					formData,
+					selectedEmployee.employee.employee_id,
+				);
+				setPersonalInfo(response);
+			}
+			toast.success('Personal Information Successfully Added');
+			if (onSubmit) {
+				onSubmit();
+			}
+		} catch (error) {
+			toast('Error updating employment information:', {
+				description:
+					error instanceof Error ? error.message : 'An unknown error occurred',
+			});
+		} finally {
+			setLoading(false);
+		}
+	};
+	if (loading) {
+		return (
+			<div className="flex justify-center h-full items-center">loading..</div>
+		);
 	}
-
 	return (
 		<div className="space-y-6">
 			<div>
 				<h3 className="text-lg font-medium">Personal Information</h3>
 				<p className="text-sm text-muted-foreground">
-					This is how others will see you on the site.
+					This is where you can set personal necessary informations
 				</p>
 			</div>
 			<Separator />
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<form
+					onSubmit={form.handleSubmit(processForm)}
+					className="w-full space-y-8"
+				>
 					<FormField
 						control={form.control}
-						name="username"
+						name="sex"
 						render={({field}) => (
 							<FormItem>
-								<FormLabel>Username</FormLabel>
-								<FormControl>
-									<Input placeholder="shadcn" {...field} />
-								</FormControl>
-								<FormDescription>
-									This is your public display name. It can be your real name or
-									a pseudonym. You can only change this once every 30 days.
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="email"
-						render={({field}) => (
-							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<FormLabel>Sex</FormLabel>
 								<Select
+									disabled={loading}
 									onValueChange={field.onChange}
+									value={field.value}
 									defaultValue={field.value}
 								>
 									<FormControl>
 										<SelectTrigger>
-											<SelectValue placeholder="Select a verified email to display" />
+											<SelectValue
+												defaultValue={field.value}
+												placeholder="Select a Sex"
+											/>
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										<SelectItem value="m@example.com">m@example.com</SelectItem>
-										<SelectItem value="m@google.com">m@google.com</SelectItem>
-										<SelectItem value="m@support.com">m@support.com</SelectItem>
+										{gender.map((gender) => (
+											<SelectItem key={gender.id} value={gender.name}>
+												{gender.name}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 								<FormDescription>
-									You can manage verified email addresses in your{' '}
-									<Link to="/examples/forms">email settings</Link>.
+									Please select biological sex as assigned at birth.
 								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="phone"
+						render={({field}) => (
+							<FormItem>
+								<FormLabel>Contact Number</FormLabel>
+								<FormControl>
+									<Input
+										disabled={loading}
+										type="number"
+										placeholder="Enter you contact number"
+										{...field}
+									/>
+								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
 					<FormField
 						control={form.control}
-						name="bio"
+						name="birthday"
 						render={({field}) => (
 							<FormItem>
-								<FormLabel>Bio</FormLabel>
+								<FormLabel>Birthday</FormLabel>
 								<FormControl>
-									<Textarea
-										placeholder="Tell us a little bit about yourself"
-										className="resize-none"
-										{...field}
-									/>
+									<Input type="date" disabled={loading} {...field} />
 								</FormControl>
-								<FormDescription>
-									You can <span>@mention</span> other users and organizations to
-									link to them.
-								</FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-					<div>
-						{fields.map((field, index) => (
-							<FormField
-								control={form.control}
-								key={field.id}
-								name={`urls.${index}.value`}
-								render={({field}) => (
-									<FormItem>
-										<FormLabel className={cn(index !== 0 && 'sr-only')}>
-											URLs
-										</FormLabel>
-										<FormDescription className={cn(index !== 0 && 'sr-only')}>
-											Add links to your website, blog, or social media profiles.
-										</FormDescription>
-										<FormControl>
-											<Input {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						))}
-						<Button
-							type="button"
-							variant="outline"
-							size="sm"
-							className="mt-2"
-							onClick={() => append({value: ''})}
-						>
-							Add URL
-						</Button>
+					<div className="grid grid-cols-2 gap-5">
+						<FormField
+							control={form.control}
+							name="address_line"
+							render={({field}) => (
+								<FormItem>
+									<FormLabel>Address Line</FormLabel>
+									<FormControl>
+										<Input
+											disabled={loading}
+											placeholder="Full Address"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="postal_code"
+							render={({field}) => (
+								<FormItem>
+									<FormLabel>Postal code</FormLabel>
+									<Input disabled={loading} placeholder="Code" {...field} />
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 					</div>
-					<Button type="submit">Update profile</Button>
+					<div className="flex justify-end">
+						<div className="space-x-2">
+							<Button type="submit">Save</Button>
+						</div>
+					</div>
 				</form>
 			</Form>
 		</div>

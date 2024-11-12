@@ -41,7 +41,7 @@ interface CreateCustomerFormProps {
 export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [loading, setLoading] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
-	const [previousStep, setPreviousStep] = useState(0);
+	const [, setPreviousStep] = useState(0);
 	const navigate = useNavigate();
 	const {setCustomerFormData, resetCustomerFormData} = useCustomerFormStore();
 

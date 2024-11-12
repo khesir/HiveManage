@@ -5,7 +5,7 @@ import {
 	CardTitle,
 	CardDescription,
 } from '@/components/ui/card';
-import {Plus, Ticket, UserCircle} from 'lucide-react';
+import {Plus, UserCircle} from 'lucide-react';
 import {useJoborderStore} from '../../../../_components/hooks/use-joborder-store.ts';
 
 export function TaskListProfile() {

@@ -8,7 +8,7 @@ const ACCEPTED_FILE_TYPES = ['image/png', 'image/jpeg'];
 
 export const employeeSchema = z.object({
 	employee_id: z.number().optional(),
-	position_id: z.number().min(1),
+	position_id: z.string().min(1),
 	firstname: z.string().min(1, 'First name is required'),
 	middlename: z.string().optional(),
 	lastname: z.string().min(1, 'Last name is required'),
@@ -22,6 +22,8 @@ export const employeeSchema = z.object({
 		.refine((file) => {
 			return !file || ACCEPTED_FILE_TYPES.includes(file.type);
 		}, 'File must be a PNG or JPEG'),
+	// This is just form form submission on settings, not part of employee Schema
+	role_id: z.string().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
@@ -57,8 +59,8 @@ export type PersonalInformation = z.infer<typeof personalInformationSchema>;
 
 export const employmentInformationSchema = z.object({
 	employment_information_id: z.number().optional(),
-	department_id: z.string().min(1, 'Department is required'),
-	designation_id: z.string().min(1, 'Designation is required'),
+	department_id: z.number().min(1, 'Department is required'),
+	designation_id: z.number().min(1, 'Designation is required'),
 	employee_type: z.string().min(1),
 	employee_status: z.string().min(1),
 	created_at: z.string().optional(),

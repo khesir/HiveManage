@@ -46,7 +46,7 @@ export function CreateCustomerOverview() {
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Socials</span>
-							<span>{data.socials.flat}</span>
+							<span>In progress</span>
 						</li>
 					</ul>
 				</div>

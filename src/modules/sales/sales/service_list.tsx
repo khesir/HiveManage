@@ -9,7 +9,7 @@ export type paramsProps = {
 	searchParams: URLSearchParams;
 	customer_id?: number;
 	service_status?: string;
-	showSubtables: boolean;
+	showSubtables?: boolean;
 	employee_id?: number;
 };
 
