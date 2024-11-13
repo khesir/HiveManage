@@ -64,8 +64,11 @@ export function LogListMini({employee_id}: Props) {
 								<CardHeader className="flex justify-start">
 									<CardTitle className="font-semibold text-md  hover:underline flex gap-3 items-center">
 										<AvatarCircles
-											avatarUrls={[
-												data.employee.profile_link as unknown as string,
+											avatar={[
+												{
+													link: data.employee.profile_link as unknown as string,
+													name: `${data.employee.firstname} ${data.employee.middlename} ${data.employee.lastname}`,
+												},
 											]}
 										/>
 										{`${data.entity_type}`}

@@ -28,7 +28,7 @@ export default function ServiceListSection() {
 					</Link>
 				</div>
 			</div>
-			<ServiceList searchParams={searchParams} showSubtables={true} />
+			<ServiceList searchParams={searchParams} />
 		</div>
 	);
 }

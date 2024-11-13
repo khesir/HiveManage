@@ -10,6 +10,10 @@ export function EmployeeInformationCard({selectedEmployee}: Props) {
 		<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid">
 			<ul className="grid gap-3">
 				<li className="flex items-center justify-between">
+					<span className="text-muted-foreground">ID</span>
+					<span>{selectedEmployee!.employee.employee_id}</span>
+				</li>
+				<li className="flex items-center justify-between">
 					<span className="text-muted-foreground">Firstname</span>
 					<span>{selectedEmployee!.employee.firstname}</span>
 				</li>

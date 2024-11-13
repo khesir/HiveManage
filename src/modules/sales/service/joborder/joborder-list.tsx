@@ -1,15 +1,23 @@
 import {useEffect, useState} from 'react';
 import {JoborderTable} from './joborder-table';
 import {PaginationResponse, request} from '@/api/axios';
-import {columns} from './columns';
+import {getColumns} from './columns';
 import {JoborderSetting} from '@/modules/_configSettings/config';
 import {JobOrderWithDetails} from '../../_components/validation/joborder';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;
+	employee_id?: number;
+	isStaff?: boolean;
+	showAction?: boolean;
 };
 
-export function JoborderList({searchParams}: paramsProps) {
+export function JoborderList({
+	searchParams,
+	employee_id,
+	isStaff = false,
+	showAction = false,
+}: paramsProps) {
 	const [joborder, setJoborder] = useState<JobOrderWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const page = Number(searchParams.get('page')) || 1;
@@ -19,6 +27,8 @@ export function JoborderList({searchParams}: paramsProps) {
 	const offset = (page - 1) * pageLimit;
 
 	const uuid = searchParams.get('uuid') || undefined;
+	const employee =
+		Number(searchParams.get('employee_id')) || employee_id || undefined;
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
@@ -27,7 +37,8 @@ export function JoborderList({searchParams}: paramsProps) {
 				`/api/v1/sms/joborder?limit=${pageLimit}&offset=${offset}` +
 					(status ? `&joborder_status=${status}` : '') +
 					(sort ? `&sort=${sort}` : '') +
-					(uuid ? `&uuid=${uuid}` : ''),
+					(uuid ? `&uuid=${uuid}` : '') +
+					(employee && isStaff ? `&employee_id=${employee}` : ''),
 			);
 			setJoborder(res.data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));
@@ -41,7 +52,7 @@ export function JoborderList({searchParams}: paramsProps) {
 
 	return (
 		<JoborderTable
-			columns={columns}
+			columns={getColumns(showAction)}
 			data={joborder}
 			searchKey={'uuid'}
 			pageCount={pageCount}

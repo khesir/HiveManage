@@ -5,15 +5,18 @@ import {Moon, Sun} from 'lucide-react';
 import {EmployeeRecentActivity} from './employee-recent-activity';
 import {EmployeInforTabs} from './info-card/employee-tabs';
 import {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useParams, useSearchParams} from 'react-router-dom';
 import {EmployeeRolesWithDetails} from '../../_components/validation/employeeRoles';
 import {PaginationResponse, request} from '@/api/axios';
+import ServiceList from '@/modules/sales/sales/service_list';
+import {Separator} from '@/components/ui/separator';
+import {JoborderList} from '@/modules/sales/service/joborder/joborder-list';
 
 export function EmployeeInformationListCard() {
 	const {selectedEmployee, setSelectedEmployee} = useEmployeeStore();
 	const [loading, setLoading] = useState<boolean>(false);
+	const [searchParams] = useSearchParams();
 	const {id} = useParams();
-	console.log(id);
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -39,7 +42,7 @@ export function EmployeeInformationListCard() {
 	}
 	return (
 		<div className="flex gap-5 flex-col sm:flex-row">
-			<div className="space-y-3 flex-1">
+			<div className="space-y-10 flex-1">
 				<div className="flex gap-5 h-[300px]">
 					<div className="max-h-full flex-1 ">
 						<EmployeInforTabs selectedEmployee={selectedEmployee} />
@@ -70,6 +73,30 @@ export function EmployeeInformationListCard() {
 						</div>
 					</div>
 				</div>
+
+				{selectedEmployee.employee.position.name === 'Technician' ? (
+					<div className="space-y-3">
+						<h1 className="text-xl font-semibold">Joborder History</h1>
+						<Separator />
+						<JoborderList
+							searchParams={searchParams}
+							employee_id={selectedEmployee.employee.employee_id}
+							isStaff={selectedEmployee.role.name === 'Staff' ? true : false}
+							showAction={true}
+						/>
+					</div>
+				) : (
+					<div className="space-y-3">
+						<h1 className="text-xl font-semibold">Service History</h1>
+						<Separator />
+						<ServiceList
+							searchParams={searchParams}
+							isDetails={true}
+							employee_id={selectedEmployee.employee.employee_id}
+							isStaff={selectedEmployee.role.name === 'Staff' ? true : false}
+						/>
+					</div>
+				)}
 			</div>
 			<div className="flex-0 w-full sm:w-[400px]">
 				<EmployeeRecentActivity selectedEmployee={selectedEmployee} />

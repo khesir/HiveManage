@@ -9,8 +9,8 @@ export type paramsProps = {
 	searchParams: URLSearchParams;
 	customer_id?: number;
 	service_status?: string;
-	showSubtables?: boolean;
 	employee_id?: number;
+	isStaff?: boolean;
 };
 
 export default function ServiceList({
@@ -19,6 +19,7 @@ export default function ServiceList({
 	customer_id,
 	service_status,
 	employee_id,
+	isStaff = false,
 }: paramsProps) {
 	const [service, setService] = useState<ServiceWithDetails[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
@@ -41,14 +42,14 @@ export default function ServiceList({
 					(status ? `&service_status=${status}` : '') +
 					(sort ? `&sort=${sort}` : '') +
 					(customer ? `&customer_id=${customer}` : '') +
-					(employee ? `&employee_id=${employee}` : ''),
+					(employee && isStaff ? `&employee_id=${employee}` : ''),
 			);
 			setService(res.data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));
 		};
 
 		fetchEmployees();
-	}, [offset, pageLimit, sort, status]);
+	}, [offset, pageLimit, sort, status, employee, customer]);
 	return (
 		<ServiceTable
 			columns={columns}

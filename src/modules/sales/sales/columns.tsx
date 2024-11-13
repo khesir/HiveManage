@@ -4,6 +4,7 @@ import {ColumnDef} from '@tanstack/react-table';
 import {Button} from '@/components/ui/button';
 import {useLocation, useNavigate} from 'react-router-dom';
 import useServiceFormStore from '@/components/hooks/use-service-store';
+import {Badge} from '@/components/ui/badge';
 
 const ActionsCell = (data: ServiceWithDetails) => {
 	const {setServiceFormData} = useServiceFormStore();
@@ -40,6 +41,15 @@ export const columns: ColumnDef<ServiceWithDetails>[] = [
 	{
 		accessorKey: 'service_status',
 		header: 'Status',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={`${row.original.service_status === 'Active' ? 'bg-green-400 font-semibold hover:bg-green-400' : 'bg-gray-400 font-semibold hover:bg-gray-400'}`}
+				>
+					{row.original.service_status ? 'Active' : 'Inactive'}
+				</Badge>
+			);
+		},
 	},
 	{
 		accessorKey: 'last_updated',
@@ -47,20 +57,56 @@ export const columns: ColumnDef<ServiceWithDetails>[] = [
 		cell: ({row}) => dateParser(row?.original?.last_updated ?? ''),
 	},
 	{
-		accessorKey: 'has_reservation',
+		id: 'has_reservation',
 		header: 'Reservation',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={`${row.original.has_reservation ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
+				>
+					{row.original.has_reservation ? 'Active' : 'Inactive'}
+				</Badge>
+			);
+		},
 	},
 	{
-		accessorKey: 'has_sales_item',
+		id: 'has_sales_item',
 		header: 'Sales',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={`${row.original.has_sales_item ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
+				>
+					{row.original.has_sales_item ? 'Active' : 'Inactive'}
+				</Badge>
+			);
+		},
 	},
 	{
-		accessorKey: 'has_borrow',
+		id: 'has_borrow',
 		header: 'Borrow',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={`${row.original.has_borrow ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
+				>
+					{row.original.has_borrow ? 'Active' : 'Inactive'}
+				</Badge>
+			);
+		},
 	},
 	{
-		accessorKey: 'has_job_order',
+		id: 'has_job_order',
 		header: 'Joborder',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={`${row.original.has_job_order ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
+				>
+					{row.original.has_job_order ? 'Active' : 'Inactive'}
+				</Badge>
+			);
+		},
 	},
 	{
 		id: 'actions',

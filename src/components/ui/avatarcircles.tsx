@@ -1,28 +1,40 @@
 import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee';
 import {cn} from '@/lib/util/utils';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from './tooltip';
 
 interface AvatarCirclesProps {
 	className?: string;
 	numPeople?: number;
-	avatarUrls: string[];
+	avatar: {link: string; name: string}[];
 }
 
 export const AvatarCircles = ({
 	numPeople = 0,
 	className,
-	avatarUrls,
+	avatar,
 }: AvatarCirclesProps) => {
 	return (
 		<div className={cn('z-10 flex -space-x-4 rtl:space-x-reverse', className)}>
-			{avatarUrls.map((url, index) => (
-				<img
-					key={index}
-					className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-					src={url !== '#' ? url : '/img/placeholder.jpg'}
-					width={40}
-					height={40}
-					alt={`Avatar ${index + 1}`}
-				/>
+			{avatar.map((data, index) => (
+				<TooltipProvider key={index}>
+					<Tooltip>
+						<TooltipTrigger>
+							<img
+								className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
+								src={data.link !== '#' ? data.link : '/img/placeholder.jpg'}
+								width={40}
+								height={40}
+								alt={`Avatar ${index + 1}`}
+							/>
+						</TooltipTrigger>
+						<TooltipContent>{data.name}</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			))}
 			{numPeople > 0 && (
 				<a
@@ -48,11 +60,14 @@ export const EmployeeAvatarCircles = ({
 	// TODO: Replace # to img_url of employee
 	const maxVisibleAvatars = isTable ? 3 : 5;
 
-	const avatarUrls = employees
-		.slice(0, maxVisibleAvatars)
-		.map((emp) => emp.profile_link as unknown as string);
+	const avatarUrls = employees.slice(0, maxVisibleAvatars).map((emp) => {
+		return {
+			link: emp.profile_link as unknown as string,
+			name: `${emp.firstname} ${emp.middlename} ${emp.lastname}`,
+		};
+	});
 	const totalEmployees = employees.length;
 	const numPeople =
 		totalEmployees > maxVisibleAvatars ? totalEmployees - maxVisibleAvatars : 0;
-	return <AvatarCircles avatarUrls={avatarUrls} numPeople={numPeople} />;
+	return <AvatarCircles avatar={avatarUrls} numPeople={numPeople} />;
 };

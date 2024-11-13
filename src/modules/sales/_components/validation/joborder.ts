@@ -28,7 +28,7 @@ export const joborderSchema = z.object({
 export type Joborder = z.infer<typeof joborderSchema>;
 
 export type JobOrderWithDetails = {
-	joborder_id?: number;
+	joborder_id: number;
 	service: ServiceWithDetails;
 	joborder_type: JoborderServiceWithDetails[];
 	joborder_assign: AssignEmployeeWithDetails[];
