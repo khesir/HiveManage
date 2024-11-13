@@ -17,7 +17,7 @@ export class ServiceController {
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const customer_id = (req.query.customer_id as string) || undefined;
-
+    const employee_id = (req.query.employee_id as string) || undefined;
     try {
       const data = await this.serviceService.getAllServices(
         sort,
@@ -25,6 +25,7 @@ export class ServiceController {
         offset,
         service_status,
         customer_id,
+        employee_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

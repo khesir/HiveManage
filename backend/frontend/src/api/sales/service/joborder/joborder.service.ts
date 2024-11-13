@@ -25,12 +25,13 @@ export class JobOrderService {
 
   async getAllJobOrder(
     no_pagination: boolean,
-    uuid: string | undefined,
-    service_id: string | undefined,
-    joborder_status: string | undefined,
     sort: string,
     limit: number,
     offset: number,
+    uuid: string | undefined,
+    service_id: string | undefined,
+    joborder_status: string | undefined,
+    employee_id: string | undefined,
   ) {
     const conditions = [isNull(jobOrder.deleted_at)];
 
@@ -68,6 +69,7 @@ export class JobOrderService {
     if (uuid) {
       conditions.push(sql`${jobOrder.uuid} LIKE ${'%' + uuid + '%'}`);
     }
+
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -95,6 +97,7 @@ export class JobOrderService {
 
     const result = await query;
 
+    // Getting all employee that is asssigned using the joint table of assignedEmployee
     const joAssign = await this.db
       .select()
       .from(assignedemployees)
@@ -126,7 +129,7 @@ export class JobOrderService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<number, any[]>,
     );
-
+    // Filtering joborder types
     const jotypes = await this.db
       .select()
       .from(joborder_services)
@@ -158,54 +161,26 @@ export class JobOrderService {
       {} as Record<number, any[]>,
     );
 
-    const joborderitemWithDetails = result.map((row) => ({
-      joborder_id: row.joborder.job_order_id,
-      joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
-      joborder_type: typesByJoService[row.joborder.job_order_id] || [],
-      service: {
-        service_id: row.service?.service_id,
-        employee: {
-          employee_id: row.employee?.employee_id,
-          firstname: row.employee?.firstname,
-          middlename: row.employee?.middlename,
-          lastname: row.employee?.lastname,
-          email: row.employee?.email,
-          profile_link: row.employee?.profile_link,
-          created_at: row.employee?.created_at,
-          last_updated: row.employee?.last_updated,
-          deleted_at: row.employee?.deleted_at,
+    // Filter and map only job orders where the specified employee_id is involved
+    const joborderitemWithDetails = result
+      .filter((row) => {
+        const assignments = assignmentsByJoID[row.joborder.job_order_id] || [];
+        return Number(employee_id)
+          ? assignments.some(
+              (assignment) => assignment.employee_id === Number(employee_id),
+            )
+          : assignments.length > 0;
+      })
+      .map((row) => ({
+        ...row.joborder,
+        joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
+        joborder_type: typesByJoService[row.joborder.job_order_id] || [],
+        service: {
+          ...row.service,
+          employee: { ...row.employee },
+          customer: { ...row.customer },
         },
-        customer: {
-          customer_id: row.customer?.customer_id,
-          firstname: row.customer?.firstname,
-          lastname: row.customer?.lastname,
-          contact_phone: row.customer?.contact_phone,
-          socials: row.customer?.socials,
-          address_line: row.customer?.address_line,
-          baranay: row.customer?.address_line,
-          province: row.customer?.province,
-          standing: row.customer?.standing,
-        },
-        service_title: row.service?.service_title,
-        service_description: row.service?.service_description,
-        service_status: row.service?.service_status,
-        has_reservation: row.service?.has_reservation,
-        has_sales_item: row.service?.has_sales_item,
-        has_borrow: row.service?.has_borrow,
-        has_job_order: row.service?.has_job_order,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
-      },
-      uuid: row.joborder?.uuid,
-      fee: row.joborder?.fee,
-      joborder_status: row.joborder?.joborder_status,
-      total_cost_price: row.joborder?.total_cost_price,
-      created_at: row.joborder?.created_at,
-      last_updated: row.joborder?.last_updated,
-      deleted_at: row.joborder?.deleted_at,
-    }));
-
+      }));
     return { totalData, joborderitemWithDetails };
   }
 

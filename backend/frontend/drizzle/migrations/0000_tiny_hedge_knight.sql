@@ -353,7 +353,6 @@ CREATE TABLE IF NOT EXISTS "employment_info" (
 	"designation_id" integer,
 	"employee_type" varchar,
 	"employee_status" varchar,
-	"message" varchar(255),
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -567,7 +566,6 @@ CREATE TABLE IF NOT EXISTS "personal_info" (
 	"birthday" varchar(255),
 	"sex" varchar,
 	"phone" varchar(255),
-	"email" varchar(255),
 	"address_line" varchar(255),
 	"postal_code" varchar(255),
 	"emergency_contact_name" varchar(255),

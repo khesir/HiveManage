@@ -1,5 +1,5 @@
 {
-  "id": "860590b2-809e-4274-b17c-07503822a2b1",
+  "id": "c0d274cd-a51e-44ae-8021-779699a30ad1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1310,12 +1310,6 @@
         "employee_status": {
           "name": "employee_status",
           "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "message": {
-          "name": "message",
-          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -2835,12 +2829,6 @@
         },
         "phone": {
           "name": "phone",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false

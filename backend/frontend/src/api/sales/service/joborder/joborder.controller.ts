@@ -13,22 +13,25 @@ export class JobOrderController {
 
   async getAllJobOrder(req: Request, res: Response, next: NextFunction) {
     const no_pagination = req.query.no_pagination === 'true';
-    const uuid = (req.query.uuid as string) || undefined;
-    const service_id = (req.params.service_id as string) || undefined;
-    const joborder_status = (req.query.joborder_status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
+    const uuid = (req.query.uuid as string) || undefined;
+    const service_id = (req.params.service_id as string) || undefined;
+    const joborder_status = (req.query.joborder_status as string) || undefined;
+    const employee_id = (req.query.employee_id as string) || undefined;
+
     try {
       const data = await this.joborderService.getAllJobOrder(
         no_pagination,
-        uuid,
-        service_id,
-        joborder_status,
         sort,
         limit,
         offset,
+        uuid,
+        service_id,
+        joborder_status,
+        employee_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

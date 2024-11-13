@@ -25,6 +25,7 @@ export class ServicesService {
     offset: number,
     service_status: string | undefined,
     customer_id: string | undefined,
+    employee_id: string | undefined,
   ) {
     const conditions = [isNull(service.deleted_at)];
     if (service_status) {
@@ -34,6 +35,9 @@ export class ServicesService {
     }
     if (customer_id) {
       conditions.push(eq(service.customer_id, Number(customer_id)));
+    }
+    if (employee_id) {
+      conditions.push(eq(service.employee_id, Number(employee_id)));
     }
     const totalCountQuery = await this.db
       .select({
