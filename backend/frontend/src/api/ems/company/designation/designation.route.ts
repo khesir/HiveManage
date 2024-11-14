@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { DesignationController } from './designation.controller';
-import log from '@/lib/logger';
 import { validateRequest } from '@/src/middlewares';
 import { CreateDesignation, UpdateDesignation } from './designation.model';
 import { validateDesignationID } from './designation.middlewares';
@@ -13,14 +12,12 @@ designationRoute.get(
   '/',
   designationController.getAllDesignation.bind(designationController),
 );
-log.info('GET /designation/ set');
 
 designationRoute.get(
   '/:designation_id',
   validateDesignationID,
   designationController.getDesignationById.bind(designationController),
 );
-log.info('GET /designation/:designation_id set');
 
 designationRoute.post(
   '/',
@@ -31,7 +28,6 @@ designationRoute.post(
   ],
   designationController.createDesignation.bind(designationController),
 );
-log.info('POST /designation/  set');
 
 designationRoute.patch(
   '/:designation_id',
@@ -43,13 +39,11 @@ designationRoute.patch(
   ],
   designationController.updateDesignation.bind(designationController),
 );
-log.info('PATCH /designation/:designation_id set');
 
 designationRoute.delete(
   '/:designation_id',
   validateDesignationID,
   designationController.deleteDesignationById.bind(designationController),
 );
-log.info('DELETE /designation/:designation_id set');
 
 export default designationRoute;

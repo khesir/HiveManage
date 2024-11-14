@@ -4,7 +4,6 @@ import { DepartmentController } from './department.controller';
 import { CreateDepartment, UpdateDepartment } from './department.model';
 import { validateDepartmentID } from './department.middleware';
 
-import log from '@/lib/logger';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
 
@@ -15,14 +14,12 @@ departmentRoute.get(
   '/',
   departmentController.getAllDepartments.bind(departmentController),
 );
-log.info('GET /department/ set');
 
 departmentRoute.get(
   '/:department_id',
   validateDepartmentID,
   departmentController.getDepartmentById.bind(departmentController),
 );
-log.info('GET /department/:department_id  set');
 
 departmentRoute.post(
   '/',
@@ -33,7 +30,6 @@ departmentRoute.post(
   ],
   departmentController.createDepartment.bind(departmentController),
 );
-log.info('POST /department/  set');
 
 departmentRoute.patch(
   '/:department_id',
@@ -45,13 +41,11 @@ departmentRoute.patch(
   ],
   departmentController.updateDepartment.bind(departmentController),
 );
-log.info('PUT /department/:department_id set');
 
 departmentRoute.delete(
   '/:department_id',
   validateDepartmentID,
   departmentController.deleteDepartmentByID.bind(departmentController),
 );
-log.info('DELETE /department/:department_id set');
 
 export default departmentRoute;

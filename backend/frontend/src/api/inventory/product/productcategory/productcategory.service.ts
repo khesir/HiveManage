@@ -52,30 +52,10 @@ export class ProductCategoryService {
       .offset(offset);
 
     const productcategoryWithDetails = result.map((row) => ({
-      product_category_id: row.product_category.product_category_id,
+      ...row.product_category,
       product: {
-        category_id: row.product?.category_id,
-        supplier_id: row.product?.name,
-        name: row.product?.name,
-        description: row.product?.description,
-        price: row.product?.price,
-        img_url: row.product?.img_url,
-        created_at: row.product?.created_at,
-        last_updated: row.product?.last_updated,
-        deleted_at: row.product?.deleted_at,
-
-        category: {
-          category_id: row.category?.category_id,
-          name: row.category?.name,
-          content: row.category?.content,
-          created_at: row.category?.created_at,
-          last_updated: row.category?.last_updated,
-          deleted_at: row.category?.deleted_at,
-        },
+        ...row.product,
       },
-      created_at: row.product?.created_at,
-      last_updated: row.product?.last_updated,
-      deleted_at: row.product?.deleted_at,
     }));
 
     return { totalData, productcategoryWithDetails };
@@ -98,30 +78,10 @@ export class ProductCategoryService {
       );
 
     const productcategoryWithDetails = result.map((row) => ({
-      product_category_id: row.product_category.product_category_id,
+      ...row.product_category,
       product: {
-        category_id: row.product?.category_id,
-        supplier_id: row.product?.name,
-        name: row.product?.name,
-        description: row.product?.description,
-        price: row.product?.price,
-        img_url: row.product?.img_url,
-        created_at: row.product?.created_at,
-        last_updated: row.product?.last_updated,
-        deleted_at: row.product?.deleted_at,
-
-        category: {
-          category_id: row.category?.category_id,
-          name: row.category?.name,
-          content: row.category?.content,
-          created_at: row.category?.created_at,
-          last_updated: row.category?.last_updated,
-          deleted_at: row.category?.deleted_at,
-        },
+        ...row.product,
       },
-      created_at: row.product?.created_at,
-      last_updated: row.product?.last_updated,
-      deleted_at: row.product?.deleted_at,
     }));
 
     return productcategoryWithDetails;

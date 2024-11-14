@@ -1,14 +1,10 @@
 import { and, eq, isNull, asc, desc, sql } from 'drizzle-orm';
 import {
-  category,
   customer,
   employee,
-  item,
-  product,
   reserve,
   SchemaType,
   service,
-  supplier,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateReserve } from './reserve.model';
@@ -76,10 +72,6 @@ export class ReserveService {
     const result = await this.db
       .select()
       .from(reserve)
-      .leftJoin(item, eq(item.item_id, reserve.items_id))
-      .leftJoin(product, eq(product.product_id, item.product_id))
-      .leftJoin(category, eq(category.category_id, product.category_id))
-      .leftJoin(supplier, eq(supplier.supplier_id, product.supplier_id))
       .leftJoin(service, eq(service.service_id, reserve.service_id))
       .leftJoin(employee, eq(employee.employee_id, service.employee_id))
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
@@ -90,82 +82,16 @@ export class ReserveService {
       .limit(limit)
       .offset(offset);
     const reserveWithDetails = result.map((row) => ({
-      reserve_id: row.reserve.reserve_id,
+      ...row.reserve,
       service: {
-        service_id: row.service?.service_id,
+        ...row.service,
         employee: {
-          employee_id: row.employee?.employee_id,
-          firstname: row.employee?.firstname,
-          middlename: row.employee?.middlename,
-          lastname: row.employee?.lastname,
-          email: row.employee?.email,
-          profile_link: row.employee?.profile_link,
-          created_at: row.employee?.created_at,
-          last_updated: row.employee?.last_updated,
-          deleted_at: row.employee?.deleted_at,
+          ...row.employee,
         },
         customer: {
-          customer_id: row.customer?.customer_id,
-          firstname: row.customer?.firstname,
-          lastname: row.customer?.lastname,
-          contact_phone: row.customer?.contact_phone,
-          socials: row.customer?.socials,
-          address_line: row.customer?.address_line,
-          baranay: row.customer?.address_line,
-          province: row.customer?.province,
-          standing: row.customer?.standing,
+          ...row.customer,
         },
-        service_title: row.service?.service_title,
-        service_description: row.service?.service_description,
-        service_status: row.service?.service_status,
-        has_sales_item: row.service?.has_sales_item,
-        has_borrow: row.service?.has_borrow,
-        has_job_order: row.service?.has_job_order,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
       },
-      item: {
-        item_id: row.item?.item_id,
-        product: {
-          product_id: row.product?.product_id,
-          category: {
-            category_id: row.category?.category_id,
-            name: row.category?.name,
-            content: row.category?.content,
-            created_at: row.category?.created_at,
-            last_updated: row.category?.last_updated,
-            deleted_at: row.category?.deleted_at,
-          },
-          supplier: {
-            supplier_id: row.supplier?.supplier_id,
-            name: row.supplier?.name,
-            contact_number: row.supplier?.contact_number,
-            remarks: row.supplier?.remarks,
-            created_at: row.supplier?.created_at,
-            last_updated: row.supplier?.last_updated,
-            deleted_at: row.supplier?.deleted_at,
-          },
-          name: row.product?.name,
-          img_url: row.product?.img_url,
-          description: row.product?.description,
-          price: row.product?.price,
-          created_at: row.product?.created_at,
-          last_updated: row.product?.last_updated,
-          deleted_at: row.product?.deleted_at,
-        },
-        stock: row.item?.stock,
-        on_listing: row.item?.on_listing,
-        tag: row.item?.tag,
-        re_order_level: row.item?.re_order_level,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
-      },
-      reserve_status: row.reserve?.reserve_status,
-      created_at: row.reserve?.created_at,
-      last_updated: row.reserve?.last_updated,
-      deleted_at: row.reserve?.deleted_at,
     }));
 
     return { totalData, reserveWithDetails };
@@ -175,92 +101,22 @@ export class ReserveService {
     const result = await this.db
       .select()
       .from(reserve)
-      .leftJoin(item, eq(item.item_id, reserve.items_id))
-      .leftJoin(product, eq(product.product_id, item.product_id))
-      .leftJoin(category, eq(category.category_id, product.category_id))
-      .leftJoin(supplier, eq(supplier.supplier_id, product.supplier_id))
       .leftJoin(service, eq(service.service_id, reserve.service_id))
       .leftJoin(employee, eq(employee.employee_id, service.employee_id))
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
       .where(eq(reserve.reserve_id, Number(reserve_id)));
 
     const reserveWithDetails = result.map((row) => ({
-      reserve_id: row.reserve.reserve_id,
+      ...row.reserve,
       service: {
-        service_id: row.service?.service_id,
+        ...row.service,
         employee: {
-          employee_id: row.employee?.employee_id,
-          firstname: row.employee?.firstname,
-          middlename: row.employee?.middlename,
-          lastname: row.employee?.lastname,
-          email: row.employee?.email,
-          profile_link: row.employee?.profile_link,
-          created_at: row.employee?.created_at,
-          last_updated: row.employee?.last_updated,
-          deleted_at: row.employee?.deleted_at,
+          ...row.employee,
         },
         customer: {
-          customer_id: row.customer?.customer_id,
-          firstname: row.customer?.firstname,
-          lastname: row.customer?.lastname,
-          contact_phone: row.customer?.contact_phone,
-          socials: row.customer?.socials,
-          address_line: row.customer?.address_line,
-          baranay: row.customer?.address_line,
-          province: row.customer?.province,
-          standing: row.customer?.standing,
+          ...row.customer,
         },
-        service_title: row.service?.service_title,
-        service_description: row.service?.service_description,
-        service_status: row.service?.service_status,
-        has_sales_item: row.service?.has_sales_item,
-        has_borrow: row.service?.has_borrow,
-        has_job_order: row.service?.has_job_order,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
       },
-      item: {
-        item_id: row.item?.item_id,
-        product: {
-          product_id: row.product?.product_id,
-          category: {
-            category_id: row.category?.category_id,
-            name: row.category?.name,
-            content: row.category?.content,
-            created_at: row.category?.created_at,
-            last_updated: row.category?.last_updated,
-            deleted_at: row.category?.deleted_at,
-          },
-          supplier: {
-            supplier_id: row.supplier?.supplier_id,
-            name: row.supplier?.name,
-            contact_number: row.supplier?.contact_number,
-            remarks: row.supplier?.remarks,
-            created_at: row.supplier?.created_at,
-            last_updated: row.supplier?.last_updated,
-            deleted_at: row.supplier?.deleted_at,
-          },
-          name: row.product?.name,
-          img_url: row.product?.img_url,
-          description: row.product?.description,
-          price: row.product?.price,
-          created_at: row.product?.created_at,
-          last_updated: row.product?.last_updated,
-          deleted_at: row.product?.deleted_at,
-        },
-        stock: row.item?.stock,
-        on_listing: row.item?.on_listing,
-        tag: row.item?.tag,
-        re_order_level: row.item?.re_order_level,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
-      },
-      reserve_status: row.reserve?.reserve_status,
-      created_at: row.reserve?.created_at,
-      last_updated: row.reserve?.last_updated,
-      deleted_at: row.reserve?.deleted_at,
     }));
 
     return reserveWithDetails;

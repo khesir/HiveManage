@@ -1,6 +1,6 @@
 import { and, eq, isNull, sql } from 'drizzle-orm';
 import {
-  item,
+  product,
   remarkitems,
   remarktickets,
   SchemaType,
@@ -43,7 +43,7 @@ export class RemarkItemsService {
     const query = this.db
       .select()
       .from(remarkitems)
-      .leftJoin(item, eq(item.item_id, remarkitems.remark_items_id))
+      .leftJoin(product, eq(product.product_id, remarkitems.product_id))
       .leftJoin(
         remarktickets,
         eq(remarktickets.remark_id, remarkitems.remark_id),
@@ -55,32 +55,13 @@ export class RemarkItemsService {
     }
     const result = await query;
     const remarkitemsWithDetails = result.map((row) => ({
-      remark_items_id: row.remarkitems.remark_items_id,
-      item: {
-        item_id: row.item?.item_id,
-        product_id: row.item?.product_id,
-        stock: row.item?.stock,
-        price: row.item?.price,
-        on_listing: row.item?.on_listing,
-        re_order_level: row.item?.re_order_level,
-        tag: row.item?.tag,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      ...row.remarkitems,
+      product: {
+        ...row.product,
       },
       remarktickets: {
-        remark_id: row.remarktickets?.remark_id,
-        job_order_id: row.remarktickets?.job_order_id,
-        created_by: row.remarktickets?.created_by,
-        description: row.remarktickets?.description,
-        remarktickets_status: row.remarktickets?.remarktickets_status,
-        created_at: row.remarktickets?.created_at,
-        last_updated: row.remarktickets?.last_updated,
-        deleted_at: row.remarktickets?.deleted_at,
+        ...row.remarktickets,
       },
-      created_at: row.remarkitems?.created_at,
-      last_updated: row.remarkitems?.last_updated,
-      deleted_at: row.remarkitems?.deleted_at,
     }));
 
     return { totalData, remarkitemsWithDetails };
@@ -90,7 +71,7 @@ export class RemarkItemsService {
     const result = await this.db
       .select()
       .from(remarkitems)
-      .leftJoin(item, eq(item.item_id, remarkitems.remark_items_id))
+      .leftJoin(product, eq(product.product_id, remarkitems.product_id))
       .leftJoin(
         remarktickets,
         eq(remarktickets.remark_id, remarkitems.remark_id),
@@ -98,35 +79,13 @@ export class RemarkItemsService {
       .where(eq(remarkitems.remark_id, Number(remark_id)));
 
     const remarkitemsWithDetails = result.map((row) => ({
-      remark_items_id: row.remarkitems.remark_items_id,
-      item: {
-        item_id: row.item?.item_id,
-        product_id: row.item?.product_id,
-        stock: row.item?.stock,
-        price: row.item?.price,
-        on_listing: row.item?.on_listing,
-        re_order_level: row.item?.re_order_level,
-        tag: row.item?.tag,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      ...row.remarkitems,
+      product: {
+        ...row.product,
       },
       remarktickets: {
-        remark_id: row.remarktickets?.remark_id,
-        remark_type_id: row.remarktickets?.remark_type_id,
-        job_order_id: row.remarktickets?.job_order_id,
-        description: row.remarktickets?.description,
-        content: row.remarktickets?.content,
-        remarktickets_status: row.remarktickets?.remarktickets_status,
-        created_by: row.remarktickets?.created_by,
-        deadline: row.remarktickets?.deadline,
-        created_at: row.remarktickets?.created_at,
-        last_updated: row.remarktickets?.last_updated,
-        deleted_at: row.remarktickets?.deleted_at,
+        ...row.remarktickets,
       },
-      created_at: row.remarkitems?.created_at,
-      last_updated: row.remarkitems?.last_updated,
-      deleted_at: row.remarkitems?.deleted_at,
     }));
     return remarkitemsWithDetails;
   }

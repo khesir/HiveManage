@@ -49,8 +49,14 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const { category_id, supplier_id, name, description, price, img_url } =
-        req.body;
+      const {
+        category_id,
+        supplier_id,
+        name,
+        description,
+        re_order_level,
+        on_listing,
+      } = req.body;
 
       await this.productService.createProduct({
         // Ensure correct method name
@@ -58,8 +64,8 @@ export class ProductController {
         supplier_id,
         name,
         description,
-        price,
-        img_url,
+        re_order_level,
+        on_listing,
       });
 
       res
@@ -78,11 +84,24 @@ export class ProductController {
   async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { product_id } = req.params;
-      const { category_id, supplier_id, name, description, price, img_url } =
-        req.body;
+      const {
+        category_id,
+        supplier_id,
+        name,
+        description,
+        re_order_level,
+        on_listing,
+      } = req.body;
 
       await this.productService.updateProduct(
-        { category_id, supplier_id, name, description, price, img_url },
+        {
+          category_id,
+          supplier_id,
+          name,
+          description,
+          re_order_level,
+          on_listing,
+        },
         Number(product_id),
       );
       res

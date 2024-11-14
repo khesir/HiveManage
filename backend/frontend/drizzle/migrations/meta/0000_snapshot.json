@@ -1,175 +1,9 @@
 {
-  "id": "c0d274cd-a51e-44ae-8021-779699a30ad1",
+  "id": "95143362-e700-4672-8c83-67f62e9416c0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.additional_pay": {
-      "name": "additional_pay",
-      "schema": "",
-      "columns": {
-        "additional_pay_id": {
-          "name": "additional_pay_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "additional_pay_type": {
-          "name": "additional_pay_type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "amount": {
-          "name": "amount",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "additional_pay_employee_id_employee_employee_id_fk": {
-          "name": "additional_pay_employee_id_employee_employee_id_fk",
-          "tableFrom": "additional_pay",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.adjustments": {
-      "name": "adjustments",
-      "schema": "",
-      "columns": {
-        "adjustments_id": {
-          "name": "adjustments_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "remarks": {
-          "name": "remarks",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "adjustments_type": {
-          "name": "adjustments_type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "amount": {
-          "name": "amount",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "adjustments_employee_id_employee_employee_id_fk": {
-          "name": "adjustments_employee_id_employee_employee_id_fk",
-          "tableFrom": "adjustments",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.arrived_items": {
       "name": "arrived_items",
       "schema": "",
@@ -313,99 +147,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.attendance": {
-      "name": "attendance",
-      "schema": "",
-      "columns": {
-        "attendance_id": {
-          "name": "attendance_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "date": {
-          "name": "date",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "clock_in": {
-          "name": "clock_in",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "clock_out": {
-          "name": "clock_out",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "hoursWorked": {
-          "name": "hoursWorked",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "attendance_status": {
-          "name": "attendance_status",
-          "type": "attendance_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "attendance_employee_id_employee_employee_id_fk": {
-          "name": "attendance_employee_id_employee_employee_id_fk",
-          "tableFrom": "attendance",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.auditLog": {
       "name": "auditLog",
       "schema": "",
@@ -466,104 +207,6 @@
         "auditLog_employee_id_employee_employee_id_fk": {
           "name": "auditLog_employee_id_employee_employee_id_fk",
           "tableFrom": "auditLog",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.benefits": {
-      "name": "benefits",
-      "schema": "",
-      "columns": {
-        "benefits_id": {
-          "name": "benefits_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "start": {
-          "name": "start",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "end": {
-          "name": "end",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "frequency": {
-          "name": "frequency",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "benefits_type": {
-          "name": "benefits_type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "amount": {
-          "name": "amount",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "benefits_employee_id_employee_employee_id_fk": {
-          "name": "benefits_employee_id_employee_employee_id_fk",
-          "tableFrom": "benefits",
           "tableTo": "employee",
           "columnsFrom": [
             "employee_id"
@@ -726,74 +369,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.channel": {
-      "name": "channel",
-      "schema": "",
-      "columns": {
-        "channel_id": {
-          "name": "channel_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "inquiry_id": {
-          "name": "inquiry_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "channel_name": {
-          "name": "channel_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "is_private": {
-          "name": "is_private",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "channel_inquiry_id_inquiry_inquiry_id_fk": {
-          "name": "channel_inquiry_id_inquiry_inquiry_id_fk",
-          "tableFrom": "channel",
-          "tableTo": "inquiry",
-          "columnsFrom": [
-            "inquiry_id"
-          ],
-          "columnsTo": [
-            "inquiry_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.customer": {
       "name": "customer",
       "schema": "",
@@ -889,104 +464,6 @@
       },
       "indexes": {},
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.deductions": {
-      "name": "deductions",
-      "schema": "",
-      "columns": {
-        "deduction_id": {
-          "name": "deduction_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "start": {
-          "name": "start",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "end": {
-          "name": "end",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "frequency": {
-          "name": "frequency",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "deduction_type": {
-          "name": "deduction_type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "amount": {
-          "name": "amount",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "deductions_employee_id_employee_employee_id_fk": {
-          "name": "deductions_employee_id_employee_employee_id_fk",
-          "tableFrom": "deductions",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -1379,92 +856,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.financial_info": {
-      "name": "financial_info",
-      "schema": "",
-      "columns": {
-        "financial_id": {
-          "name": "financial_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "pag_ibig_id": {
-          "name": "pag_ibig_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sss_id": {
-          "name": "sss_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "philhealth_id": {
-          "name": "philhealth_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tin": {
-          "name": "tin",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "bank_account_number": {
-          "name": "bank_account_number",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "financial_info_employee_id_employee_employee_id_fk": {
-          "name": "financial_info_employee_id_employee_employee_id_fk",
-          "tableFrom": "financial_info",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.inquiry": {
       "name": "inquiry",
       "schema": "",
@@ -1550,8 +941,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "item_id": {
-          "name": "item_id",
+        "product_id": {
+          "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1605,96 +996,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "inventory_record_item_id_item_item_id_fk": {
-          "name": "inventory_record_item_id_item_item_id_fk",
+        "inventory_record_product_id_product_product_id_fk": {
+          "name": "inventory_record_product_id_product_product_id_fk",
           "tableFrom": "inventory_record",
-          "tableTo": "item",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "item_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.item": {
-      "name": "item",
-      "schema": "",
-      "columns": {
-        "item_id": {
-          "name": "item_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "stock": {
-          "name": "stock",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "on_listing": {
-          "name": "on_listing",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "re_order_level": {
-          "name": "re_order_level",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tag": {
-          "name": "tag",
-          "type": "tag_item",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "item_product_id_product_product_id_fk": {
-          "name": "item_product_id_product_product_id_fk",
-          "tableFrom": "item",
           "tableTo": "product",
           "columnsFrom": [
             "product_id"
@@ -1919,325 +1223,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.leave_limit": {
-      "name": "leave_limit",
-      "schema": "",
-      "columns": {
-        "leave_limit_id": {
-          "name": "leave_limit_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "limit_count": {
-          "name": "limit_count",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 10.1
-        },
-        "leave_limit_type": {
-          "name": "leave_limit_type",
-          "type": "leave_limit_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "leave_limit_employee_id_employee_employee_id_fk": {
-          "name": "leave_limit_employee_id_employee_employee_id_fk",
-          "tableFrom": "leave_limit",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.leave_request": {
-      "name": "leave_request",
-      "schema": "",
-      "columns": {
-        "leave_request_id": {
-          "name": "leave_request_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "title": {
-          "name": "title",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "content": {
-          "name": "content",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "date_of_leave": {
-          "name": "date_of_leave",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "date_of_return": {
-          "name": "date_of_return",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "comment": {
-          "name": "comment",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "leave_request_type": {
-          "name": "leave_request_type",
-          "type": "leave_request_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "leave_request_employee_id_employee_employee_id_fk": {
-          "name": "leave_request_employee_id_employee_employee_id_fk",
-          "tableFrom": "leave_request",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.message": {
-      "name": "message",
-      "schema": "",
-      "columns": {
-        "message_id": {
-          "name": "message_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "inquiry_id": {
-          "name": "inquiry_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sender_id": {
-          "name": "sender_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sender_type": {
-          "name": "sender_type",
-          "type": "sender_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "content": {
-          "name": "content",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "message_inquiry_id_inquiry_inquiry_id_fk": {
-          "name": "message_inquiry_id_inquiry_inquiry_id_fk",
-          "tableFrom": "message",
-          "tableTo": "inquiry",
-          "columnsFrom": [
-            "inquiry_id"
-          ],
-          "columnsTo": [
-            "inquiry_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.on_payroll": {
-      "name": "on_payroll",
-      "schema": "",
-      "columns": {
-        "on_payroll_id": {
-          "name": "on_payroll_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "payroll_id": {
-          "name": "payroll_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "on_payroll_payroll_id_payroll_payroll_id_fk": {
-          "name": "on_payroll_payroll_id_payroll_payroll_id_fk",
-          "tableFrom": "on_payroll",
-          "tableTo": "payroll",
-          "columnsFrom": [
-            "payroll_id"
-          ],
-          "columnsTo": [
-            "payroll_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "on_payroll_employee_id_employee_employee_id_fk": {
-          "name": "on_payroll_employee_id_employee_employee_id_fk",
-          "tableFrom": "on_payroll",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.order": {
       "name": "order",
       "schema": "",
@@ -2400,87 +1385,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.participants": {
-      "name": "participants",
-      "schema": "",
-      "columns": {
-        "participants_id": {
-          "name": "participants_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "channel_id": {
-          "name": "channel_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "is_private": {
-          "name": "is_private",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "participants_employee_id_employee_employee_id_fk": {
-          "name": "participants_employee_id_employee_employee_id_fk",
-          "tableFrom": "participants",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "participants_channel_id_channel_channel_id_fk": {
-          "name": "participants_channel_id_channel_channel_id_fk",
-          "tableFrom": "participants",
-          "tableTo": "channel",
-          "columnsFrom": [
-            "channel_id"
-          ],
-          "columnsTo": [
-            "channel_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.payment": {
       "name": "payment",
       "schema": "",
@@ -2555,242 +1459,6 @@
           ],
           "columnsTo": [
             "service_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.payroll": {
-      "name": "payroll",
-      "schema": "",
-      "columns": {
-        "payroll_id": {
-          "name": "payroll_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "start": {
-          "name": "start",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "end": {
-          "name": "end",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "pay_date": {
-          "name": "pay_date",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "payroll_finished": {
-          "name": "payroll_finished",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "signatory_id": {
-          "name": "signatory_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "payroll_status": {
-          "name": "payroll_status",
-          "type": "payroll_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "payroll_signatory_id_signatory_signatory_id_fk": {
-          "name": "payroll_signatory_id_signatory_signatory_id_fk",
-          "tableFrom": "payroll",
-          "tableTo": "signatory",
-          "columnsFrom": [
-            "signatory_id"
-          ],
-          "columnsTo": [
-            "signatory_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.payroll_approval": {
-      "name": "payroll_approval",
-      "schema": "",
-      "columns": {
-        "payroll_approval_id": {
-          "name": "payroll_approval_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "on_payroll_id": {
-          "name": "on_payroll_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "approval_status": {
-          "name": "approval_status",
-          "type": "approval_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "approval_date": {
-          "name": "approval_date",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "payroll_approval_on_payroll_id_on_payroll_on_payroll_id_fk": {
-          "name": "payroll_approval_on_payroll_id_on_payroll_on_payroll_id_fk",
-          "tableFrom": "payroll_approval",
-          "tableTo": "on_payroll",
-          "columnsFrom": [
-            "on_payroll_id"
-          ],
-          "columnsTo": [
-            "on_payroll_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.payroll_reports": {
-      "name": "payroll_reports",
-      "schema": "",
-      "columns": {
-        "payroll_report": {
-          "name": "payroll_report",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "on_payroll_id": {
-          "name": "on_payroll_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "netpay": {
-          "name": "netpay",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "grosspay": {
-          "name": "grosspay",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "total_deductions": {
-          "name": "total_deductions",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "total_benefits": {
-          "name": "total_benefits",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "payroll_reports_on_payroll_id_on_payroll_on_payroll_id_fk": {
-          "name": "payroll_reports_on_payroll_id_on_payroll_on_payroll_id_fk",
-          "tableFrom": "payroll_reports",
-          "tableTo": "on_payroll",
-          "columnsFrom": [
-            "on_payroll_id"
-          ],
-          "columnsTo": [
-            "on_payroll_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2955,8 +1623,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "item_id": {
-          "name": "item_id",
+        "product_id": {
+          "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -2997,15 +1665,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "price_history_item_id_item_item_id_fk": {
-          "name": "price_history_item_id_item_item_id_fk",
+        "price_history_product_id_product_product_id_fk": {
+          "name": "price_history_product_id_product_product_id_fk",
           "tableFrom": "price_history",
-          "tableTo": "item",
+          "tableTo": "product",
           "columnsFrom": [
-            "item_id"
+            "product_id"
           ],
           "columnsTo": [
-            "item_id"
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3048,15 +1716,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "price": {
-          "name": "price",
-          "type": "real",
+        "on_listing": {
+          "name": "on_listing",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": false
         },
-        "img_url": {
-          "name": "img_url",
-          "type": "varchar",
+        "re_order_level": {
+          "name": "re_order_level",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -3470,8 +2138,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "item_id": {
-          "name": "item_id",
+        "product_id": {
+          "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -3517,15 +2185,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "remarkitems_item_id_item_item_id_fk": {
-          "name": "remarkitems_item_id_item_item_id_fk",
+        "remarkitems_product_id_product_product_id_fk": {
+          "name": "remarkitems_product_id_product_product_id_fk",
           "tableFrom": "remarkitems",
-          "tableTo": "item",
+          "tableTo": "product",
           "columnsFrom": [
-            "item_id"
+            "product_id"
           ],
           "columnsTo": [
-            "item_id"
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3892,8 +2560,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "item_id": {
-          "name": "item_id",
+        "product_id": {
+          "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -3941,15 +2609,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "reserve_item_id_item_item_id_fk": {
-          "name": "reserve_item_id_item_item_id_fk",
+        "reserve_product_id_product_product_id_fk": {
+          "name": "reserve_product_id_product_product_id_fk",
           "tableFrom": "reserve",
-          "tableTo": "item",
+          "tableTo": "product",
           "columnsFrom": [
-            "item_id"
+            "product_id"
           ],
           "columnsTo": [
-            "item_id"
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -4000,75 +2668,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.salary_info": {
-      "name": "salary_info",
-      "schema": "",
-      "columns": {
-        "salary_information_id": {
-          "name": "salary_information_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "payroll_frequency": {
-          "name": "payroll_frequency",
-          "type": "payroll_frequency",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "base_salary": {
-          "name": "base_salary",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "salary_info_employee_id_employee_employee_id_fk": {
-          "name": "salary_info_employee_id_employee_employee_id_fk",
-          "tableFrom": "salary_info",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.sales_items": {
       "name": "sales_items",
       "schema": "",
@@ -4079,8 +2678,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "item_id": {
-          "name": "item_id",
+        "product_id": {
+          "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -4133,15 +2732,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "sales_items_item_id_item_item_id_fk": {
-          "name": "sales_items_item_id_item_item_id_fk",
+        "sales_items_product_id_product_product_id_fk": {
+          "name": "sales_items_product_id_product_product_id_fk",
           "tableFrom": "sales_items",
-          "tableTo": "item",
+          "tableTo": "product",
           "columnsFrom": [
-            "item_id"
+            "product_id"
           ],
           "columnsTo": [
-            "item_id"
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -4281,80 +2880,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.signatory": {
-      "name": "signatory",
-      "schema": "",
-      "columns": {
-        "signatory_id": {
-          "name": "signatory_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "signatory_name": {
-          "name": "signatory_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "role": {
-          "name": "role",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "permission_level": {
-          "name": "permission_level",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "signatory_employee_id_employee_employee_id_fk": {
-          "name": "signatory_employee_id_employee_employee_id_fk",
-          "tableFrom": "signatory",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.stock_logs": {
       "name": "stock_logs",
       "schema": "",
@@ -4365,8 +2890,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "item_id": {
-          "name": "item_id",
+        "product_id": {
+          "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -4399,15 +2924,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "stock_logs_item_id_item_item_id_fk": {
-          "name": "stock_logs_item_id_item_item_id_fk",
+        "stock_logs_product_id_product_product_id_fk": {
+          "name": "stock_logs_product_id_product_product_id_fk",
           "tableFrom": "stock_logs",
-          "tableTo": "item",
+          "tableTo": "product",
           "columnsFrom": [
-            "item_id"
+            "product_id"
           ],
           "columnsTo": [
-            "item_id"
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -4495,26 +3020,6 @@
         "New",
         "Used",
         "Broken"
-      ]
-    },
-    "public.approval_status": {
-      "name": "approval_status",
-      "schema": "public",
-      "values": [
-        "Approved",
-        "Pending",
-        "Rejected"
-      ]
-    },
-    "public.attendance_status": {
-      "name": "attendance_status",
-      "schema": "public",
-      "values": [
-        "Present",
-        "Absent",
-        "Late",
-        "Early Leave",
-        "Paid Leave"
       ]
     },
     "public.borrow_status": {
@@ -4628,24 +3133,6 @@
         "Not Available"
       ]
     },
-    "public.leave_limit_type": {
-      "name": "leave_limit_type",
-      "schema": "public",
-      "values": [
-        "Sick Leave",
-        "Vacation Leave",
-        "Personal Leave"
-      ]
-    },
-    "public.leave_request_type": {
-      "name": "leave_request_type",
-      "schema": "public",
-      "values": [
-        "Sick Leave",
-        "Vacation Leave",
-        "Personal Leave"
-      ]
-    },
     "public.order_status": {
       "name": "order_status",
       "schema": "public",
@@ -4681,26 +3168,6 @@
         "Processing",
         "Declined",
         "Authorized"
-      ]
-    },
-    "public.payroll_frequency": {
-      "name": "payroll_frequency",
-      "schema": "public",
-      "values": [
-        "Daily",
-        "Weekly",
-        "Bi Weekly",
-        "Semi Monthly",
-        "Monthly"
-      ]
-    },
-    "public.payroll_status": {
-      "name": "payroll_status",
-      "schema": "public",
-      "values": [
-        "Active",
-        "Inactive",
-        "Inprogress"
       ]
     },
     "public.remarktickets_status": {
@@ -4746,18 +3213,6 @@
         "Borrow",
         "Purchase",
         "Exchange"
-      ]
-    },
-    "public.sender_type": {
-      "name": "sender_type",
-      "schema": "public",
-      "values": [
-        "User",
-        "Admin",
-        "Customer Support",
-        "Supplier",
-        "Employee",
-        "Manager"
       ]
     },
     "public.service_status": {

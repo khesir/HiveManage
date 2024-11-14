@@ -44,23 +44,10 @@ export class ProductAttachmentService {
       .offset(offset);
 
     const productattachmentWithDetails = result.map((row) => ({
-      product_attachment_id: row.product_attachment.product_attachment_id,
-
+      ...row.product_attachment,
       product: {
-        product_id: row.product?.supplier_id,
-        category_id: row.product?.name,
-        supplier_id: row.product?.name,
-        name: row.product?.name,
-        img_url: row.product?.img_url,
-        description: row.product?.description,
-        created_at: row.product?.created_at,
-        last_updated: row.product?.last_updated,
-        deleted_at: row.product?.deleted_at,
+        ...row.product,
       },
-      filepath: row.product_attachment?.filePath,
-      created_at: row.product_attachment?.created_at,
-      last_updated: row.product_attachment?.last_updated,
-      deleted_at: row.product_attachment?.deleted_at,
     }));
 
     return { totalData, productattachmentWithDetails };
@@ -74,22 +61,10 @@ export class ProductAttachmentService {
       .where(eq(product.product_id, Number(product_id)));
 
     const productattachmentWithDetails = result.map((row) => ({
-      product_attachment_id: row.product_attachment.product_attachment_id,
+      ...row.product_attachment,
       product: {
-        product_id: row.product?.supplier_id,
-        category_id: row.product?.name,
-        supplier_id: row.product?.name,
-        name: row.product?.name,
-        img_url: row.product?.img_url,
-        description: row.product?.description,
-        created_at: row.product?.created_at,
-        last_updated: row.product?.last_updated,
-        deleted_at: row.product?.deleted_at,
+        ...row.product,
       },
-      filepath: row.product_attachment?.filePath,
-      created_at: row.product_attachment?.created_at,
-      last_updated: row.product_attachment?.last_updated,
-      deleted_at: row.product_attachment?.deleted_at,
     }));
 
     return productattachmentWithDetails;

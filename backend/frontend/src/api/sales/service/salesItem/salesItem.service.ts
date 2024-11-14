@@ -3,8 +3,10 @@ import {
   category,
   customer,
   employee,
-  item,
+  inventory_record,
+  price_history,
   product,
+  product_category,
   sales_items,
   SchemaType,
   service,
@@ -67,14 +69,76 @@ export class SalesItemService {
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
+    const productCategories = await this.db
+      .select()
+      .from(product_category)
+      .leftJoin(
+        category,
+        eq(category.category_id, product_category.category_id),
+      )
+      .where(isNull(product_category.deleted_at));
+    const categoryByProduct = productCategories.reduce<
+      Record<number, unknown[]>
+    >((acc, product_category) => {
+      const categoryId = product_category.product_category?.category_id;
+      if (categoryId !== null && !(categoryId in acc)) {
+        acc[categoryId] = [];
+      }
+      if (categoryId !== null) {
+        acc[categoryId].push({
+          ...product_category.product_category,
+          category: { ...product_category.product_category },
+        });
+      }
+      return acc;
+    }, {});
 
+    const inventoryRecords = await this.db
+      .select()
+      .from(inventory_record)
+      .leftJoin(
+        supplier,
+        eq(inventory_record.supplier_id, supplier.supplier_id),
+      )
+      .where(isNull(inventory_record.deleted_at));
+    const inventoryRecordByProduct = inventoryRecords.reduce<
+      Record<number, unknown[]>
+    >((acc, record) => {
+      const recordID = record.inventory_record.product_id;
+      if (recordID !== null && !(recordID in acc)) {
+        acc[recordID] = [];
+      }
+      if (recordID !== null) {
+        acc[recordID].push({
+          ...record.inventory_record,
+          supplier: { ...record.supplier },
+        });
+      }
+      return acc;
+    }, {});
+
+    const priceHistory = await this.db
+      .select()
+      .from(price_history)
+      .where(isNull(price_history.deleted_at));
+    const priceHistoryByProduct = priceHistory.reduce<
+      Record<number, unknown[]>
+    >((acc, price) => {
+      const recordID = price.product_id;
+      if (recordID !== null && !(recordID in acc)) {
+        acc[recordID] = [];
+      }
+      if (recordID !== null) {
+        acc[recordID].push({
+          ...price,
+        });
+      }
+      return acc;
+    }, {});
     const result = await this.db
       .select()
       .from(sales_items)
-      .leftJoin(item, eq(sales_items.item_id, item.item_id))
-      .leftJoin(product, eq(product.product_id, item.product_id))
-      .leftJoin(category, eq(category.category_id, product.category_id))
-      .leftJoin(supplier, eq(supplier.supplier_id, product.supplier_id))
+      .leftJoin(product, eq(sales_items.product_id, product.product_id))
       .leftJoin(service, eq(service.service_id, sales_items.service_id))
       .leftJoin(employee, eq(employee.employee_id, service.employee_id))
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
@@ -88,183 +152,121 @@ export class SalesItemService {
       .offset(offset);
 
     const salesitemWithDetails = result.map((row) => ({
-      sales_item_id: row.sales_items.sales_items_id,
-      item: {
-        item_id: row.item?.item_id,
-        product: {
-          product_id: row.product?.product_id,
-          category: {
-            category_id: row.category?.category_id,
-            name: row.category?.name,
-            content: row.category?.content,
-            created_at: row.category?.created_at,
-            last_updated: row.category?.last_updated,
-            deleted_at: row.category?.deleted_at,
-          },
-          supplier: {
-            supplier_id: row.supplier?.supplier_id,
-            name: row.supplier?.name,
-            contact_number: row.supplier?.contact_number,
-            remarks: row.supplier?.remarks,
-            created_at: row.supplier?.created_at,
-            last_updated: row.supplier?.last_updated,
-            deleted_at: row.supplier?.deleted_at,
-          },
-          name: row.product?.name,
-          img_url: row.product?.img_url,
-          description: row.product?.description,
-          price: row.product?.price,
-          created_at: row.product?.created_at,
-          last_updated: row.product?.last_updated,
-          deleted_at: row.product?.deleted_at,
-        },
-        stock: row.item?.stock,
-        on_listing: row.item?.on_listing,
-        tag: row.item?.tag,
-        re_order_level: row.item?.re_order_level,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      ...row.sales_items,
+      product: {
+        ...row.product,
+        price_history: priceHistoryByProduct[row.product!.product_id],
+        product_categories: categoryByProduct[row.product!.product_id],
+        inventory_record: inventoryRecordByProduct[row.product!.product_id],
       },
       service: {
-        service_id: row.service?.service_id,
+        ...row.service,
         employee: {
-          employee_id: row.employee?.employee_id,
-          firstname: row.employee?.firstname,
-          middlename: row.employee?.middlename,
-          lastname: row.employee?.lastname,
-          email: row.employee?.email,
-          profile_link: row.employee?.profile_link,
-          created_at: row.employee?.created_at,
-          last_updated: row.employee?.last_updated,
-          deleted_at: row.employee?.deleted_at,
+          ...row.employee,
         },
         customer: {
-          customer_id: row.customer?.customer_id,
-          firstname: row.customer?.firstname,
-          lastname: row.customer?.lastname,
-          contact_phone: row.customer?.contact_phone,
-          socials: row.customer?.socials,
-          address_line: row.customer?.address_line,
-          baranay: row.customer?.address_line,
-          province: row.customer?.province,
-          standing: row.customer?.standing,
+          ...row.customer,
         },
-        service_title: row.service?.service_title,
-        service_description: row.service?.service_description,
-        service_status: row.service?.service_status,
-        has_reservation: row.service?.has_reservation,
-        has_sales_item: row.service?.has_sales_item,
-        has_borrow: row.service?.has_borrow,
-        has_job_order: row.service?.has_job_order,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
       },
-      quantity: row.sales_items?.quantity,
-      sales_item_type: row.sales_items?.sales_item_type,
-      total_price: row.sales_items?.total_price,
-      created_at: row.sales_items?.created_at,
-      last_updated: row.sales_items?.last_updated,
-      deleted_at: row.sales_items?.deleted_at,
     }));
 
     return { totalData, salesitemWithDetails };
   }
 
   async getSalesItemById(sales_item_id: number) {
+    const productCategories = await this.db
+      .select()
+      .from(product_category)
+      .leftJoin(
+        category,
+        eq(category.category_id, product_category.category_id),
+      )
+      .where(isNull(product_category.deleted_at));
+    const categoryByProduct = productCategories.reduce<
+      Record<number, unknown[]>
+    >((acc, product_category) => {
+      const categoryId = product_category.product_category?.category_id;
+      if (categoryId !== null && !(categoryId in acc)) {
+        acc[categoryId] = [];
+      }
+      if (categoryId !== null) {
+        acc[categoryId].push({
+          ...product_category.product_category,
+          category: { ...product_category.product_category },
+        });
+      }
+      return acc;
+    }, {});
+
+    const inventoryRecords = await this.db
+      .select()
+      .from(inventory_record)
+      .leftJoin(
+        supplier,
+        eq(inventory_record.supplier_id, supplier.supplier_id),
+      )
+      .where(isNull(inventory_record.deleted_at));
+    const inventoryRecordByProduct = inventoryRecords.reduce<
+      Record<number, unknown[]>
+    >((acc, record) => {
+      const recordID = record.inventory_record.product_id;
+      if (recordID !== null && !(recordID in acc)) {
+        acc[recordID] = [];
+      }
+      if (recordID !== null) {
+        acc[recordID].push({
+          ...record.inventory_record,
+          supplier: { ...record.supplier },
+        });
+      }
+      return acc;
+    }, {});
+
+    const priceHistory = await this.db
+      .select()
+      .from(price_history)
+      .where(isNull(price_history.deleted_at));
+
+    const priceHistoryByProduct = priceHistory.reduce<
+      Record<number, unknown[]>
+    >((acc, price) => {
+      const recordID = price.product_id;
+      if (recordID !== null && !(recordID in acc)) {
+        acc[recordID] = [];
+      }
+      if (recordID !== null) {
+        acc[recordID].push({
+          ...price,
+        });
+      }
+      return acc;
+    }, {});
     const result = await this.db
       .select()
       .from(sales_items)
-      .leftJoin(item, eq(sales_items.item_id, item.item_id))
-      .leftJoin(product, eq(product.product_id, item.product_id))
-      .leftJoin(category, eq(category.category_id, product.category_id))
-      .leftJoin(supplier, eq(supplier.supplier_id, product.supplier_id))
+      .leftJoin(product, eq(product.product_id, sales_items.product_id))
       .leftJoin(service, eq(service.service_id, sales_items.service_id))
       .leftJoin(employee, eq(employee.employee_id, service.employee_id))
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
       .where(eq(sales_items.sales_items_id, Number(sales_item_id)));
 
     const salesitemWithDetails = result.map((row) => ({
-      sales_item_id: row.sales_items.sales_items_id,
-      item: {
-        item_id: row.item?.item_id,
-        product: {
-          product_id: row.product?.product_id,
-          category: {
-            category_id: row.category?.category_id,
-            name: row.category?.name,
-            content: row.category?.content,
-            created_at: row.category?.created_at,
-            last_updated: row.category?.last_updated,
-            deleted_at: row.category?.deleted_at,
-          },
-          supplier: {
-            supplier_id: row.supplier?.supplier_id,
-            name: row.supplier?.name,
-            contact_number: row.supplier?.contact_number,
-            remarks: row.supplier?.remarks,
-            created_at: row.supplier?.created_at,
-            last_updated: row.supplier?.last_updated,
-            deleted_at: row.supplier?.deleted_at,
-          },
-          name: row.product?.name,
-          img_url: row.product?.img_url,
-          description: row.product?.description,
-          price: row.product?.price,
-          created_at: row.product?.created_at,
-          last_updated: row.product?.last_updated,
-          deleted_at: row.product?.deleted_at,
-        },
-        stock: row.item?.stock,
-        on_listing: row.item?.on_listing,
-        tag: row.item?.tag,
-        re_order_level: row.item?.re_order_level,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      ...row.sales_items,
+      product: {
+        ...row.product,
+        price_history: priceHistoryByProduct[row.product!.product_id],
+        product_categories: categoryByProduct[row.product!.product_id],
+        inventory_record: inventoryRecordByProduct[row.product!.product_id],
       },
       service: {
-        service_id: row.service?.service_id,
+        ...row.service,
         employee: {
-          employee_id: row.employee?.employee_id,
-          firstname: row.employee?.firstname,
-          middlename: row.employee?.middlename,
-          lastname: row.employee?.lastname,
-          email: row.employee?.email,
-          profile_link: row.employee?.profile_link,
-          created_at: row.employee?.created_at,
-          last_updated: row.employee?.last_updated,
-          deleted_at: row.employee?.deleted_at,
+          ...row.employee,
         },
         customer: {
-          customer_id: row.customer?.customer_id,
-          firstname: row.customer?.firstname,
-          lastname: row.customer?.lastname,
-          contact_phone: row.customer?.contact_phone,
-          socials: row.customer?.socials,
-          address_line: row.customer?.address_line,
-          baranay: row.customer?.address_line,
-          province: row.customer?.province,
-          standing: row.customer?.standing,
+          ...row.customer,
         },
-        service_title: row.service?.service_title,
-        service_description: row.service?.service_description,
-        service_status: row.service?.service_status,
-        has_reservation: row.service?.has_reservation,
-        has_sales_item: row.service?.has_sales_item,
-        has_borrow: row.service?.has_borrow,
-        has_job_order: row.service?.has_job_order,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
       },
-      quantity: row.sales_items?.quantity,
-      sales_item_type: row.sales_items?.sales_item_type,
-      total_price: row.sales_items?.total_price,
-      created_at: row.sales_items?.created_at,
-      last_updated: row.sales_items?.last_updated,
-      deleted_at: row.sales_items?.deleted_at,
     }));
 
     return salesitemWithDetails;

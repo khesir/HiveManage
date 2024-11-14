@@ -1,7 +1,10 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import {
   category,
+  inventory_record,
+  price_history,
   product,
+  product_category,
   SchemaType,
   supplier,
 } from '@/drizzle/drizzle.schema';
@@ -17,10 +20,7 @@ export class ProductService {
 
   async createProduct(data: CreateProduct) {
     // Ensure the data passed matches expected schema and format
-    await this.db.insert(product).values({
-      ...data,
-      price: parseFloat(data.price.toFixed(2)), // Example to handle decimal precision
-    });
+    await this.db.insert(product).values(data);
   }
 
   async getAllProduct(sort: string, limit: number, offset: number) {
@@ -34,12 +34,76 @@ export class ProductService {
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
+    const productCategories = await this.db
+      .select()
+      .from(product_category)
+      .leftJoin(
+        category,
+        eq(category.category_id, product_category.category_id),
+      )
+      .where(isNull(product_category.deleted_at));
+    const categoryByProduct = productCategories.reduce<
+      Record<number, unknown[]>
+    >((acc, product_category) => {
+      const categoryId = product_category.product_category?.category_id;
+      if (categoryId !== null && !(categoryId in acc)) {
+        acc[categoryId] = [];
+      }
+      if (categoryId !== null) {
+        acc[categoryId].push({
+          ...product_category.product_category,
+          category: { ...product_category.product_category },
+        });
+      }
+      return acc;
+    }, {});
 
+    const inventoryRecords = await this.db
+      .select()
+      .from(inventory_record)
+      .leftJoin(
+        supplier,
+        eq(inventory_record.supplier_id, supplier.supplier_id),
+      )
+      .where(isNull(inventory_record.deleted_at));
+    const inventoryRecordByProduct = inventoryRecords.reduce<
+      Record<number, unknown[]>
+    >((acc, record) => {
+      const recordID = record.inventory_record.product_id;
+      if (recordID !== null && !(recordID in acc)) {
+        acc[recordID] = [];
+      }
+      if (recordID !== null) {
+        acc[recordID].push({
+          ...record.inventory_record,
+          supplier: { ...record.supplier },
+        });
+      }
+      return acc;
+    }, {});
+
+    const priceHistory = await this.db
+      .select()
+      .from(price_history)
+      .where(isNull(price_history.deleted_at));
+
+    const priceHistoryByProduct = priceHistory.reduce<
+      Record<number, unknown[]>
+    >((acc, price) => {
+      const recordID = price.product_id;
+      if (recordID !== null && !(recordID in acc)) {
+        acc[recordID] = [];
+      }
+      if (recordID !== null) {
+        acc[recordID].push({
+          ...price,
+        });
+      }
+      return acc;
+    }, {});
     const result = await this.db
       .select()
       .from(product)
-      .leftJoin(category, eq(product.category_id, product.product_id))
-      .leftJoin(supplier, eq(product.supplier_id, supplier.supplier_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(product.created_at) : desc(product.created_at),
@@ -48,32 +112,10 @@ export class ProductService {
       .offset(offset);
 
     const productWithDetails = result.map((row) => ({
-      product_id: row.product.product_id,
-      category: {
-        category_id: row.category?.category_id,
-        name: row.category?.name,
-        content: row.category?.content,
-        created_at: row.category?.created_at,
-        last_updated: row.category?.last_updated,
-        deleted_at: row.category?.deleted_at,
-
-        supplier: {
-          supplier_id: row.supplier?.supplier_id,
-          name: row.supplier?.name,
-          contact_number: row.supplier?.contact_number,
-          remarks: row.supplier?.remarks,
-          created_at: row.supplier?.created_at,
-          last_updated: row.supplier?.last_updated,
-          deleted_at: row.supplier?.deleted_at,
-        },
-      },
-      name: row.product?.name,
-      description: row.product?.description,
-      price: row.product?.price,
-      img_url: row.product?.img_url,
-      created_at: row.product?.created_at,
-      last_updated: row.product?.last_updated,
-      deleted_at: row.product?.deleted_at,
+      ...row,
+      price_history: priceHistoryByProduct[row.product_id],
+      product_categories: categoryByProduct[row.product_id],
+      inventory_record: inventoryRecordByProduct[row.product_id],
     }));
 
     return { totalData, productWithDetails };
@@ -83,37 +125,10 @@ export class ProductService {
     const result = await this.db
       .select()
       .from(product)
-      .leftJoin(category, eq(product.category_id, category.category_id))
-      .leftJoin(supplier, eq(product.supplier_id, supplier.supplier_id))
       .where(eq(product.product_id, Number(product_id)));
 
     const productWithDetails = result.map((row) => ({
-      product_id: row.product.product_id,
-      category: {
-        category_id: row.category?.category_id,
-        name: row.category?.name,
-        content: row.category?.content,
-        created_at: row.category?.created_at,
-        last_updated: row.category?.last_updated,
-        deleted_at: row.category?.deleted_at,
-
-        supplier: {
-          supplier_id: row.supplier?.supplier_id,
-          name: row.supplier?.name,
-          contact_number: row.supplier?.contact_number,
-          remarks: row.supplier?.remarks,
-          created_at: row.supplier?.created_at,
-          last_updated: row.supplier?.last_updated,
-          deleted_at: row.supplier?.deleted_at,
-        },
-      },
-      name: row.product?.name,
-      description: row.product?.description,
-      price: row.product?.price,
-      img_url: row.product?.img_url,
-      created_at: row.product?.created_at,
-      last_updated: row.product?.last_updated,
-      deleted_at: row.product?.deleted_at,
+      ...row,
     }));
 
     return productWithDetails;

@@ -12,12 +12,6 @@ import {
 } from './employee.middlewares';
 import personalInformationRoute from '../personal_information/personalInformation.route';
 import employmentInformationRoute from '../employmentInformation/employmentInformation.route';
-import financiallInformationRoute from '../financialInformation/financialInformation.route';
-import salaryInformationRoute from '../salary_information/salaryInformation.route';
-import benefitRoute from '../benefits/benefits.route';
-import deductionRoute from '../deductions/deductions.route';
-import additionalPayRoute from '../additional_pay/additionalPay.route';
-import adjustmentsRoute from '../adjustments/adjustments.route';
 
 const employeeRoute = Router({ mergeParams: true });
 const employeeController = new EmployeeController(db);
@@ -81,16 +75,5 @@ employeeRoute.use(
   '/:employee_id/employmentInformation',
   employmentInformationRoute,
 );
-
-employeeRoute.use(
-  '/:employee_id/financialInformation',
-  financiallInformationRoute,
-);
-
-employeeRoute.use('/:employee_id/salaryInformation', salaryInformationRoute);
-employeeRoute.use('/:employee_id/benefits', benefitRoute);
-employeeRoute.use('/:employee_id/deductions', deductionRoute);
-employeeRoute.use('/:employee_id/additionalPays', additionalPayRoute);
-employeeRoute.use('/:employee_id/adjustments', adjustmentsRoute);
 
 export default employeeRoute;

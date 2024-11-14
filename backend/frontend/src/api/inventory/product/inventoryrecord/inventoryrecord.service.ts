@@ -1,6 +1,6 @@
 import {
-  item,
   inventory_record,
+  product,
   SchemaType,
   supplier,
 } from '@/drizzle/drizzle.schema';
@@ -20,7 +20,7 @@ export class InventoryRecordService {
   }
 
   async getAllInventoryRecord(
-    item_id: string | undefined,
+    product_id: string | undefined,
     tag: string | undefined,
     sort: string,
     limit: number,
@@ -50,8 +50,8 @@ export class InventoryRecordService {
         throw new Error(`Invalid payment status: ${tag}`);
       }
     }
-    if (item_id) {
-      conditions.push(eq(inventory_record.item_id, Number(item_id)));
+    if (product_id) {
+      conditions.push(eq(inventory_record.product_id, Number(product_id)));
     }
 
     const totalCountQuery = await this.db
@@ -70,7 +70,7 @@ export class InventoryRecordService {
         supplier,
         eq(supplier.supplier_id, inventory_record.supplier_id),
       )
-      .leftJoin(item, eq(item.item_id, inventory_record.item_id))
+      .leftJoin(product, eq(product.product_id, inventory_record.product_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -81,39 +81,18 @@ export class InventoryRecordService {
       .offset(offset);
 
     const inventoryrecordWithDetails = result.map((row) => ({
-      inventory_record_id: row.inventory_record.inventory_record_id,
+      ...row.inventory_record,
       supplier: {
-        supplier_id: row.supplier?.supplier_id,
-        name: row.supplier?.name,
-        contact_number: row.supplier?.contact_number,
-        remarks: row.supplier?.remarks,
-        created_at: row.supplier?.created_at,
-        last_updated: row.supplier?.last_updated,
-        deleted_at: row.supplier?.deleted_at,
+        ...row.supplier,
       },
-      item: {
-        item_id: row.item?.item_id,
-        product_id: row.item?.product_id,
-        stock: row.item?.stock,
-        price: row.item?.price,
-        on_listing: row.item?.on_listing,
-        re_order_level: row.item?.re_order_level,
-        tag: row.item?.tag,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      product: {
+        ...row.product,
       },
-      tag: row.inventory_record?.tag,
-      stock: row.inventory_record?.stock,
-      created_at: row.inventory_record?.created_at,
-      last_updated: row.inventory_record?.last_updated,
-      deleted_at: row.inventory_record?.deleted_at,
     }));
-
     return { totalData, inventoryrecordWithDetails };
   }
 
-  async getInventoryRecordByID(item_supplier_id: string) {
+  async getInventoryRecordByID(inventory_record_id: string) {
     const result = await this.db
       .select()
       .from(inventory_record)
@@ -121,39 +100,19 @@ export class InventoryRecordService {
         supplier,
         eq(supplier.supplier_id, inventory_record.supplier_id),
       )
-      .leftJoin(item, eq(item.item_id, inventory_record.item_id))
+      .leftJoin(product, eq(product.product_id, inventory_record.product_id))
       .where(
-        eq(inventory_record.inventory_record_id, Number(item_supplier_id)),
+        eq(inventory_record.inventory_record_id, Number(inventory_record_id)),
       );
 
     const inventoryrecordWithDetails = result.map((row) => ({
-      inventory_record_id: row.inventory_record.inventory_record_id,
+      ...row.inventory_record,
       supplier: {
-        supplier_id: row.supplier?.supplier_id,
-        name: row.supplier?.name,
-        contact_number: row.supplier?.contact_number,
-        remarks: row.supplier?.remarks,
-        created_at: row.supplier?.created_at,
-        last_updated: row.supplier?.last_updated,
-        deleted_at: row.supplier?.deleted_at,
+        ...row.supplier,
       },
-      item: {
-        item_id: row.item?.item_id,
-        product_id: row.item?.product_id,
-        stock: row.item?.stock,
-        price: row.item?.price,
-        on_listing: row.item?.on_listing,
-        re_order_level: row.item?.re_order_level,
-        tag: row.item?.tag,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      product: {
+        ...row.product,
       },
-      tag: row.inventory_record?.tag,
-      stock: row.inventory_record?.stock,
-      created_at: row.inventory_record?.created_at,
-      last_updated: row.inventory_record?.last_updated,
-      deleted_at: row.inventory_record?.deleted_at,
     }));
 
     return inventoryrecordWithDetails;

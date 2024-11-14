@@ -3,30 +3,15 @@ import { faker } from '@faker-js/faker';
 import {
   employee,
   personalInformation,
-  financialInformation,
-  salaryInformation,
   employmentInformation,
   department,
   designation,
   auditLog,
-  leaveLimit,
-  leaveRequest,
-  payroll,
-  onPayroll,
-  payrollApproval,
-  signatory,
-  payrollReports,
-  deductions,
-  benefits,
-  adjustments,
-  additionalPay,
-  attendance,
   product,
   category,
   supplier,
   order,
   arrived_Items,
-  item,
   sales_items,
   payment,
   receipt,
@@ -35,10 +20,6 @@ import {
   borrow,
   jobOrder,
   reports,
-  participants,
-  channel,
-  inquiry,
-  message,
   customer,
   stocksLogs,
   assignedemployees,
@@ -66,7 +47,6 @@ import { type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SupabaseService } from '../supabase/supabase.service';
 import * as fs from 'fs';
 import * as path from 'path';
-import { generateUniqueFileName } from '@/lib/datefns';
 import mime from 'mime';
 const supabase = new SupabaseService();
 // Create file samples
@@ -137,7 +117,6 @@ async function createProfileBucketIfNotExists() {
 // ===================== EMPLOYEE BASE =========================
 
 async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
-  const departments = await db.select().from(department);
   const employeePositions = await db.select().from(position);
 
   const employees = [
@@ -179,8 +158,6 @@ async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
   ];
   const employeesWithProfileLinks = await Promise.all(
     employees.map(async (data) => {
-      const baseName = `${data.firstname} - ${data.middlename} - ${data.lastname}`;
-
       // Select a random file from samplePosters
       const randomFile =
         samplePosters[Math.floor(Math.random() * samplePosters.length)];
@@ -240,440 +217,6 @@ async function seedEmployeePosition(db: PostgresJsDatabase<SchemaType>) {
   ];
 
   await db.insert(position).values(employeePosition);
-}
-
-// ===================== Employee Informations =========================
-
-async function seedPersonalInformations(db: PostgresJsDatabase<SchemaType>) {
-  const allowedGenders: ('Male' | 'Female' | 'Others')[] = [
-    'Male',
-    'Female',
-    'Others',
-  ];
-  const allowedRelationships: ('Parent' | 'Sibling' | 'Friend')[] = [
-    'Parent',
-    'Sibling',
-    'Friend',
-  ];
-  const employees = await db.select().from(employee);
-
-  const personalInfos = [
-    {
-      employee_id: employees[0].employee_id,
-      birthday: '1985-03-15',
-      sex: faker.helpers.arrayElement(allowedGenders),
-      phone: '09171234567',
-      email: 'john.doe@example.com',
-      address_line: '1234 Elm Street',
-      postal_code: '12345',
-      emergency_contact_name: 'Jane Doe',
-      emergency_contact_phone: '09181234567',
-      emergency_contact_relationship:
-        faker.helpers.arrayElement(allowedRelationships),
-    },
-    {
-      employee_id: employees[1].employee_id,
-      birthday: '1990-06-20',
-      sex: faker.helpers.arrayElement(allowedGenders),
-      phone: '09171234568',
-      email: 'alice.smith@example.com',
-      address_line: '5678 Oak Avenue',
-      postal_code: '67890',
-      emergency_contact_name: 'Bob Smith',
-      emergency_contact_phone: '09181234568',
-      emergency_contact_relationship:
-        faker.helpers.arrayElement(allowedRelationships),
-    },
-    {
-      employee_id: employees[2].employee_id,
-      birthday: '1990-06-20',
-      sex: faker.helpers.arrayElement(allowedGenders),
-      phone: '09171234568',
-      email: 'alice.smith@example.com',
-      address_line: '5678 Oak Avenue',
-      postal_code: '67890',
-      emergency_contact_name: 'Bob Smith',
-      emergency_contact_phone: '09181234568',
-      emergency_contact_relationship:
-        faker.helpers.arrayElement(allowedRelationships),
-    },
-    {
-      employee_id: employees[3].employee_id,
-      birthday: '1990-06-20',
-      sex: faker.helpers.arrayElement(allowedGenders),
-      phone: '09171234568',
-      email: 'alice.smith@example.com',
-      address_line: '5678 Oak Avenue',
-      postal_code: '67890',
-      emergency_contact_name: 'Bob Smith',
-      emergency_contact_phone: '09181234568',
-      emergency_contact_relationship:
-        faker.helpers.arrayElement(allowedRelationships),
-    },
-    {
-      employee_id: employees[4].employee_id,
-      birthday: '1990-06-20',
-      sex: faker.helpers.arrayElement(allowedGenders),
-      phone: '09171234568',
-      email: 'alice.smith@example.com',
-      address_line: '5678 Oak Avenue',
-      postal_code: '67890',
-      emergency_contact_name: 'Bob Smith',
-      emergency_contact_phone: '09181234568',
-      emergency_contact_relationship:
-        faker.helpers.arrayElement(allowedRelationships),
-    },
-    {
-      employee_id: employees[5].employee_id,
-      birthday: '1990-06-20',
-      sex: faker.helpers.arrayElement(allowedGenders),
-      phone: '09171234568',
-      email: 'alice.smith@example.com',
-      address_line: '5678 Oak Avenue',
-      postal_code: '67890',
-      emergency_contact_name: 'Bob Smith',
-      emergency_contact_phone: '09181234568',
-      emergency_contact_relationship:
-        faker.helpers.arrayElement(allowedRelationships),
-    },
-    {
-      employee_id: employees[6].employee_id,
-      birthday: '1990-06-20',
-      sex: faker.helpers.arrayElement(allowedGenders),
-      phone: '09171234568',
-      email: 'alice.smith@example.com',
-      address_line: '5678 Oak Avenue',
-      postal_code: '67890',
-      emergency_contact_name: 'Bob Smith',
-      emergency_contact_phone: '09181234568',
-      emergency_contact_relationship:
-        faker.helpers.arrayElement(allowedRelationships),
-    },
-    // Add more entries as needed
-  ];
-
-  await db.insert(personalInformation).values(personalInfos);
-  log.info('Personal Information records seeded successfully.');
-}
-
-async function seedFinancialInformations(db: PostgresJsDatabase<SchemaType>) {
-  const employees = await db.select().from(employee);
-
-  const financialInfos = [
-    {
-      employee_id: employees[0].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[1].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[2].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[3].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[4].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[5].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[6].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[7].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-    {
-      employee_id: employees[8].employee_id,
-      pag_ibig_id: '123456789012',
-      sss_id: '1234567890',
-      philhealth_id: '123456789012',
-      tin: '123456789',
-      bank_account_number: '1234567890123456',
-    },
-  ];
-
-  await db.insert(financialInformation).values(financialInfos);
-  log.info('Financial Information records seeded successfully.');
-}
-
-async function seedSalaryInformations(db: PostgresJsDatabase<SchemaType>) {
-  const allowedFrequencies: (
-    | 'Daily'
-    | 'Weekly'
-    | 'Bi Weekly'
-    | 'Semi Monthly'
-    | 'Monthly'
-  )[] = ['Daily', 'Weekly', 'Bi Weekly', 'Semi Monthly', 'Monthly'];
-  const employees = await db.select().from(employee);
-
-  const salaryInfos = [
-    {
-      employee_id: employees[1].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 50000,
-    },
-    {
-      employee_id: employees[2].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 25000,
-    },
-    {
-      employee_id: employees[3].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 30000,
-    },
-    {
-      employee_id: employees[4].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 30000,
-    },
-    {
-      employee_id: employees[5].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 30000,
-    },
-    {
-      employee_id: employees[6].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 30000,
-    },
-    {
-      employee_id: employees[7].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 30000,
-    },
-    {
-      employee_id: employees[8].employee_id,
-      payroll_frequency: faker.helpers.arrayElement(allowedFrequencies),
-      base_salary: 30000,
-    },
-  ];
-
-  await db.insert(salaryInformation).values(salaryInfos);
-  log.info('Salary Information records seeded successfully.');
-}
-
-async function seedEmploymentInformations(db: PostgresJsDatabase<SchemaType>) {
-  const allowedEmployeeTypes: (
-    | 'Regular'
-    | 'Probationary'
-    | 'Contractual'
-    | 'Seasonal'
-    | 'Temporary'
-  )[] = ['Regular', 'Probationary', 'Contractual', 'Seasonal', 'Temporary'];
-
-  const allowedEmployeeStatuses: (
-    | 'Active'
-    | 'OnLeave'
-    | 'Terminated'
-    | 'Resigned'
-    | 'Suspended'
-    | 'Retired'
-    | 'Inactive'
-  )[] = [
-    'Active',
-    'OnLeave',
-    'Terminated',
-    'Resigned',
-    'Suspended',
-    'Retired',
-    'Inactive',
-  ];
-
-  // Sample data for employees, departments, and designations
-  const employees = await db.select().from(employee);
-  const departments = await db.select().from(department);
-  const designations = await db.select().from(designation);
-
-  // Generate employment information using realistic sample data
-  const employmentInfos = [
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      department_id: faker.helpers.arrayElement(departments).department_id,
-      designation_id: faker.helpers.arrayElement(designations).designation_id,
-      employee_type: faker.helpers.arrayElement(allowedEmployeeTypes),
-      employee_status: faker.helpers.arrayElement(allowedEmployeeStatuses),
-    },
-    // Continue adding more realistic entries until you reach 50...
-  ];
-
-  await db.insert(employmentInformation).values(employmentInfos);
-  log.info('Employee Information records seeded successfully.');
 }
 
 //  =======================================================================================
@@ -874,1331 +417,6 @@ async function seedAuditLogs(db: PostgresJsDatabase<SchemaType>) {
   log.info('Audit Logs records seeded successfully.');
 }
 
-async function seedLeaveLimits(db: PostgresJsDatabase<SchemaType>) {
-  const employees = await db.select().from(employee);
-
-  const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
-    'Sick Leave',
-    'Vacation Leave',
-    'Personal Leave',
-  ];
-
-  const leaveLimits = [
-    {
-      employee_id: employees[0]?.employee_id || null,
-      limit_count: 12.0, // Example limit for Sick Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-01'), // Example date
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[1]?.employee_id || null,
-      limit_count: 15.0, // Example limit for Vacation Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-02'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[2]?.employee_id || null,
-      limit_count: 10.0, // Example limit for Personal Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-03'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[3]?.employee_id || null,
-      limit_count: 8.0, // Example limit for Sick Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-04'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[4]?.employee_id || null,
-      limit_count: 20.0, // Example limit for Vacation Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-05'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[5]?.employee_id || null,
-      limit_count: 5.0, // Example limit for Personal Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-06'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[6]?.employee_id || null,
-      limit_count: 12.5, // Example limit for Sick Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-07'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[7]?.employee_id || null,
-      limit_count: 18.0, // Example limit for Vacation Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-08'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[8]?.employee_id || null,
-      limit_count: 9.0, // Example limit for Personal Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-09'),
-      last_updated: new Date('2024-11-01'),
-    },
-    {
-      employee_id: employees[9]?.employee_id || null,
-      limit_count: 14.0, // Example limit for Sick Leave
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-      created_at: new Date('2024-01-10'),
-      last_updated: new Date('2024-11-01'),
-    },
-    // Add more records as needed...
-  ];
-
-  await db.insert(leaveLimit).values(leaveLimits);
-  log.info('Leave Limit records seeded successfully.');
-}
-
-async function seedLeaveRequests(db: PostgresJsDatabase<SchemaType>) {
-  const leaveTypes: ('Sick Leave' | 'Vacation Leave' | 'Personal Leave')[] = [
-    'Sick Leave',
-    'Vacation Leave',
-    'Personal Leave',
-  ];
-  const statuses: ('Pending' | 'Approved' | 'Rejected')[] = [
-    'Pending',
-    'Approved',
-    'Rejected',
-  ];
-  const employees = await db.select().from(employee);
-
-  const leaveRequests = [
-    {
-      employee_id: employees[0]?.employee_id || null,
-      title: 'Request for Sick Leave',
-      content: 'I would like to request sick leave due to illness.',
-      date_of_leave: new Date('2024-11-01').toISOString(),
-      date_of_return: new Date('2024-11-03').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Awaiting approval.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[1]?.employee_id || null,
-      title: 'Vacation Leave Request',
-      content: 'I am requesting vacation leave for personal reasons.',
-      date_of_leave: new Date('2024-12-10').toISOString(),
-      date_of_return: new Date('2024-12-20').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Approved by manager.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[2]?.employee_id || null,
-      title: 'Personal Leave Request',
-      content: 'I need personal leave for family matters.',
-      date_of_leave: new Date('2024-11-05').toISOString(),
-      date_of_return: new Date('2024-11-06').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Insufficient leave balance.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[3]?.employee_id || null,
-      title: 'Sick Leave Application',
-      content: 'I am unable to work due to illness and request sick leave.',
-      date_of_leave: new Date('2024-11-07').toISOString(),
-      date_of_return: new Date('2024-11-10').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Pending further review.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[4]?.employee_id || null,
-      title: 'Vacation Request',
-      content: 'Requesting vacation leave from December 1 to December 10.',
-      date_of_leave: new Date('2024-12-01').toISOString(),
-      date_of_return: new Date('2024-12-10').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Manager approved.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[5]?.employee_id || null,
-      title: 'Personal Leave',
-      content: 'I need to take personal leave for personal commitments.',
-      date_of_leave: new Date('2024-11-15').toISOString(),
-      date_of_return: new Date('2024-11-16').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Leave request denied.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[6]?.employee_id || null,
-      title: 'Sick Leave Needed',
-      content: 'Due to my health, I need to take sick leave.',
-      date_of_leave: new Date('2024-11-12').toISOString(),
-      date_of_return: new Date('2024-11-14').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Pending management approval.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[7]?.employee_id || null,
-      title: 'Vacation Leave Application',
-      content: 'Requesting vacation leave for family trip.',
-      date_of_leave: new Date('2024-12-15').toISOString(),
-      date_of_return: new Date('2024-12-30').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Approved for vacation.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[8]?.employee_id || null,
-      title: 'Leave Request for Personal Reasons',
-      content: 'I would like to request leave for personal matters.',
-      date_of_leave: new Date('2024-11-20').toISOString(),
-      date_of_return: new Date('2024-11-21').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Insufficient leave days.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    {
-      employee_id: employees[9]?.employee_id || null,
-      title: 'Sick Leave Request',
-      content: 'Requesting sick leave due to medical reasons.',
-      date_of_leave: new Date('2024-11-25').toISOString(),
-      date_of_return: new Date('2024-11-27').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-      comment: 'Awaiting HR response.',
-      leaveType: faker.helpers.arrayElement(leaveTypes),
-    },
-    // Add more records as needed...
-  ];
-
-  await db.insert(leaveRequest).values(leaveRequests);
-  log.info('Leave Request records seeded successfully.');
-}
-
-//  =======================================================================================
-// ==================================== PAYROLL ===========================================
-
-async function seedPayrolls(db: PostgresJsDatabase<SchemaType>) {
-  const statuses: ('Active' | 'Inactive' | 'Inprogress')[] = [
-    'Active',
-    'Inactive',
-    'Inprogress',
-  ];
-
-  const payrolls = [
-    {
-      start: new Date('2024-01-01').toISOString(),
-      end: new Date('2024-01-15').toISOString(),
-      pay_date: new Date('2024-01-16').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-01-16').toISOString(),
-      end: new Date('2024-01-31').toISOString(),
-      pay_date: new Date('2024-02-01').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-02-01').toISOString(),
-      end: new Date('2024-02-15').toISOString(),
-      pay_date: new Date('2024-02-16').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-02-16').toISOString(),
-      end: new Date('2024-02-28').toISOString(),
-      pay_date: new Date('2024-03-01').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-03-01').toISOString(),
-      end: new Date('2024-03-15').toISOString(),
-      pay_date: new Date('2024-03-16').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-03-16').toISOString(),
-      end: new Date('2024-03-31').toISOString(),
-      pay_date: new Date('2024-04-01').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-04-01').toISOString(),
-      end: new Date('2024-04-15').toISOString(),
-      pay_date: new Date('2024-04-16').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-04-16').toISOString(),
-      end: new Date('2024-04-30').toISOString(),
-      pay_date: new Date('2024-05-01').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-05-01').toISOString(),
-      end: new Date('2024-05-15').toISOString(),
-      pay_date: new Date('2024-05-16').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    {
-      start: new Date('2024-05-16').toISOString(),
-      end: new Date('2024-05-31').toISOString(),
-      pay_date: new Date('2024-06-01').toISOString(),
-      status: faker.helpers.arrayElement(statuses),
-    },
-    // Add more records as needed...
-  ];
-
-  await db.insert(payroll).values(payrolls);
-  log.info('Payroll records seeded successfully.');
-}
-
-async function seedOnPayrolls(db: PostgresJsDatabase<SchemaType>) {
-  const payrollIDs = await db
-    .select({ payroll_id: payroll.payroll_id })
-    .from(payroll);
-  const employeeIDs = await db
-    .select({ employee_id: employee.employee_id })
-    .from(employee);
-
-  // Generate records for the `on_payroll` table
-  const onPayrollRecords = Array.from({ length: 50 }).map(() => ({
-    payroll_id: faker.helpers.arrayElement(payrollIDs).payroll_id,
-    employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-  }));
-
-  await db.insert(onPayroll).values(onPayrollRecords);
-  log.info('On Payroll records seeded successfully.');
-}
-
-async function seedSignatory(db: PostgresJsDatabase<SchemaType>) {
-  const employees = await db.select().from(employee);
-
-  const signatoryRecords = [
-    {
-      employee_id: employees[0].employee_id,
-      signatory_name: 'John Doe',
-      role: 'HR Manager',
-      permission_level: 5,
-    },
-    {
-      employee_id: employees[1].employee_id,
-      signatory_name: 'Jane Smith',
-      role: 'Finance Director',
-      permission_level: 5,
-    },
-    {
-      employee_id: employees[2].employee_id,
-      signatory_name: 'Michael Johnson',
-      role: 'Operations Manager',
-      permission_level: 4,
-    },
-    {
-      employee_id: employees[3].employee_id,
-      signatory_name: 'Emily Davis',
-      role: 'IT Specialist',
-      permission_level: 3,
-    },
-    {
-      employee_id: employees[4].employee_id,
-      signatory_name: 'Sarah Wilson',
-      role: 'Marketing Coordinator',
-      permission_level: 3,
-    },
-    {
-      employee_id: employees[5].employee_id,
-      signatory_name: 'David Brown',
-      role: 'Project Manager',
-      permission_level: 4,
-    },
-    {
-      employee_id: employees[6].employee_id,
-      signatory_name: 'Linda Garcia',
-      role: 'Sales Executive',
-      permission_level: 2,
-    },
-    {
-      employee_id: employees[7].employee_id,
-      signatory_name: 'Robert Martinez',
-      role: 'Customer Service Manager',
-      permission_level: 4,
-    },
-    {
-      employee_id: employees[8].employee_id,
-      signatory_name: 'Jennifer Taylor',
-      role: 'Business Analyst',
-      permission_level: 3,
-    },
-    {
-      employee_id: employees[9].employee_id,
-      signatory_name: 'William Anderson',
-      role: 'Legal Advisor',
-      permission_level: 5,
-    },
-  ];
-
-  await db.insert(signatory).values(signatoryRecords);
-  log.info('Signatory records seeded successfully.');
-}
-
-async function seedPayrollApprovals(db: PostgresJsDatabase<SchemaType>) {
-  const onPayrolls = await db.select().from(onPayroll);
-  const signatories = await db.select().from(signatory);
-  const approvalStatuses: ('Approved' | 'Pending' | 'Rejected')[] = [
-    'Approved',
-    'Pending',
-    'Rejected',
-  ];
-  const payrollApprovalRecords = Array.from({ length: 50 }).map(() => ({
-    on_payroll_id: faker.helpers.arrayElement(onPayrolls).on_payroll_id,
-    signatory_id: faker.helpers.arrayElement(signatories).signatory_id,
-    approval_status: faker.helpers.arrayElement(approvalStatuses),
-    approval_date: faker.date.past().toISOString(),
-  }));
-
-  await db.insert(payrollApproval).values(payrollApprovalRecords);
-  log.info('Payroll approval records seeded successfully.');
-}
-
-async function seedPayrollReportRecords(db: PostgresJsDatabase<SchemaType>) {
-  const onpayrolls = await db.select().from(onPayroll);
-
-  const payrollReportRecords = [
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 3100.0, // Example value
-      grosspay: 4900.0, // Example value
-      total_deductions: 1400.0, // Example value
-      total_benefits: 900.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 2800.5, // Example value
-      grosspay: 4500.0, // Example value
-      total_deductions: 1200.0, // Example value
-      total_benefits: 700.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 3000.0, // Example value
-      grosspay: 4800.0, // Example value
-      total_deductions: 1500.0, // Example value
-      total_benefits: 800.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 2600.25, // Example value
-      grosspay: 4100.0, // Example value
-      total_deductions: 1100.0, // Example value
-      total_benefits: 600.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 2900.75, // Example value
-      grosspay: 4600.0, // Example value
-      total_deductions: 1300.0, // Example value
-      total_benefits: 750.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 3100.0, // Example value
-      grosspay: 4900.0, // Example value
-      total_deductions: 1400.0, // Example value
-      total_benefits: 900.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 2700.5, // Example value
-      grosspay: 4300.0, // Example value
-      total_deductions: 1150.0, // Example value
-      total_benefits: 650.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 3200.0, // Example value
-      grosspay: 5000.0, // Example value
-      total_deductions: 1600.0, // Example value
-      total_benefits: 950.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 3000.0, // Example value
-      grosspay: 4800.0, // Example value
-      total_deductions: 1500.0, // Example value
-      total_benefits: 850.0, // Example value
-    },
-    {
-      on_payroll_id: faker.helpers.arrayElement(onpayrolls).on_payroll_id,
-      netpay: 2900.0, // Example value
-      grosspay: 4700.0, // Example value
-      total_deductions: 1350.0, // Example value
-      total_benefits: 800.0, // Example value
-    },
-  ];
-
-  await db.insert(payrollReports).values(payrollReportRecords);
-
-  log.info('Payroll Report records seeded successfully.');
-}
-
-//  =======================================================================================
-// =============================== EMPLOYEE PERFORMANCE ===================================
-async function seedDeductions(db: PostgresJsDatabase<SchemaType>) {
-  const employeeIDs = await db.select().from(employee);
-  const allowedFrequencies: (
-    | 'Daily'
-    | 'Weekly'
-    | 'Bi Weekly'
-    | 'Semi Monthly'
-    | 'Monthly'
-  )[] = ['Daily', 'Weekly', 'Bi Weekly', 'Semi Monthly', 'Monthly'];
-
-  const deductionTypes: ('Bonus' | 'Comission' | 'Overtime' | 'Other')[] = [
-    'Bonus',
-    'Comission',
-    'Overtime',
-    'Other',
-  ];
-  const deductionRecords = [
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Annual Bonus', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 500.0, // Example amount
-      description: 'Yearly performance bonus.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Commission for Sales', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 200.0, // Example amount
-      description: 'Commission based on sales performance.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Overtime Payment', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 150.0, // Example amount
-      description: 'Compensation for overtime hours worked.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Monthly Subscription', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 30.0, // Example amount
-      description: 'Monthly subscription for services.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 400.0, // Example amount
-      description: 'Bonus for holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 400.0, // Example amount
-      description: 'Bonus for holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 400.0, // Example amount
-      description: 'Bonus for holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example deduction name
-      start: faker.date.past().toISOString(),
-      end: faker.date.future().toISOString(),
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      deduction_type: faker.helpers.arrayElement(deductionTypes),
-      amount: 400.0, // Example amount
-      description: 'Bonus for holiday season.', // Example description
-    },
-  ];
-
-  await db.insert(deductions).values(deductionRecords);
-
-  log.info('Deductions records seeded successfully.');
-}
-
-async function seedBenefits(db: PostgresJsDatabase<SchemaType>) {
-  const employeeIDs = await db.select().from(employee);
-
-  const allowedFrequencies: (
-    | 'Daily'
-    | 'Weekly'
-    | 'Bi Weekly'
-    | 'Semi Monthly'
-    | 'Monthly'
-  )[] = ['Daily', 'Weekly', 'Bi Weekly', 'Semi Monthly', 'Monthly'];
-
-  const benefitsTypes: ('Bonus' | 'Commission' | 'Overtime' | 'Other')[] = [
-    'Bonus',
-    'Commission',
-    'Overtime',
-    'Other',
-  ];
-
-  const benefitRecords = [
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Annual Performance Bonus', // Example benefit name
-      start: '2023-01-01T00:00:00.000Z', // Example start date
-      end: '2023-12-31T00:00:00.000Z', // Example end date
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      benefits_type: faker.helpers.arrayElement(benefitsTypes),
-      amount: 1200.0, // Example amount
-      description: 'Bonus for annual performance evaluation.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Sales Commission', // Example benefit name
-      start: '2023-01-01T00:00:00.000Z', // Example start date
-      end: '2023-12-31T00:00:00.000Z', // Example end date
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      benefits_type: faker.helpers.arrayElement(benefitsTypes),
-      amount: 250.0, // Example amount
-      description: 'Commission for sales made weekly.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Overtime Compensation', // Example benefit name
-      start: '2023-01-01T00:00:00.000Z', // Example start date
-      end: '2023-12-31T00:00:00.000Z', // Example end date
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      benefits_type: faker.helpers.arrayElement(benefitsTypes),
-      amount: 150.0, // Example amount
-      description: 'Compensation for overtime hours worked every two weeks.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Health Insurance', // Example benefit name
-      start: '2023-01-01T00:00:00.000Z', // Example start date
-      end: '2023-12-31T00:00:00.000Z', // Example end date
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      benefits_type: faker.helpers.arrayElement(benefitsTypes),
-      amount: 300.0, // Example amount
-      description: 'Monthly premium for health insurance coverage.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example benefit name
-      start: '2023-12-01T00:00:00.000Z', // Example start date
-      end: '2023-12-31T00:00:00.000Z', // Example end date
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      benefits_type: faker.helpers.arrayElement(benefitsTypes),
-      amount: 500.0, // Example amount
-      description: 'Bonus provided during the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example benefit name
-      start: '2023-12-01T00:00:00.000Z', // Example start date
-      end: '2023-12-31T00:00:00.000Z', // Example end date
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      benefits_type: faker.helpers.arrayElement(benefitsTypes),
-      amount: 500.0, // Example amount
-      description: 'Bonus provided during the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example benefit name
-      start: '2023-12-01T00:00:00.000Z', // Example start date
-      end: '2023-12-31T00:00:00.000Z', // Example end date
-      frequency: faker.helpers.arrayElement(allowedFrequencies),
-      benefits_type: faker.helpers.arrayElement(benefitsTypes),
-      amount: 500.0, // Example amount
-      description: 'Bonus provided during the holiday season.', // Example description
-    },
-    // Add more records as needed
-  ];
-
-  await db.insert(benefits).values(benefitRecords);
-  log.info('Benefits records seeded successfully.');
-}
-
-async function seedAdjustments(db: PostgresJsDatabase<SchemaType>) {
-  const employeeIDs = await db.select().from(employee);
-
-  const adjustmentTypes: ('Bonus' | 'Commission' | 'Overtime' | 'Other')[] = [
-    'Bonus',
-    'Commission',
-    'Overtime',
-    'Other',
-  ];
-
-  const adjustmentRecords = [
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Performance Bonus', // Example adjustment name
-      remarks: 'Quarterly performance review adjustments.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 300.0, // Example amount
-      description: 'Bonus awarded for exceeding quarterly goals.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Sales Commission', // Example adjustment name
-      remarks: 'Monthly sales targets exceeded.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 150.0, // Example amount
-      description: 'Commission for exceeding monthly sales targets.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Overtime Adjustment', // Example adjustment name
-      remarks: 'Extra hours worked on project deadlines.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 200.0, // Example amount
-      description: 'Adjustment for overtime hours during project sprint.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Year-End Adjustment', // Example adjustment name
-      remarks: 'Annual adjustments based on performance and market trends.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 500.0, // Example amount
-      description: 'Year-end salary adjustment based on performance review.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Training Incentive', // Example adjustment name
-      remarks: 'Incentive for completing professional development courses.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 100.0, // Example amount
-      description: 'Incentive bonus for completing training programs.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Training Incentive', // Example adjustment name
-      remarks: 'Incentive for completing professional development courses.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 100.0, // Example amount
-      description: 'Incentive bonus for completing training programs.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Training Incentive', // Example adjustment name
-      remarks: 'Incentive for completing professional development courses.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 100.0, // Example amount
-      description: 'Incentive bonus for completing training programs.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Training Incentive', // Example adjustment name
-      remarks: 'Incentive for completing professional development courses.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 100.0, // Example amount
-      description: 'Incentive bonus for completing training programs.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Training Incentive', // Example adjustment name
-      remarks: 'Incentive for completing professional development courses.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 100.0, // Example amount
-      description: 'Incentive bonus for completing training programs.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Training Incentive', // Example adjustment name
-      remarks: 'Incentive for completing professional development courses.', // Example remarks
-      adjustments_type: faker.helpers.arrayElement(adjustmentTypes),
-      amount: 100.0, // Example amount
-      description: 'Incentive bonus for completing training programs.', // Example description
-    },
-    // Add more records as needed
-  ];
-
-  await db.insert(adjustments).values(adjustmentRecords);
-  log.info('Adjustments records seeded successfully.');
-}
-
-async function seedAdditionalPay(db: PostgresJsDatabase<SchemaType>) {
-  const employeeIDs = await db.select().from(employee);
-
-  const allowedAdditionalPayTypes: (
-    | 'Bonus'
-    | 'Commission'
-    | 'Overtime'
-    | 'Other'
-  )[] = ['Bonus', 'Commission', 'Overtime', 'Other'];
-
-  const additionalPayRecords = [
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Year-End Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 500.0, // Example amount
-      description: 'Bonus for outstanding performance throughout the year.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Sales Commission', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 300.0, // Example amount
-      description: 'Commission for exceeding quarterly sales targets.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Project Overtime', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 200.0, // Example amount
-      description: 'Overtime payment for hours worked on project deadlines.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Training Allowance', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 150.0, // Example amount
-      description: 'Allowance for attending professional development courses.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 250.0, // Example amount
-      description: 'Bonus for the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 250.0, // Example amount
-      description: 'Bonus for the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 250.0, // Example amount
-      description: 'Bonus for the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 250.0, // Example amount
-      description: 'Bonus for the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 250.0, // Example amount
-      description: 'Bonus for the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 250.0, // Example amount
-      description: 'Bonus for the holiday season.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      name: 'Holiday Bonus', // Example additional pay name
-      additional_pay_type: faker.helpers.arrayElement(
-        allowedAdditionalPayTypes,
-      ),
-      amount: 250.0, // Example amount
-      description: 'Bonus for the holiday season.', // Example description
-    },
-    // Add more records as needed
-  ];
-
-  await db.insert(additionalPay).values(additionalPayRecords);
-  log.info('Additional pay records seeded successfully.');
-}
-
-async function seedAttendance(db: PostgresJsDatabase<SchemaType>) {
-  const employeeIDs = await db.select().from(employee);
-
-  // Ensure there are records to select from
-  if (employeeIDs.length === 0) {
-    log.warn('No records found for employees. Skipping attendance seeding.');
-    return;
-  }
-
-  const attendanceStatuses: (
-    | 'Present'
-    | 'Absent'
-    | 'Late'
-    | 'Early Leave'
-    | 'Paid Leave'
-  )[] = ['Present', 'Absent', 'Late', 'Early Leave', 'Paid Leave'];
-
-  const attendanceRecords = [
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0, // Example hours worked
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On time and completed all tasks.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 7.5,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'Arrived late due to traffic.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: null, // No clock-in for absent
-      clock_out: null, // No clock-out for absent
-      hoursWorked: 0, // No hours worked
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'Sick leave.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 6.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'Left early for a family commitment.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On paid leave for vacation.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On paid leave for vacation.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On paid leave for vacation.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On paid leave for vacation.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On paid leave for vacation.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On paid leave for vacation.', // Example description
-    },
-    {
-      employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-      date: faker.date.recent().toISOString(),
-      clock_in: faker.date.recent().toISOString(),
-      clock_out: faker.date.future().toISOString(),
-      hoursWorked: 8.0,
-      status: faker.helpers.arrayElement(attendanceStatuses),
-      description: 'On paid leave for vacation.', // Example description
-    },
-    // Add more records as needed
-  ];
-
-  await db.insert(attendance).values(attendanceRecords);
-  log.info('Attendance records seeded successfully.');
-}
-
-//  =======================================================================================
-// ===================================== CUSTOMER ======================================
-async function seedParticipants(db: PostgresJsDatabase<SchemaType>) {
-  const employeeIDs = await db.select().from(employee);
-  const channelIDs = await db.select().from(channel);
-
-  const participantsRecords = Array.from({ length: 70 }).map(() => ({
-    employee_id: faker.helpers.arrayElement(employeeIDs).employee_id,
-    channel_id: faker.helpers.arrayElement(channelIDs).channel_id,
-    is_private: faker.datatype.boolean(),
-    created_at: faker.date.recent(),
-    last_updated: faker.date.recent(),
-  }));
-
-  await db.insert(participants).values(participantsRecords);
-  log.info('Participant records seeded successfully');
-}
-
-async function seedChannel(db: PostgresJsDatabase<SchemaType>) {
-  // Retrieve inquiry IDs from the database
-  const inquiryIDs = await db.select().from(inquiry);
-
-  const channelRecords = [
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Customer Support',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Technical Support',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Sales Inquiry',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Feedback Channel',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Product Inquiry',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Billing Issues',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Service Updates',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Warranty Claims',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'Product Support',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'General Inquiries',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'HR Support',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      channel_name: 'IT Assistance',
-      is_private: faker.datatype.boolean(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    // Add more channels here to reach 70 entries
-  ];
-
-  // Insert channel records into the database
-  await db.insert(channel).values(channelRecords);
-  log.info('Channel records seeded successfully');
-}
-
-async function seedMessage(db: PostgresJsDatabase<SchemaType>) {
-  // Retrieve inquiry IDs from the database
-  const inquiryIDs = await db.select().from(inquiry);
-
-  const status = [
-    'User',
-    'Admin',
-    'Customer Support',
-    'Employee',
-    'Manager',
-  ] as const;
-
-  const messageRecords = [
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 1,
-      content: 'Hello, how can I assist you today?',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 2,
-      content: 'Thank you for reaching out. We will get back to you shortly.',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 3,
-      content: 'Please provide more details about your request.',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 4,
-      content: 'Your order has been processed successfully.',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 5,
-      content: 'Is there anything else I can help you with?',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 1,
-      content: 'I need assistance with my account settings.',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 2,
-      content: 'We are here to help you with your queries.',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 3,
-      content: 'Your feedback is important to us!',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 4,
-      content: 'Please confirm your shipping address.',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      inquiry_id: faker.helpers.arrayElement(inquiryIDs).inquiry_id,
-      sender_id: 5,
-      content: 'We appreciate your patience.',
-      sender_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    // Add more messages here to reach 70 entries
-  ];
-
-  // Insert message records into the database
-  await db.insert(message).values(messageRecords);
-  log.info('Message records seeded successfully');
-}
-
-async function seedInquiry(db: PostgresJsDatabase<SchemaType>) {
-  // Retrieve customer IDs from the database
-  const customerIDs = await db.select().from(customer);
-
-  const status = [
-    'Product',
-    'Pricing',
-    'Order Status',
-    'Technical Support',
-    'Billing',
-    'Complaint',
-    'Feedback',
-    'Return/Refund',
-  ] as const;
-
-  const inquiryRecords = [
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Inquiry about Product A',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Pricing information for Service B',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Order Status for Order #1234',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Technical Support needed for Device C',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Billing discrepancy on Invoice #5678',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Complaint regarding Product D',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Feedback on Service E',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Request for Return/Refund on Order #91011',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Inquiry about Product X',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Pricing details for Product Y',
-      inquiry_type: faker.helpers.arrayElement(status),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    // Add more inquiries here to reach 70 entries
-  ];
-
-  // Insert inquiry records into the database
-  await db.insert(inquiry).values(inquiryRecords);
-  log.info('Inquiry records seeded successfully');
-}
-
 async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
   const status = [
     'Active',
@@ -2303,7 +521,7 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
 // ===================================== SALES ======================================
 
 async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
-  const itemIDs = await db.select().from(item);
+  const productIds = await db.select().from(product);
   const serviceIDs = await db.select().from(service);
 
   const salesitemTypeEnum = [
@@ -2316,7 +534,7 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
 
   const salesItemRecords = [
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
       quantity: 10,
       sales_item_type: faker.helpers.arrayElement(salesitemTypeEnum),
@@ -2325,7 +543,7 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
       last_updated: new Date(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
       quantity: 5,
       sales_item_type: faker.helpers.arrayElement(salesitemTypeEnum),
@@ -2334,7 +552,7 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
       last_updated: new Date(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
       quantity: 3,
       sales_item_type: faker.helpers.arrayElement(salesitemTypeEnum),
@@ -2343,7 +561,7 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
       last_updated: new Date(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
       quantity: 8,
       sales_item_type: faker.helpers.arrayElement(salesitemTypeEnum),
@@ -2352,7 +570,7 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
       last_updated: new Date(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
       quantity: 2,
       sales_item_type: faker.helpers.arrayElement(salesitemTypeEnum),
@@ -2611,7 +829,7 @@ async function seedReceipt(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedReserve(db: PostgresJsDatabase<SchemaType>) {
   const serviceIDs = await db.select().from(service);
-  const itemIDs = await db.select().from(item);
+  const productIds = await db.select().from(product);
 
   const status = [
     'Reserved',
@@ -2624,75 +842,74 @@ async function seedReserve(db: PostgresJsDatabase<SchemaType>) {
   const reserveRecords = [
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       reserve_status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
-    // Add more real-world reserve records here
   ];
 
   await db.insert(reserve).values(reserveRecords);
@@ -2720,7 +937,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
   const borrowRecords = [
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 10, // Example fee in the specified currency
@@ -2731,7 +948,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 20,
@@ -2742,7 +959,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 15,
@@ -2753,7 +970,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 30,
@@ -2764,7 +981,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
@@ -2775,7 +992,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
@@ -2786,7 +1003,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
@@ -2797,7 +1014,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
@@ -2808,7 +1025,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
@@ -2819,7 +1036,7 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      sales_item_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_item_id here
+      sales_items_id: faker.helpers.arrayElement(salesItemsIDs).sales_items_id, // Use sales_items_id here
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
@@ -3160,13 +1377,13 @@ async function seedRemarkTickets(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
   // Fetch existing items and remark tickets from the database
-  const itemIDs = await db.select().from(item);
+  const productIds = await db.select().from(product);
   const remarksIDs = await db.select().from(remarktickets);
 
   // Hardcoded realistic data for remark items
   const remarkitemsRecords = [
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
       remark_status: 'Item is damaged upon arrival',
       quantity: 5,
@@ -3174,7 +1391,7 @@ async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
       remark_status: 'Incorrect item sent to customer',
       quantity: 1,
@@ -3182,7 +1399,7 @@ async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
       remark_status: 'Missing parts for assembly',
       quantity: 3,
@@ -3190,7 +1407,7 @@ async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
       remark_status: 'Quality issues detected during inspection',
       quantity: 10,
@@ -3198,7 +1415,7 @@ async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
       remark_status: 'Returned by the customer due to dissatisfaction',
       quantity: 2,
@@ -3206,7 +1423,7 @@ async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
       remark_status: 'Pending further evaluation by the quality team',
       quantity: 7,
@@ -3214,7 +1431,7 @@ async function seedRemarkItems(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       remark_id: faker.helpers.arrayElement(remarksIDs).remark_id,
       remark_status: 'Customer reported a missing item',
       quantity: 4,
@@ -3702,195 +1919,73 @@ async function seedJobOrderServices(db: PostgresJsDatabase<SchemaType>) {
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
-async function seedItem(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product); // Fetch existing product IDs
-
-  // Define your real data array
-  const itemRecords = [
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'Broken' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'Used' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'New' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'Broken' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'Used' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'New' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'New' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'New' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'New' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'New' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      stock: 200,
-      on_listing: true,
-      re_order_level: 150,
-      price: '2000.00', // Convert price to string
-      tag: 'New' as 'New' | 'Used' | 'Broken', // Ensure tag matches expected type
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-  ];
-  // Insert the real data into the database
-  await db.insert(item).values(itemRecords);
-
-  log.info('Item records seeded successfully');
-}
-
 async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
-  const itemIDs = await db.select().from(item); // Fetch existing item IDs
+  const productIds = await db.select().from(product);
 
   // Define real data for price history records
   const pricehistoryRecords = [
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1200.50', // Ensure price is a string
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-15'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1450.75',
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-20'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       price: '1700.00',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
@@ -3906,13 +2001,13 @@ async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
-  const itemIDs = await db.select().from(item); // Fetch existing item IDs
+  const productIds = await db.select().from(product); // Fetch existing item IDs
 
   // Define an array of real data for the item-supplier records
   const inventoryRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Active' as
         | 'Active'
         | 'Inactive'
@@ -3930,7 +2025,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Verified' as
         | 'Active'
         | 'Inactive'
@@ -3948,7 +2043,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Preferred' as
         | 'Active'
         | 'Inactive'
@@ -3966,7 +2061,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Blacklisted' as
         | 'Active'
         | 'Inactive'
@@ -3984,7 +2079,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Blacklisted' as
         | 'Active'
         | 'Inactive'
@@ -4002,7 +2097,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Blacklisted' as
         | 'Active'
         | 'Inactive'
@@ -4020,7 +2115,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Blacklisted' as
         | 'Active'
         | 'Inactive'
@@ -4038,7 +2133,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Pending Approval' as
         | 'Active'
         | 'Inactive'
@@ -4056,7 +2151,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Blacklisted' as
         | 'Active'
         | 'Inactive'
@@ -4074,7 +2169,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Under Review' as
         | 'Active'
         | 'Inactive'
@@ -4092,7 +2187,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      item_id: faker.helpers.arrayElement(itemIDs).item_id,
+      product_id: faker.helpers.arrayElement(productIds).product_id,
       tag: 'Blacklisted' as
         | 'Active'
         | 'Inactive'
@@ -4120,7 +2215,6 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
 async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const categoryIDs = await db.select().from(category);
   const supplierIDs = await db.select().from(supplier);
-
   const productRecords = [
     {
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
@@ -4128,8 +2222,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'Ram',
       description:
         'High-performance DDR4 RAM module with a clock speed of 3200MHz, designed to provide faster data transfer and improve overall system responsiveness.',
-      price: 799.99,
-      img_url: 'https://example.com/images/smartphone-a1.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
@@ -4138,8 +2232,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Laptop Pro 15',
       description: 'A powerful laptop suitable for professionals and students.',
-      price: 1199.99,
-      img_url: 'https://example.com/images/laptop-pro-15.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-15'),
     },
@@ -4149,7 +2243,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'SSD',
       description:
         '"High-speed NVMe SSD with rapid data transfer and reliable performance."',
-      price: 249.99,
+      on_listing: true,
+      re_order_level: 150,
       img_url: 'https://example.com/images/wireless-headphones.jpg',
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
@@ -4160,8 +2255,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'LCD',
       description:
         'Vibrant LCD monitor with sharp resolution and wide viewing angles, perfect for immersive gaming and professional work.',
-      price: 249.99,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -4171,8 +2266,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'Wireless Headphones',
       description:
         'Noise-cancelling wireless headphones with excellent sound quality.',
-      price: 249.99,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -4182,8 +2277,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'Mouse',
       description:
         'High-precision wired mouse with ergonomic design and customizable buttons for smooth navigation and enhanced gaming performance.',
-      price: 249.99,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -4193,8 +2288,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'Wireless Mouse',
       description:
         'Ergonomic wireless mouse with precise tracking and customizable buttons for seamless navigation and enhanced productivity',
-      price: 249.99,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -4204,8 +2299,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'Keyboard',
       description:
         'Mechanical keyboard with tactile switches and customizable RGB backlighting for an enhanced typing experience and personalized style.',
-      price: 249.99,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -4215,8 +2310,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'Nvidia GPU',
       description:
         'High-performance graphics card with advanced cooling technology and real-time ray tracing for stunning visuals and smooth gaming experiences.',
-      price: 249.99,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -4226,8 +2321,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       name: 'Amd GPU',
       description:
         'High-performance graphics card with advanced cooling technology and real-time ray tracing for stunning visuals and smooth gaming experiences.',
-      price: 249.99,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      on_listing: true,
+      re_order_level: 150,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -4621,39 +2716,39 @@ async function seedOrderItem(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
-  const itemdata = await db.select().from(item);
+  const itemdata = await db.select().from(product);
 
   const stockRecord = [
     {
-      item_id: faker.helpers.arrayElement(itemdata).item_id,
+      product_id: faker.helpers.arrayElement(itemdata).product_id,
       quantity: 15,
       movement_type: 'Stock In',
       action: 'For the technician',
       created_at: new Date('2023-10-01'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemdata).item_id,
+      product_id: faker.helpers.arrayElement(itemdata).product_id,
       quantity: 10,
       movement_type: 'Stock Out',
       action: 'For the technician',
       created_at: new Date('2023-10-02'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemdata).item_id,
+      product_id: faker.helpers.arrayElement(itemdata).product_id,
       quantity: 5,
       movement_type: 'Stock In',
       action: 'For the sales',
       created_at: new Date('2023-10-03'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemdata).item_id,
+      product_id: faker.helpers.arrayElement(itemdata).product_id,
       quantity: 20,
       movement_type: 'Stock Out',
       action: 'For the sales',
       created_at: new Date('2023-10-04'),
     },
     {
-      item_id: faker.helpers.arrayElement(itemdata).item_id,
+      product_id: faker.helpers.arrayElement(itemdata).product_id,
       quantity: 8,
       movement_type: 'Stock In',
       action: 'For the technician',
@@ -4755,9 +2850,8 @@ async function main() {
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
-    await seedProductAttachment(db);
+    // await seedProductAttachment(db);
     await seedProductCategory(db);
-    await seedItem(db);
     await seedInventoryRecord(db);
     await seedPriceHistory(db);
     await seedStockLogs(db);
@@ -4772,29 +2866,29 @@ async function main() {
     // await seedParticipants(db);
     // await seedMessage(db);
 
-    // Sales and related data
-    await seedService(db);
-    await seedPayment(db);
-    await seedReceipt(db);
-    await seedSalesItem(db);
-    await seedBorrow(db);
-    await seedReserve(db);
+    // // Sales and related data
+    // await seedService(db);
+    // await seedPayment(db);
+    // await seedReceipt(db);
+    // await seedSalesItem(db);
+    // await seedBorrow(db);
+    // await seedReserve(db);
 
-    // Job Order and related data
+    // // Job Order and related data
     await seedJobOrderTypes(db);
-    await seedJobOrder(db);
-    await seedJobOrderServices(db);
+    // await seedJobOrder(db);
+    // await seedJobOrderServices(db);
 
-    // Pass employee IDs to seedRemarkTickets
-    await seedRemarkType(db);
-    await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
-    await seedRemarkItems(db);
-    await seedReports(db); // Make sure this also properly references customer IDs
-    await seedRemarkReports(db);
-    await seedRemarkAssigned(db);
+    // // Pass employee IDs to seedRemarkTickets
+    // await seedRemarkType(db);
+    // await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    // await seedRemarkItems(db);
+    // await seedReports(db); // Make sure this also properly references customer IDs
+    // await seedRemarkReports(db);
+    // await seedRemarkAssigned(db);
 
-    await seedAssignedEmployees(db);
-    await seedRemarkContent(db);
+    // await seedAssignedEmployees(db);
+    // await seedRemarkContent(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

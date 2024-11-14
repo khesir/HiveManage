@@ -11,18 +11,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."approval_status" AS ENUM('Approved', 'Pending', 'Rejected');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."attendance_status" AS ENUM('Present', 'Absent', 'Late', 'Early Leave', 'Paid Leave');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."borrow_status" AS ENUM('Requested', 'Approved', 'Borrowed', 'Returned', 'Overdue', 'Rejected', 'Cancelled', 'Lost', 'Damaged');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -77,18 +65,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."leave_limit_type" AS ENUM('Sick Leave', 'Vacation Leave', 'Personal Leave');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."leave_request_type" AS ENUM('Sick Leave', 'Vacation Leave', 'Personal Leave');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."order_status" AS ENUM('Pending', 'Processing', 'Delivered', 'Cancelled', 'Return', 'Shipped');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -102,18 +78,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."payment_status" AS ENUM('Pending', 'Completed', 'Failed', 'Cancelled', 'Refunded', 'Partially Refunded', 'Overdue', 'Processing', 'Declined', 'Authorized');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."payroll_frequency" AS ENUM('Daily', 'Weekly', 'Bi Weekly', 'Semi Monthly', 'Monthly');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."payroll_status" AS ENUM('Active', 'Inactive', 'Inprogress');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -143,41 +107,10 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."sender_type" AS ENUM('User', 'Admin', 'Customer Support', 'Supplier', 'Employee', 'Manager');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."service_status" AS ENUM('Active', 'Inactive');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "additional_pay" (
-	"additional_pay_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"name" varchar(255),
-	"additional_pay_type" varchar(255),
-	"amount" real,
-	"description" varchar(255),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "adjustments" (
-	"adjustments_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"name" varchar(255),
-	"remarks" varchar(255),
-	"adjustments_type" varchar(255),
-	"amount" real,
-	"description" varchar(255),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "arrived_items" (
 	"arrived_Items_id" serial PRIMARY KEY NOT NULL,
@@ -198,20 +131,6 @@ CREATE TABLE IF NOT EXISTS "assignedemployees" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "attendance" (
-	"attendance_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"date" varchar,
-	"clock_in" varchar,
-	"clock_out" varchar,
-	"hoursWorked" real,
-	"attendance_status" "attendance_status" NOT NULL,
-	"description" varchar(255),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "auditLog" (
 	"auditlog_id" serial PRIMARY KEY NOT NULL,
 	"employee_id" integer,
@@ -220,21 +139,6 @@ CREATE TABLE IF NOT EXISTS "auditLog" (
 	"action" varchar(255),
 	"change" jsonb,
 	"created_at" timestamp DEFAULT now(),
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "benefits" (
-	"benefits_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"name" varchar(255),
-	"start" date,
-	"end" date,
-	"frequency" varchar,
-	"benefits_type" varchar(255),
-	"amount" real,
-	"description" varchar(255),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
@@ -260,16 +164,6 @@ CREATE TABLE IF NOT EXISTS "category" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "channel" (
-	"channel_id" serial PRIMARY KEY NOT NULL,
-	"inquiry_id" integer,
-	"channel_name" varchar(255),
-	"is_private" boolean,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "customer" (
 	"customer_id" serial PRIMARY KEY NOT NULL,
 	"firstname" varchar(255),
@@ -282,21 +176,6 @@ CREATE TABLE IF NOT EXISTS "customer" (
 	"province" varchar(255),
 	"email" varchar(255),
 	"standing" "standing" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "deductions" (
-	"deduction_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"name" varchar(255),
-	"start" varchar,
-	"end" varchar,
-	"frequency" varchar,
-	"deduction_type" varchar(255),
-	"amount" real,
-	"description" varchar(255),
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -358,19 +237,6 @@ CREATE TABLE IF NOT EXISTS "employment_info" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "financial_info" (
-	"financial_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"pag_ibig_id" varchar(255),
-	"sss_id" varchar(255),
-	"philhealth_id" varchar(255),
-	"tin" varchar(255),
-	"bank_account_number" varchar(255),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "inquiry" (
 	"inquiry_id" serial PRIMARY KEY NOT NULL,
 	"customer_id" integer,
@@ -384,22 +250,9 @@ CREATE TABLE IF NOT EXISTS "inquiry" (
 CREATE TABLE IF NOT EXISTS "inventory_record" (
 	"inventory_record_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
-	"item_id" integer,
+	"product_id" integer,
 	"tag" "tag_supplier" NOT NULL,
 	"stock" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "item" (
-	"item_id" serial PRIMARY KEY NOT NULL,
-	"product_id" integer,
-	"stock" integer,
-	"price" numeric(10, 2),
-	"on_listing" boolean,
-	"re_order_level" integer,
-	"tag" "tag_item",
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -436,51 +289,6 @@ CREATE TABLE IF NOT EXISTS "jobordertype" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "leave_limit" (
-	"leave_limit_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"limit_count" real DEFAULT 10.1,
-	"leave_limit_type" "leave_limit_type" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "leave_request" (
-	"leave_request_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"title" varchar(255),
-	"content" varchar(255),
-	"date_of_leave" varchar,
-	"date_of_return" varchar,
-	"status" varchar(255),
-	"comment" varchar(255),
-	"leave_request_type" "leave_request_type" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "message" (
-	"message_id" serial PRIMARY KEY NOT NULL,
-	"inquiry_id" integer,
-	"sender_id" integer,
-	"sender_type" "sender_type" NOT NULL,
-	"content" varchar(255),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "on_payroll" (
-	"on_payroll_id" serial PRIMARY KEY NOT NULL,
-	"payroll_id" integer,
-	"employee_id" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "order" (
 	"order_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
@@ -503,16 +311,6 @@ CREATE TABLE IF NOT EXISTS "orderItem" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "participants" (
-	"participants_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"channel_id" integer,
-	"is_private" boolean,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "payment" (
 	"payment_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
@@ -520,41 +318,6 @@ CREATE TABLE IF NOT EXISTS "payment" (
 	"payment_date" varchar,
 	"payment_method" "payment_method" NOT NULL,
 	"payment_status" "payment_status" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "payroll" (
-	"payroll_id" serial PRIMARY KEY NOT NULL,
-	"start" varchar,
-	"end" varchar,
-	"pay_date" varchar,
-	"payroll_finished" varchar,
-	"signatory_id" integer,
-	"payroll_status" "payroll_status",
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "payroll_approval" (
-	"payroll_approval_id" serial PRIMARY KEY NOT NULL,
-	"on_payroll_id" integer,
-	"approval_status" "approval_status" NOT NULL,
-	"approval_date" varchar,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "payroll_reports" (
-	"payroll_report" serial PRIMARY KEY NOT NULL,
-	"on_payroll_id" integer,
-	"netpay" real,
-	"grosspay" real,
-	"total_deductions" real,
-	"total_benefits" real,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -586,7 +349,7 @@ CREATE TABLE IF NOT EXISTS "position" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "price_history" (
 	"price_history_id" serial PRIMARY KEY NOT NULL,
-	"item_id" integer,
+	"product_id" integer,
 	"price" numeric(10, 2),
 	"change_date" timestamp DEFAULT now(),
 	"created_at" timestamp DEFAULT now(),
@@ -600,8 +363,8 @@ CREATE TABLE IF NOT EXISTS "product" (
 	"supplier_id" integer,
 	"name" varchar(255),
 	"description" varchar(255),
-	"price" real,
-	"img_url" varchar,
+	"on_listing" boolean,
+	"re_order_level" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -656,7 +419,7 @@ CREATE TABLE IF NOT EXISTS "remarkcontent" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "remarkitems" (
 	"remark_items_id" serial PRIMARY KEY NOT NULL,
-	"item_id" integer,
+	"product_id" integer,
 	"remark_id" integer,
 	"remark_status" varchar,
 	"quantity" real,
@@ -711,7 +474,7 @@ CREATE TABLE IF NOT EXISTS "reports" (
 CREATE TABLE IF NOT EXISTS "reserve" (
 	"reserve_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
-	"item_id" integer,
+	"product_id" integer,
 	"reserve_status" "reserveStatusEnum" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -726,19 +489,9 @@ CREATE TABLE IF NOT EXISTS "roles" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "salary_info" (
-	"salary_information_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"payroll_frequency" "payroll_frequency" NOT NULL,
-	"base_salary" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "sales_items" (
 	"sales_item_id" serial PRIMARY KEY NOT NULL,
-	"item_id" integer,
+	"product_id" integer,
 	"service_id" integer,
 	"quantity" integer,
 	"sales_item_type" "salesitemTypeEnum" NOT NULL,
@@ -764,20 +517,9 @@ CREATE TABLE IF NOT EXISTS "service" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "signatory" (
-	"signatory_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"signatory_name" varchar(255),
-	"role" varchar(255),
-	"permission_level" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "stock_logs" (
 	"stock_logs_id" serial PRIMARY KEY NOT NULL,
-	"item_id" integer,
+	"product_id" integer,
 	"quantity" integer,
 	"movement_type" varchar,
 	"action" varchar,
@@ -793,18 +535,6 @@ CREATE TABLE IF NOT EXISTS "supplier" (
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
 );
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "additional_pay" ADD CONSTRAINT "additional_pay_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "adjustments" ADD CONSTRAINT "adjustments_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "arrived_items" ADD CONSTRAINT "arrived_items_order_id_order_order_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."order"("order_id") ON DELETE no action ON UPDATE no action;
@@ -825,19 +555,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "attendance" ADD CONSTRAINT "attendance_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "auditLog" ADD CONSTRAINT "auditLog_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "benefits" ADD CONSTRAINT "benefits_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -850,18 +568,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "borrow" ADD CONSTRAINT "borrow_sales_item_id_sales_items_sales_item_id_fk" FOREIGN KEY ("sales_item_id") REFERENCES "public"."sales_items"("sales_item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "channel" ADD CONSTRAINT "channel_inquiry_id_inquiry_inquiry_id_fk" FOREIGN KEY ("inquiry_id") REFERENCES "public"."inquiry"("inquiry_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "deductions" ADD CONSTRAINT "deductions_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -903,12 +609,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "financial_info" ADD CONSTRAINT "financial_info_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "inquiry" ADD CONSTRAINT "inquiry_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -921,13 +621,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "inventory_record" ADD CONSTRAINT "inventory_record_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "item" ADD CONSTRAINT "item_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "inventory_record" ADD CONSTRAINT "inventory_record_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -951,36 +645,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "leave_limit" ADD CONSTRAINT "leave_limit_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "leave_request" ADD CONSTRAINT "leave_request_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "message" ADD CONSTRAINT "message_inquiry_id_inquiry_inquiry_id_fk" FOREIGN KEY ("inquiry_id") REFERENCES "public"."inquiry"("inquiry_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "on_payroll" ADD CONSTRAINT "on_payroll_payroll_id_payroll_payroll_id_fk" FOREIGN KEY ("payroll_id") REFERENCES "public"."payroll"("payroll_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "on_payroll" ADD CONSTRAINT "on_payroll_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "order" ADD CONSTRAINT "order_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -999,37 +663,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "participants" ADD CONSTRAINT "participants_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "participants" ADD CONSTRAINT "participants_channel_id_channel_channel_id_fk" FOREIGN KEY ("channel_id") REFERENCES "public"."channel"("channel_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "payment" ADD CONSTRAINT "payment_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "payroll" ADD CONSTRAINT "payroll_signatory_id_signatory_signatory_id_fk" FOREIGN KEY ("signatory_id") REFERENCES "public"."signatory"("signatory_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "payroll_approval" ADD CONSTRAINT "payroll_approval_on_payroll_id_on_payroll_on_payroll_id_fk" FOREIGN KEY ("on_payroll_id") REFERENCES "public"."on_payroll"("on_payroll_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "payroll_reports" ADD CONSTRAINT "payroll_reports_on_payroll_id_on_payroll_on_payroll_id_fk" FOREIGN KEY ("on_payroll_id") REFERENCES "public"."on_payroll"("on_payroll_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1041,7 +675,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "price_history" ADD CONSTRAINT "price_history_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "price_history" ADD CONSTRAINT "price_history_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1101,7 +735,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "remarkitems" ADD CONSTRAINT "remarkitems_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "remarkitems" ADD CONSTRAINT "remarkitems_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1161,19 +795,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "reserve" ADD CONSTRAINT "reserve_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "reserve" ADD CONSTRAINT "reserve_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "salary_info" ADD CONSTRAINT "salary_info_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "sales_items" ADD CONSTRAINT "sales_items_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "sales_items" ADD CONSTRAINT "sales_items_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1197,13 +825,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "signatory" ADD CONSTRAINT "signatory_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "stock_logs" ADD CONSTRAINT "stock_logs_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "stock_logs" ADD CONSTRAINT "stock_logs_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

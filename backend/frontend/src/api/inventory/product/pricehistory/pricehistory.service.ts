@@ -1,6 +1,8 @@
 import {
-  item,
+  category,
   price_history,
+  product,
+  product_category,
   remarktickets,
   SchemaType,
 } from '@/drizzle/drizzle.schema';
@@ -23,15 +25,15 @@ export class PriceHistoryService {
   }
 
   async getAllPriceHistory(
-    item_id: string | undefined,
+    product_id: string | undefined,
     sort: string,
     limit: number,
     offset: number,
   ) {
     const conditions = [isNull(price_history.deleted_at)];
 
-    if (item_id) {
-      conditions.push(eq(price_history.item_id, Number(item_id)));
+    if (product_id) {
+      conditions.push(eq(price_history.product_id, Number(product_id)));
     }
 
     const totalCountQuery = await this.db
@@ -42,11 +44,34 @@ export class PriceHistoryService {
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
+    const productCategories = await this.db
+      .select()
+      .from(product_category)
+      .leftJoin(
+        category,
+        eq(category.category_id, product_category.category_id),
+      )
+      .where(isNull(product_category.deleted_at));
 
+    const categoryByProduct = productCategories.reduce<
+      Record<number, unknown[]>
+    >((acc, product_category) => {
+      const categoryId = product_category.product_category?.category_id;
+      if (categoryId !== null && !(categoryId in acc)) {
+        acc[categoryId] = [];
+      }
+      if (categoryId !== null) {
+        acc[categoryId].push({
+          ...product_category.product_category,
+          category: { ...product_category.product_category },
+        });
+      }
+      return acc;
+    }, {});
     const result = await this.db
       .select()
       .from(price_history)
-      .leftJoin(item, eq(item.item_id, price_history.item_id))
+      .leftJoin(product, eq(product.product_id, price_history.product_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -57,57 +82,54 @@ export class PriceHistoryService {
       .offset(offset);
 
     const pricehistoryitemWithDetails = result.map((row) => ({
-      price_history_id: row.price_history.price_history_id,
-      item: {
-        item_id: row.item?.item_id,
-        product_id: row.item?.product_id,
-        stock: row.item?.stock,
-        price: row.item?.price,
-        on_listing: row.item?.on_listing,
-        re_order_level: row.item?.re_order_level,
-        tag: row.item?.tag,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      ...row.price_history,
+      product: {
+        ...row.product,
+        categories: categoryByProduct[row.product!.product_id],
       },
-      price: row.price_history?.price,
-      change_date: row.price_history?.change_date,
-      created_at: row.price_history?.created_at,
-      last_updated: row.price_history?.last_updated,
-      deleted_at: row.price_history?.deleted_at,
     }));
 
     return { totalData, pricehistoryitemWithDetails };
   }
 
   async getPriceHistoryByID(price_history_id: string) {
+    const productCategories = await this.db
+      .select()
+      .from(product_category)
+      .leftJoin(
+        category,
+        eq(category.category_id, product_category.category_id),
+      )
+      .where(isNull(product_category.deleted_at));
+
+    const categoryByProduct = productCategories.reduce<
+      Record<number, unknown[]>
+    >((acc, product_category) => {
+      const categoryId = product_category.product_category?.category_id;
+      if (categoryId !== null && !(categoryId in acc)) {
+        acc[categoryId] = [];
+      }
+      if (categoryId !== null) {
+        acc[categoryId].push({
+          ...product_category.product_category,
+          category: { ...product_category.product_category },
+        });
+      }
+      return acc;
+    }, {});
     const result = await this.db
       .select()
       .from(price_history)
-      .leftJoin(item, eq(item.item_id, price_history.item_id))
+      .leftJoin(product, eq(product.product_id, price_history.product_id))
       .where(eq(price_history.price_history_id, Number(price_history_id)));
 
     const pricehistoryitemWithDetails = result.map((row) => ({
-      price_history_id: row.price_history.price_history_id,
-      item: {
-        item_id: row.item?.item_id,
-        product_id: row.item?.product_id,
-        stock: row.item?.stock,
-        price: row.item?.price,
-        on_listing: row.item?.on_listing,
-        re_order_level: row.item?.re_order_level,
-        tag: row.item?.tag,
-        created_at: row.item?.created_at,
-        last_updated: row.item?.last_updated,
-        deleted_at: row.item?.deleted_at,
+      ...row.price_history,
+      product: {
+        ...row.product,
+        categories: categoryByProduct[row.product!.product_id],
       },
-      price: row.price_history?.price,
-      change_date: row.price_history?.change_date,
-      created_at: row.price_history?.created_at,
-      last_updated: row.price_history?.last_updated,
-      deleted_at: row.price_history?.deleted_at,
     }));
-
     return pricehistoryitemWithDetails;
   }
 
