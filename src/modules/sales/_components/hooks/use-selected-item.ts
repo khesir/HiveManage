@@ -1,24 +1,32 @@
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
+import {ProductWithRelatedTables} from '@/modules/inventory/_components/validation/product';
 import {create} from 'zustand';
 
-interface ItemWithDetailsStore {
-	selectedItemWithDetails: ItemWithDetails[];
-	setSelectedItemWithDetails: (items: ItemWithDetails[]) => void;
-	addItemWithDetails: (item: ItemWithDetails) => void;
-	removeItemWithDetails: (id: number) => void;
+interface ProductWithRelatedDataStore {
+	selectedProductWithRelatedData: ProductWithRelatedTables[];
+	setSelectedProductWithRelatedData: (
+		product: ProductWithRelatedTables[],
+	) => void;
+	addProductWithRelatedData: (product: ProductWithRelatedTables) => void;
+	removeProductWithRelatedData: (id: number) => void;
 }
 
-export const useItemWithDetailsStore = create<ItemWithDetailsStore>((set) => ({
-	selectedItemWithDetails: [],
-	setSelectedItemWithDetails: (data) => set({selectedItemWithDetails: data}),
-	addItemWithDetails: (item) =>
-		set((state) => ({
-			selectedItemWithDetails: [...state.selectedItemWithDetails, item], // Add a new item to the array
-		})),
-	removeItemWithDetails: (id) =>
-		set((state) => ({
-			selectedItemWithDetails: state.selectedItemWithDetails.filter(
-				(item) => item.item_id !== id, // Remove an item from the array by its id
-			),
-		})),
-}));
+export const useProductWithRelatedDataStore =
+	create<ProductWithRelatedDataStore>((set) => ({
+		selectedProductWithRelatedData: [],
+		setSelectedProductWithRelatedData: (data) =>
+			set({selectedProductWithRelatedData: data}),
+		addProductWithRelatedData: (product) =>
+			set((state) => ({
+				selectedProductWithRelatedData: [
+					...state.selectedProductWithRelatedData,
+					product,
+				], // Add a new product to the array
+			})),
+		removeProductWithRelatedData: (id) =>
+			set((state) => ({
+				selectedProductWithRelatedData:
+					state.selectedProductWithRelatedData.filter(
+						(product) => product.product_id !== id,
+					),
+			})),
+	}));

@@ -43,7 +43,7 @@ import {MoreVertical, X} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
+import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/use-selected-item';
 import {ItemLisitingModal} from '@/modules/sales/_components/modal/item-listing-modal';
 import {useSalesItemWithDetailsStore} from '../hooks/use-sales-item-store';
 import {DeleteReservation} from '@/modules/sales/_components/api/submit-reservation';
@@ -56,10 +56,10 @@ export function ReservationCard() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const {
-		selectedItemWithDetails,
-		setSelectedItemWithDetails,
-		removeItemWithDetails,
-	} = useItemWithDetailsStore();
+		selectedProductWithRelatedData,
+		setSelectedProductWithRelatedData,
+		removeProductWithRelatedData,
+	} = useProductWithRelatedDataStore();
 	const {selectedSalesItemWithDetails} = useSalesItemWithDetailsStore();
 	useEffect(() => {
 		const filterData = () => {
@@ -113,7 +113,7 @@ export function ReservationCard() {
 	});
 
 	const handleEdit = () => {
-		setSelectedItemWithDetails([]);
+		setSelectedProductWithRelatedData([]);
 		setIsEditing((prev) => !prev);
 		if (reservation) {
 			form.reset({
@@ -241,21 +241,23 @@ export function ReservationCard() {
 									/>
 									<Card className="flex flex-col gap-3 p-5 m-5 mt-0">
 										<div className="flex justify-between gap-3 items-center">
-											<h1 className="text-lg font-semibold">Selected Items</h1>
+											<h1 className="text-lg font-semibold">
+												Selected Product
+											</h1>
 											<ItemLisitingModal title="Reservation" />
 										</div>
 										<div className="w-full flex flex-col gap-3">
-											{selectedItemWithDetails.map((item) => (
+											{selectedProductWithRelatedData.map((product) => (
 												<>
 													<div className="flex justify-start gap-3 items-center">
 														<X
 															className="w-5 h-5 hover:bg-red-600 rounded-sm cursor-pointer"
 															onClick={() =>
-																removeItemWithDetails(item.item_id)
+																removeProductWithRelatedData(product.product_id)
 															}
 														/>
 														<p className="hover:underline">
-															{item.product.name} - {item.product.supplier.name}
+															{product.product_id} - {product.name}
 														</p>
 													</div>
 												</>

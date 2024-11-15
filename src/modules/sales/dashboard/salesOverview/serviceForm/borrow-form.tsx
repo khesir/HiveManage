@@ -1,4 +1,4 @@
-import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
+import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/use-selected-item';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {Borrow, borrowItemSchema} from '@/lib/sales-zod-schema';
@@ -33,13 +33,13 @@ interface BorrowFormProps {
 export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const {
-		selectedItemWithDetails,
-		setSelectedItemWithDetails,
-		removeItemWithDetails,
-	} = useItemWithDetailsStore();
+		selectedProductWithRelatedData,
+		setSelectedProductWithRelatedData,
+		removeProductWithRelatedData,
+	} = useProductWithRelatedDataStore();
 
 	useEffect(() => {
-		setSelectedItemWithDetails([]);
+		setSelectedProductWithRelatedData([]);
 	}, []);
 
 	const form = useForm<Borrow>({
@@ -66,17 +66,17 @@ export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 			has_borrow: true,
 		};
 		setSaleHookData('service', [updateService], 'clear');
-		selectedItemWithDetails.map((item) => {
+		selectedProductWithRelatedData.map((product) => {
 			const borrowData = {
 				...formData,
-				sales_item_id: item.item_id,
+				sales_item_id: product.product_id,
 				service_id: undefined,
 				fee: fee,
 			};
 
 			const salesItemData = {
 				data: {
-					item_id: item.item_id,
+					item_id: product.product_id,
 					service_id: undefined,
 					quantity: 1,
 					type: 'Borrow',
@@ -85,7 +85,7 @@ export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 						borrow: borrowData,
 					},
 				},
-				item,
+				product,
 			};
 			setSaleHookData('sales_item', [salesItemData], 'append');
 		});
@@ -198,15 +198,17 @@ export function BorrowForm({handleIsEditing, fee}: BorrowFormProps) {
 							<ItemLisitingModal title="Borrow" />
 						</div>
 						<div className="w-full flex flex-col gap-3">
-							{selectedItemWithDetails.map((item) => (
+							{selectedProductWithRelatedData.map((product) => (
 								<>
 									<div className="flex justify-start gap-3 items-center">
 										<X
 											className="w-5 h-5 hover:bg-red-600 rounded-sm cursor-pointer "
-											onClick={() => removeItemWithDetails(item.item_id)}
+											onClick={() =>
+												removeProductWithRelatedData(product.product_id)
+											}
 										/>
 										<p className="hover:underline">
-											{item.product.name} - {item.product.supplier.name}
+											{product.product_id}- {product.name}
 										</p>
 									</div>
 								</>

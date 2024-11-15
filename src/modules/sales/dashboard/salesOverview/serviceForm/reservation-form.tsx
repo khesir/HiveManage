@@ -20,7 +20,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {X} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
+import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/use-selected-item';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {ItemLisitingModal} from '../../../_components/modal/item-listing-modal';
 
@@ -31,13 +31,13 @@ interface ReservationFormProps {
 export function ReservationForm({handleIsEditing}: ReservationFormProps) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const {
-		selectedItemWithDetails,
-		setSelectedItemWithDetails,
-		removeItemWithDetails,
-	} = useItemWithDetailsStore();
+		selectedProductWithRelatedData,
+		setSelectedProductWithRelatedData,
+		removeProductWithRelatedData,
+	} = useProductWithRelatedDataStore();
 
 	useEffect(() => {
-		setSelectedItemWithDetails([]);
+		setSelectedProductWithRelatedData([]);
 	}, []);
 
 	const form = useForm<Reservation>({
@@ -61,15 +61,15 @@ export function ReservationForm({handleIsEditing}: ReservationFormProps) {
 			has_reservation: true,
 		};
 		setSaleHookData('service', [updateService], 'clear');
-		selectedItemWithDetails.map((item) => {
+		selectedProductWithRelatedData.map((product) => {
 			const reserveData = {
 				...formData,
-				sales_item_id: item.item_id,
+				sales_item_id: product.product_id,
 			};
 
 			const salesItemData = {
 				data: {
-					item_id: item.item_id,
+					item_id: product.product_id,
 					service_id: undefined,
 					quantity: 1,
 					type: 'Reserve',
@@ -78,7 +78,7 @@ export function ReservationForm({handleIsEditing}: ReservationFormProps) {
 						reserve: reserveData,
 					},
 				},
-				item,
+				product,
 			};
 			setSaleHookData('sales_item', [salesItemData], 'append');
 		});
@@ -144,15 +144,17 @@ export function ReservationForm({handleIsEditing}: ReservationFormProps) {
 							<ItemLisitingModal title="Reservation" />
 						</div>
 						<div className="w-full flex flex-col gap-3">
-							{selectedItemWithDetails.map((item) => (
+							{selectedProductWithRelatedData.map((product) => (
 								<>
 									<div className="flex justify-start gap-3 items-center">
 										<X
 											className="w-5 h-5 hover:bg-red-600 rounded-sm cursor-pointer"
-											onClick={() => removeItemWithDetails(item.item_id)}
+											onClick={() =>
+												removeProductWithRelatedData(product.product_id)
+											}
 										/>
 										<p className="hover:underline">
-											{item.product.name} - {item.product.supplier.name}
+											{product.name} - {product.product_id}
 										</p>
 									</div>
 								</>

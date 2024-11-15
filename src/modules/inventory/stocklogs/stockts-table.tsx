@@ -28,7 +28,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {StockLogsWithDetails} from '@/lib/inventory-zod-schema';
+import {StockLogsWithDetails} from '@/modules/inventory/_components/validation/product';
 import useStockLogsWithDetailsFormStore from './hooks/use-stock-logs';
 
 interface DataTableProps<TData, TValue> {

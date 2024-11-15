@@ -1,4 +1,4 @@
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
+import {ItemWithDetails} from '@/modules/inventory/_components/validation/product';
 import {create} from 'zustand';
 
 type ItemsWithDetailsProps = {

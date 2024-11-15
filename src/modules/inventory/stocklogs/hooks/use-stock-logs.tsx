@@ -1,4 +1,4 @@
-import {StockLogsWithDetails} from '@/lib/inventory-zod-schema';
+import {StockLogsWithDetails} from '@/modules/inventory/_components/validation/product';
 import {create} from 'zustand';
 
 type StockLogsWithDetailsFormStore = {

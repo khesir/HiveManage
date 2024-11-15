@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/dialog';
 
 import {PaginationResponse, request} from '@/api/axios';
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
 import {useState, useEffect} from 'react';
 import {
 	Card,
@@ -28,17 +27,18 @@ import {
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {Badge} from '@/components/ui/badge';
 import {Input} from '@/components/ui/input';
-import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
+import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/use-selected-item';
+import {ProductWithRelatedTables} from '@/modules/inventory/_components/validation/product';
 
 interface ItemListingModal {
 	title: string;
 }
 
 export function ItemLisitingModal({title}: ItemListingModal) {
-	const {addItemWithDetails} = useItemWithDetailsStore();
-	const [fullItems, setFullItems] = useState<ItemWithDetails[]>([]);
+	const {addProductWithRelatedData} = useProductWithRelatedDataStore();
+	const [fullItems, setFullItems] = useState<ProductWithRelatedTables[]>([]);
 
-	const [items, setItems] = useState<ItemWithDetails[]>([]);
+	const [items, setItems] = useState<ProductWithRelatedTables[]>([]);
 
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageIndex, setPageIndex] = useState<number>(0);
@@ -50,10 +50,9 @@ export function ItemLisitingModal({title}: ItemListingModal) {
 
 	useEffect(() => {
 		const fetchItems = async () => {
-			const res = await request<PaginationResponse<ItemWithDetails>>(
+			const res = await request<PaginationResponse<ProductWithRelatedTables>>(
 				'GET',
-				`/api/v1/ims/item?on_listing=true&no_pagination=true` +
-					(searchValue ? `&product_name=${searchValue}` : ''),
+				`/api/v1/ims/product?on_listing=true&no_pagination=true`,
 			);
 			setFullItems(res.data);
 			setPageCount(Math.ceil(res.total_data / pageSize));
@@ -100,20 +99,24 @@ export function ItemLisitingModal({title}: ItemListingModal) {
 				</div>
 				<ScrollArea className="h-[calc(90vh-210px)] px-2">
 					<div className="flex flex-col gap-3">
-						{items.map((item) => (
+						{items.map((product) => (
 							<Card
 								className="relative w-full h-[100px] overflow-hidden"
-								key={item.item_id}
+								key={product.product_id}
 							>
 								<div className="flex justify-start">
 									<CardHeader className="flex flex-col justify-start">
 										<CardTitle className="font-semibold text-sm  hover:underline">
-											{item.product.name} - {item.product.supplier.name}
+											{product.product_id} - {product.name}
 										</CardTitle>
 										<CardDescription>
 											<div className="space-x-1">
-												<Badge>{item.product.category.name}</Badge>
-												<Badge>{item.tag}</Badge>
+												{product.product_categories &&
+													product.product_categories.map((category) => (
+														<Badge key={category.category_id}>
+															{category.category.name}
+														</Badge>
+													))}
 											</div>
 										</CardDescription>
 									</CardHeader>
@@ -121,7 +124,7 @@ export function ItemLisitingModal({title}: ItemListingModal) {
 								<div className="absolute bottom-1 right-3 gap-2 flex items-center justify-end">
 									<Button
 										className="bg-green-400 hover:bg-green-200"
-										onClick={() => addItemWithDetails(item)}
+										onClick={() => addProductWithRelatedData(product)}
 									>
 										Add
 									</Button>

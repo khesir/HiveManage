@@ -1,6 +1,6 @@
 import {Input} from '@/components/ui/input';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {ItemsList} from './items-list';
+import {ProductsList} from './product-list';
 import {ServiceList} from './services';
 
 export function SalesInhouseTable() {
@@ -19,7 +19,7 @@ export function SalesInhouseTable() {
 				</TabsList>
 			</div>
 			<TabsContent value="Items">
-				<ItemsList />
+				<ProductsList />
 			</TabsContent>
 
 			<TabsContent value="Service">

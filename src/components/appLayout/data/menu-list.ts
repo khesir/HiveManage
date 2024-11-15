@@ -11,6 +11,7 @@ import {
 	BotMessageSquareIcon,
 	Package,
 	UserSquareIcon,
+	ShoppingBag,
 } from 'lucide-react';
 
 type Submenu = {
@@ -78,27 +79,11 @@ export function getAdminMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/admin/inventory',
-					label: 'Inventory System',
-					active: pathname.includes('/admin/inventory'),
-					icon: PackageOpenIcon,
-					submenus: [
-						{
-							href: '/admin/inventory/overview',
-							label: 'Overview',
-							active: pathname === '/admin/inventory/overview',
-						},
-						{
-							href: '/admin/inventory/items',
-							label: 'Items & Products',
-							active: pathname === '/admin/inventory/items',
-						},
-						{
-							href: '/admin/inventory/orders',
-							label: 'Orders',
-							active: pathname === '/admin/inventory/orders',
-						},
-					],
+					href: '/admin/inventory/products',
+					label: 'Products',
+					active: pathname.includes('/admin/inventory/products'),
+					icon: ShoppingBag,
+					submenus: [],
 				},
 			],
 		},

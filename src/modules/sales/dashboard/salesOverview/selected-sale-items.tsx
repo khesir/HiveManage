@@ -21,6 +21,7 @@ import {
 	TooltipProvider,
 } from '@/components/ui/tooltip';
 import {ServiceWithDetails} from '@/lib/sales-zod-schema';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {TooltipTrigger} from '@radix-ui/react-tooltip';
 import {Bell, Trash2, Users} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
@@ -29,6 +30,7 @@ import {toast} from 'sonner';
 
 export function SelectedSaleItems() {
 	const navigate = useNavigate();
+	const {user} = useEmployeeRoleDetailsStore();
 	const handleNavigate = () => {
 		navigate('/sales/create-service');
 	};
@@ -40,10 +42,15 @@ export function SelectedSaleItems() {
 			const res = await request<PaginationResponse<ServiceWithDetails>>(
 				'GET',
 				'/api/v1/sms/service?sort=desc&limit=1',
-			).then((data) => data.data[0]);
+			).then((data) =>
+				data.data.length >= 1
+					? data.data[0]
+					: ({service_id: 0} as unknown as ServiceWithDetails),
+			);
 			const data = {
-				service_title: `Service #${Number(res.service_id) + 1}`,
-				service_description: `Is handled by Current incharge employee`,
+				service_title: `Service #${res.service_id + 1}`,
+				service_description: `Is handled by ${user?.employee.firstname} ${user?.employee.middlename} ${user?.employee.lastname}`,
+				employee_id: user?.employee.employee_id,
 				status: 'Active',
 				has_sales_item: false,
 				has_borrow: false,
@@ -63,7 +70,6 @@ export function SelectedSaleItems() {
 	const handleDelete = (data: any) => {
 		setSaleHookData('sales_item', [data], 'remove');
 	};
-	console.log(salesHookData);
 	return (
 		<>
 			<div className="flex items-center justify-between gap-3">

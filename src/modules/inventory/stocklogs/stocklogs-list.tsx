@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
 import {columns} from './columns';
 import {StockLogsTable} from './stockts-table';
-import {StockLogsWithDetails} from '@/lib/inventory-zod-schema';
+import {StockLogsWithDetails} from '@/modules/inventory/_components/validation/product';
 import {useSearchParams} from 'react-router-dom';
 
 export default function StockLogsList() {

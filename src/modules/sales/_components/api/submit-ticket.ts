@@ -1,5 +1,5 @@
 import {Task} from '../validation/task';
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
+import {ItemWithDetails} from '@/modules/inventory/_components/validation/product';
 
 export const SubmitTicket = async (
 	formdata: Task,

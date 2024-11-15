@@ -5,8 +5,7 @@ export const columns: ColumnDef<SalesItemWithDetails>[] = [
 	{
 		accessorKey: 'item.product.name',
 		header: 'Name',
-		accessorFn: (row) =>
-			`${row.item.product.name} - ${row.item.product.supplier.name}`,
+		accessorFn: (row) => `${row.product.name} - ${row.product.name}`,
 		cell: (info) => info.getValue(),
 		filterFn: 'includesString',
 	},

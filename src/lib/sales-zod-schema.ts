@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {EmployeeBasicInformation} from '../modules/ems/_components/validation/employee';
 import {Customer} from './cms-zod-schema';
-import {ItemWithDetails} from './inventory-zod-schema';
+import {ItemWithDetails, Product} from '../modules/inventory/_components/validation/product';
 
 export const salesSchema = z.object({
 	sales_id: z.number().optional(),
@@ -122,7 +122,7 @@ export type SalesItem = z.infer<typeof salesItemSchema>;
 export type SalesItemWithDetails = {
 	sales_item_id?: number;
 	service: ServiceWithDetails;
-	item: ItemWithDetails;
+	product: Product;
 	quantity: number;
 	sales_item_type: string;
 	total_price: number;

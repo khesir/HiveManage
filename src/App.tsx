@@ -30,7 +30,6 @@ import Terminal from './pages/general/terminal';
 import InquiryPage from './pages/sales/systems/inquiry';
 import JoborderListsPage from './pages/tech/systems/service/joborder-page';
 import JoborderViewPage from './pages/tech/systems/service/view/view-page';
-import InventoryOverview from './pages/inventory/overview/admin-overview';
 import ItemPage from './pages/inventory/items/items-page';
 import ReadTask from './pages/sales/systems/service/tickets/task-detail';
 import TicketsPage from './pages/tech/systems/service/task-page';
@@ -38,6 +37,7 @@ import ReportsPage from './pages/tech/systems/service/reports-page';
 import RequireAuth from './modules/authentication/auth-layout';
 import Unauthorized from './pages/_auth/unauthorized';
 import EmployeePage from './pages/admin/systems/ems/employee-page';
+import ProductPage from './pages/inventory/overview/prouct-page';
 
 function App() {
 	return (
@@ -81,7 +81,7 @@ function App() {
 						</Route>
 
 						<Route path="inventory">
-							<Route path="overview" element={<InventoryOverview />} />
+							<Route path="products" element={<ProductPage />} />
 							<Route path="items" element={<ItemPage />} />
 							<Route path="orders" />
 						</Route>

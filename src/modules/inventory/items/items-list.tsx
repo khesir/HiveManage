@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
 import {columns} from './columns';
 import {useSearchParams} from 'react-router-dom';
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
+import {ItemWithDetails} from '@/modules/inventory/_components/validation/product';
 import {ItemsWithDetailsTable} from './items.table';
 
 export default function ItemsWithDetailsList() {

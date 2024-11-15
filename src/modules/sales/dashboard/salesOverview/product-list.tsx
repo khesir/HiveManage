@@ -17,23 +17,23 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
+import {ProductWithRelatedTables} from '@/modules/inventory/_components/validation/product';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useNavigate, useSearchParams} from 'react-router-dom';
 import {toast} from 'sonner';
 
-export function ItemsList() {
+export function ProductsList() {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 
-	const [items, setItems] = useState<ItemWithDetails[]>([]);
+	const [Products, setProducts] = useState<ProductWithRelatedTables[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageLimit, setPageLimit] = useState<number>(
 		Number(searchParams.get('limit')) || 10,
 	);
-	const [quantities, setQuantities] = useState<{[key: number]: number}>({}); // State to track quantities for each item
+	const [quantities, setQuantities] = useState<{[key: number]: number}>({}); // State to track quantities for each product
 
 	const page = Number(searchParams.get('page')) || 1;
 	const offset = (page - 1) * pageLimit;
@@ -42,16 +42,17 @@ export function ItemsList() {
 	const pageSizeOptions = [10, 20, 30, 50, 100];
 
 	useEffect(() => {
-		const fetchItems = async () => {
-			const res = await request<PaginationResponse<ItemWithDetails>>(
+		const fetchProducts = async () => {
+			const res = await request<PaginationResponse<ProductWithRelatedTables>>(
 				'GET',
-				`/api/v1/ims/item?on_listing=true&limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/ims/product?on_listing=true&limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : ''),
 			);
-			setItems(res.data);
+			console.log(res.data);
+			setProducts(res.data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));
 		};
-		fetchItems();
+		fetchProducts();
 	}, [offset, pageLimit]);
 
 	const handlePaginationChange = (newPage: number) => {
@@ -65,21 +66,21 @@ export function ItemsList() {
 	};
 
 	const handleQuantityChange = (
-		itemId: number,
+		productId: number,
 		value: string,
 		availableQuantity: number,
 	) => {
 		const newValue = Math.min(Number(value), availableQuantity); // Cap the value
 		setQuantities((prev) => ({
 			...prev,
-			[itemId]: newValue < 0 ? 0 : newValue, // Ensure value is non-negative
+			[productId]: newValue < 0 ? 0 : newValue, // Ensure value is non-negative
 		}));
 	};
 
 	// Handling interactivity
 	const {salesHookData, setSaleHookData} = useSalesHook();
 
-	const handleAddItem = (item: ItemWithDetails) => {
+	const handleAddproduct = (product: ProductWithRelatedTables) => {
 		if (!salesHookData['service']) {
 			alert('Create service First!');
 		}
@@ -88,92 +89,93 @@ export function ItemsList() {
 			has_job_order: true,
 		};
 		setSaleHookData('service', [updateService], 'clear');
-		const quantity = quantities[item.item_id] || 0;
+		const quantity = quantities[product.product_id] || 0;
 
 		if (quantity <= 0) {
 			alert('Please enter a valid quantity.');
 			return;
 		}
 
-		const existingItems = salesHookData['sales_item'] || [];
+		const existingProducts = salesHookData['sales_product'] || [];
 
-		const existingItem = existingItems.find(
+		const existingproduct = existingProducts.find(
 			(data) =>
-				data.data.item_id === item.item_id && data.data.type === 'Sales',
+				data.data.product_id === product.product_id &&
+				data.data.type === 'Sales',
 		);
 
-		if (existingItem) {
-			// If the item exists, calculate the new total quantity
-			const newQuantity = existingItem.data.quantity + quantity;
-			console.log(existingItem);
-			// Check if the new item exceeds the available stock
-			if (newQuantity > item.stock) {
-				alert('Not enough items available.');
+		if (existingproduct) {
+			// If the product exists, calculate the new total quantity
+			const newQuantity = existingproduct.data.quantity + quantity;
+			console.log(existingproduct);
+			// Check if the new product exceeds the available stock
+			if (newQuantity > product.total_stocks) {
+				alert('Not enough Products available.');
 				return;
 			}
 
-			// Update the existing item with the new quantity and total price
+			// Update the existing product with the new quantity and total price
 			const updatedData = {
-				...existingItem,
+				...existingproduct,
 				data: {
-					...existingItem.data,
+					...existingproduct.data,
 					quantity: newQuantity,
-					total_price: newQuantity * item.product.price,
+					total_price: newQuantity * 0,
 				},
 			};
-			// Replace the existing item in the sales_item array
-			const updatedItems = existingItems.map((data) =>
-				data.data.item_id === item.item_id ? updatedData : data,
+			// Replace the existing product in the sales_product array
+			const updatedProducts = existingProducts.map((data) =>
+				data.data.product_id === product.product_id ? updatedData : data,
 			);
 
 			// Update the state
-			setSaleHookData('sales_item', updatedItems, 'clear'); // Use 'clear' to replace the existing items
-			toast(`Updated ${item.product.name} qty: ${newQuantity} in the cart`);
+			setSaleHookData('sales_product', updatedProducts, 'clear'); // Use 'clear' to replace the existing Products
+			toast(`Updated ${product.name} qty: ${newQuantity} in the cart`);
 		} else {
-			// If the item does not exist, check if there's enough stock
-			if (quantity > item.stock) {
-				// Assume item.quantity is the available stock
-				alert('Not enough items available.');
+			// If the product does not exist, check if there's enough stock
+			if (quantity > product.total_stocks) {
+				// Assume product.quantity is the available stock
+				alert('Not enough Products available.');
 				return;
 			}
 
-			// Add the item to the cart
+			// Add the product to the cart
 			const data = {
 				data: {
-					item_id: item.item_id,
+					product_id: product.product_id,
 					service_id: undefined,
 					quantity: quantity,
 					type: 'Sales',
-					total_price: quantity * item.product.price,
+					total_price: quantity * 0,
 				},
-				item,
+				product,
 			};
-			setSaleHookData('sales_item', [data], 'append');
-			toast(`Added ${item.product.name} qty: ${quantity} to the cart`);
+			setSaleHookData('sales_product', [data], 'append');
+			toast(`Added ${product.name} qty: ${quantity} to the cart`);
 		}
 	};
 
-	if (items.length === 0) {
+	if (Products.length === 0) {
 		return (
 			<Card className="relative w-full h-[170px] overflow-hidden">
-				<CardTitle className="h-full font-semibold text-xl  hover:underline flex items-center justify-center">
-					No Item Available
+				<CardTitle className="h-full font-semibold text-xl  hover:underline flex Products-center justify-center">
+					No product Available
 				</CardTitle>
 			</Card>
 		);
 	}
 	return (
 		<>
-			{/* Render your items */}
+			{/* Render your Products */}
 			<ScrollArea className="h-[calc(90vh-210px)] px-2">
 				<div className="flex flex-col gap-3">
-					{items.map((item) => (
+					{Products.map((product) => (
 						<Card
 							className="relative w-full h-[170px] overflow-hidden"
-							key={item.item_id}
+							key={product.product_id}
 						>
 							<div className="flex justify-start">
-								<div className="w-[25%] h-full flex-shrink-0 flex items-center justify-center">
+								<div className="w-[25%] h-full flex-shrink-0 flex Products-center justify-center">
 									<img
 										src={'/img/placeholder.jpg'}
 										className="w-full h-full object-center object-cover"
@@ -181,40 +183,49 @@ export function ItemsList() {
 								</div>
 								<CardHeader className="flex flex-col justify-start">
 									<CardTitle className="font-semibold text-sm  hover:underline">
-										{item.product.name} - {item.product.supplier.name}
+										{product.name}
 									</CardTitle>
 									<CardDescription>
 										<div className="space-x-1">
-											<Badge>{item.product.category.name}</Badge>
-											<Badge>{item.tag}</Badge>
+											{product.product_categories &&
+												product.product_categories.map((category) => (
+													<Badge key={category.category_id}>
+														{category.category.name}
+													</Badge>
+												))}
 										</div>
 										<div>
-											Qty {item.stock} - Price: {item.product.price}
+											Qty {product.total_stocks} - Price:{' '}
+											{product.price_history && product.price_history.length > 0
+												? product.price_history[0].price
+												: 'Not set'}
 										</div>
-										<div className="w-[90%]">{item.product.description}</div>
+										<div className="w-[60%] text-justify">
+											{product.description}
+										</div>
 									</CardDescription>
 								</CardHeader>
 							</div>
-							<div className="absolute bottom-1 right-3 gap-2 flex items-end justify-end">
+							<div className="absolute bottom-1 right-3 gap-2 flex Products-end justify-end">
 								<Button variant={'ghost'}>View Details</Button>
 								<div className="flex flex-col gap-3">
 									<Input
 										className="w-[100px]"
 										placeholder="0"
 										type="number"
-										value={quantities[item.item_id] || ''}
+										value={quantities[product.product_id] || ''}
 										onChange={
 											(e) =>
 												handleQuantityChange(
-													item.item_id,
+													product.product_id,
 													e.target.value,
-													item.stock,
-												) // Pass the item's quantity
+													product.total_stocks,
+												) // Pass the product's quantity
 										}
 									/>
 									<Button
 										className="bg-green-400 hover:bg-green-200 w-[100px]"
-										onClick={() => handleAddItem(item)}
+										onClick={() => handleAddproduct(product)}
 									>
 										Add
 									</Button>
@@ -224,10 +235,10 @@ export function ItemsList() {
 					))}
 				</div>
 			</ScrollArea>
-			<div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
-				<div className="flex w-full items-center justify-between">
-					<div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
-						<div className="flex items-center space-x-2">
+			<div className="flex flex-col Products-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
+				<div className="flex w-full Products-center justify-between">
+					<div className="flex flex-col Products-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
+						<div className="flex Products-center space-x-2">
 							<p className="whitespace-nowrap text-sm font-medium">
 								Rows per page
 							</p>
@@ -251,10 +262,10 @@ export function ItemsList() {
 						</div>
 					</div>
 				</div>
-				<div className="flex w-[200px] items-center justify-center text-sm font-medium">
+				<div className="flex w-[200px] Products-center justify-center text-sm font-medium">
 					Page {currentPage} of {pageCount}
 				</div>
-				<div className="flex items-center space-x-2">
+				<div className="flex Products-center space-x-2">
 					<Button
 						aria-label="Go to first page"
 						variant="outline"

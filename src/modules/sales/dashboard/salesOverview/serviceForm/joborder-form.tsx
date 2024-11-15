@@ -26,7 +26,9 @@ import {JoborderSetting} from '@/modules/_configSettings/config';
 import {
 	Joborder,
 	joborderSchema,
+	JobOrderType,
 } from '@/modules/sales/_components/validation/joborder';
+import {PaginationResponse, request} from '@/api/axios';
 
 interface JoborderProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;
@@ -36,47 +38,22 @@ interface JoborderProps {
 export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [status, setStatus] = useState<string[]>([]);
-	const joborderType = [
-		{
-			id: 1,
-			name: 'Item 1',
-			description: 'Item 1',
-		},
-		{
-			id: 2,
-			name: 'Item 2',
-			description: 'Item 2',
-		},
-		{
-			id: 3,
-			name: 'Item 3',
-			description: 'Item 3',
-		},
-		{
-			id: 4,
-			name: 'Item 4',
-			description: 'Item 4',
-		},
-		{
-			id: 5,
-			name: 'Item 5',
-			description: 'Item 5',
-		},
-	];
 	useEffect(() => {
 		const statusJO = new JoborderSetting();
 		setStatus(statusJO.getJoborderStatus());
 	}, []);
 
-	// TODO: Implement Job order type
-	// const [joborderType, setJobOrderType] = useState<JobOrderType>();
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		const response = await request
-	// 		setJobOrderType()
-	// 	}
-	// 	fetchData();
-	// },[])
+	const [joborderTypes, setJoborderTypes] = useState<JobOrderType[]>([]);
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await request<PaginationResponse<JobOrderType>>(
+				'GET',
+				'/api/v1/sms/joborder-types',
+			);
+			setJoborderTypes(response.data);
+		};
+		fetchData();
+	}, []);
 
 	const form = useForm<Joborder>({
 		resolver: zodResolver(joborderSchema),
@@ -185,8 +162,11 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{joborderType.map((jo) => (
-												<SelectItem key={jo.id} value={jo.id.toString()}>
+											{joborderTypes.map((jo) => (
+												<SelectItem
+													key={jo.joborder_type_id}
+													value={jo.joborder_type_id!.toString()}
+												>
 													{jo.name}
 												</SelectItem>
 											))}

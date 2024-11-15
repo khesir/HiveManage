@@ -33,7 +33,7 @@ import {
 import {Button, buttonVariants} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {ItemWithDetails} from '@/lib/inventory-zod-schema';
+import {ItemWithDetails} from '@/modules/inventory/_components/validation/product';
 import useItemsWithDetailsStore from './hooks/use-items';
 import {Input} from '@/components/ui/input';
 import {cn} from '@/lib/util/utils';

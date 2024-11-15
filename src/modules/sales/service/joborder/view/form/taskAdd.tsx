@@ -30,7 +30,7 @@ import useAddFormStatus from '../../../../_components/hooks/use-ticket-form';
 import {Textarea} from '@/components/ui/textarea';
 import {ItemLisitingModal} from '@/modules/sales/_components/modal/item-listing-modal';
 import {X} from 'lucide-react';
-import {useItemWithDetailsStore} from '@/modules/sales/_components/hooks/use-selected-item';
+import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/use-selected-item';
 import {toast} from 'sonner';
 import {useJoborderStore} from '@/modules/sales/_components/hooks/use-joborder-store';
 import {SubmitTicket} from '@/modules/sales/_components/api/submit-ticket';
@@ -42,10 +42,10 @@ export function TaskAdd() {
 	const [taskType, setTaskType] = useState<TaskType[]>([]);
 	const {setAddStatus} = useAddFormStatus();
 	const {
-		selectedItemWithDetails,
-		setSelectedItemWithDetails,
-		removeItemWithDetails,
-	} = useItemWithDetailsStore();
+		selectedProductWithRelatedData,
+		setSelectedProductWithRelatedData,
+		removeProductWithRelatedData,
+	} = useProductWithRelatedDataStore();
 	useEffect(() => {
 		const setSettings = () => {
 			const settings_status = TicketsSettings.getInstance();
@@ -60,7 +60,7 @@ export function TaskAdd() {
 		};
 		setSettings();
 		fetchData();
-		setSelectedItemWithDetails([]);
+		setSelectedProductWithRelatedData([]);
 	}, []);
 
 	const form = useForm<Task>({
@@ -70,7 +70,7 @@ export function TaskAdd() {
 	const processForm = async (formdata: Task) => {
 		try {
 			setLoading(true);
-			await SubmitTicket(formdata, selectedItemWithDetails);
+			await SubmitTicket(formdata, selectedProductWithRelatedData);
 			toast('Ticket Created');
 			setAddStatus('main');
 		} catch (error) {
@@ -240,19 +240,21 @@ export function TaskAdd() {
 								/>
 								<Card className="flex flex-col gap-3 p-5 mt-5">
 									<div className="flex justify-between gap-3 items-center">
-										<h1 className="text-lg font-semibold">Attach Items</h1>
+										<h1 className="text-lg font-semibold">Attach product</h1>
 										<ItemLisitingModal title="Add to remark" />
 									</div>
 									<div className="w-full flex flex-col gap-3">
-										{selectedItemWithDetails.map((item) => (
+										{selectedProductWithRelatedData.map((product) => (
 											<>
 												<div className="flex justify-start gap-3 items-center">
 													<X
 														className="w-5 h-5 hover:bg-red-600 rounded-sm cursor-pointer "
-														onClick={() => removeItemWithDetails(item.item_id)}
+														onClick={() =>
+															removeProductWithRelatedData(product.product_id)
+														}
 													/>
 													<p className="hover:underline">
-														{item.product.name} - {item.product.supplier.name}
+														{product.product_id}- {product.name}
 													</p>
 												</div>
 											</>
