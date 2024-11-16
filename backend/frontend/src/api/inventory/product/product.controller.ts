@@ -62,23 +62,31 @@ export class ProductController {
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        category_id,
-        supplier_id,
         name,
         description,
         re_order_level,
         on_listing,
+        total_stocks,
+        price_history,
+        inventory_record,
+        inventory_limit,
+        product_categories,
       } = req.body;
 
-      await this.productService.createProduct({
-        // Ensure correct method name
-        category_id,
-        supplier_id,
-        name,
-        description,
-        re_order_level,
-        on_listing,
-      });
+      await this.productService.createProduct(
+        {
+          name,
+          description,
+          re_order_level,
+          on_listing,
+          total_stocks,
+          price_history,
+          inventory_record,
+          inventory_limit,
+          product_categories,
+        },
+        req.file,
+      );
 
       res
         .status(HttpStatus.CREATED.code)

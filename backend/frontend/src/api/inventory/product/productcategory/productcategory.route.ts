@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
-import log from '@/lib/logger';
 import { ProductCategoryController } from './productcategory.controller';
 import { validateProductCategoryID } from './productcategory.middleware';
 import {
@@ -18,7 +17,6 @@ productcategoryRoute.get(
     productcategoryController,
   ),
 );
-log.info('GET /productcategory set');
 
 productcategoryRoute.get(
   '/:product_category_id',
@@ -27,7 +25,6 @@ productcategoryRoute.get(
     productcategoryController,
   ),
 );
-log.info('GET /productcategory/:product_category_id set');
 
 productcategoryRoute.post(
   '/',
@@ -36,7 +33,6 @@ productcategoryRoute.post(
     productcategoryController,
   ),
 );
-log.info('POST /productcategory/ set ');
 
 productcategoryRoute.put(
   '/:product_category_id',
@@ -45,7 +41,6 @@ productcategoryRoute.put(
     productcategoryController,
   ),
 );
-log.info('PUT /productcategory/:product_category_id set ');
 
 productcategoryRoute.delete(
   '/:product_category_id',
@@ -54,6 +49,5 @@ productcategoryRoute.delete(
     productcategoryController,
   ),
 );
-log.info('DELETE /productcategory/:product_category_id set');
 
 export default productcategoryRoute;

@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
 import { ProductController } from './product.controller';
-import { validateProductID } from './product.middleware';
+import {
+  formDataToObject,
+  multerbase,
+  validateProductID,
+} from './product.middleware';
 import { CreateProduct, UpdateProduct } from './product.model';
 import productcategoryRoute from './productcategory/productcategory.route';
 import inventoryRecordRoute from './inventoryrecord/inventoryrecord.route';
@@ -21,7 +25,11 @@ productRoute.get(
 
 productRoute.post(
   '/',
-  [validateRequest({ body: CreateProduct })],
+  [
+    multerbase.single('img_url'),
+    formDataToObject,
+    validateRequest({ body: CreateProduct }),
+  ],
   productController.createProduct.bind(productController),
 );
 

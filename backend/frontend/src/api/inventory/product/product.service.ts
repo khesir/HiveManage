@@ -10,17 +10,69 @@ import {
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateProduct } from './product.model';
+import { SupabaseService } from '@/supabase/supabase.service';
 
 export class ProductService {
   private db: PostgresJsDatabase<SchemaType>;
+  private supabaseSerivce: SupabaseService;
 
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
+    this.supabaseSerivce = SupabaseService.getInstance();
   }
 
-  async createProduct(data: CreateProduct) {
-    // Ensure the data passed matches expected schema and format
-    await this.db.insert(product).values(data);
+  async createProduct(
+    data: CreateProduct,
+    file: Express.Multer.File | undefined,
+  ) {
+    return this.db.transaction(async (tx) => {
+      let filePath = undefined;
+      if (file) {
+        filePath = await this.supabaseSerivce.uploadImageToBucket(file);
+      }
+      const [newProduct] = await tx
+        .insert(product)
+        .values({
+          name: String(data.name),
+          description: String(data.description),
+          on_listing: data.on_listing,
+          re_order_level: data.re_order_level,
+          total_stocks: data.total_stocks,
+          img_url: filePath,
+          inventory_limit: data.inventory_limit,
+        })
+        .returning({ product_id: product.product_id });
+      await tx.insert(price_history).values({
+        price: String(data.price_history),
+        product_id: newProduct.product_id,
+      });
+
+      if (data.inventory_record) {
+        await Promise.all(
+          data.inventory_record.map((data) =>
+            tx.insert(inventory_record).values({
+              supplier_id: data.supplier_id
+                ? Number(data.supplier_id)
+                : undefined,
+              tag: data.tag,
+              stock: Number(data.stock),
+              unit_price: String(data.unit_price),
+              product_id: newProduct.product_id,
+            }),
+          ),
+        );
+      }
+      if (product_category) {
+        await Promise.all(
+          data.product_categories.map((data) =>
+            tx.insert(product_category).values({
+              product_id: newProduct.product_id,
+              category_id: data.category_id,
+            }),
+          ),
+        );
+      }
+    });
   }
 
   async getAllProduct(

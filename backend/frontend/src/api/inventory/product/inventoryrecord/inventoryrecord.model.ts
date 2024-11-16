@@ -2,25 +2,14 @@ import { z } from 'zod';
 
 export const CreateInventoryRecord = z.object({
   supplier_id: z.number().min(1),
-  item_id: z.number().min(1),
-  tag: z.enum([
-    'Active',
-    'Inactive',
-    'Pending Approval',
-    'Verified',
-    'Unverified',
-    'Suspended',
-    'Preferred',
-    'Blacklisted',
-    'Under Review',
-    'Archived',
-  ]),
+  product_id: z.number().min(1),
+  tag: z.string(),
   stock: z.number().min(1),
 });
 
 export const UpdateInventoryRecord = z.object({
   supplier_id: z.number().min(1),
-  item_id: z.number().min(1),
+  product_id: z.number().min(1),
   tag: z.enum([
     'Active',
     'Inactive',

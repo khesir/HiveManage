@@ -64,11 +64,11 @@ export class InventoryRecordController {
 
   async createInventoryRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id, item_id, tag, stock } = req.body;
+      const { supplier_id, product_id, tag, stock } = req.body;
 
       await this.inventoryrecordService.createInventoryRecord({
         supplier_id,
-        item_id,
+        product_id,
         tag,
         stock,
       });
@@ -90,12 +90,12 @@ export class InventoryRecordController {
   async updateInventoryRecord(req: Request, res: Response, next: NextFunction) {
     try {
       const { inventory_record_id } = req.params;
-      const { supplier_id, item_id, tag, stock } = req.body;
+      const { supplier_id, product_id, tag, stock } = req.body;
 
       await this.inventoryrecordService.updateInventoryRecord(
         {
           supplier_id,
-          item_id,
+          product_id,
           tag,
           stock,
         },

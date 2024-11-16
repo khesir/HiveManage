@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { eq, isNull } from 'drizzle-orm';
 import { SchemaType, supplier } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
@@ -13,40 +13,16 @@ export class SupplierService {
     await this.db.insert(supplier).values(data);
   }
 
-  async getAllSupplier(
-    supplier_id: string | undefined,
-    limit: number,
-    offset: number,
-  ) {
-    try {
-      if (supplier_id) {
-        // Query by supplierId with limit and offset
-        const result = await this.db
-          .select()
-          .from(supplier)
-          .where(
-            and(
-              eq(supplier.supplier_id, Number(supplier_id)),
-              isNull(supplier.deleted_at),
-            ),
-          )
-          .limit(limit)
-          .offset(offset);
-        return result;
-      } else {
-        //Query all suppliers with limit and offset
-        const result = await this.db
-          .select()
-          .from(supplier)
-          .where(isNull(supplier.deleted_at))
-          .limit(limit)
-          .offset(offset);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error fetching suppliers: ', error);
-      throw new Error('Error fetching suppliers');
+  async getAllSupplier(limit: number, offset: number, no_pagination: boolean) {
+    const query = this.db
+      .select()
+      .from(supplier)
+      .where(isNull(supplier.deleted_at));
+    if (no_pagination) {
+      query.limit(limit).offset(offset);
     }
+    const result = await query;
+    return result;
   }
 
   async getSupplierById(paramsId: number) {

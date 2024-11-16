@@ -12,12 +12,16 @@ export class SupplierController {
   }
 
   async getAllSupplier(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
     const limit = parseInt(req.query.limit as string) || 10; // default limit value
     const offset = parseInt(req.query.offset as string) || 0; // default offset value
+    const no_pagination = req.query.no_pagination === 'true';
     try {
       // Fetch data count from the database
-      const data = await this.supplierService.getAllSupplier(id, limit, offset);
+      const data = await this.supplierService.getAllSupplier(
+        limit,
+        offset,
+        no_pagination,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data retrieved successfully',
