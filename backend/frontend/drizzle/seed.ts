@@ -25,7 +25,6 @@ import {
   assignedemployees,
   remarktickets,
   jobordertype,
-  product_attachment,
   orderItem,
   SchemaType,
   remarkitems,
@@ -932,8 +931,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
     'Damaged',
   ] as const; // Use 'as const' for TypeScript to infer literal types
 
-  const tag_item_type = ['New', 'Used', 'Broken'] as const;
-
   const borrowRecords = [
     {
       service_id: faker.helpers.arrayElement(serviceIDs).service_id,
@@ -941,7 +938,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 10, // Example fee in the specified currency
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -952,7 +948,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 20,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -963,7 +958,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 15,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -974,7 +968,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 30,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -985,7 +978,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -996,7 +988,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -1007,7 +998,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -1018,7 +1008,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -1029,7 +1018,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -1040,7 +1028,6 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 5,
-      tag_item: faker.helpers.arrayElement(tag_item_type),
       status: faker.helpers.arrayElement(statuses),
       created_at: faker.date.recent(), // Ensure format is correct
       last_updated: faker.date.recent(), // Ensure format is correct
@@ -1926,67 +1913,67 @@ async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
   const pricehistoryRecords = [
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1200.50', // Ensure price is a string
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-15'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1450.75',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-20'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
     {
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: '1700.00',
+      price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-25'),
     },
@@ -2002,204 +1989,113 @@ async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
 async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
   const productIds = await db.select().from(product); // Fetch existing item IDs
-
+  const itemTags = [
+    'New',
+    'Old',
+    'Damaged',
+    'Refurbished',
+    'Used',
+    'Antique',
+    'Repaired',
+  ] as const;
   // Define an array of real data for the item-supplier records
   const inventoryRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Active' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status
-      stock: 150,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Verified' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status
-      stock: 300,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-15'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Preferred' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Blacklisted' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Blacklisted' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Blacklisted' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Blacklisted' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Pending Approval' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Blacklisted' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Under Review' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: 'Blacklisted' as
-        | 'Active'
-        | 'Inactive'
-        | 'Pending Approval'
-        | 'Verified'
-        | 'Unverified'
-        | 'Suspended'
-        | 'Preferred'
-        | 'Blacklisted'
-        | 'Under Review'
-        | 'Archived', // Choose a specific tag status,
-      stock: 200,
+      tag: faker.helpers.arrayElement(itemTags),
+      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
+      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2224,6 +2120,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'High-performance DDR4 RAM module with a clock speed of 3200MHz, designed to provide faster data transfer and improve overall system responsiveness.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
@@ -2234,6 +2132,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       description: 'A powerful laptop suitable for professionals and students.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-15'),
     },
@@ -2245,7 +2145,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         '"High-speed NVMe SSD with rapid data transfer and reliable performance."',
       on_listing: true,
       re_order_level: 150,
-      img_url: 'https://example.com/images/wireless-headphones.jpg',
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2257,6 +2158,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'Vibrant LCD monitor with sharp resolution and wide viewing angles, perfect for immersive gaming and professional work.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2268,6 +2171,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'Noise-cancelling wireless headphones with excellent sound quality.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2279,6 +2184,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'High-precision wired mouse with ergonomic design and customizable buttons for smooth navigation and enhanced gaming performance.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2290,6 +2197,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'Ergonomic wireless mouse with precise tracking and customizable buttons for seamless navigation and enhanced productivity',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2301,6 +2210,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'Mechanical keyboard with tactile switches and customizable RGB backlighting for an enhanced typing experience and personalized style.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2312,6 +2223,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'High-performance graphics card with advanced cooling technology and real-time ray tracing for stunning visuals and smooth gaming experiences.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2323,6 +2236,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
         'High-performance graphics card with advanced cooling technology and real-time ray tracing for stunning visuals and smooth gaming experiences.',
       on_listing: true,
       re_order_level: 150,
+      total_stocks: 300,
+      inventory_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2333,54 +2248,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(product).values(productRecords);
 
   log.info('Product records seeded successfully');
-}
-
-async function seedProductAttachment(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
-
-  const productattachmentRecords = [
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      filePath: 'https://example.com/attachments/product1_manual.pdf',
-      created_at: new Date('2023-09-01'),
-      last_updated: new Date('2023-09-02'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      filePath: 'https://example.com/attachments/product2_manual.pdf',
-      created_at: new Date('2023-09-03'),
-      last_updated: new Date('2023-09-04'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      filePath: 'https://example.com/attachments/product3_manual.pdf',
-      created_at: new Date('2023-09-05'),
-      last_updated: new Date('2023-09-06'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      filePath: 'https://example.com/attachments/product4_manual.pdf',
-      created_at: new Date('2023-09-07'),
-      last_updated: new Date('2023-09-08'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      filePath: 'https://example.com/attachments/product5_manual.pdf',
-      created_at: new Date('2023-09-09'),
-      last_updated: new Date('2023-09-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      filePath: 'https://example.com/attachments/product5_manual.pdf',
-      created_at: new Date('2023-09-09'),
-      last_updated: new Date('2023-09-10'),
-    },
-    // Add more product attachment records as needed
-  ];
-
-  await db.insert(product_attachment).values(productattachmentRecords);
-
-  log.info('Product Attachment records seeded successfully');
 }
 
 async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
@@ -2717,10 +2584,12 @@ async function seedOrderItem(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
   const itemdata = await db.select().from(product);
+  const employees = await db.select().from(employee);
 
   const stockRecord = [
     {
       product_id: faker.helpers.arrayElement(itemdata).product_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       quantity: 15,
       movement_type: 'Stock In',
       action: 'For the technician',
@@ -2728,6 +2597,7 @@ async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       product_id: faker.helpers.arrayElement(itemdata).product_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       quantity: 10,
       movement_type: 'Stock Out',
       action: 'For the technician',
@@ -2735,6 +2605,7 @@ async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       product_id: faker.helpers.arrayElement(itemdata).product_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       quantity: 5,
       movement_type: 'Stock In',
       action: 'For the sales',
@@ -2742,6 +2613,7 @@ async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       product_id: faker.helpers.arrayElement(itemdata).product_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       quantity: 20,
       movement_type: 'Stock Out',
       action: 'For the sales',
@@ -2749,12 +2621,12 @@ async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       product_id: faker.helpers.arrayElement(itemdata).product_id,
+      employee_id: faker.helpers.arrayElement(employees).employee_id,
       quantity: 8,
       movement_type: 'Stock In',
       action: 'For the technician',
       created_at: new Date('2023-10-05'),
     },
-    // Add more stock log records as needed
   ];
 
   await db.insert(stocksLogs).values(stockRecord);
@@ -2802,7 +2674,6 @@ async function seedArrivedItems(db: PostgresJsDatabase<SchemaType>) {
       created_at: new Date('2023-10-09'),
       last_updated: new Date('2023-10-10'),
     },
-    // Add more arrived items records as needed
   ];
 
   await db.insert(arrived_Items).values(arrivedItemsRecords);
@@ -2850,7 +2721,6 @@ async function main() {
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
-    // await seedProductAttachment(db);
     await seedProductCategory(db);
     await seedInventoryRecord(db);
     await seedPriceHistory(db);
@@ -2867,28 +2737,28 @@ async function main() {
     // await seedMessage(db);
 
     // // Sales and related data
-    // await seedService(db);
+    await seedService(db);
     // await seedPayment(db);
     // await seedReceipt(db);
-    // await seedSalesItem(db);
-    // await seedBorrow(db);
-    // await seedReserve(db);
+    await seedSalesItem(db);
+    await seedBorrow(db);
+    await seedReserve(db);
 
     // // Job Order and related data
     await seedJobOrderTypes(db);
-    // await seedJobOrder(db);
-    // await seedJobOrderServices(db);
+    await seedJobOrder(db);
+    await seedJobOrderServices(db);
 
     // // Pass employee IDs to seedRemarkTickets
-    // await seedRemarkType(db);
-    // await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
-    // await seedRemarkItems(db);
-    // await seedReports(db); // Make sure this also properly references customer IDs
-    // await seedRemarkReports(db);
-    // await seedRemarkAssigned(db);
+    await seedRemarkType(db);
+    await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    await seedRemarkItems(db);
+    await seedReports(db); // Make sure this also properly references customer IDs
+    await seedRemarkReports(db);
+    await seedRemarkAssigned(db);
 
-    // await seedAssignedEmployees(db);
-    // await seedRemarkContent(db);
+    await seedAssignedEmployees(db);
+    await seedRemarkContent(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

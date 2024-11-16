@@ -14,16 +14,20 @@ export class CategoryController {
   async getAllCategory(req: Request, res: Response, next: NextFunction) {
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const no_pagination = req.query.no_pagination === 'true';
     try {
-      const data = await this.categoryService.getAllCategory(limit, offset);
+      const data = await this.categoryService.getAllCategory(
+        limit,
+        offset,
+        no_pagination,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.result,
       });
     } catch (error) {
       res

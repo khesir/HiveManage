@@ -12,7 +12,7 @@ export class InventoryRecordController {
   }
 
   async getAllInventoryRecord(req: Request, res: Response, next: NextFunction) {
-    const item_id = req.params.item_id as string;
+    const product_id = req.params.product_id as string;
     const tag = (req.query.tag as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -20,7 +20,7 @@ export class InventoryRecordController {
 
     try {
       const data = await this.inventoryrecordService.getAllInventoryRecord(
-        item_id,
+        product_id,
         tag,
         sort,
         limit,

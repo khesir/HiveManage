@@ -582,6 +582,9 @@ export const product = pgTable('product', {
   description: varchar('description', { length: 255 }),
   on_listing: boolean('on_listing'),
   re_order_level: integer('re_order_level'),
+  total_stocks: integer('total_stock'),
+  img_url: varchar('img_url'),
+  inventory_limit: integer('inventory_limit'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -594,8 +597,9 @@ export const inventory_record = pgTable('inventory_record', {
   inventory_record_id: serial('inventory_record_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
   product_id: integer('product_id').references(() => product.product_id),
-  tag: TagEnum('tag').notNull(),
+  tag: varchar('tag'),
   stock: integer('stock'),
+  unit_price: decimal('unit_price', { precision: 10, scale: 2 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -621,23 +625,11 @@ export const price_history = pgTable('price_history', {
 export const stocksLogs = pgTable('stock_logs', {
   stock_log_id: serial('stock_logs_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
+  employee_id: integer('employee_id').references(() => employee.employee_id),
   quantity: integer('quantity'),
   movement_type: varchar('movement_type'),
   action: varchar('action'),
   created_at: timestamp('created_at').defaultNow(),
-});
-
-//Product Attachment
-export const product_attachment = pgTable('product_attachment', {
-  product_attachment_id: serial('product_attachment_id').primaryKey(),
-  product_id: integer('product_id').references(() => product.product_id), // Ensure supplier.supplier_id exists
-  filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
-  created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-  deleted_at: timestamp('deleted_at'),
 });
 
 //Product
@@ -672,6 +664,7 @@ export const supplier = pgTable('supplier', {
   name: varchar('name', { length: 255 }), // Supplier name, up to 255 characters
   contact_number: varchar('contact_number', { length: 255 }), // Supplier contact number, up to 255 characters
   remarks: varchar('remarks', { length: 255 }), // Additional remarks, up to 255 characters
+  profile_link: varchar('remark'),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -807,7 +800,6 @@ export const schema: SchemaType = {
   // Inventory
   stocksLogs,
   product,
-  product_attachment,
   category,
   supplier,
   order,

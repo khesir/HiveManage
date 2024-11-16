@@ -1,4 +1,4 @@
-import { eq, isNull } from 'drizzle-orm';
+import { eq, isNull, sql } from 'drizzle-orm';
 import { category, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
@@ -13,14 +13,23 @@ export class CategoryService {
     await this.db.insert(category).values(data);
   }
 
-  async getAllCategory(limit: number, offset: number) {
-    const result = await this.db
+  async getAllCategory(limit: number, offset: number, no_pagination: boolean) {
+    const totalCountQuery = await this.db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(category)
+      .where(isNull(category.deleted_at));
+    const totalData = totalCountQuery[0].count;
+    const query = this.db
       .select()
       .from(category)
-      .where(isNull(category.deleted_at))
-      .limit(limit)
-      .offset(offset);
-    return result;
+      .where(isNull(category.deleted_at));
+
+    if (no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+    const result = await query;
+
+    return { result, totalData };
   }
 
   async getCategoryById(paramsId: number) {

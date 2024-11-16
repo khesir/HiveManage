@@ -115,9 +115,12 @@ export class EmployeeRolesService {
     employee_id: string | undefined,
     user_id: string | undefined,
     fullname: string | undefined,
+    position_id: string | undefined,
   ) {
     const conditions = [isNull(employee_roles.deleted_at)];
     const employeeIds: number[] = [];
+    const employeePosIDs: number[] = [];
+    // Name Filter
     if (fullname) {
       const likeFullname = `%${fullname}%`;
       const nameConditions = or(
@@ -130,24 +133,42 @@ export class EmployeeRolesService {
         .from(employee)
         .where(and(nameConditions, isNull(employee.deleted_at)));
       employeeIds.push(...employeeData.map((emp) => emp.employee_id));
-    }
 
-    if (employeeIds.length > 0) {
-      conditions.push(inArray(employee_roles.employee_id, employeeIds));
+      if (employeeIds.length > 0) {
+        conditions.push(inArray(employee_roles.employee_id, employeeIds));
+      }
     }
-
+    // Status Filter
     if (status) {
       conditions.push(eq(employee_roles.status, status));
     }
-
+    // Employee ID Filter
     if (employee_id) {
       conditions.push(eq(employee_roles.employee_id, Number(employee_id)));
     }
+    // Supabase UserID Filter
     if (user_id) {
       conditions.push(eq(employee_roles.user_id, user_id));
     }
+    // Role Filter
     if (role_id) {
       conditions.push(eq(roles.role_id, Number(role_id)));
+    }
+    // Position Filter
+    if (position_id) {
+      const empPos = await this.db
+        .select()
+        .from(employee)
+        .where(
+          and(
+            eq(employee.position_id, Number(position_id)),
+            isNull(employee.deleted_at),
+          ),
+        );
+      employeePosIDs.push(...empPos.map((emp) => emp.employee_id));
+      if (employeePosIDs.length > 0) {
+        conditions.push(inArray(employee_roles.employee_id, employeePosIDs));
+      }
     }
 
     const totalCountQuery = await this.db

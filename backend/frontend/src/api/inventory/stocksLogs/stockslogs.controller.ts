@@ -15,12 +15,15 @@ export class StocksLogsController {
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const sort = (req.query.sort as string) || 'asc';
-
+    const product_id = (req.params.product_id as string) || undefined;
+    const no_pagination = req.query.no_pagination === 'true';
     try {
       const data = await this.stockslogsService.getAllStocksLogs(
         sort,
         limit,
         offset,
+        product_id,
+        no_pagination,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

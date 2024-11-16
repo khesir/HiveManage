@@ -1,5 +1,5 @@
 {
-  "id": "95143362-e700-4672-8c83-67f62e9416c0",
+  "id": "fc942ef8-96c4-4647-8a58-6b32addbdd7f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -949,14 +949,19 @@
         },
         "tag": {
           "name": "tag",
-          "type": "tag_supplier",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "stock": {
           "name": "stock",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "numeric(10, 2)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1314,6 +1319,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "supplier_id": {
+          "name": "supplier_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "product_id": {
           "name": "product_id",
           "type": "integer",
@@ -1364,6 +1375,19 @@
           ],
           "columnsTo": [
             "order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "orderItem_supplier_id_supplier_supplier_id_fk": {
+          "name": "orderItem_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "orderItem",
+          "tableTo": "supplier",
+          "columnsFrom": [
+            "supplier_id"
+          ],
+          "columnsTo": [
+            "supplier_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1692,18 +1716,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "category_id": {
-          "name": "category_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "supplier_id": {
-          "name": "supplier_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -1728,78 +1740,21 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "product_category_id_category_category_id_fk": {
-          "name": "product_category_id_category_category_id_fk",
-          "tableFrom": "product",
-          "tableTo": "category",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "category_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "product_supplier_id_supplier_supplier_id_fk": {
-          "name": "product_supplier_id_supplier_supplier_id_fk",
-          "tableFrom": "product",
-          "tableTo": "supplier",
-          "columnsFrom": [
-            "supplier_id"
-          ],
-          "columnsTo": [
-            "supplier_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.product_attachment": {
-      "name": "product_attachment",
-      "schema": "",
-      "columns": {
-        "product_attachment_id": {
-          "name": "product_attachment_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
+        "total_stock": {
+          "name": "total_stock",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "filePath": {
-          "name": "filePath",
-          "type": "varchar(255)",
+        "img_url": {
+          "name": "img_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inventory_limit": {
+          "name": "inventory_limit",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -1825,21 +1780,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "product_attachment_product_id_product_product_id_fk": {
-          "name": "product_attachment_product_id_product_product_id_fk",
-          "tableFrom": "product_attachment",
-          "tableTo": "product",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "product_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -2896,6 +2837,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "quantity": {
           "name": "quantity",
           "type": "integer",
@@ -2936,6 +2883,19 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "stock_logs_employee_id_employee_employee_id_fk": {
+          "name": "stock_logs_employee_id_employee_employee_id_fk",
+          "tableFrom": "stock_logs",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "employee_id"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2966,6 +2926,12 @@
         "remarks": {
           "name": "remarks",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "remark": {
+          "name": "remark",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },

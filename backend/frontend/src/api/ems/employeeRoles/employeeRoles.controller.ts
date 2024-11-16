@@ -20,6 +20,7 @@ export class EmployeeRolesController {
     const fullname = (req.query.fullname as string) || undefined;
     const status = (req.query.status as string) || undefined;
     const employee_id = (req.query.employee_id as string) || undefined;
+    const position_id = (req.query.position_id as string) || undefined;
     try {
       const data = await this.employeeaccountService.getAllEmployeeAccount(
         sort,
@@ -30,6 +31,7 @@ export class EmployeeRolesController {
         employee_id,
         user_id,
         fullname,
+        position_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

@@ -1,51 +1,40 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
-import log from '@/lib/logger';
 import { ProductController } from './product.controller';
 import { validateProductID } from './product.middleware';
 import { CreateProduct, UpdateProduct } from './product.model';
-import productattachmentRoute from './productattachment/productattachment.route';
 import productcategoryRoute from './productcategory/productcategory.route';
+import inventoryRecordRoute from './inventoryrecord/inventoryrecord.route';
+import stockLogsRoute from '../stocksLogs/stockslogs.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
 
 productRoute.get('/', productController.getAllProduct.bind(productController));
-log.info('GET /product set');
 
 productRoute.get(
   '/:product_id',
   validateProductID,
   productController.getProductById.bind(productController),
 );
-log.info('GET /product/:product_id set');
 
 productRoute.post(
   '/',
   [validateRequest({ body: CreateProduct })],
   productController.createProduct.bind(productController),
 );
-log.info('POST /product/ set ');
 
 productRoute.put(
   '/:product_id',
   [validateRequest({ body: UpdateProduct }), validateProductID],
   productController.updateProduct.bind(productController),
 );
-log.info('PUT /product/:product_id set ');
 
 productRoute.delete(
   '/:product_id',
   validateProductID,
   productController.deleteProduct.bind(productController),
-);
-log.info('DELETE /product/:product_id set');
-
-productRoute.use(
-  '/:product_id/product_attachment',
-  validateProductID,
-  productattachmentRoute,
 );
 
 productRoute.use(
@@ -53,4 +42,13 @@ productRoute.use(
   validateProductID,
   productcategoryRoute,
 );
+
+productRoute.use(
+  '/:product_id/inventory-record',
+  validateProductID,
+  inventoryRecordRoute,
+);
+
+productRoute.use('/:product_id/stock-logs', validateProductID, stockLogsRoute);
+
 export default productRoute;

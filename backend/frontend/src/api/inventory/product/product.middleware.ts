@@ -25,7 +25,6 @@ export async function validateProductID(
           isNull(product.deleted_at),
         ),
       );
-    console.log(Product);
     if (!Product[0]) {
       return res.status(404).json({ message: 'Product not found' });
     }

@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
-import log from '@/lib/logger';
 import { InventoryRecordController } from './inventoryrecord.controller';
 import { validateInventoryRecordID } from './inventoryrecord.middleware';
 import {
@@ -18,7 +17,6 @@ inventoryRecordRoute.get(
     inventoryRecordController,
   ),
 );
-log.info('GET /inventoryrecord set');
 
 inventoryRecordRoute.get(
   '/:inventory_record_id',
@@ -27,7 +25,6 @@ inventoryRecordRoute.get(
     inventoryRecordController,
   ),
 );
-log.info('GET /inventoryrecord/:inventory_record_id set');
 
 inventoryRecordRoute.post(
   '/',
@@ -36,7 +33,6 @@ inventoryRecordRoute.post(
     inventoryRecordController,
   ),
 );
-log.info('POST /inventoryrecord/ set ');
 
 inventoryRecordRoute.put(
   '/:inventory_record_id',
@@ -45,7 +41,6 @@ inventoryRecordRoute.put(
     inventoryRecordController,
   ),
 );
-log.info('PUT /inventoryrecord/:inventory_record_id set ');
 
 inventoryRecordRoute.delete(
   '/:inventory_record_id',
@@ -54,6 +49,5 @@ inventoryRecordRoute.delete(
     inventoryRecordController,
   ),
 );
-log.info('DELETE /inventoryrecord/:inventory_record_id set');
 
 export default inventoryRecordRoute;
