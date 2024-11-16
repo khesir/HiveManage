@@ -56,40 +56,38 @@ export default function InventorySection() {
 				<div className="col-span-2 flex gap-5 h-full">
 					<Card
 						x-chunk="dashboard-05-chunk-1"
-						className="flex-1 relative overflow-hidden"
+						className="flex-1 relative overflow-hidden flex flex-col justify-center"
 					>
-						<CardHeader className="pb-2">tabs</CardHeader>
-						<CardContent>
+						<CardHeader className="pb-2">
 							<CardDescription>Total Products</CardDescription>
+						</CardHeader>
+						<CardContent>
 							<CardTitle className="text-4xl">100</CardTitle>
 							<div className="text-xs text-muted-foreground">15 are listed</div>
 						</CardContent>
 						<CardFooter className="space-x-3">
-							<Button onClick={() => navigate('create')}>
+							<Button onClick={() => navigate('suppliers')}>
 								<BookUpIcon className="mr-2 h-4 w-4" />
-								Stock In
-							</Button>
-							<Button onClick={() => navigate('create')}>
-								<BookDown className="mr-2 h-4 w-4" />
-								Stock Out
+								View Suppliers
 							</Button>
 						</CardFooter>
 						<PackageOpen className="absolute w-[250px] h-[250px] -bottom-5 -right-20 text-slate-700" />
 					</Card>
 					<Card
 						x-chunk="dashboard-05-chunk-1"
-						className="flex-1 relative overflow-hidden"
+						className="flex-1 relative overflow-hidden flex flex-col justify-center"
 					>
-						<CardHeader className="pb-2">tabs</CardHeader>
-						<CardContent>
+						<CardHeader className="pb-2">
 							<CardDescription>Active orders</CardDescription>
+						</CardHeader>
+						<CardContent>
 							<CardTitle className="text-4xl">10</CardTitle>
 							<div className="text-xs text-muted-foreground">
 								15 products low on stocks
 							</div>
 						</CardContent>
 						<CardFooter>
-							<Button onClick={() => navigate('create')}>
+							<Button onClick={() => navigate('orders')}>
 								<BookUpIcon className="mr-2 h-4 w-4" />
 								View Orders
 							</Button>

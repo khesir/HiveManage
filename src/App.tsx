@@ -38,6 +38,9 @@ import Unauthorized from './pages/_auth/unauthorized';
 import EmployeePage from './pages/admin/systems/ems/employee-page';
 import ProductPage from './pages/inventory/product/prouct-page';
 import InventoryViewPage from './pages/inventory/product/inventory-view-page';
+import CreateProductPage from './pages/inventory/product/product-create-page';
+import OrderPage from './pages/inventory/product/orders/orders-page';
+import SupplierPage from './pages/inventory/product/suppliers/supplier-page';
 
 function App() {
 	return (
@@ -84,9 +87,16 @@ function App() {
 							<Route path="products">
 								<Route index element={<ProductPage />} />
 								<Route path="view/:id" element={<InventoryViewPage />} />
-								<Route path="create" />
+								<Route path="create" element={<CreateProductPage />} />
+								<Route path="orders">
+									<Route index element={<OrderPage />} />
+									<Route path="view/:id" />
+								</Route>
+								<Route path="suppliers">
+									<Route index element={<SupplierPage />} />
+									<Route path="view/:id" />
+								</Route>
 							</Route>
-							<Route path="orders" />
 						</Route>
 					</Route>
 				</Route>

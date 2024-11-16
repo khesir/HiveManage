@@ -41,6 +41,7 @@
     "cmdk": "^1.0.0",
     "crypto": "1.0.1",
     "date-fns": "^4.0.0",
+    "emblor": "^1.4.6",
     "js-cookie": "^3.0.5",
     "lint-staged": "15.2.10",
     "lucide-react": "^0.428.0",

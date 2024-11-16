@@ -103,7 +103,6 @@ export function ProfileForm({selectedEmployee}: Props) {
 				},
 				formData,
 			);
-			console.log('FormData contents:', ...formData.entries());
 			const res = await UpdateEmployee(
 				formData,
 				profileData.employee.employee_id,
