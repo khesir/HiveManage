@@ -14,7 +14,10 @@ export function EmployeeRecentActivity({selectedEmployee}: Props) {
 					selectedEmployee.employee.position.name === 'Admin' ? true : false
 				}
 			/>
-			<Card x-chunk="dashboard-01-chunk-5" className="h-[600px]">
+			<Card
+				x-chunk="dashboard-01-chunk-5"
+				className="h-[600px] overflow-hidden"
+			>
 				<CardHeader>
 					<CardTitle>Recent Activities</CardTitle>
 				</CardHeader>

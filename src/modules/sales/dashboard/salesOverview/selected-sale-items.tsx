@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/tooltip';
 import {ServiceWithDetails} from '@/lib/sales-zod-schema';
 import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import {ProductCategoryWithDetails} from '@/modules/inventory/_components/validation/category';
 import {TooltipTrigger} from '@radix-ui/react-tooltip';
 import {Bell, Trash2, Users} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
@@ -70,6 +71,7 @@ export function SelectedSaleItems() {
 	const handleDelete = (data: any) => {
 		setSaleHookData('sales_item', [data], 'remove');
 	};
+	console.log(salesHookData);
 	return (
 		<>
 			<div className="flex items-center justify-between gap-3">
@@ -122,14 +124,14 @@ export function SelectedSaleItems() {
 							>
 								<p>
 									Item Listed(
-									{salesHookData['sales_item']?.length
-										? salesHookData['sales_item'].length
+									{salesHookData['sales_product']?.length
+										? salesHookData['sales_product'].length
 										: '0'}
 									)- ₱
-									{salesHookData['sales_item']?.length
+									{salesHookData['sales_product']?.length
 										? ' ' +
 											Math.round(
-												salesHookData['sales_item'].reduce(
+												salesHookData['sales_product'].reduce(
 													(total, item) => total + item.data.total_price,
 													0,
 												),
@@ -141,10 +143,10 @@ export function SelectedSaleItems() {
 								<ul className="grid gap-3 grid-cols-3">
 									<span className="text-muted-foreground col-span-2">Fees</span>
 									<span>
-										{salesHookData['sales_item']
+										{salesHookData['sales_product']
 											? '₱ ' +
 												Math.round(
-													salesHookData['sales_item']?.reduce(
+													salesHookData['sales_product']?.reduce(
 														(total, item) => total + item.data.total_price,
 														0,
 													),
@@ -173,9 +175,9 @@ export function SelectedSaleItems() {
 					</Accordion>
 				</Card>
 				<div className="relative flex flex-col gap-3 z-10 mt-20 mx-3">
-					{salesHookData['sales_item'] &&
-					salesHookData['sales_item'].length > 0 ? (
-						salesHookData['sales_item'].map((item, index) => (
+					{salesHookData['sales_product'] &&
+					salesHookData['sales_product'].length > 0 ? (
+						salesHookData['sales_product'].map((item, index) => (
 							<Card
 								className="relative w-full h-[150px] flex items-center justify-start overflow-hidden"
 								key={index}
@@ -191,18 +193,23 @@ export function SelectedSaleItems() {
 											</span>{' '}
 											<span className="font-semibold text-sm">
 												{' '}
-												{item.item.product.name} -{' '}
-												{item.item.product.supplier.name}
+												{item.product.product_id} - {item.product.name}
 											</span>
 											{/* Adjust this to display the actual item name if available */}
 										</CardTitle>
 										<CardDescription className="font-semibold text-sm">
 											<div className="flex gap-2 flex-wrap">
-												<Badge>{item.item.product.category.name}</Badge>
-												<Badge>{item.item.tag}</Badge>
+												{item.product.product_categories &&
+													item.product.product_categories.map(
+														(category: ProductCategoryWithDetails) => (
+															<Badge key={category.category_id}>
+																{category.category.name}
+															</Badge>
+														),
+													)}
 											</div>
 											<div className="flex gap-1">
-												Price: {item.item.product.price}
+												Price: {item.product.price_history[0].price}
 											</div>
 											<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
 												Qty: {item.data.quantity}

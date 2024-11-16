@@ -48,7 +48,6 @@ export function ProductsList() {
 				`/api/v1/ims/product?on_listing=true&limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : ''),
 			);
-			console.log(res.data);
 			setProducts(res.data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));
 		};

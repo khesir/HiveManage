@@ -10,6 +10,7 @@ export const productSchema = z.object({
 	description: z.string().min(1),
 	price: z.number(),
 	img_url: z.string().optional(),
+	inventory_limit: z.number(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
@@ -23,6 +24,8 @@ export type ProductWithRelatedTables = {
 	on_listing: boolean;
 	re_order_level: number;
 	total_stocks: number;
+	img_url: string;
+	inventory_limit: number;
 	created_at?: string;
 	last_updated?: string;
 	deleted_at?: string;
@@ -32,14 +35,14 @@ export type ProductWithRelatedTables = {
 };
 
 export const inventorySchema = z.object({
-	inventory_record_id: z.number(),
-	supplier_id: z.number(),
+	inventory_record_id: z.number().optional(),
+	supplier_id: z.number().optional(),
 	product_id: z.number(),
 	tag: z.string(),
 	stock: z.number(),
-	created_at: z.string(),
-	last_updated: z.string(),
-	deleted_at: z.string(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
 });
 export type InventoryRecords = z.infer<typeof inventorySchema>;
 export type InventoryRecordsWithDetails = {
@@ -48,6 +51,7 @@ export type InventoryRecordsWithDetails = {
 	product_id: number;
 	tag: string;
 	stock: number;
+	unit_price: number;
 	created_at: string;
 	last_updated: string;
 	deleted_at: string;
