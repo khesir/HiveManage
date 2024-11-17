@@ -27,7 +27,11 @@ export function JoborderProfiler({data}: JoborderProfileProps) {
 									<span className="text-muted-foreground">Joborder Type</span>
 									<span>
 										{data.joborder_type.map((type) => (
-											<Badge key={type.joborder_service_id}>
+											<Badge
+												key={type.joborder_service_id}
+												variant={'secondary'}
+												className="rounded-sm px-1 font-normal"
+											>
 												{type.joborder_type.name}
 											</Badge>
 										))}

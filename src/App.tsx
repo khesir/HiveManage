@@ -94,6 +94,7 @@ function App() {
 								</Route>
 								<Route path="suppliers">
 									<Route index element={<SupplierPage />} />
+									{/* TODO: View more page */}
 									<Route path="view/:id" />
 								</Route>
 							</Route>

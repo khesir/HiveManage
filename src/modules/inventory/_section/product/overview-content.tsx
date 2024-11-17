@@ -10,13 +10,7 @@ import {
 import ProductWithDetailsList from '../../products/product-list';
 import {useNavigate, useSearchParams} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
-import {
-	BookDown,
-	BookUpIcon,
-	CaravanIcon,
-	PackageOpen,
-	Plus,
-} from 'lucide-react';
+import {BookUpIcon, CaravanIcon, PackageOpen, Plus} from 'lucide-react';
 
 export default function InventorySection() {
 	const [searchParams] = useSearchParams();
@@ -37,18 +31,10 @@ export default function InventorySection() {
 								counts accurate. Let&apos;s keep things running smoothly!
 							</CardDescription>
 						</CardContent>
-						<CardFooter className="space-x-3">
+						<CardFooter>
 							<Button onClick={() => navigate('create')}>
 								<Plus className="mr-2 h-4 w-4" />
 								Add Product
-							</Button>
-							<Button onClick={() => navigate('create')}>
-								<BookUpIcon className="mr-2 h-4 w-4" />
-								Stock In
-							</Button>
-							<Button onClick={() => navigate('create')}>
-								<BookDown className="mr-2 h-4 w-4" />
-								Stock Out
 							</Button>
 						</CardFooter>
 					</Card>

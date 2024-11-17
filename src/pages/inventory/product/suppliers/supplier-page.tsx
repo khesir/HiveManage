@@ -1,5 +1,6 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
+import SupplierListView from '@/modules/inventory/_section/supplier/supplier-list-section';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'admin/dashboard'},
@@ -13,7 +14,7 @@ export default function SupplierPage() {
 	return (
 		<ContentLayout title={'PC BEE Management Systems'}>
 			<Breadcrumbs items={breadcrubItems} />
-			<p>Supplier page</p>
+			<SupplierListView />
 		</ContentLayout>
 	);
 }
