@@ -2302,7 +2302,7 @@ async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
 async function seedProductCategory(db: PostgresJsDatabase<SchemaType>) {
   const productIDs = await db.select().from(product);
   const categoryIDs = await db.select().from(category);
-
+  const suppliersIDs = await db.select().from(supplier);
   const productcategoryRecords = [
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
@@ -2332,20 +2332,95 @@ async function seedProductCategory(db: PostgresJsDatabase<SchemaType>) {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
-    // Add more records as needed
+    {
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
   ];
-
   await db.insert(product_category).values(productcategoryRecords);
 
   log.info('Product Category records seeded successfully');
 }
 
 async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
+  const relationship = [
+    'manufacturer',
+    'distributor',
+    'wholesaler',
+    'vendor',
+    'authorized dealer',
+    'OEM (Original Equipment Manufacturer)',
+    'peripheral supplier',
+    'component reseller',
+    'refurbished parts supplier',
+    'specialized parts supplier',
+    'network hardware supplier',
+    'value-added reseller',
+    'accessories supplier',
+    'logistics partner',
+  ];
   const supplierRecords = [
     {
       name: 'ABC Computer Supplies',
       contact_number: '123-456-7890',
       remarks: 'Reliable supplier for all computer components.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-03-01'),
     },
@@ -2353,6 +2428,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'XYZ Electronics',
       contact_number: '987-654-3210',
       remarks: 'Specializes in high-performance gaming hardware.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-03-15'),
     },
@@ -2360,6 +2436,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Tech Wholesalers Inc.',
       contact_number: '555-123-4567',
       remarks: 'Offers bulk discounts on all products.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-15'),
       last_updated: new Date('2023-03-10'),
     },
@@ -2367,6 +2444,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Gadget Hub',
       contact_number: '555-987-6543',
       remarks: 'New supplier focused on innovative tech solutions.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-02-10'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2374,6 +2452,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'CompTech Solutions',
       contact_number: '555-456-7890',
       remarks: 'Provides a wide range of computer parts and accessories.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },
@@ -2381,6 +2460,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Raqui Technology Solutions',
       contact_number: '555-456-7890',
       remarks: 'Provides a wide range of computer parts and accessories.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },
@@ -2388,6 +2468,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Aj Powerhouse Solutions',
       contact_number: '555-456-7890',
       remarks: 'Provides a wide range of computer parts and accessories.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },
@@ -2395,6 +2476,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Shaheen Computer Solutions',
       contact_number: '555-456-7890',
       remarks: 'Provides a wide range of computer parts and accessories.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },
@@ -2402,6 +2484,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Christian Computer World',
       contact_number: '555-456-7890',
       remarks: 'Provides a wide range of computer parts and accessories.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },
@@ -2409,6 +2492,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Paps Parts Supply',
       contact_number: '555-456-7890',
       remarks: 'Provides a wide range of computer parts and accessories.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },
@@ -2416,6 +2500,7 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       name: 'Reyminator Computer Paradise',
       contact_number: '555-456-7890',
       remarks: 'Provides a wide range of computer parts and accessories.',
+      relationship: faker.helpers.arrayElement(relationship),
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },

@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
 import { SupplierController } from './supplier.controller';
-import { validateSupplierID } from './supplier.middleware';
+import {
+  formDataToObject,
+  multerbase,
+  validateSupplierID,
+} from './supplier.middleware';
 import { CreateSupplier, UpdateSupplier } from './supplier.model';
 
 const supplierRoute = Router({ mergeParams: true });
@@ -19,9 +23,13 @@ supplierRoute.get(
   supplierController.getSupplierById.bind(supplierController),
 );
 
-supplierRoute.patch(
+supplierRoute.post(
   '/',
-  [validateRequest({ body: CreateSupplier })],
+  [
+    multerbase.single('profile_link'),
+    formDataToObject,
+    validateRequest({ body: CreateSupplier }),
+  ],
   supplierController.createSupplier.bind(supplierController),
 );
 

@@ -635,8 +635,9 @@ export const stocksLogs = pgTable('stock_logs', {
 //Product
 export const product_category = pgTable('product_category', {
   product_category_id: serial('product_category_id').primaryKey(),
-  product_id: integer('product_id').references(() => product.product_id), // Ensure category.category_id exists
-  category_id: integer('category_id').references(() => category.category_id), // Ensure supplier.supplier_id exists
+  product_id: integer('product_id').references(() => product.product_id),
+  category_id: integer('category_id').references(() => category.category_id),
+  supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -664,6 +665,7 @@ export const supplier = pgTable('supplier', {
   name: varchar('name', { length: 255 }), // Supplier name, up to 255 characters
   contact_number: varchar('contact_number', { length: 255 }), // Supplier contact number, up to 255 characters
   remarks: varchar('remarks', { length: 255 }), // Additional remarks, up to 255 characters
+  relationship: varchar('relationship'),
   profile_link: varchar('remark'),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
   last_updated: timestamp('last_updated')

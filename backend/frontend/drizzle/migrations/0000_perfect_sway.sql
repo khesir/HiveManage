@@ -377,6 +377,7 @@ CREATE TABLE IF NOT EXISTS "product_category" (
 	"product_category_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
 	"category_id" integer,
+	"supplier_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -526,6 +527,7 @@ CREATE TABLE IF NOT EXISTS "supplier" (
 	"name" varchar(255),
 	"contact_number" varchar(255),
 	"remarks" varchar(255),
+	"relationship" varchar,
 	"remark" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -690,6 +692,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "product_category" ADD CONSTRAINT "product_category_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "product_category" ADD CONSTRAINT "product_category_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

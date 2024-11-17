@@ -14,10 +14,12 @@ export class SupplierController {
   async getAllSupplier(req: Request, res: Response, next: NextFunction) {
     const limit = parseInt(req.query.limit as string) || 10; // default limit value
     const offset = parseInt(req.query.offset as string) || 0; // default offset value
+    const sort = (req.query.sort as string) || 'asc';
     const no_pagination = req.query.no_pagination === 'true';
     try {
       // Fetch data count from the database
       const data = await this.supplierService.getAllSupplier(
+        sort,
         limit,
         offset,
         no_pagination,
@@ -25,10 +27,10 @@ export class SupplierController {
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data retrieved successfully',
-        total_data: data.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.resultWithRelatedData,
       });
     } catch (error) {
       res
@@ -56,13 +58,24 @@ export class SupplierController {
 
   async createSupplier(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, contact_number, remarks } = req.body;
-
-      await this.supplierService.createSupplier({
+      const {
         name,
         contact_number,
         remarks,
-      });
+        relationship,
+        product_categories,
+      } = req.body;
+
+      await this.supplierService.createSupplier(
+        {
+          name,
+          contact_number,
+          remarks,
+          relationship,
+          product_categories,
+        },
+        req.file,
+      );
       res
         .status(HttpStatus.CREATED.code)
         .json({ status: 'Success', message: 'Successfully Created Supplier' });

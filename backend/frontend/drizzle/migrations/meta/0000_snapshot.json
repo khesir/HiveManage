@@ -1,5 +1,5 @@
 {
-  "id": "fc942ef8-96c4-4647-8a58-6b32addbdd7f",
+  "id": "7ca33636-50d6-4c4f-adfb-fac3de7cfbf2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1806,6 +1806,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "supplier_id": {
+          "name": "supplier_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1851,6 +1857,19 @@
           ],
           "columnsTo": [
             "category_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "product_category_supplier_id_supplier_supplier_id_fk": {
+          "name": "product_category_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "product_category",
+          "tableTo": "supplier",
+          "columnsFrom": [
+            "supplier_id"
+          ],
+          "columnsTo": [
+            "supplier_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2926,6 +2945,12 @@
         "remarks": {
           "name": "remarks",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "relationship": {
+          "name": "relationship",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
