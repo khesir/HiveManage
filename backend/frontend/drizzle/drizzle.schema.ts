@@ -7,6 +7,7 @@ import {
   pgTable,
   real,
   serial,
+  text,
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -599,6 +600,7 @@ export const inventory_record = pgTable('inventory_record', {
   product_id: integer('product_id').references(() => product.product_id),
   tag: varchar('tag'),
   stock: integer('stock'),
+  reserve_stock: integer('pending_stock'),
   unit_price: decimal('unit_price', { precision: 10, scale: 2 }),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -678,10 +680,10 @@ export const supplier = pgTable('supplier', {
 //Order
 export const order = pgTable('order', {
   order_id: serial('order_id').primaryKey(), // Primary key with auto-increment
-  product_id: integer('product_id').references(() => product.product_id), // Foreign key reference to the product table
-  items_ordered: integer('items_ordered'), // Number of items ordered
+  supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
+  ordered_value: integer('ordered_value'), // Number of items ordered
   expected_arrival: varchar('expected_arrival'), // Expected arrival date
-  status: orderStatusEnum('order_status').notNull(),
+  status: varchar('status'),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -690,20 +692,44 @@ export const order = pgTable('order', {
   deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
+export const orderLogs = pgTable('orderLogs', {
+  order_logs_id: serial('order_logs_id').primaryKey(),
+  order_id: integer('order_id').references(() => order.order_id),
+  title: varchar('title'),
+  message: varchar('message'),
+  create_at: timestamp('created_at').defaultNow(),
+});
+
+export const orderItemTracking = pgTable('orderItemTracking', {
+  tracking_id: serial('tracking_id').primaryKey(),
+  orderItem_id: integer('orderItem_id')
+    .references(() => orderItem.orderItem_id)
+    .notNull(),
+  tag: varchar('tag'),
+  status: varchar('status'),
+  quantity: integer('quantity').notNull(), // Quantity associated with this tag/status
+  isStocked: boolean('isStocked').default(false),
+  remarks: text('remarks'), // Optional remarks for more details (e.g., "Box damaged during shipping"),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
 //Order Item
 export const orderItem = pgTable('orderItem', {
   orderItem_id: serial('orderItem_id').primaryKey(),
   order_id: integer('order_id').references(() => order.order_id),
-  supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
   product_id: integer('product_id').references(() => product.product_id),
   quantity: integer('quantity'),
   price: decimal('price', { precision: 50, scale: 2 }),
+  status: varchar('status'),
   created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
   last_updated: timestamp('last_updated')
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()), // Timestamp for last update
-  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
 });
 
 //Arrived_Items

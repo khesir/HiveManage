@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
+import { asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import {
   category,
   order,
@@ -6,7 +6,6 @@ import {
   product,
   product_category,
   SchemaType,
-  supplier,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { UpdateOrderItem } from './orderitem.model';
@@ -23,14 +22,11 @@ export class OrderItemService {
   }
 
   async getAllOrderItem(sort: string, limit: number, offset: number) {
-    const conditions = [isNull(orderItem.deleted_at)];
-
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(orderItem)
-      .where(and(...conditions));
+      .from(orderItem);
 
     const totalData = totalCountQuery[0].count;
     const productCategories = await this.db
@@ -61,9 +57,7 @@ export class OrderItemService {
       .select()
       .from(orderItem)
       .leftJoin(order, eq(orderItem.orderItem_id, order.order_id))
-      .leftJoin(supplier, eq(supplier.supplier_id, orderItem.supplier_id))
       .leftJoin(product, eq(product.product_id, orderItem.product_id))
-      .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(orderItem.created_at) : desc(orderItem.created_at),
       )
@@ -76,16 +70,7 @@ export class OrderItemService {
       },
       product: {
         ...row.product,
-        categories: categoryByProduct[row.product!.product_id],
-      },
-      supplier: {
-        supplier_id: row.supplier?.supplier_id,
-        name: row.supplier?.name,
-        contact_number: row.supplier?.contact_number,
-        remarks: row.supplier?.remarks,
-        created_at: row.supplier?.created_at,
-        last_updated: row.supplier?.last_updated,
-        deleted_at: row.supplier?.deleted_at,
+        product_categories: categoryByProduct[row.product!.product_id],
       },
     }));
     return { totalData, OrderitemsWithDetails };
@@ -119,7 +104,6 @@ export class OrderItemService {
       .select()
       .from(orderItem)
       .leftJoin(order, eq(orderItem.orderItem_id, order.order_id))
-      .leftJoin(supplier, eq(supplier.supplier_id, orderItem.supplier_id))
       .leftJoin(product, eq(product.product_id, orderItem.product_id))
       .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
 
@@ -132,37 +116,19 @@ export class OrderItemService {
         ...row.product,
         categories: categoryByProduct[row.product!.product_id],
       },
-      supplier: {
-        supplier_id: row.supplier?.supplier_id,
-        name: row.supplier?.name,
-        contact_number: row.supplier?.contact_number,
-        remarks: row.supplier?.remarks,
-        created_at: row.supplier?.created_at,
-        last_updated: row.supplier?.last_updated,
-        deleted_at: row.supplier?.deleted_at,
-      },
     }));
 
     return OrderitemsWithDetails;
   }
 
   async updateOrderItem(data: UpdateOrderItem, orderItem_id: string) {
-    // Convert price to a string with two decimal places
-    const updatedData = {
-      ...data,
-      price: data.price.toFixed(2), // Ensure price is a string formatted as a decimal
-    };
-
     await this.db
       .update(orderItem)
-      .set(updatedData)
+      .set(data)
       .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
   }
 
   async deleteOrderItem(paramsId: number): Promise<void> {
-    await this.db
-      .update(orderItem)
-      .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(orderItem.orderItem_id, paramsId));
+    await this.db.delete(orderItem).where(eq(orderItem.orderItem_id, paramsId));
   }
 }

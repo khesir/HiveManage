@@ -39,6 +39,7 @@ import {
   joborder_services,
   roles,
   position,
+  orderLogs,
 } from './drizzle.schema';
 import log from '../lib/logger';
 import { db, pool } from './pool';
@@ -47,6 +48,7 @@ import { SupabaseService } from '../supabase/supabase.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import mime from 'mime';
+import { desc } from 'drizzle-orm';
 const supabase = new SupabaseService();
 // Create file samples
 
@@ -1988,7 +1990,7 @@ async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
-  const productIds = await db.select().from(product); // Fetch existing item IDs
+  const productIds = await db.select().from(product); // Fetch existing product IDs
   const itemTags = [
     'New',
     'Old',
@@ -1998,113 +2000,42 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
     'Antique',
     'Repaired',
   ] as const;
-  // Define an array of real data for the item-supplier records
-  const inventoryRecords = [
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-02-01'),
-      last_updated: new Date('2023-02-15'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      tag: faker.helpers.arrayElement(itemTags),
-      stock: Math.round(Number(faker.finance.amount({ min: 500, max: 5000 }))),
-      unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    // Add more records as needed
-  ];
 
-  // Insert the real data into the database
-  await db.insert(inventory_record).values(inventoryRecords);
+  // Ensure there are suppliers and products to associate with the inventory
+  if (supplierIDs.length === 0 || productIds.length === 0) {
+    throw new Error('No suppliers or products found. Seed them first.');
+  }
 
+  // Generate inventory records dynamically
+  const inventoryRecords = Array.from({ length: 10 }, () => ({
+    supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+    product_id: faker.helpers.arrayElement(productIds).product_id,
+    tag: faker.helpers.arrayElement(itemTags),
+    stock: faker.number.int({ min: 500, max: 5000 }),
+    reserve_stock: 0,
+    unit_price: faker.finance.amount({ min: 500, max: 3000 }),
+  }));
+
+  await db.transaction(async (tx) => {
+    for (const inventory of inventoryRecords) {
+      const [insertedRecord] = await tx
+        .insert(inventory_record)
+        .values(inventory)
+        .returning({
+          inventory_record_id: inventory_record.inventory_record_id,
+          product_id: inventory_record.product_id,
+          quantity: inventory_record.stock,
+          tag: inventory_record.tag,
+        });
+
+      await tx.insert(stocksLogs).values({
+        product_id: insertedRecord.product_id,
+        quantity: insertedRecord.quantity,
+        movement_type: 'Stock-In',
+        action: `${insertedRecord.quantity} has been added with a tag of ${insertedRecord.tag}`,
+      });
+    }
+  });
   log.info('Inventory Records records seeded successfully');
 }
 
@@ -2504,7 +2435,6 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
       created_at: new Date('2023-01-05'),
       last_updated: new Date('2023-03-05'),
     },
-    // Add more supplier records as needed
   ];
 
   await db.insert(supplier).values(supplierRecords);
@@ -2513,257 +2443,34 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
+  const supplierIDs = await db.select().from(supplier);
 
-  const orderRecords = [
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      items_ordered: 3,
-      expected_arrival: new Date('2023-11-15').toISOString(),
-      message: 'Please handle with care.',
-      status: 'Pending' as
-        | 'Pending'
-        | 'Processing'
-        | 'Delivered'
-        | 'Cancelled'
-        | 'Return'
-        | 'Shipped',
-      created_at: new Date('2023-10-01'),
-      last_updated: new Date('2023-10-15'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      items_ordered: 5,
-      expected_arrival: new Date('2023-11-10').toISOString(),
-      message: 'Deliver as soon as possible.',
-      status: 'Processing' as
-        | 'Pending'
-        | 'Processing'
-        | 'Delivered'
-        | 'Cancelled'
-        | 'Return'
-        | 'Shipped',
-      created_at: new Date('2023-10-05'),
-      last_updated: new Date('2023-10-20'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      items_ordered: 1,
-      expected_arrival: new Date('2023-11-12').toISOString(),
-      message: 'Gift wrapping requested.',
-      status: 'Shipped' as
-        | 'Pending'
-        | 'Processing'
-        | 'Delivered'
-        | 'Cancelled'
-        | 'Return'
-        | 'Shipped',
-      created_at: new Date('2023-10-10'),
-      last_updated: new Date('2023-10-22'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      items_ordered: 2,
-      expected_arrival: new Date('2023-11-20').toISOString(),
-      message: 'Contact for any issues.',
-      status: 'Delivered' as
-        | 'Pending'
-        | 'Processing'
-        | 'Delivered'
-        | 'Cancelled'
-        | 'Return'
-        | 'Shipped',
-      created_at: new Date('2023-10-12'),
-      last_updated: new Date('2023-10-23'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      items_ordered: 4,
-      expected_arrival: new Date('2023-11-30').toISOString(),
-      message: 'Please the problem on why your returning it.',
-      status: 'Return' as
-        | 'Pending'
-        | 'Processing'
-        | 'Delivered'
-        | 'Cancelled'
-        | 'Return'
-        | 'Shipped',
-      created_at: new Date('2023-10-15'),
-      last_updated: new Date('2023-10-28'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      items_ordered: 6,
-      expected_arrival: new Date('2023-11-30').toISOString(),
-      message: 'Customer support needed.',
-      status: 'Cancelled' as
-        | 'Pending'
-        | 'Processing'
-        | 'Delivered'
-        | 'Cancelled'
-        | 'Return'
-        | 'Shipped',
-      created_at: new Date('2023-10-15'),
-      last_updated: new Date('2023-10-28'),
-    },
-    // Add more order records as needed
-  ];
+  const orderRecords = Array.from({ length: 7 }, () => ({
+    supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+    ordered_value: 0,
+    expected_arrival: new Date('2023-11-15').toISOString(),
+    status: 'Pending',
+    created_at: new Date('2023-10-01'),
+    last_updated: new Date('2023-10-15'),
+  }));
 
-  await db.insert(order).values(orderRecords);
+  await db.transaction(async (tx) => {
+    for (const orderData of orderRecords) {
+      const [insertedOrder] = await tx
+        .insert(order)
+        .values(orderData)
+        .returning({ order_id: order.order_id });
+
+      // Use the returned order_id directly for the log
+      await tx.insert(orderLogs).values({
+        order_id: insertedOrder.order_id,
+        title: 'Created Order',
+        message: 'Create empty state of order, ready for usage',
+      });
+    }
+  });
 
   log.info('Order records seeded successfully');
-}
-
-async function seedOrderItem(db: PostgresJsDatabase<SchemaType>) {
-  const orderIDs = await db.select().from(order);
-  const productIDs = await db.select().from(product);
-
-  const orderitemRecords = [
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 2,
-      price: (9.99).toFixed(2), // Convert to string with two decimal places
-      created_at: new Date('2023-10-01'),
-      last_updated: new Date('2023-10-15'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 1,
-      price: (15.49).toFixed(2), // Convert to string with two decimal places,
-      created_at: new Date('2023-10-02'),
-      last_updated: new Date('2023-10-16'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 3,
-      price: (29.99).toFixed(2), // Convert to string with two decimal places,
-      created_at: new Date('2023-10-03'),
-      last_updated: new Date('2023-10-17'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 4,
-      price: (5.99).toFixed(2), // Convert to string with two decimal places,
-      created_at: new Date('2023-10-04'),
-      last_updated: new Date('2023-10-18'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 5,
-      price: (12.0).toFixed(2), // Convert to string with two decimal places,
-      created_at: new Date('2023-10-05'),
-      last_updated: new Date('2023-10-19'),
-    },
-    // Additional records...
-  ];
-
-  await db.insert(orderItem).values(orderitemRecords);
-
-  log.info('Order Item records seeded successfully');
-}
-
-async function seedStockLogs(db: PostgresJsDatabase<SchemaType>) {
-  const itemdata = await db.select().from(product);
-  const employees = await db.select().from(employee);
-
-  const stockRecord = [
-    {
-      product_id: faker.helpers.arrayElement(itemdata).product_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      quantity: 15,
-      movement_type: 'Stock In',
-      action: 'For the technician',
-      created_at: new Date('2023-10-01'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(itemdata).product_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      quantity: 10,
-      movement_type: 'Stock Out',
-      action: 'For the technician',
-      created_at: new Date('2023-10-02'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(itemdata).product_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      quantity: 5,
-      movement_type: 'Stock In',
-      action: 'For the sales',
-      created_at: new Date('2023-10-03'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(itemdata).product_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      quantity: 20,
-      movement_type: 'Stock Out',
-      action: 'For the sales',
-      created_at: new Date('2023-10-04'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(itemdata).product_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      quantity: 8,
-      movement_type: 'Stock In',
-      action: 'For the technician',
-      created_at: new Date('2023-10-05'),
-    },
-  ];
-
-  await db.insert(stocksLogs).values(stockRecord);
-
-  log.info('Stock Logs records seeded successfully');
-}
-
-async function seedArrivedItems(db: PostgresJsDatabase<SchemaType>) {
-  const orderIDs = await db.select().from(order);
-
-  const arrivedItemsRecords = [
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      filePath: 'https://example.com/files/item1.jpg',
-      created_at: new Date('2023-10-01'),
-      last_updated: new Date('2023-10-02'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      filePath: 'https://example.com/files/item2.jpg',
-      created_at: new Date('2023-10-03'),
-      last_updated: new Date('2023-10-04'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      filePath: 'https://example.com/files/item3.jpg',
-      created_at: new Date('2023-10-05'),
-      last_updated: new Date('2023-10-06'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      filePath: 'https://example.com/files/item4.jpg',
-      created_at: new Date('2023-10-07'),
-      last_updated: new Date('2023-10-08'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      filePath: 'https://example.com/files/item5.jpg',
-      created_at: new Date('2023-10-09'),
-      last_updated: new Date('2023-10-10'),
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      filePath: 'https://example.com/files/item5.jpg',
-      created_at: new Date('2023-10-09'),
-      last_updated: new Date('2023-10-10'),
-    },
-  ];
-
-  await db.insert(arrived_Items).values(arrivedItemsRecords);
-
-  log.info('Arrived Items records seeded successfully');
 }
 
 //  =======================================================================================
@@ -2782,26 +2489,6 @@ async function main() {
     await seedEmployeesAccount(db);
     await seedAuditLogs(db);
 
-    // await seedPersonalInformations(db);
-    // await seedFinancialInformations(db);
-    // await seedSalaryInformations(db);
-    // await seedEmploymentInformations(db);
-    // await seedLeaveLimits(db);
-
-    // await seedLeaveRequests(db);
-
-    // await seedPayrolls(db);
-    // await seedOnPayrolls(db);
-    // await seedSignatory(db);
-    // await seedPayrollApprovals(db);
-    // await seedPayrollReportRecords(db);
-
-    // await seedBenefits(db);
-    // await seedDeductions(db);
-    // await seedAdditionalPay(db);
-    // await seedAdjustments(db);
-    // await seedAttendance(db);
-
     // Inventory
     await seedCategory(db);
     await seedSupplier(db);
@@ -2809,11 +2496,8 @@ async function main() {
     await seedProductCategory(db);
     await seedInventoryRecord(db);
     await seedPriceHistory(db);
-    await seedStockLogs(db);
 
     // await seedOrder(db);
-    // await seedArrivedItems(db);
-    // await seedOrderItem(db);
     // Participants and related data
     await seedCustomer(db); // Seed customers first
     // await seedInquiry(db);

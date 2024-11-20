@@ -1,5 +1,5 @@
 {
-  "id": "7ca33636-50d6-4c4f-adfb-fac3de7cfbf2",
+  "id": "c136e7ea-683c-44a7-ab4a-55d577abcad6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -959,6 +959,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "pending_stock": {
+          "name": "pending_stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "unit_price": {
           "name": "unit_price",
           "type": "numeric(10, 2)",
@@ -1238,14 +1244,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "product_id": {
-          "name": "product_id",
+        "supplier_id": {
+          "name": "supplier_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "items_ordered": {
-          "name": "items_ordered",
+        "ordered_value": {
+          "name": "ordered_value",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1256,12 +1262,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "order_status": {
-          "name": "order_status",
-          "type": "order_status",
-          "typeSchema": "public",
+        "status": {
+          "name": "status",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -1286,15 +1291,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "order_product_id_product_product_id_fk": {
-          "name": "order_product_id_product_product_id_fk",
+        "order_supplier_id_supplier_supplier_id_fk": {
+          "name": "order_supplier_id_supplier_supplier_id_fk",
           "tableFrom": "order",
-          "tableTo": "product",
+          "tableTo": "supplier",
           "columnsFrom": [
-            "product_id"
+            "supplier_id"
           ],
           "columnsTo": [
-            "product_id"
+            "supplier_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1319,12 +1324,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "supplier_id": {
-          "name": "supplier_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "product_id": {
           "name": "product_id",
           "type": "integer",
@@ -1343,6 +1342,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1356,12 +1361,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
@@ -1379,19 +1378,6 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "orderItem_supplier_id_supplier_supplier_id_fk": {
-          "name": "orderItem_supplier_id_supplier_supplier_id_fk",
-          "tableFrom": "orderItem",
-          "tableTo": "supplier",
-          "columnsFrom": [
-            "supplier_id"
-          ],
-          "columnsTo": [
-            "supplier_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "orderItem_product_id_product_product_id_fk": {
           "name": "orderItem_product_id_product_product_id_fk",
           "tableFrom": "orderItem",
@@ -1401,6 +1387,135 @@
           ],
           "columnsTo": [
             "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.orderItemTracking": {
+      "name": "orderItemTracking",
+      "schema": "",
+      "columns": {
+        "tracking_id": {
+          "name": "tracking_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "orderItem_id": {
+          "name": "orderItem_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tag": {
+          "name": "tag",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "remarks": {
+          "name": "remarks",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "orderItemTracking_orderItem_id_orderItem_orderItem_id_fk": {
+          "name": "orderItemTracking_orderItem_id_orderItem_orderItem_id_fk",
+          "tableFrom": "orderItemTracking",
+          "tableTo": "orderItem",
+          "columnsFrom": [
+            "orderItem_id"
+          ],
+          "columnsTo": [
+            "orderItem_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.orderLogs": {
+      "name": "orderLogs",
+      "schema": "",
+      "columns": {
+        "order_logs_id": {
+          "name": "order_logs_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "message": {
+          "name": "message",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "orderLogs_order_id_order_order_id_fk": {
+          "name": "orderLogs_order_id_order_order_id_fk",
+          "tableFrom": "orderLogs",
+          "tableTo": "order",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "order_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

@@ -23,7 +23,6 @@ export async function validateOrderId(
       .where(
         and(eq(order.order_id, Number(order_id)), isNull(order.deleted_at)),
       );
-    console.log(order);
     if (!Order[0]) {
       return res.status(400).json({ message: 'Order not found ' });
     }
@@ -51,7 +50,6 @@ export async function validateOrderByProductId(
           isNull(product.deleted_at),
         ),
       );
-    console.log(data);
     if (!data[0]) {
       return res
         .status(HttpStatus.NOT_FOUND.code)
@@ -59,7 +57,6 @@ export async function validateOrderByProductId(
     }
     next();
   } catch (error) {
-    console.log(error);
     log.error(error);
     res
       .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

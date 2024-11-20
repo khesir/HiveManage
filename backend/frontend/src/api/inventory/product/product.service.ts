@@ -79,14 +79,14 @@ export class ProductService {
     sort: string,
     limit: number,
     offset: number,
-    on_listing: string | undefined,
+    on_listing: boolean,
     no_pagination: boolean,
     category_id: string | undefined,
     product_name: string | undefined,
   ) {
     const conditions = [isNull(product.deleted_at)];
     if (on_listing) {
-      conditions.push(eq(product.on_listing, Boolean(on_listing)));
+      conditions.push(eq(product.on_listing, on_listing));
     }
     if (product_name) {
       conditions.push(sql`${product.name} LIKE ${'%' + product_name + '%'}`);

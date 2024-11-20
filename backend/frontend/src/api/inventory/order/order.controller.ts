@@ -13,19 +13,25 @@ export class OrderController {
   }
 
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
-    const id = (req.query.id as string) || undefined;
-    const limit = Number(req.query.limit) || 10; // Default limit to 10
-    const offset = Number(req.query.offset) || 0;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+    const sort = (req.query.sort as string) || 'asc';
+    const no_pagination = req.query.no_pagination === 'true';
 
     try {
-      const data = await this.orderService.getAllOrder(id, limit, offset);
+      const data = await this.orderService.getAllOrder(
+        sort,
+        limit,
+        offset,
+        no_pagination,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data retrieved successfully',
-        total_data: data?.length,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data,
+        data: data.finalResult,
       });
     } catch (error) {
       res
@@ -37,9 +43,9 @@ export class OrderController {
 
   async getOrderById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { order_id } = req.params;
-      const data = await this.orderService.getOrderById(Number(order_id));
-      res.status(200).json({ status: 'Success', message: data });
+      const { order_item_id } = req.params;
+      const data = await this.orderService.getOrderById(Number(order_item_id));
+      res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         status: 'Error',
@@ -52,13 +58,20 @@ export class OrderController {
 
   async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, items_ordered, expected_arrival, status } = req.body;
-
-      await this.orderService.createOrder({
-        product_id,
-        items_ordered,
+      const {
+        supplier_id,
+        ordered_value,
         expected_arrival,
         status,
+        order_items,
+      } = req.body;
+
+      await this.orderService.createOrder({
+        supplier_id,
+        ordered_value,
+        expected_arrival,
+        status,
+        order_items,
       });
       res
         .status(HttpStatus.CREATED.code)
