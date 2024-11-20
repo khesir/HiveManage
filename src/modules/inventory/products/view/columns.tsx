@@ -11,7 +11,9 @@ export const columns: ColumnDef<InventoryRecordsWithDetails>[] = [
 					<img
 						src={
 							row.original.supplier?.profile_link
-								? row.original.supplier.profile_link
+								? typeof row.original.supplier.profile_link === 'string'
+									? row.original.supplier.profile_link
+									: URL.createObjectURL(row.original.supplier.profile_link)
 								: '/img/placeholder.jpg'
 						}
 						alt={`product ID ${row.original.supplier?.supplier_id} - ${row.original.supplier?.name}`}
@@ -38,6 +40,11 @@ export const columns: ColumnDef<InventoryRecordsWithDetails>[] = [
 		id: 'stock',
 		header: 'STOCK',
 		cell: ({row}) => (row.original.stock ? row.original.stock : 'N/A'),
+	},
+	{
+		id: 'reserve_stock',
+		header: 'RESERVE STOCK',
+		cell: ({row}) => (row.original.stock ? row.original.reserve_stock : 'N/A'),
 	},
 	{
 		id: 'unit_price',

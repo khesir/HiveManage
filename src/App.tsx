@@ -41,6 +41,7 @@ import InventoryViewPage from './pages/inventory/product/inventory-view-page';
 import CreateProductPage from './pages/inventory/product/product-create-page';
 import OrderPage from './pages/inventory/product/orders/orders-page';
 import SupplierPage from './pages/inventory/product/suppliers/supplier-page';
+import CreateOrderPage from './pages/inventory/product/orders/create-order-page';
 
 function App() {
 	return (
@@ -90,6 +91,7 @@ function App() {
 								<Route path="create" element={<CreateProductPage />} />
 								<Route path="orders">
 									<Route index element={<OrderPage />} />
+									<Route path="create" element={<CreateOrderPage />} />
 									<Route path="view/:id" />
 								</Route>
 								<Route path="suppliers">
@@ -135,6 +137,24 @@ function App() {
 							<Route path="create" element={<CustomerCreatePage />} />
 						</Route>
 
+						<Route path="inventory">
+							<Route path="products">
+								<Route index element={<ProductPage />} />
+								<Route path="view/:id" element={<InventoryViewPage />} />
+								<Route path="create" element={<CreateProductPage />} />
+								<Route path="orders">
+									<Route index element={<OrderPage />} />
+									<Route path="create" element={<CreateOrderPage />} />
+									<Route path="view/:id" />
+								</Route>
+								<Route path="suppliers">
+									<Route index element={<SupplierPage />} />
+									{/* TODO: View more page */}
+									<Route path="view/:id" />
+								</Route>
+							</Route>
+						</Route>
+
 						<Route path="inquiry" element={<InquiryPage />} />
 					</Route>
 				</Route>
@@ -165,7 +185,22 @@ function App() {
 						<Route path="customer" element={<CustomerDatabasePage />} />
 						<Route path="customer/view/:id" element={<CustomerViewPage />} />
 						<Route path="customer/create" element={<CustomerCreatePage />} />
-
+						<Route path="inventory">
+							<Route path="products">
+								<Route index element={<ProductPage />} />
+								<Route path="view/:id" element={<InventoryViewPage />} />
+								<Route path="create" element={<CreateProductPage />} />
+								<Route path="orders">
+									<Route index element={<OrderPage />} />
+									<Route path="view/:id" />
+								</Route>
+								<Route path="suppliers">
+									<Route index element={<SupplierPage />} />
+									{/* TODO: View more page */}
+									<Route path="view/:id" />
+								</Route>
+							</Route>
+						</Route>
 						<Route path="inquiry" element={<InquiryPage />} />
 					</Route>
 				</Route>

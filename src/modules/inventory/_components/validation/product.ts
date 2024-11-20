@@ -23,6 +23,7 @@ export type InventoryRecordsWithDetails = {
 	tag: string;
 	stock: number;
 	unit_price: number;
+	reserve_stock: number;
 	created_at: string;
 	last_updated: string;
 	deleted_at: string;
@@ -98,6 +99,8 @@ export const productSchema = z.object({
 		}, 'File must be a PNG or JPEG'),
 	inventory_limit: z.string().min(1),
 	re_order_level: z.string().min(1),
+	total_stocks: z.string().optional(),
+	total_reserve_stocks: z.string().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
@@ -114,6 +117,7 @@ export type ProductWithRelatedTables = {
 	on_listing: boolean;
 	re_order_level: number;
 	total_stocks: number;
+	total_reserve_stocks: number;
 	img_url: string;
 	inventory_limit: number;
 	created_at?: string;

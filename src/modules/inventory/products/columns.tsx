@@ -69,7 +69,7 @@ const ActionsCell = (data: ProductWithRelatedTables) => {
 	const handleClick = (service_id: number) => {
 		const id = Number(service_id);
 		if (location.pathname.startsWith('/sales')) {
-			navigate(`/sales/inventor/products/view/${id}`);
+			navigate(`/sales/inventory/products/view/${id}`);
 		} else if (location.pathname.startsWith('/admin')) {
 			navigate(`/admin/inventory/products/view/${id}`);
 		} else if (location.pathname.startsWith('/tech')) {

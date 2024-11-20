@@ -41,21 +41,20 @@ export function ProductStockCard({product}: ProductPriceCardProps) {
 							units
 						</span>
 					</CardTitle>
+					<div className="flex flex-wrap gap-2">
+						<Button onClick={() => navigate('create')} className="bg-green-400">
+							<Target className="mr-2 h-4 w-4" />
+							Re-order item
+						</Button>
+					</div>
+					<CardDescription>Overall Reserve Stocks</CardDescription>
+					<CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
+						{product.total_reserve_stocks} 111
+						<span className="text-sm font-normal tracking-normal text-muted-foreground">
+							units
+						</span>
+					</CardTitle>
 				</CardHeader>
-				<div className="flex flex-wrap gap-2">
-					<Button onClick={() => navigate('create')} className="bg-green-400">
-						<Target className="mr-2 h-4 w-4" />
-						Stock in
-					</Button>
-					<Button onClick={() => navigate('create')} className="bg-green-400">
-						<Target className="mr-2 h-4 w-4" />
-						Stock out
-					</Button>
-					<Button onClick={() => navigate('create')} className="bg-green-400">
-						<Target className="mr-2 h-4 w-4" />
-						Re-order item
-					</Button>
-				</div>
 			</div>
 
 			<CardContent className="flex-1 pb-0">

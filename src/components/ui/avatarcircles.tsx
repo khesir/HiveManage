@@ -26,7 +26,11 @@ export const AvatarCircles = ({
 						<TooltipTrigger>
 							<img
 								className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-								src={data.link !== '#' ? data.link : '/img/placeholder.jpg'}
+								src={
+									data.link !== '#' && data.link
+										? data.link
+										: '/img/placeholder.jpg'
+								}
 								width={40}
 								height={40}
 								alt={`Avatar ${index + 1}`}

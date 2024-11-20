@@ -15,8 +15,9 @@ import {File} from 'lucide-react';
 
 interface ProfileProps {
 	data: SupplierWithRelatedData | undefined;
+	showOrderDetails?: boolean;
 }
-export function SupplierProfile({data}: ProfileProps) {
+export function SupplierProfile({data, showOrderDetails = true}: ProfileProps) {
 	const navigate = useNavigate();
 	return (
 		<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
@@ -110,19 +111,24 @@ export function SupplierProfile({data}: ProfileProps) {
 						</li>
 					</ul>
 				</div>
-				<Separator className="my-4" />
-				<div>
-					<ul className="grid gap-3">
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Active Orders</span>
-							<span>10</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Total Orders</span>
-							<span>1000</span>
-						</li>
-					</ul>
-				</div>
+				{showOrderDetails && (
+					<>
+						<Separator className="my-4" />
+
+						<div>
+							<ul className="grid gap-3">
+								<li className="flex items-center justify-between">
+									<span className="text-muted-foreground">Active Orders</span>
+									<span>10</span>
+								</li>
+								<li className="flex items-center justify-between">
+									<span className="text-muted-foreground">Total Orders</span>
+									<span>1000</span>
+								</li>
+							</ul>
+						</div>
+					</>
+				)}
 			</CardContent>
 		</Card>
 	);

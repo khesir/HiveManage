@@ -90,13 +90,13 @@ export function getAdminMenuList(pathname: string): Group[] {
 		{
 			groupLabel: 'Settings',
 			menus: [
-				{
-					href: '/admin/terminal',
-					label: 'Terminal',
-					active: pathname.includes('/admin/terminal'),
-					icon: Terminal,
-					submenus: [],
-				},
+				// {
+				// 	href: '/admin/terminal',
+				// 	label: 'Terminal',
+				// 	active: pathname.includes('/admin/terminal'),
+				// 	icon: Terminal,
+				// 	submenus: [],
+				// },
 				{
 					href: '/admin/settings',
 					label: 'Settings',
@@ -152,6 +152,13 @@ export function getSalesMenuList(pathname: string): Group[] {
 					label: 'Customer Database',
 					active: pathname.includes('/sales/customer'),
 					icon: Users,
+					submenus: [],
+				},
+				{
+					href: '/sales/inventory/products',
+					label: 'Products',
+					active: pathname.includes('/admin/inventory/products'),
+					icon: ShoppingBag,
 					submenus: [],
 				},
 				{
@@ -228,6 +235,13 @@ export function getTechMenuList(pathname: string): Group[] {
 					label: 'Customer Database',
 					active: pathname.includes('/tech/customer'),
 					icon: Users,
+					submenus: [],
+				},
+				{
+					href: '/tech/inventory/products',
+					label: 'Products',
+					active: pathname.includes('/admin/inventory/products'),
+					icon: ShoppingBag,
 					submenus: [],
 				},
 				{
