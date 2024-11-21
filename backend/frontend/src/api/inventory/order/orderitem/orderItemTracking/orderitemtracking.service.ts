@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import {
-  inventory_record,
+  item_record,
   order,
   orderItem,
   orderItemTracking,
@@ -92,7 +92,7 @@ export class OrderItemTrackingService {
         .set({ isStocked: true })
         .where(eq(orderItemTracking.tracking_id, Number(id)));
 
-      await tx.insert(inventory_record).values(data);
+      await tx.insert(item_record).values(data);
       await tx.insert(orderLogs).values({
         order_id: Number(order_id),
         title: `Item Pushed to Inventory`,

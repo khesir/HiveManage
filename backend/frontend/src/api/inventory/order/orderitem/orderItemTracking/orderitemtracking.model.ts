@@ -16,7 +16,7 @@ export const createOrderTrackingSchema = z.object({
 export type CreateOrderItemTracking = z.infer<typeof createOrderTrackingSchema>;
 
 export const updateOrderTrackingSchema = z.object({
-  tag: z.string().min(1),
+  condition: z.string().min(1),
   status: z.string(),
   quantity: z.string(),
   remarks: z.string().optional(),

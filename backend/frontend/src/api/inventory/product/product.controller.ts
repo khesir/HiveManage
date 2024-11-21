@@ -68,7 +68,7 @@ export class ProductController {
         on_listing,
         total_stocks,
         price_history,
-        inventory_record,
+        item_record,
         inventory_limit,
         product_categories,
       } = req.body;
@@ -81,7 +81,7 @@ export class ProductController {
           on_listing,
           total_stocks,
           price_history,
-          inventory_record,
+          item_record,
           inventory_limit,
           product_categories,
         },

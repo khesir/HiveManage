@@ -35,11 +35,11 @@ import {
   remarkcontent,
   product_category,
   price_history,
-  inventory_record,
   joborder_services,
   roles,
   position,
   orderLogs,
+  item_record,
 } from './drizzle.schema';
 import log from '../lib/logger';
 import { db, pool } from './pool';
@@ -2010,7 +2010,7 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
   const inventoryRecords = Array.from({ length: 10 }, () => ({
     supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
     product_id: faker.helpers.arrayElement(productIds).product_id,
-    tag: faker.helpers.arrayElement(itemTags),
+    condition: faker.helpers.arrayElement(itemTags),
     stock: faker.number.int({ min: 500, max: 5000 }),
     reserve_stock: 0,
     unit_price: faker.finance.amount({ min: 500, max: 3000 }),
@@ -2019,20 +2019,20 @@ async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
   await db.transaction(async (tx) => {
     for (const inventory of inventoryRecords) {
       const [insertedRecord] = await tx
-        .insert(inventory_record)
+        .insert(item_record)
         .values(inventory)
         .returning({
-          inventory_record_id: inventory_record.inventory_record_id,
-          product_id: inventory_record.product_id,
-          quantity: inventory_record.stock,
-          tag: inventory_record.tag,
+          item_record_id: item_record.item_record_id,
+          product_id: item_record.product_id,
+          quantity: item_record.stock,
+          condition: item_record.condition,
         });
 
       await tx.insert(stocksLogs).values({
         product_id: insertedRecord.product_id,
         quantity: insertedRecord.quantity,
         movement_type: 'Stock-In',
-        action: `${insertedRecord.quantity} has been added with a tag of ${insertedRecord.tag}`,
+        action: `${insertedRecord.quantity} has been added with a tag of ${insertedRecord.condition}`,
       });
     }
   });

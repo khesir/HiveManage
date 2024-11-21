@@ -3,7 +3,7 @@ import {
   category,
   customer,
   employee,
-  inventory_record,
+  item_record,
   price_history,
   product,
   product_category,
@@ -95,22 +95,19 @@ export class SalesItemService {
 
     const inventoryRecords = await this.db
       .select()
-      .from(inventory_record)
-      .leftJoin(
-        supplier,
-        eq(inventory_record.supplier_id, supplier.supplier_id),
-      )
-      .where(isNull(inventory_record.deleted_at));
+      .from(item_record)
+      .leftJoin(supplier, eq(item_record.supplier_id, supplier.supplier_id))
+      .where(isNull(item_record.deleted_at));
     const inventoryRecordByProduct = inventoryRecords.reduce<
       Record<number, unknown[]>
     >((acc, record) => {
-      const recordID = record.inventory_record.product_id;
+      const recordID = record.item_record.product_id;
       if (recordID !== null && !(recordID in acc)) {
         acc[recordID] = [];
       }
       if (recordID !== null) {
         acc[recordID].push({
-          ...record.inventory_record,
+          ...record.item_record,
           supplier: { ...record.supplier },
         });
       }
@@ -157,7 +154,7 @@ export class SalesItemService {
         ...row.product,
         price_history: priceHistoryByProduct[row.product!.product_id],
         product_categories: categoryByProduct[row.product!.product_id],
-        inventory_record: inventoryRecordByProduct[row.product!.product_id],
+        item_record: inventoryRecordByProduct[row.product!.product_id],
       },
       service: {
         ...row.service,
@@ -200,22 +197,19 @@ export class SalesItemService {
 
     const inventoryRecords = await this.db
       .select()
-      .from(inventory_record)
-      .leftJoin(
-        supplier,
-        eq(inventory_record.supplier_id, supplier.supplier_id),
-      )
-      .where(isNull(inventory_record.deleted_at));
+      .from(item_record)
+      .leftJoin(supplier, eq(item_record.supplier_id, supplier.supplier_id))
+      .where(isNull(item_record.deleted_at));
     const inventoryRecordByProduct = inventoryRecords.reduce<
       Record<number, unknown[]>
     >((acc, record) => {
-      const recordID = record.inventory_record.product_id;
+      const recordID = record.item_record.product_id;
       if (recordID !== null && !(recordID in acc)) {
         acc[recordID] = [];
       }
       if (recordID !== null) {
         acc[recordID].push({
-          ...record.inventory_record,
+          ...record.item_record,
           supplier: { ...record.supplier },
         });
       }
@@ -256,7 +250,7 @@ export class SalesItemService {
         ...row.product,
         price_history: priceHistoryByProduct[row.product!.product_id],
         product_categories: categoryByProduct[row.product!.product_id],
-        inventory_record: inventoryRecordByProduct[row.product!.product_id],
+        item_record: inventoryRecordByProduct[row.product!.product_id],
       },
       service: {
         ...row.service,

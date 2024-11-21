@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { inventory_record } from '@/drizzle/drizzle.schema';
+import { item_record } from '@/drizzle/drizzle.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -13,16 +13,16 @@ export async function validateInventoryRecordID(
   res: Response,
   next: NextFunction,
 ) {
-  const { inventory_record_id } = req.params;
+  const { item_record_id } = req.params;
 
   try {
     const InventoryRecord = await db
       .select()
-      .from(inventory_record)
+      .from(item_record)
       .where(
         and(
-          eq(inventory_record.inventory_record_id, Number(inventory_record_id)),
-          isNull(inventory_record.deleted_at),
+          eq(item_record.item_record_id, Number(item_record_id)),
+          isNull(item_record.deleted_at),
         ),
       );
 

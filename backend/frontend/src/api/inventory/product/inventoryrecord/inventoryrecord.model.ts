@@ -3,14 +3,14 @@ import { z } from 'zod';
 export const CreateInventoryRecord = z.object({
   supplier_id: z.number().min(1),
   product_id: z.number().min(1),
-  tag: z.string(),
+  condition: z.string(),
   stock: z.number().min(1),
 });
 
 export const UpdateInventoryRecord = z.object({
   supplier_id: z.number().min(1),
   product_id: z.number().min(1),
-  tag: z.enum([
+  condition: z.enum([
     'New',
     'Old',
     'Damaged',

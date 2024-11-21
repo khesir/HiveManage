@@ -68,9 +68,9 @@ export class OrderItemTracking {
   ) {
     try {
       const { order_item_id } = req.params;
-      const { tag, status, quantity, remarks } = req.body;
+      const { condition, status, quantity, remarks } = req.body;
       await this.orderItemTracking.updateOrderItemTracking(
-        { tag, status, quantity, remarks },
+        { condition, status, quantity, remarks },
         order_item_id,
       );
       res
@@ -110,9 +110,9 @@ export class OrderItemTracking {
   async stockIn(req: Request, res: Response, next: NextFunction) {
     try {
       const { order_item_id, order_id } = req.params;
-      const { supplier_id, product_id, stock, tag } = req.body;
+      const { supplier_id, product_id, stock, condition } = req.body;
       await this.orderItemTracking.processItem(
-        { supplier_id, product_id, stock, tag },
+        { supplier_id, product_id, stock, condition },
         order_item_id,
         order_id,
       );

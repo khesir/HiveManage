@@ -1,7 +1,7 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import {
   category,
-  inventory_record,
+  item_record,
   price_history,
   product,
   product_category,
@@ -47,14 +47,14 @@ export class ProductService {
         product_id: newProduct.product_id,
       });
 
-      if (data.inventory_record) {
+      if (data.item_record) {
         await Promise.all(
-          data.inventory_record.map((data) =>
-            tx.insert(inventory_record).values({
+          data.item_record.map((data) =>
+            tx.insert(item_record).values({
               supplier_id: data.supplier_id
                 ? Number(data.supplier_id)
                 : undefined,
-              tag: data.tag,
+              condition: data.condtion,
               stock: Number(data.stock),
               unit_price: String(data.unit_price),
               product_id: newProduct.product_id,
@@ -127,23 +127,20 @@ export class ProductService {
 
     const inventoryRecords = await this.db
       .select()
-      .from(inventory_record)
-      .leftJoin(
-        supplier,
-        eq(inventory_record.supplier_id, supplier.supplier_id),
-      )
-      .where(isNull(inventory_record.deleted_at));
+      .from(item_record)
+      .leftJoin(supplier, eq(item_record.supplier_id, supplier.supplier_id))
+      .where(isNull(item_record.deleted_at));
 
     const inventoryRecordByProduct = inventoryRecords.reduce<
       Record<number, unknown[]>
     >((acc, record) => {
-      const recordID = record.inventory_record.product_id;
+      const recordID = record.item_record.product_id;
       if (recordID !== null && !(recordID in acc)) {
         acc[recordID] = [];
       }
       if (recordID !== null) {
         acc[recordID].push({
-          ...record.inventory_record,
+          ...record.item_record,
           supplier: { ...record.supplier },
         });
       }
@@ -203,7 +200,7 @@ export class ProductService {
         ...row,
         price_history: priceHistoryByProduct[row.product_id] || [],
         product_categories: categoryByProduct[row.product_id] || [],
-        inventory_record: inventoryRecordByProduct[row.product_id] || [],
+        item_record: inventoryRecordByProduct[row.product_id] || [],
       }));
     return { totalData, productWithDetails };
   }
@@ -236,23 +233,20 @@ export class ProductService {
 
     const inventoryRecords = await this.db
       .select()
-      .from(inventory_record)
-      .leftJoin(
-        supplier,
-        eq(inventory_record.supplier_id, supplier.supplier_id),
-      )
-      .where(isNull(inventory_record.deleted_at));
+      .from(item_record)
+      .leftJoin(supplier, eq(item_record.supplier_id, supplier.supplier_id))
+      .where(isNull(item_record.deleted_at));
 
     const inventoryRecordByProduct = inventoryRecords.reduce<
       Record<number, unknown[]>
     >((acc, record) => {
-      const recordID = record.inventory_record.product_id;
+      const recordID = record.item_record.product_id;
       if (recordID !== null && !(recordID in acc)) {
         acc[recordID] = [];
       }
       if (recordID !== null) {
         acc[recordID].push({
-          ...record.inventory_record,
+          ...record.item_record,
           supplier: { ...record.supplier },
         });
       }
@@ -288,7 +282,7 @@ export class ProductService {
       ...row,
       price_history: priceHistoryByProduct[row.product_id] || [],
       product_categories: categoryByProduct[row.product_id] || [],
-      inventory_record: inventoryRecordByProduct[row.product_id] || [],
+      item_record: inventoryRecordByProduct[row.product_id] || [],
     }));
     return productWithDetails;
   }

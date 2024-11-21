@@ -1,9 +1,95 @@
 {
-  "id": "e800337c-b991-459a-87fe-47c5a3656176",
+  "id": "9755244f-05f1-4b72-a4be-358ec19c0053",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.serialize_item": {
+      "name": "serialize_item",
+      "schema": "",
+      "columns": {
+        "serialize_item_id": {
+          "name": "serialize_item_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "item_record_id": {
+          "name": "item_record_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "serial_number": {
+          "name": "serial_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "condition": {
+          "name": "condition",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warranty_start_date": {
+          "name": "warranty_start_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warranty_start_end": {
+          "name": "warranty_start_end",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "serialize_item_item_record_id_item_record_item_record_id_fk": {
+          "name": "serialize_item_item_record_id_item_record_item_record_id_fk",
+          "tableFrom": "serialize_item",
+          "tableTo": "item_record",
+          "columnsFrom": [
+            "item_record_id"
+          ],
+          "columnsTo": [
+            "item_record_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.arrived_items": {
       "name": "arrived_items",
       "schema": "",
@@ -925,12 +1011,12 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.inventory_record": {
-      "name": "inventory_record",
+    "public.item_record": {
+      "name": "item_record",
       "schema": "",
       "columns": {
-        "inventory_record_id": {
-          "name": "inventory_record_id",
+        "item_record_id": {
+          "name": "item_record_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -947,8 +1033,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "tag": {
-          "name": "tag",
+        "is_serialized": {
+          "name": "is_serialized",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "condition": {
+          "name": "condition",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -994,9 +1086,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "inventory_record_supplier_id_supplier_supplier_id_fk": {
-          "name": "inventory_record_supplier_id_supplier_supplier_id_fk",
-          "tableFrom": "inventory_record",
+        "item_record_supplier_id_supplier_supplier_id_fk": {
+          "name": "item_record_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "item_record",
           "tableTo": "supplier",
           "columnsFrom": [
             "supplier_id"
@@ -1007,9 +1099,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "inventory_record_product_id_product_product_id_fk": {
-          "name": "inventory_record_product_id_product_product_id_fk",
-          "tableFrom": "inventory_record",
+        "item_record_product_id_product_product_id_fk": {
+          "name": "item_record_product_id_product_product_id_fk",
+          "tableFrom": "item_record",
           "tableTo": "product",
           "columnsFrom": [
             "product_id"

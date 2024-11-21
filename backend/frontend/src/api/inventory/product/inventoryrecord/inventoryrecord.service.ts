@@ -1,5 +1,5 @@
 import {
-  inventory_record,
+  item_record,
   product,
   SchemaType,
   supplier,
@@ -16,19 +16,19 @@ export class InventoryRecordService {
   }
 
   async createInventoryRecord(data: CreateInventoryRecord) {
-    await this.db.insert(inventory_record).values(data);
+    await this.db.insert(item_record).values(data);
   }
 
   async getAllInventoryRecord(
     product_id: string | undefined,
-    tag: string | undefined,
+    condition: string | undefined,
     sort: string,
     limit: number,
     offset: number,
   ) {
-    const conditions = [isNull(inventory_record.deleted_at)];
+    const conditions = [isNull(item_record.deleted_at)];
 
-    if (tag) {
+    if (condition) {
       // Define valid statuses as a string union type
       const validStatuses = [
         'Active',
@@ -42,46 +42,46 @@ export class InventoryRecordService {
         'Under Review',
         'Archived',
       ] as const; // 'as const' infers a readonly tuple of strings
-      if (validStatuses.includes(tag as (typeof validStatuses)[number])) {
+      if (validStatuses.includes(condition as (typeof validStatuses)[number])) {
         conditions.push(
-          eq(inventory_record.tag, tag as (typeof validStatuses)[number]),
+          eq(
+            item_record.condition,
+            condition as (typeof validStatuses)[number],
+          ),
         );
       } else {
-        throw new Error(`Invalid payment status: ${tag}`);
+        throw new Error(`Invalid payment status: ${condition}`);
       }
     }
     if (product_id) {
-      conditions.push(eq(inventory_record.product_id, Number(product_id)));
+      conditions.push(eq(item_record.product_id, Number(product_id)));
     }
 
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(inventory_record)
+      .from(item_record)
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
 
     const result = await this.db
       .select()
-      .from(inventory_record)
-      .leftJoin(
-        supplier,
-        eq(supplier.supplier_id, inventory_record.supplier_id),
-      )
-      .leftJoin(product, eq(product.product_id, inventory_record.product_id))
+      .from(item_record)
+      .leftJoin(supplier, eq(supplier.supplier_id, item_record.supplier_id))
+      .leftJoin(product, eq(product.product_id, item_record.product_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
-          ? asc(inventory_record.created_at)
-          : desc(inventory_record.created_at),
+          ? asc(item_record.created_at)
+          : desc(item_record.created_at),
       )
       .limit(limit)
       .offset(offset);
 
     const inventoryrecordWithDetails = result.map((row) => ({
-      ...row.inventory_record,
+      ...row.item_record,
       supplier: {
         ...row.supplier,
       },
@@ -92,21 +92,16 @@ export class InventoryRecordService {
     return { totalData, inventoryrecordWithDetails };
   }
 
-  async getInventoryRecordByID(inventory_record_id: string) {
+  async getInventoryRecordByID(item_record_id: string) {
     const result = await this.db
       .select()
-      .from(inventory_record)
-      .leftJoin(
-        supplier,
-        eq(supplier.supplier_id, inventory_record.supplier_id),
-      )
-      .leftJoin(product, eq(product.product_id, inventory_record.product_id))
-      .where(
-        eq(inventory_record.inventory_record_id, Number(inventory_record_id)),
-      );
+      .from(item_record)
+      .leftJoin(supplier, eq(supplier.supplier_id, item_record.supplier_id))
+      .leftJoin(product, eq(product.product_id, item_record.product_id))
+      .where(eq(item_record.item_record_id, Number(item_record_id)));
 
     const inventoryrecordWithDetails = result.map((row) => ({
-      ...row.inventory_record,
+      ...row.item_record,
       supplier: {
         ...row.supplier,
       },
@@ -120,15 +115,15 @@ export class InventoryRecordService {
 
   async updateInventoryRecord(data: object, paramsId: number) {
     await this.db
-      .update(inventory_record)
+      .update(item_record)
       .set(data)
-      .where(eq(inventory_record.inventory_record_id, paramsId));
+      .where(eq(item_record.item_record_id, paramsId));
   }
 
   async deleteInventoryRecord(paramsId: number): Promise<void> {
     await this.db
-      .update(inventory_record)
+      .update(item_record)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(inventory_record.inventory_record_id, paramsId));
+      .where(eq(item_record.item_record_id, paramsId));
   }
 }

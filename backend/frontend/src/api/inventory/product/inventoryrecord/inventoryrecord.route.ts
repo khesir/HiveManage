@@ -19,7 +19,7 @@ inventoryRecordRoute.get(
 );
 
 inventoryRecordRoute.get(
-  '/:inventory_record_id',
+  '/:item_record_id',
   validateInventoryRecordID,
   inventoryRecordController.getInventoryRecordById.bind(
     inventoryRecordController,
@@ -35,7 +35,7 @@ inventoryRecordRoute.post(
 );
 
 inventoryRecordRoute.put(
-  '/:inventory_record_id',
+  '/:item_record_id',
   [validateRequest({ body: UpdateInventoryRecord }), validateInventoryRecordID],
   inventoryRecordController.updateInventoryRecord.bind(
     inventoryRecordController,
@@ -43,7 +43,7 @@ inventoryRecordRoute.put(
 );
 
 inventoryRecordRoute.delete(
-  '/:inventory_record_id',
+  '/:item_record_id',
   validateInventoryRecordID,
   inventoryRecordController.deleteInventoryRecord.bind(
     inventoryRecordController,

@@ -13,7 +13,7 @@ export class InventoryRecordController {
 
   async getAllInventoryRecord(req: Request, res: Response, next: NextFunction) {
     const product_id = req.params.product_id as string;
-    const tag = (req.query.tag as string) || undefined;
+    const condition = (req.query.condition as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
@@ -21,7 +21,7 @@ export class InventoryRecordController {
     try {
       const data = await this.inventoryrecordService.getAllInventoryRecord(
         product_id,
-        tag,
+        condition,
         sort,
         limit,
         offset,
@@ -64,12 +64,12 @@ export class InventoryRecordController {
 
   async createInventoryRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id, product_id, tag, stock } = req.body;
+      const { supplier_id, product_id, condition, stock } = req.body;
 
       await this.inventoryrecordService.createInventoryRecord({
         supplier_id,
         product_id,
-        tag,
+        condition,
         stock,
       });
 
@@ -90,13 +90,13 @@ export class InventoryRecordController {
   async updateInventoryRecord(req: Request, res: Response, next: NextFunction) {
     try {
       const { inventory_record_id } = req.params;
-      const { supplier_id, product_id, tag, stock } = req.body;
+      const { supplier_id, product_id, condition, stock } = req.body;
 
       await this.inventoryrecordService.updateInventoryRecord(
         {
           supplier_id,
           product_id,
-          tag,
+          condition,
           stock,
         },
         Number(inventory_record_id),
