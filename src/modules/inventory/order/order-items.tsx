@@ -7,27 +7,37 @@ import {
 } from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {OrderWithDetails} from '../_components/validation/order';
-import {Button} from '@/components/ui/button';
-import useVerification from '../_components/hooks/use-verfication';
 import useOrderItemStore from '../_components/hooks/use-order-items';
 import {Badge} from '@/components/ui/badge';
+import {AddProductForm} from './modal/add-order-products';
 
 interface ProfileProps {
 	data: OrderWithDetails | undefined;
 }
 
 export function OrderItems({data}: ProfileProps) {
-	const {setStatus} = useVerification();
 	const {setOrderItem} = useOrderItemStore();
+	if (!data) {
+		return (
+			<div className="flex-1 flex flex-col gap-2">
+				<div className="flex items-center justify-between">
+					<p className="text-lg font-semibold">Ordered Products</p>
+				</div>
+				<Card>
+					<CardHeader className="flex gap-2 flex-row justify-center p-2 m-0">
+						<CardTitle className="text-sm">No Data provided</CardTitle>
+					</CardHeader>
+				</Card>
+			</div>
+		);
+	}
 	return (
 		<div className="flex-1 flex flex-col gap-2">
 			<div className="flex items-center justify-between">
 				<p className="text-lg font-semibold">Ordered Products</p>
-				{data?.status === 'Verification' && (
-					<Button size={'sm'} onClick={() => setStatus(true)}>
-						Verify Items
-					</Button>
-				)}
+				<div>
+					<AddProductForm data={data} />
+				</div>
 			</div>
 			<ScrollArea className="h-[calc(90vh-210px)] px-2">
 				<div className="space-y-2">
@@ -47,7 +57,7 @@ export function OrderItems({data}: ProfileProps) {
 									<div>
 										<div className="flex gap-3 justify-between">
 											<CardTitle className="text-sm">
-												{item.product.name}
+												{`#${item.orderItem_id} - ${item.product.name}`}
 											</CardTitle>
 										</div>
 										<CardDescription className="flex gap-5">

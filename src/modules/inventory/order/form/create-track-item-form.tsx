@@ -11,8 +11,8 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 import {AlertTriangleIcon, Plus, Trash2Icon} from 'lucide-react';
 import {
 	OrderItemWithDetails,
-	OrderTrackItem,
-	orderTrackItemSchema,
+	OrderTrackItemArray,
+	orderTrackItemArraySchema,
 } from '../../_components/validation/order';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -93,10 +93,10 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 		remark: '',
 	};
 
-	const defaultValues: OrderTrackItem = {track_record: [defaultTrackItem]};
+	const defaultValues: OrderTrackItemArray = {track_record: [defaultTrackItem]};
 
-	const form = useForm<OrderTrackItem>({
-		resolver: zodResolver(orderTrackItemSchema),
+	const form = useForm<OrderTrackItemArray>({
+		resolver: zodResolver(orderTrackItemArraySchema),
 		defaultValues,
 		mode: 'onChange',
 	});
@@ -121,7 +121,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 		);
 		setTotalQuantity(total);
 	}, [trackRecordValues]);
-	const processForm = async (formData: OrderTrackItem) => {
+	const processForm = async (formData: OrderTrackItemArray) => {
 		try {
 			setLoading(true);
 			if (totalQuantity > itemCount) {
@@ -147,14 +147,22 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 			setLoading(false);
 		}
 	};
-	const validTags = ['good', 'damaged', 'scratched', 'missing', 'expired'];
+	const validTags = [
+		'New',
+		'Old',
+		'Damaged',
+		'Refurbished',
+		'Used',
+		'Antique',
+		'Repaired',
+	];
 	const validStatuses = [
-		'pending',
-		'accepted',
-		'returned',
-		'replacement_requested',
-		'disposed',
-		'held',
+		'Pending',
+		'Accepted',
+		'Returned',
+		'Replacement_requested',
+		'Disposed',
+		'Held',
 	];
 	return (
 		<Form {...form}>
@@ -275,7 +283,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 										/>
 										<FormField
 											control={form.control}
-											name={`track_record.${index}.remark`}
+											name={`track_record.${index}.remarks`}
 											render={({field}) => (
 												<FormItem>
 													<FormLabel>Remark</FormLabel>
@@ -306,7 +314,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 								tag: '',
 								status: '',
 								quantity: '',
-								remark: '',
+								remarks: '',
 							})
 						}
 					>

@@ -52,7 +52,6 @@ export function OrderProfile({data}: ProfileProps) {
 			toast.error((error as AxiosError).response?.data as string);
 		}
 	};
-	console.log(data);
 	return (
 		<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
 			<CardContent className="p-6 text-sm">

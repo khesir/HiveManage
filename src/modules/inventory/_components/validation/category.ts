@@ -25,7 +25,6 @@ export type ProductCategoryWithDetails = {
 	product_category_id: number;
 	product_id: number;
 	category_id: number;
-	supplier_id: number;
 	created_at: string;
 	last_updated: string;
 	deleted_at: string;

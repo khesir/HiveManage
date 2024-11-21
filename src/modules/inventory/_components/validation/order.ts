@@ -23,6 +23,10 @@ export const orderItemSchema = z.object({
 	deleted_at: z.date().nullable().optional(),
 });
 export type OrderItem = z.infer<typeof orderItemSchema>;
+
+export const orderItemsArraySchema = z.object({
+	items: z.array(orderItemSchema),
+});
 export type OrderItemWithDetails = {
 	orderItem_id: number;
 	order_id: number;
@@ -95,25 +99,27 @@ export type OrderWithDetails = {
 // 	];
 
 export const orderTrackItemSchema = z.object({
-	track_record: z.array(
-		z.object({
-			orderItem_id: z.string().optional(),
-			tag: z.string().min(1),
-			status: z.string().min(1),
-			quantity: z.string().min(1),
-			remark: z.string().optional(),
-		}),
-	),
+	orderItem_id: z.string().optional(),
+	tag: z.string().min(1),
+	status: z.string().min(1),
+	quantity: z.string().min(1),
+	remarks: z.string().optional(),
 });
 export type OrderTrackItem = z.infer<typeof orderTrackItemSchema>;
+
+export const orderTrackItemArraySchema = z.object({
+	track_record: z.array(orderTrackItemSchema),
+});
+export type OrderTrackItemArray = z.infer<typeof orderTrackItemArraySchema>;
 
 export type OrderTrackingItemWithDetails = {
 	tracking_id: number;
 	orderItem_id: number;
 	tag: string;
 	status: string;
-	quantity: number;
+	quantity: string;
 	remarks: string;
+	isStocked: boolean;
 	created_at?: string;
 	last_updated?: string;
 	product?: ProductWithRelatedTables;

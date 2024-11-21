@@ -4,7 +4,6 @@ import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {AxiosError} from 'axios';
 import {ApiRequest, request} from '@/api/axios';
-import {useNavigate} from 'react-router-dom';
 import {
 	Form,
 	FormControl,
@@ -68,7 +67,6 @@ export function CreateOrderForm() {
 		search: {}, // To store search state for each product (keyed by product index or ID)
 		selectedProduct: {}, // To store selected product state for each product
 	});
-	const navigate = useNavigate();
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {

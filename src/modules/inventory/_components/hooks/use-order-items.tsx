@@ -10,8 +10,8 @@ type PropsProps = {
 const useOrderItemStore = create<PropsProps>((set) => ({
 	orderItem: null,
 	setOrderItem: (newData: OrderItemWithDetails) =>
-		set((state) => ({
-			orderItem: {...state.orderItem, ...newData},
+		set(() => ({
+			orderItem: newData,
 		})),
 	resetOrderItem: () =>
 		set(() => ({

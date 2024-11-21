@@ -18,6 +18,7 @@ import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
 import {dateParser} from '@/lib/util/utils';
 import useOrderStore from '../_components/hooks/use-orders';
+import useTrackReferesh from '../_components/hooks/uset-track-refresh';
 
 export function OrderList() {
 	const [searchParams] = useSearchParams();
@@ -34,6 +35,7 @@ export function OrderList() {
 
 	// Interactivity
 	const {setOrder} = useOrderStore();
+	const {track} = useTrackReferesh();
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -48,7 +50,7 @@ export function OrderList() {
 			setPageCount(Math.ceil(res.total_data / pageLimit));
 		};
 		fetchProducts();
-	}, [offset, pageLimit]);
+	}, [offset, pageLimit, track]);
 	const handlePaginationChange = (newPage: number) => {
 		const newParams = new URLSearchParams(searchParams);
 		newParams.set('page', String(newPage));
