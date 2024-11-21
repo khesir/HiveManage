@@ -1,5 +1,5 @@
 {
-  "id": "c136e7ea-683c-44a7-ab4a-55d577abcad6",
+  "id": "e800337c-b991-459a-87fe-47c5a3656176",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1428,6 +1428,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "isStocked": {
+          "name": "isStocked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "remarks": {
           "name": "remarks",

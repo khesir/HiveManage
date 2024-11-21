@@ -319,6 +319,7 @@ CREATE TABLE IF NOT EXISTS "orderItemTracking" (
 	"tag" varchar,
 	"status" varchar,
 	"quantity" integer NOT NULL,
+	"isStocked" boolean DEFAULT false,
 	"remarks" text,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL

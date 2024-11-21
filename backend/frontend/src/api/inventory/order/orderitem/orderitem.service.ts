@@ -3,12 +3,17 @@ import {
   category,
   order,
   orderItem,
+  orderLogs,
   product,
   product_category,
   SchemaType,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { UpdateOrderItem } from './orderitem.model';
+import {
+  CreateOrderItem,
+  UpdateOrderItem,
+  UpdateStatus,
+} from './orderitem.model';
 
 export class OrderItemService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -17,8 +22,27 @@ export class OrderItemService {
     this.db = db;
   }
 
-  async createOrderItem(data: object) {
-    await this.db.insert(orderItem).values(data);
+  async createOrderItem(data: CreateOrderItem, order_id: string) {
+    return await this.db.transaction(async (tx) => {
+      await tx
+        .update(order)
+        .set({ ordered_value: data.order_value })
+        .where(eq(order.order_id, Number(order_id)));
+
+      for (const item of data.order_items) {
+        await tx.insert(orderItem).values({
+          ...item,
+          order_id: Number(order_id),
+          quantity: Number(item.quantity),
+        });
+
+        await tx.insert(orderLogs).values({
+          order_id: Number(order_id),
+          title: `Product #${item.product_id} added`,
+          message: `Quantity added ${item.quantity}`,
+        });
+      }
+    });
   }
 
   async getAllOrderItem(sort: string, limit: number, offset: number) {
@@ -124,11 +148,18 @@ export class OrderItemService {
   async updateOrderItem(data: UpdateOrderItem, orderItem_id: string) {
     await this.db
       .update(orderItem)
-      .set(data)
+      .set({ ...data, quantity: Number(data.quantity) })
       .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
   }
 
   async deleteOrderItem(paramsId: number): Promise<void> {
     await this.db.delete(orderItem).where(eq(orderItem.orderItem_id, paramsId));
+  }
+
+  async updateStatus(data: UpdateStatus, orderItem_id: string) {
+    await this.db
+      .update(orderItem)
+      .set({ status: data.status })
+      .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
   }
 }

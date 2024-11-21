@@ -29,8 +29,8 @@ export class OrderService {
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(product_category)
-      .where(isNull(product_category.deleted_at));
+      .from(order)
+      .where(isNull(order.deleted_at));
 
     const totalData = totalCountQuery[0].count;
     // Supplier Categories
@@ -100,12 +100,30 @@ export class OrderService {
       },
       {},
     );
+    const orderLogsData = await this.db
+      .select()
+      .from(orderLogs)
+      .leftJoin(order, eq(order.order_id, orderLogs.order_id));
 
+    const orderLogsByOrderID = orderLogsData.reduce<Record<number, unknown[]>>(
+      (acc, logs) => {
+        const logsOrderID = logs.orderLogs.order_id;
+        if (logsOrderID !== null && !(logsOrderID in acc)) {
+          acc[logsOrderID] = [];
+        }
+        if (logsOrderID !== null) {
+          acc[logsOrderID].push({
+            ...logs.orderLogs,
+          });
+        }
+        return acc;
+      },
+      {},
+    );
     const query = this.db
       .select()
       .from(order)
       .leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id))
-      .leftJoin(orderLogs, eq(orderLogs.order_id, order.order_id))
       .where(isNull(order.deleted_at))
       .orderBy(
         sort === 'asc' ? asc(supplier.created_at) : desc(supplier.created_at),
@@ -114,7 +132,7 @@ export class OrderService {
       query.limit(limit).offset(offset);
     }
     const result = await query;
-
+    console.log(result.length);
     const finalResult = result.map((row) => ({
       ...row.order,
       supplier: {
@@ -125,13 +143,9 @@ export class OrderService {
             : [],
       },
       order_item: orderItemsByOrderID[row.order.order_id],
-      messages: Array.isArray(row.orderLogs)
-        ? row.orderLogs
-        : row.orderLogs
-          ? [row.orderLogs]
-          : [],
+      messages: orderLogsByOrderID[row.order.order_id],
     }));
-
+    console.log(totalData);
     return { totalData, finalResult };
   }
 

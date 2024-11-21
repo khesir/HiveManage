@@ -14,7 +14,7 @@ export async function validateOrderItemId(
     const orderItem = await db
       .select()
       .from(orderItemTracking)
-      .where(and(eq(orderItemTracking.orderItem_id, Number(order_item_id))));
+      .where(and(eq(orderItemTracking.tracking_id, Number(order_item_id))));
 
     if (!orderItem[0]) {
       return res.status(400).json({ message: 'OrderItemTracking not found ' });

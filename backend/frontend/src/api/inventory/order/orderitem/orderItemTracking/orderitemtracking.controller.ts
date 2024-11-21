@@ -99,9 +99,32 @@ export class OrderItemTracking {
         message: `Supplier ID:${order_item_id} is deleted Successfully`,
       });
     } catch (error) {
+      console.log(error);
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
         .json({ status: 'Error', message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
+
+  async stockIn(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { order_item_id, order_id } = req.params;
+      const { supplier_id, product_id, stock, tag } = req.body;
+      await this.orderItemTracking.processItem(
+        { supplier_id, product_id, stock, tag },
+        order_item_id,
+        order_id,
+      );
+      res
+        .status(HttpStatus.CREATED.code)
+        .json({ status: 'Sucess', message: 'Succussfully Created Supplier' });
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        status: 'Error',
+        message: 'Internal Server Error ',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
+      });
       next(error);
     }
   }
