@@ -1,7 +1,7 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {
-	InventoryRecords,
+	ItemRecords,
 	Product,
 	productSchema,
 } from '../../_components/validation/product';
@@ -98,7 +98,7 @@ export function CreateProductForm() {
 		};
 		fetchData();
 	}, []);
-	const defaultInventoryRecord: InventoryRecords = {
+	const defaultItemRecord: ItemRecords = {
 		supplier_id: undefined,
 		product_id: undefined,
 		tag: '',
@@ -116,7 +116,7 @@ export function CreateProductForm() {
 		img_url: undefined,
 		inventory_limit: undefined,
 		base_price: undefined,
-		inventory_record: [defaultInventoryRecord],
+		item_record: [defaultItemRecord],
 	};
 	const form = useForm<Product>({
 		resolver: zodResolver(productSchema),
@@ -130,7 +130,7 @@ export function CreateProductForm() {
 	} = form;
 	const {fields, append, remove} = useFieldArray({
 		control: control,
-		name: 'inventory_record',
+		name: 'item_record',
 	});
 
 	const processForm = async (data: Product) => {
@@ -143,12 +143,12 @@ export function CreateProductForm() {
 				inventory_limit: data.inventory_limit,
 				img_url: data.img_url,
 				total_stocks:
-					data?.inventory_record?.reduce(
+					data?.item_record?.reduce(
 						(acc, data) => acc + Number(data.stock),
 						0,
 					) ?? 0,
 				price_history: data.price_history.price,
-				inventory_record: data.inventory_record,
+				item_record: data.item_record,
 				product_categories: selectedCategories,
 			};
 			console.log(newData);
@@ -486,7 +486,7 @@ export function CreateProductForm() {
 										<AccordionTrigger
 											className={cn(
 												'relative !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
-												errors?.inventory_record?.[index] && 'text-red-700',
+												errors?.item_record?.[index] && 'text-red-700',
 											)}
 										>
 											{`Stock #${index + 1}`}
@@ -499,7 +499,7 @@ export function CreateProductForm() {
 											>
 												<Trash2Icon className="h-4 w-4 " />
 											</Button>
-											{errors?.inventory_record?.[index] && (
+											{errors?.item_record?.[index] && (
 												<span className="alert absolute right-8">
 													<AlertTriangleIcon className="h-4 w-4   text-red-700" />
 												</span>
@@ -508,7 +508,7 @@ export function CreateProductForm() {
 										<AccordionContent className="px-3 grid md:grid-cols-2 gap-5">
 											<FormField
 												control={form.control}
-												name={`inventory_record.${index}.supplier_id`}
+												name={`item_record.${index}.supplier_id`}
 												render={({field}) => (
 													<FormItem>
 														<FormLabel>Suppliers (optional)</FormLabel>
@@ -545,7 +545,7 @@ export function CreateProductForm() {
 											/>
 											<FormField
 												control={form.control}
-												name={`inventory_record.${index}.tag`}
+												name={`item_record.${index}.tag`}
 												render={({field}) => (
 													<FormItem>
 														<FormLabel>Tags</FormLabel>
@@ -579,7 +579,7 @@ export function CreateProductForm() {
 											/>
 											<FormField
 												control={form.control}
-												name={`inventory_record.${index}.stock`}
+												name={`item_record.${index}.stock`}
 												render={({field}) => (
 													<FormItem>
 														<FormLabel>Stock</FormLabel>
@@ -597,7 +597,7 @@ export function CreateProductForm() {
 											/>
 											<FormField
 												control={form.control}
-												name={`inventory_record.${index}.unit_price`}
+												name={`item_record.${index}.unit_price`}
 												render={({field}) => (
 													<FormItem>
 														<FormLabel>Unit Price</FormLabel>

@@ -1,7 +1,7 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
-import {InventoryRecordsWithDetails} from '../../_components/validation/product';
-export const columns: ColumnDef<InventoryRecordsWithDetails>[] = [
+import {ItemRecordsWithDetails} from '../../_components/validation/product';
+export const columns: ColumnDef<ItemRecordsWithDetails>[] = [
 	{
 		accessorKey: 'supplier.profile_link',
 		header: 'IMAGE',
@@ -24,7 +24,7 @@ export const columns: ColumnDef<InventoryRecordsWithDetails>[] = [
 		},
 	},
 	{
-		accessorKey: 'inventory_record_id',
+		accessorKey: 'item_record_id',
 		header: 'ID',
 	},
 	{

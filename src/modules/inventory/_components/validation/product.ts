@@ -5,7 +5,7 @@ const MAX_UPLOAD_SIZE = 1024 * 1024 * 3;
 const ACCEPTED_FILE_TYPES = ['image/png', 'image/jpeg'];
 
 export const inventorySchema = z.object({
-	inventory_record_id: z.number().optional(),
+	item_record_id: z.number().optional(),
 	supplier_id: z.number().optional(),
 	product_id: z.number().optional(),
 	tag: z.string().min(1),
@@ -15,9 +15,9 @@ export const inventorySchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
-export type InventoryRecords = z.infer<typeof inventorySchema>;
-export type InventoryRecordsWithDetails = {
-	inventory_record_id: number;
+export type ItemRecords = z.infer<typeof inventorySchema>;
+export type ItemRecordsWithDetails = {
+	item_record_id: number;
 	supplier_id: number;
 	product_id: number;
 	tag: string;
@@ -105,7 +105,7 @@ export const productSchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 	price_history: priceCostSchema,
-	inventory_record: z.array(inventorySchema).optional(),
+	item_record: z.array(inventorySchema).optional(),
 	product_category: z.array(productCategorySchema).optional(),
 });
 
@@ -125,5 +125,5 @@ export type ProductWithRelatedTables = {
 	deleted_at?: string;
 	price_history?: PriceCost[];
 	product_categories?: ProductCategoryWithDetails[];
-	inventory_record?: InventoryRecordsWithDetails[];
+	item_record?: ItemRecordsWithDetails[];
 };

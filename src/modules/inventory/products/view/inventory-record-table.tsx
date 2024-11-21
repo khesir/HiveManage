@@ -27,7 +27,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {InventoryRecordsWithDetails} from '@/modules/inventory/_components/validation/product';
+import {ItemRecordsWithDetails} from '@/modules/inventory/_components/validation/product';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -47,7 +47,7 @@ interface DataTableProps<TData, TValue> {
 // 	name: string; // Selected name
 // };
 export function InventoryRecordTable<
-	TData extends InventoryRecordsWithDetails,
+	TData extends ItemRecordsWithDetails,
 	TValue,
 >({
 	columns,
