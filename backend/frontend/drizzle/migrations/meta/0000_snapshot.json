@@ -1,157 +1,9 @@
 {
-  "id": "c7275269-e46b-42d5-9d5e-fc825f9e7b3b",
+  "id": "29bcf31b-419c-4817-94ba-1520e393eb70",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.serialize_item": {
-      "name": "serialize_item",
-      "schema": "",
-      "columns": {
-        "serialize_item_id": {
-          "name": "serialize_item_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "item_record_id": {
-          "name": "item_record_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "serial_number": {
-          "name": "serial_number",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "condition": {
-          "name": "condition",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "unit_price": {
-          "name": "unit_price",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "warranty_start_date": {
-          "name": "warranty_start_date",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "warranty_start_end": {
-          "name": "warranty_start_end",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "serialize_item_item_record_id_item_record_item_record_id_fk": {
-          "name": "serialize_item_item_record_id_item_record_item_record_id_fk",
-          "tableFrom": "serialize_item",
-          "tableTo": "item_record",
-          "columnsFrom": [
-            "item_record_id"
-          ],
-          "columnsTo": [
-            "item_record_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.arrived_items": {
-      "name": "arrived_items",
-      "schema": "",
-      "columns": {
-        "arrived_Items_id": {
-          "name": "arrived_Items_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "order_id": {
-          "name": "order_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "filePath": {
-          "name": "filePath",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "arrived_items_order_id_order_order_id_fk": {
-          "name": "arrived_items_order_id_order_order_id_fk",
-          "tableFrom": "arrived_items",
-          "tableTo": "order",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "order_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.assignedemployees": {
       "name": "assignedemployees",
       "schema": "",
@@ -1011,6 +863,107 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.item": {
+      "name": "item",
+      "schema": "",
+      "columns": {
+        "item_id": {
+          "name": "item_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "item_record_id": {
+          "name": "item_record_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "serial_number": {
+          "name": "serial_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_type": {
+          "name": "item_type",
+          "type": "item_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_condition": {
+          "name": "item_condition",
+          "type": "item_condition",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_status": {
+          "name": "item_status",
+          "type": "item_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "selling_price": {
+          "name": "selling_price",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warranty_expiry_date": {
+          "name": "warranty_expiry_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "item_item_record_id_item_record_item_record_id_fk": {
+          "name": "item_item_record_id_item_record_item_record_id_fk",
+          "tableFrom": "item",
+          "tableTo": "item_record",
+          "columnsFrom": [
+            "item_record_id"
+          ],
+          "columnsTo": [
+            "item_record_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.item_record": {
       "name": "item_record",
       "schema": "",
@@ -1033,33 +986,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "is_serialized": {
-          "name": "is_serialized",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "condition": {
-          "name": "condition",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "stock": {
           "name": "stock",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "pending_stock": {
-          "name": "pending_stock",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "unit_price": {
-          "name": "unit_price",
-          "type": "numeric(10, 2)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1942,32 +1871,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "on_listing": {
-          "name": "on_listing",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "re_order_level": {
-          "name": "re_order_level",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "total_stock": {
-          "name": "total_stock",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "img_url": {
           "name": "img_url",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "inventory_limit": {
-          "name": "inventory_limit",
+        "stock_limit": {
+          "name": "stock_limit",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -3313,6 +3224,36 @@
         "Complaint",
         "Feedback",
         "Return/Refund"
+      ]
+    },
+    "public.item_condition": {
+      "name": "item_condition",
+      "schema": "public",
+      "values": [
+        "New",
+        "Old",
+        "Damage",
+        "Refurbished",
+        "Used",
+        "Antique",
+        "Repaired"
+      ]
+    },
+    "public.item_status": {
+      "name": "item_status",
+      "schema": "public",
+      "values": [
+        "On Stock",
+        "Sold",
+        "Depleted"
+      ]
+    },
+    "public.item_type": {
+      "name": "item_type",
+      "schema": "public",
+      "values": [
+        "Batch",
+        "Serialized"
       ]
     },
     "public.joborder_status": {

@@ -9,7 +9,7 @@ import {
 } from './product.middleware';
 import { CreateProduct, UpdateProduct } from './product.model';
 import productcategoryRoute from './productcategory/productcategory.route';
-import inventoryRecordRoute from './inventoryrecord/inventoryrecord.route';
+import inventoryRecordRoute from './inventoryrecord/itemrecord.route';
 import stockLogsRoute from '../stocksLogs/stockslogs.route';
 
 const productRoute = Router({ mergeParams: true });

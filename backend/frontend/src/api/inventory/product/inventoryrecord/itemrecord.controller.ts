@@ -2,26 +2,24 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/drizzle.schema';
-import { InventoryRecordService } from './inventoryrecord.service';
+import { ItemRecordService } from './itemrecord.service';
 
-export class InventoryRecordController {
-  private inventoryrecordService: InventoryRecordService;
+export class ItemRecordController {
+  private itemrecordService: ItemRecordService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.inventoryrecordService = new InventoryRecordService(pool);
+    this.itemrecordService = new ItemRecordService(pool);
   }
 
-  async getAllInventoryRecord(req: Request, res: Response, next: NextFunction) {
+  async getAllItemRecord(req: Request, res: Response, next: NextFunction) {
     const product_id = req.params.product_id as string;
-    const condition = (req.query.condition as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.inventoryrecordService.getAllInventoryRecord(
+      const data = await this.itemrecordService.getAllItemRecord(
         product_id,
-        condition,
         sort,
         limit,
         offset,
@@ -32,7 +30,7 @@ export class InventoryRecordController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.inventoryrecordWithDetails,
+        data: data.itemrecordWithDetails,
       });
     } catch (error) {
       res
@@ -42,17 +40,11 @@ export class InventoryRecordController {
     }
   }
 
-  async getInventoryRecordById(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async getItemRecordById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { inventory_record_id } = req.params;
+      const { item_record_id } = req.params;
       const data =
-        await this.inventoryrecordService.getInventoryRecordByID(
-          inventory_record_id,
-        );
+        await this.itemrecordService.getItemRecordByID(item_record_id);
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res
@@ -62,20 +54,19 @@ export class InventoryRecordController {
     }
   }
 
-  async createInventoryRecord(req: Request, res: Response, next: NextFunction) {
+  async createItemRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id, product_id, condition, stock } = req.body;
+      const { supplier_id, product_id, total_stock } = req.body;
 
-      await this.inventoryrecordService.createInventoryRecord({
+      await this.itemrecordService.createItemRecord({
         supplier_id,
         product_id,
-        condition,
-        stock,
+        total_stock,
       });
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
-        message: 'Successfully Created Inventory Record ',
+        message: 'Successfully Created Item Record ',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -87,23 +78,22 @@ export class InventoryRecordController {
     }
   }
 
-  async updateInventoryRecord(req: Request, res: Response, next: NextFunction) {
+  async updateItemRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { inventory_record_id } = req.params;
-      const { supplier_id, product_id, condition, stock } = req.body;
+      const { item_record_id } = req.params;
+      const { supplier_id, product_id, total_stock } = req.body;
 
-      await this.inventoryrecordService.updateInventoryRecord(
+      await this.itemrecordService.updateItemRecord(
         {
           supplier_id,
           product_id,
-          condition,
-          stock,
+          total_stock,
         },
-        Number(inventory_record_id),
+        Number(item_record_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Inventory Record Updated Successfully ',
+        message: 'Item Record Updated Successfully ',
       });
     } catch (error) {
       res
@@ -113,15 +103,13 @@ export class InventoryRecordController {
     }
   }
 
-  async deleteInventoryRecord(req: Request, res: Response, next: NextFunction) {
+  async deleteItemRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { inventory_record_id } = req.params;
-      await this.inventoryrecordService.deleteInventoryRecord(
-        Number(inventory_record_id),
-      );
+      const { item_record_id } = req.params;
+      await this.itemrecordService.deleteItemRecord(Number(item_record_id));
       res.status(200).json({
         status: 'Success',
-        message: `Inventory Record ID:${inventory_record_id} is deleted Successfully`,
+        message: `Item Record ID:${item_record_id} is deleted Successfully`,
       });
     } catch (error) {
       res

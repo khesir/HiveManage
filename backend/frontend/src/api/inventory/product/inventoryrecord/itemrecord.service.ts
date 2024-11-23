@@ -6,53 +6,27 @@ import {
 } from '@/drizzle/drizzle.schema';
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { CreateInventoryRecord } from './inventoryrecord.model';
+import { CreateItemRecord } from './itemrecord.model';
 
-export class InventoryRecordService {
+export class ItemRecordService {
   private db: PostgresJsDatabase<SchemaType>;
 
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
 
-  async createInventoryRecord(data: CreateInventoryRecord) {
+  async createItemRecord(data: CreateItemRecord) {
     await this.db.insert(item_record).values(data);
   }
 
-  async getAllInventoryRecord(
+  async getAllItemRecord(
     product_id: string | undefined,
-    condition: string | undefined,
     sort: string,
     limit: number,
     offset: number,
   ) {
     const conditions = [isNull(item_record.deleted_at)];
 
-    if (condition) {
-      // Define valid statuses as a string union type
-      const validStatuses = [
-        'Active',
-        'Inactive',
-        'Pending Approval',
-        'Verified',
-        'Unverified',
-        'Suspended',
-        'Preferred',
-        'Blacklisted',
-        'Under Review',
-        'Archived',
-      ] as const; // 'as const' infers a readonly tuple of strings
-      if (validStatuses.includes(condition as (typeof validStatuses)[number])) {
-        conditions.push(
-          eq(
-            item_record.condition,
-            condition as (typeof validStatuses)[number],
-          ),
-        );
-      } else {
-        throw new Error(`Invalid payment status: ${condition}`);
-      }
-    }
     if (product_id) {
       conditions.push(eq(item_record.product_id, Number(product_id)));
     }
@@ -80,7 +54,7 @@ export class InventoryRecordService {
       .limit(limit)
       .offset(offset);
 
-    const inventoryrecordWithDetails = result.map((row) => ({
+    const itemrecordWithDetails = result.map((row) => ({
       ...row.item_record,
       supplier: {
         ...row.supplier,
@@ -89,10 +63,10 @@ export class InventoryRecordService {
         ...row.product,
       },
     }));
-    return { totalData, inventoryrecordWithDetails };
+    return { totalData, itemrecordWithDetails };
   }
 
-  async getInventoryRecordByID(item_record_id: string) {
+  async getItemRecordByID(item_record_id: string) {
     const result = await this.db
       .select()
       .from(item_record)
@@ -100,7 +74,7 @@ export class InventoryRecordService {
       .leftJoin(product, eq(product.product_id, item_record.product_id))
       .where(eq(item_record.item_record_id, Number(item_record_id)));
 
-    const inventoryrecordWithDetails = result.map((row) => ({
+    const itemrecordWithDetails = result.map((row) => ({
       ...row.item_record,
       supplier: {
         ...row.supplier,
@@ -110,17 +84,17 @@ export class InventoryRecordService {
       },
     }));
 
-    return inventoryrecordWithDetails;
+    return itemrecordWithDetails;
   }
 
-  async updateInventoryRecord(data: object, paramsId: number) {
+  async updateItemRecord(data: object, paramsId: number) {
     await this.db
       .update(item_record)
       .set(data)
       .where(eq(item_record.item_record_id, paramsId));
   }
 
-  async deleteInventoryRecord(paramsId: number): Promise<void> {
+  async deleteItemRecord(paramsId: number): Promise<void> {
     await this.db
       .update(item_record)
       .set({ deleted_at: new Date(Date.now()) })

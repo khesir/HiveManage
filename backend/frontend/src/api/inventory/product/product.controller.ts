@@ -61,29 +61,13 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        name,
-        description,
-        re_order_level,
-        on_listing,
-        total_stocks,
-        price_history,
-        item_record,
-        inventory_limit,
-        product_categories,
-      } = req.body;
+      const { name, description, stock_limit } = req.body;
 
       await this.productService.createProduct(
         {
           name,
           description,
-          re_order_level,
-          on_listing,
-          total_stocks,
-          price_history,
-          item_record,
-          inventory_limit,
-          product_categories,
+          stock_limit,
         },
         req.file,
       );
@@ -104,14 +88,8 @@ export class ProductController {
   async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { product_id } = req.params;
-      const {
-        category_id,
-        supplier_id,
-        name,
-        description,
-        re_order_level,
-        on_listing,
-      } = req.body;
+      const { category_id, supplier_id, name, description, stock_limit } =
+        req.body;
 
       await this.productService.updateProduct(
         {
@@ -119,8 +97,7 @@ export class ProductController {
           supplier_id,
           name,
           description,
-          re_order_level,
-          on_listing,
+          stock_limit,
         },
         Number(product_id),
       );
