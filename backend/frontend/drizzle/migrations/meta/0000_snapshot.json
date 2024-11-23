@@ -1,5 +1,5 @@
 {
-  "id": "9755244f-05f1-4b72-a4be-358ec19c0053",
+  "id": "c7275269-e46b-42d5-9d5e-fc825f9e7b3b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1503,8 +1503,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "tag": {
-          "name": "tag",
+        "condition": {
+          "name": "condition",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -3202,8 +3202,23 @@
     }
   },
   "enums": {
-    "public.tag_supplier": {
-      "name": "tag_supplier",
+    "public.borrow_status": {
+      "name": "borrow_status",
+      "schema": "public",
+      "values": [
+        "Requested",
+        "Approved",
+        "Borrowed",
+        "Returned",
+        "Overdue",
+        "Rejected",
+        "Cancelled",
+        "Lost",
+        "Damaged"
+      ]
+    },
+    "public.condition_supplier": {
+      "name": "condition_supplier",
       "schema": "public",
       "values": [
         "Active",
@@ -3218,28 +3233,13 @@
         "Archived"
       ]
     },
-    "public.tag_item": {
-      "name": "tag_item",
+    "public.condition_item": {
+      "name": "condition_item",
       "schema": "public",
       "values": [
         "New",
         "Used",
         "Broken"
-      ]
-    },
-    "public.borrow_status": {
-      "name": "borrow_status",
-      "schema": "public",
-      "values": [
-        "Requested",
-        "Approved",
-        "Borrowed",
-        "Returned",
-        "Overdue",
-        "Rejected",
-        "Cancelled",
-        "Lost",
-        "Damaged"
       ]
     },
     "public.standing": {

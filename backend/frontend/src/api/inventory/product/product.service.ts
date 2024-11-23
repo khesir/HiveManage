@@ -54,7 +54,7 @@ export class ProductService {
               supplier_id: data.supplier_id
                 ? Number(data.supplier_id)
                 : undefined,
-              condition: data.condtion,
+              condition: data.condition,
               stock: Number(data.stock),
               unit_price: String(data.unit_price),
               product_id: newProduct.product_id,

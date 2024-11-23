@@ -1,17 +1,17 @@
 DO $$ BEGIN
- CREATE TYPE "public"."tag_supplier" AS ENUM('Active', 'Inactive', 'Pending Approval', 'Verified', 'Unverified', 'Suspended', 'Preferred', 'Blacklisted', 'Under Review', 'Archived');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."tag_item" AS ENUM('New', 'Used', 'Broken');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."borrow_status" AS ENUM('Requested', 'Approved', 'Borrowed', 'Returned', 'Overdue', 'Rejected', 'Cancelled', 'Lost', 'Damaged');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."condition_supplier" AS ENUM('Active', 'Inactive', 'Pending Approval', 'Verified', 'Unverified', 'Suspended', 'Preferred', 'Blacklisted', 'Under Review', 'Archived');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."condition_item" AS ENUM('New', 'Used', 'Broken');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS "orderItem" (
 CREATE TABLE IF NOT EXISTS "orderItemTracking" (
 	"tracking_id" serial PRIMARY KEY NOT NULL,
 	"orderItem_id" integer NOT NULL,
-	"tag" varchar,
+	"condition" varchar,
 	"status" varchar,
 	"quantity" integer NOT NULL,
 	"isStocked" boolean DEFAULT false,

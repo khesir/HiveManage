@@ -1988,56 +1988,56 @@ async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
   log.info('Price History records seeded successfully');
 }
 
-async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
-  const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
-  const productIds = await db.select().from(product); // Fetch existing product IDs
-  const itemTags = [
-    'New',
-    'Old',
-    'Damaged',
-    'Refurbished',
-    'Used',
-    'Antique',
-    'Repaired',
-  ] as const;
+// async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
+//   const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
+//   const productIds = await db.select().from(product); // Fetch existing product IDs
+//   const itemTags = [
+//     'New',
+//     'Old',
+//     'Damaged',
+//     'Refurbished',
+//     'Used',
+//     'Antique',
+//     'Repaired',
+//   ] as const;
 
-  // Ensure there are suppliers and products to associate with the inventory
-  if (supplierIDs.length === 0 || productIds.length === 0) {
-    throw new Error('No suppliers or products found. Seed them first.');
-  }
+//   // Ensure there are suppliers and products to associate with the inventory
+//   if (supplierIDs.length === 0 || productIds.length === 0) {
+//     throw new Error('No suppliers or products found. Seed them first.');
+//   }
 
-  // Generate inventory records dynamically
-  const inventoryRecords = Array.from({ length: 10 }, () => ({
-    supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-    product_id: faker.helpers.arrayElement(productIds).product_id,
-    condition: faker.helpers.arrayElement(itemTags),
-    stock: faker.number.int({ min: 500, max: 5000 }),
-    reserve_stock: 0,
-    unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-  }));
+//   // Generate inventory records dynamically
+//   const inventoryRecords = Array.from({ length: 10 }, () => ({
+//     supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+//     product_id: faker.helpers.arrayElement(productIds).product_id,
+//     condition: faker.helpers.arrayElement(itemTags),
+//     stock: faker.number.int({ min: 500, max: 5000 }),
+//     reserve_stock: 0,
+//     unit_price: faker.finance.amount({ min: 500, max: 3000 }),
+//   }));
 
-  await db.transaction(async (tx) => {
-    for (const inventory of inventoryRecords) {
-      const [insertedRecord] = await tx
-        .insert(item_record)
-        .values(inventory)
-        .returning({
-          item_record_id: item_record.item_record_id,
-          product_id: item_record.product_id,
-          quantity: item_record.stock,
-          condition: item_record.condition,
-        });
+//   await db.transaction(async (tx) => {
+//     for (const inventory of inventoryRecords) {
+//       const [insertedRecord] = await tx
+//         .insert(item_record)
+//         .values(inventory)
+//         .returning({
+//           item_record_id: item_record.item_record_id,
+//           product_id: item_record.product_id,
+//           quantity: item_record.stock,
+//           condition: item_record.condition,
+//         });
 
-      await tx.insert(stocksLogs).values({
-        product_id: insertedRecord.product_id,
-        quantity: insertedRecord.quantity,
-        movement_type: 'Stock-In',
-        action: `${insertedRecord.quantity} has been added with a tag of ${insertedRecord.condition}`,
-      });
-    }
-  });
-  log.info('Inventory Records records seeded successfully');
-}
+//       await tx.insert(stocksLogs).values({
+//         product_id: insertedRecord.product_id,
+//         quantity: insertedRecord.quantity,
+//         movement_type: 'Stock-In',
+//         action: `${insertedRecord.quantity} has been added with a tag of ${insertedRecord.condition}`,
+//       });
+//     }
+//   });
+//   log.info('Inventory Records records seeded successfully');
+// }
 
 async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const categoryIDs = await db.select().from(category);
@@ -2491,11 +2491,11 @@ async function main() {
 
     // Inventory
     await seedCategory(db);
-    await seedSupplier(db);
-    await seedProduct(db);
-    await seedProductCategory(db);
-    await seedInventoryRecord(db);
-    await seedPriceHistory(db);
+    // await seedSupplier(db);
+    // await seedProduct(db);
+    // await seedProductCategory(db);
+    // await seedInventoryRecord(db);
+    // await seedPriceHistory(db);
 
     // await seedOrder(db);
     // Participants and related data
@@ -2506,28 +2506,28 @@ async function main() {
     // await seedMessage(db);
 
     // // Sales and related data
-    await seedService(db);
+    // await seedService(db);
     // await seedPayment(db);
     // await seedReceipt(db);
-    await seedSalesItem(db);
-    await seedBorrow(db);
-    await seedReserve(db);
+    // await seedSalesItem(db);
+    // await seedBorrow(db);
+    // await seedReserve(db);
 
     // // Job Order and related data
-    await seedJobOrderTypes(db);
-    await seedJobOrder(db);
-    await seedJobOrderServices(db);
+    // await seedJobOrderTypes(db);
+    // await seedJobOrder(db);
+    // await seedJobOrderServices(db);
 
     // // Pass employee IDs to seedRemarkTickets
-    await seedRemarkType(db);
-    await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
-    await seedRemarkItems(db);
-    await seedReports(db); // Make sure this also properly references customer IDs
-    await seedRemarkReports(db);
-    await seedRemarkAssigned(db);
+    // await seedRemarkType(db);
+    // await seedRemarkTickets(db); // Ensure this function correctly references employee IDs
+    // await seedRemarkItems(db);
+    // await seedReports(db); // Make sure this also properly references customer IDs
+    // await seedRemarkReports(db);
+    // await seedRemarkAssigned(db);
 
-    await seedAssignedEmployees(db);
-    await seedRemarkContent(db);
+    // await seedAssignedEmployees(db);
+    // await seedRemarkContent(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

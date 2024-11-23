@@ -10,15 +10,7 @@ export const CreateInventoryRecord = z.object({
 export const UpdateInventoryRecord = z.object({
   supplier_id: z.number().min(1),
   product_id: z.number().min(1),
-  condition: z.enum([
-    'New',
-    'Old',
-    'Damaged',
-    'Refurbished',
-    'Used',
-    'Antique',
-    'Repaired',
-  ]),
+  condition: z.string().min(1),
   stock: z.number().min(1),
 });
 

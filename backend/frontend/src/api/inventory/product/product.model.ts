@@ -12,7 +12,7 @@ export const CreateProduct = z.object({
     .array(
       z.object({
         supplier_id: z.number().optional(),
-        condtion: z.string().min(1),
+        condition: z.string().min(1),
         stock: z.string().min(1),
         unit_price: z.string().min(1),
       }),
