@@ -176,6 +176,25 @@ export const conditionEnum = pgEnum('condition_supplier', [
   'Under Review',
   'Archived',
 ]);
+
+export const itemTypeEnum = pgEnum('item_type', ['Batch', 'Serialized']);
+
+export const itemConditionsEnum = pgEnum('item_condition', [
+  'New',
+  'Old',
+  'Damage',
+  'Refurbished',
+  'Used',
+  'Antique',
+  'Repaired',
+]);
+
+export const itemStatusEnum = pgEnum('item_status', [
+  'On Stock',
+  'Sold',
+  'Depleted',
+]);
+
 // ===================== EMPLOYEE AND ITS INFORMATION INFORMATION =========================
 export const employee = pgTable('employee', {
   employee_id: serial('employee_id').primaryKey(),
@@ -589,11 +608,8 @@ export const product = pgTable('product', {
   product_id: serial('product_id').primaryKey(),
   name: varchar('name', { length: 255 }),
   description: varchar('description', { length: 255 }),
-  on_listing: boolean('on_listing'),
-  re_order_level: integer('re_order_level'),
-  total_stocks: integer('total_stock'),
   img_url: varchar('img_url'),
-  inventory_limit: integer('inventory_limit'),
+  stock_limit: integer('stock_limit'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -606,11 +622,7 @@ export const item_record = pgTable('item_record', {
   item_record_id: serial('item_record_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
   product_id: integer('product_id').references(() => product.product_id),
-  is_serialized: boolean('is_serialized'),
-  condition: varchar('condition'),
-  stock: integer('stock'),
-  reserve_stock: integer('pending_stock'),
-  unit_price: decimal('unit_price', { precision: 10, scale: 2 }),
+  total_stock: integer('stock'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -619,22 +631,25 @@ export const item_record = pgTable('item_record', {
   deleted_at: timestamp('deleted_at'),
 });
 
-export const SerializeItem = pgTable('serialize_item', {
-  serialize_item_id: serial('serialize_item_id').primaryKey(),
+export const item = pgTable('item', {
+  item_id: serial('item_id').primaryKey(),
   item_record_id: integer('item_record_id').references(
     () => item_record.item_record_id,
   ),
-  serial_number: varchar('serial_number'),
-  condition: varchar('condition'),
-  status: varchar('status'),
-  price: decimal('unit_price', { precision: 10, scale: 2 }),
-  warranty_start_date: varchar('warranty_start_date'),
-  warranty_start_end: varchar('warranty_start_end'),
+  serial_number: varchar('serial_number').notNull(),
+  batch_number: varchar('serial_number').notNull(),
+  item_type: itemTypeEnum('item_type').notNull(),
+  item_condition: itemConditionsEnum('item_condition').notNull(),
+  item_status: itemStatusEnum('item_status').notNull(),
+  unit_price: decimal('unit_price', { precision: 10, scale: 2 }),
+  selling_price: decimal('selling_price', { precision: 10, scale: 2 }),
+  warranty_expiry_date: varchar('warranty_expiry_date'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
 });
 //Price History
 export const price_history = pgTable('price_history', {
@@ -757,19 +772,6 @@ export const orderItem = pgTable('orderItem', {
     .notNull()
     .$onUpdate(() => new Date()), // Timestamp for last update
 });
-
-//Arrived_Items
-export const arrived_Items = pgTable('arrived_items', {
-  arrived_Items_id: serial('arrived_Items_id').primaryKey(),
-  order_id: integer('order_id').references(() => order.order_id), // Foreign key reference to the order table
-  filePath: varchar('filePath', { length: 255 }), // File path, up to 255 characters
-  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
-  last_updated: timestamp('last_updated')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()), // Timestamp for last update
-  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
-});
 //  =======================================================================================
 // =================================== Service ==========================================
 
@@ -858,7 +860,7 @@ export const schema: SchemaType = {
   supplier,
   order,
   orderItem,
-  arrived_Items,
+  item,
   item_record,
   price_history,
   product_category,

@@ -11,7 +11,6 @@ import {
   category,
   supplier,
   order,
-  arrived_Items,
   sales_items,
   payment,
   receipt,
@@ -99,7 +98,7 @@ async function createProfileBucketIfNotExists() {
             'image/jpeg',
             'image/png',
             'image/jpg',
-            'image/pjpeg',
+            'image/jpeg',
           ],
         });
 
@@ -1988,187 +1987,129 @@ async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
   log.info('Price History records seeded successfully');
 }
 
-// async function seedInventoryRecord(db: PostgresJsDatabase<SchemaType>) {
-//   const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
-//   const productIds = await db.select().from(product); // Fetch existing product IDs
-//   const itemTags = [
-//     'New',
-//     'Old',
-//     'Damaged',
-//     'Refurbished',
-//     'Used',
-//     'Antique',
-//     'Repaired',
-//   ] as const;
+async function seedItemRecord(db: PostgresJsDatabase<SchemaType>) {
+  const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
+  const productIds = await db.select().from(product); // Fetch existing product IDs
+  const itemTags = [
+    'New',
+    'Old',
+    'Damaged',
+    'Refurbished',
+    'Used',
+    'Antique',
+    'Repaired',
+  ] as const;
 
-//   // Ensure there are suppliers and products to associate with the inventory
-//   if (supplierIDs.length === 0 || productIds.length === 0) {
-//     throw new Error('No suppliers or products found. Seed them first.');
-//   }
+  // Ensure there are suppliers and products to associate with the inventory
+  if (supplierIDs.length === 0 || productIds.length === 0) {
+    throw new Error('No suppliers or products found. Seed them first.');
+  }
 
-//   // Generate inventory records dynamically
-//   const inventoryRecords = Array.from({ length: 10 }, () => ({
-//     supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//     product_id: faker.helpers.arrayElement(productIds).product_id,
-//     condition: faker.helpers.arrayElement(itemTags),
-//     stock: faker.number.int({ min: 500, max: 5000 }),
-//     reserve_stock: 0,
-//     unit_price: faker.finance.amount({ min: 500, max: 3000 }),
-//   }));
+  // Generate inventory records dynamically
+  const itemRecords = Array.from({ length: 10 }, () => ({
+    supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+    product_id: faker.helpers.arrayElement(productIds).product_id,
+    total_stock: faker.number.int({ min: 500, max: 5000 }),
+  }));
 
-//   await db.transaction(async (tx) => {
-//     for (const inventory of inventoryRecords) {
-//       const [insertedRecord] = await tx
-//         .insert(item_record)
-//         .values(inventory)
-//         .returning({
-//           item_record_id: item_record.item_record_id,
-//           product_id: item_record.product_id,
-//           quantity: item_record.stock,
-//           condition: item_record.condition,
-//         });
+  await db.transaction(async (tx) => {
+    for (const inventory of itemRecords) {
+      const [insertedRecord] = await tx
+        .insert(item_record)
+        .values(inventory)
+        .returning({
+          item_record_id: item_record.item_record_id,
+          product_id: item_record.product_id,
+          total_stock: item_record.total_stock,
+        });
 
-//       await tx.insert(stocksLogs).values({
-//         product_id: insertedRecord.product_id,
-//         quantity: insertedRecord.quantity,
-//         movement_type: 'Stock-In',
-//         action: `${insertedRecord.quantity} has been added with a tag of ${insertedRecord.condition}`,
-//       });
-//     }
-//   });
-//   log.info('Inventory Records records seeded successfully');
-// }
+      await tx.insert(stocksLogs).values({
+        product_id: insertedRecord.product_id,
+        movement_type: 'Stock-In',
+      });
+    }
+  });
+  log.info('Item Records records seeded successfully');
+}
 
 async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
-  const categoryIDs = await db.select().from(category);
-  const supplierIDs = await db.select().from(supplier);
   const productRecords = [
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Ram',
       description:
         'High-performance DDR4 RAM module with a clock speed of 3200MHz, designed to provide faster data transfer and improve overall system responsiveness.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Laptop Pro 15',
       description: 'A powerful laptop suitable for professionals and students.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-15'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'SSD',
       description:
         '"High-speed NVMe SSD with rapid data transfer and reliable performance."',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'LCD',
       description:
         'Vibrant LCD monitor with sharp resolution and wide viewing angles, perfect for immersive gaming and professional work.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Wireless Headphones',
       description:
         'Noise-cancelling wireless headphones with excellent sound quality.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Mouse',
       description:
         'High-precision wired mouse with ergonomic design and customizable buttons for smooth navigation and enhanced gaming performance.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Wireless Mouse',
       description:
         'Ergonomic wireless mouse with precise tracking and customizable buttons for seamless navigation and enhanced productivity',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Keyboard',
       description:
         'Mechanical keyboard with tactile switches and customizable RGB backlighting for an enhanced typing experience and personalized style.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Nvidia GPU',
       description:
         'High-performance graphics card with advanced cooling technology and real-time ray tracing for stunning visuals and smooth gaming experiences.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       name: 'Amd GPU',
       description:
         'High-performance graphics card with advanced cooling technology and real-time ray tracing for stunning visuals and smooth gaming experiences.',
-      on_listing: true,
-      re_order_level: 150,
-      total_stocks: 300,
-      inventory_limit: 5000,
+      stock_limit: 5000,
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2491,13 +2432,13 @@ async function main() {
 
     // Inventory
     await seedCategory(db);
-    // await seedSupplier(db);
-    // await seedProduct(db);
-    // await seedProductCategory(db);
-    // await seedInventoryRecord(db);
-    // await seedPriceHistory(db);
+    await seedSupplier(db);
+    await seedProduct(db);
+    await seedProductCategory(db);
+    await seedItemRecord(db);
+    await seedPriceHistory(db);
 
-    // await seedOrder(db);
+    await seedOrder(db);
     // Participants and related data
     await seedCustomer(db); // Seed customers first
     // await seedInquiry(db);

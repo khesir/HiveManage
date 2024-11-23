@@ -14,7 +14,7 @@ import {
   CreateOrderItemTracking,
   UpdateOrderItemTracking,
 } from './orderitemtracking.model';
-import { CreateInventoryRecord } from '../../../product/inventoryrecord/inventoryrecord.model';
+import { CreateInventoryRecord } from '../../../product/inventoryrecord/itemrecord.model';
 
 export class OrderItemTrackingService {
   private db: PostgresJsDatabase<SchemaType>;

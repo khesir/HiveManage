@@ -8,7 +8,7 @@ import { item_record } from '@/drizzle/drizzle.schema';
 // There's a globally used
 // middleware like error handling and schema validation
 
-export async function validateInventoryRecordID(
+export async function validateItemRecordID(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -27,7 +27,7 @@ export async function validateInventoryRecordID(
       );
 
     if (!InventoryRecord[0]) {
-      return res.status(404).json({ message: 'Inventory Record not found' });
+      return res.status(404).json({ message: 'Item Record not found' });
     }
     next();
   } catch (error) {

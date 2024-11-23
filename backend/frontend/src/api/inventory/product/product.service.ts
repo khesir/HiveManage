@@ -14,11 +14,11 @@ import { SupabaseService } from '@/supabase/supabase.service';
 
 export class ProductService {
   private db: PostgresJsDatabase<SchemaType>;
-  private supabaseSerivce: SupabaseService;
+  private supabaseService: SupabaseService;
 
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
-    this.supabaseSerivce = SupabaseService.getInstance();
+    this.supabaseService = SupabaseService.getInstance();
   }
 
   async createProduct(
@@ -28,50 +28,21 @@ export class ProductService {
     return this.db.transaction(async (tx) => {
       let filePath = undefined;
       if (file) {
-        filePath = await this.supabaseSerivce.uploadImageToBucket(file);
+        filePath = await this.supabaseService.uploadImageToBucket(file);
       }
       const [newProduct] = await tx
         .insert(product)
         .values({
           name: String(data.name),
           description: String(data.description),
-          on_listing: data.on_listing,
-          re_order_level: data.re_order_level,
-          total_stocks: data.total_stocks,
           img_url: filePath,
-          inventory_limit: data.inventory_limit,
+          stock_limit: data.stock_limit,
         })
         .returning({ product_id: product.product_id });
       await tx.insert(price_history).values({
         price: String(data.price_history),
         product_id: newProduct.product_id,
       });
-
-      if (data.item_record) {
-        await Promise.all(
-          data.item_record.map((data) =>
-            tx.insert(item_record).values({
-              supplier_id: data.supplier_id
-                ? Number(data.supplier_id)
-                : undefined,
-              condition: data.condition,
-              stock: Number(data.stock),
-              unit_price: String(data.unit_price),
-              product_id: newProduct.product_id,
-            }),
-          ),
-        );
-      }
-      if (product_category) {
-        await Promise.all(
-          data.product_categories.map((data) =>
-            tx.insert(product_category).values({
-              product_id: newProduct.product_id,
-              category_id: data.category_id,
-            }),
-          ),
-        );
-      }
     });
   }
 
@@ -79,15 +50,11 @@ export class ProductService {
     sort: string,
     limit: number,
     offset: number,
-    on_listing: boolean,
     no_pagination: boolean,
     category_id: string | undefined,
     product_name: string | undefined,
   ) {
     const conditions = [isNull(product.deleted_at)];
-    if (on_listing) {
-      conditions.push(eq(product.on_listing, on_listing));
-    }
     if (product_name) {
       conditions.push(sql`${product.name} LIKE ${'%' + product_name + '%'}`);
     }
@@ -125,27 +92,28 @@ export class ProductService {
       return acc;
     }, {});
 
-    const inventoryRecords = await this.db
+    const itemRecords = await this.db
       .select()
       .from(item_record)
       .leftJoin(supplier, eq(item_record.supplier_id, supplier.supplier_id))
       .where(isNull(item_record.deleted_at));
 
-    const inventoryRecordByProduct = inventoryRecords.reduce<
-      Record<number, unknown[]>
-    >((acc, record) => {
-      const recordID = record.item_record.product_id;
-      if (recordID !== null && !(recordID in acc)) {
-        acc[recordID] = [];
-      }
-      if (recordID !== null) {
-        acc[recordID].push({
-          ...record.item_record,
-          supplier: { ...record.supplier },
-        });
-      }
-      return acc;
-    }, {});
+    const itemRecordsByProduct = itemRecords.reduce<Record<number, unknown[]>>(
+      (acc, record) => {
+        const recordID = record.item_record.product_id;
+        if (recordID !== null && !(recordID in acc)) {
+          acc[recordID] = [];
+        }
+        if (recordID !== null) {
+          acc[recordID].push({
+            ...record.item_record,
+            supplier: { ...record.supplier },
+          });
+        }
+        return acc;
+      },
+      {},
+    );
 
     const priceHistory = await this.db
       .select()
@@ -200,7 +168,7 @@ export class ProductService {
         ...row,
         price_history: priceHistoryByProduct[row.product_id] || [],
         product_categories: categoryByProduct[row.product_id] || [],
-        item_record: inventoryRecordByProduct[row.product_id] || [],
+        item_record: itemRecordsByProduct[row.product_id] || [],
       }));
     return { totalData, productWithDetails };
   }
