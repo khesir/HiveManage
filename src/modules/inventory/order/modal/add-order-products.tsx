@@ -9,7 +9,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import {toast} from 'sonner';
-import {AxiosError} from 'axios';
+import axios from 'axios';
 import {
 	orderItemsArraySchema,
 	OrderWithDetails,
@@ -77,8 +77,8 @@ export function AddProductForm({data}: OrderTrackingProps) {
 		search: {[key: number]: string};
 		selectedProduct: {[key: number]: ProductWithRelatedTables};
 	}>({
-		search: {}, // To store search state for each product (keyed by product index or ID)
-		selectedProduct: {}, // To store selected product state for each product
+		search: {},
+		selectedProduct: {},
 	});
 	useEffect(() => {
 		setLoading(true);
@@ -152,7 +152,15 @@ export function AddProductForm({data}: OrderTrackingProps) {
 			setTrack(track + 1);
 		} catch (error) {
 			console.log(error);
-			toast.error((error as AxiosError).response?.data as string);
+			let errorMessage = 'An unexpected error occurred';
+			if (axios.isAxiosError(error)) {
+				errorMessage =
+					error.response?.data?.message || // Use the `message` field if available
+					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
+					'Failed to process request';
+			}
+
+			toast.error(errorMessage);
 		} finally {
 			setLoading(false);
 		}
@@ -196,9 +204,9 @@ export function AddProductForm({data}: OrderTrackingProps) {
 					Add Product
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="max-w-none w-[800px] h-[600px] flex flex-col">
+			<DialogContent className="max-w-none w-[120vh] h-[85vh] flex flex-col">
 				<DialogHeader>
-					<DialogTitle>Edit Item</DialogTitle>
+					<DialogTitle>Add Purchase Order Product</DialogTitle>
 					<DialogDescription>
 						Buttons can be located way at the bottom
 					</DialogDescription>
@@ -288,10 +296,10 @@ export function AddProductForm({data}: OrderTrackingProps) {
 															</Card>
 															<FormField
 																control={form.control}
-																name={`items.${index}.quantity`}
+																name={`items.${index}.price`}
 																render={({field}) => (
 																	<FormItem>
-																		<FormLabel>Quantity</FormLabel>
+																		<FormLabel>Purchase Price</FormLabel>
 																		<FormControl>
 																			<Input
 																				type="number"
@@ -306,10 +314,10 @@ export function AddProductForm({data}: OrderTrackingProps) {
 															/>
 															<FormField
 																control={form.control}
-																name={`items.${index}.price`}
+																name={`items.${index}.quantity`}
 																render={({field}) => (
 																	<FormItem>
-																		<FormLabel>Purchase Price</FormLabel>
+																		<FormLabel>Quantity</FormLabel>
 																		<FormControl>
 																			<Input
 																				type="number"

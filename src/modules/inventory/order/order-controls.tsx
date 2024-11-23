@@ -25,7 +25,7 @@ export function OrderControls() {
 	return (
 		<div className="flex gap-2">
 			<Button className="flex-1" onClick={() => navigate('create')}>
-				Create Order
+				Create Purchase Order
 			</Button>
 			<DropdownMenu>
 				<DropdownMenuTrigger>

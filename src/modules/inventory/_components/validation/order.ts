@@ -17,6 +17,7 @@ export const orderItemSchema = z.object({
 	product_id: z.number().min(1),
 	quantity: z.string().min(1),
 	price: z.string().min(1),
+	is_serialized: z.boolean().optional(),
 	status: orderItemEnum,
 	created_at: z.date().optional(),
 	last_updated: z.date().optional(),
@@ -100,7 +101,7 @@ export type OrderWithDetails = {
 
 export const orderTrackItemSchema = z.object({
 	orderItem_id: z.string().optional(),
-	tag: z.string().min(1),
+	condition: z.string().min(1),
 	status: z.string().min(1),
 	quantity: z.string().min(1),
 	remarks: z.string().optional(),
@@ -115,7 +116,7 @@ export type OrderTrackItemArray = z.infer<typeof orderTrackItemArraySchema>;
 export type OrderTrackingItemWithDetails = {
 	tracking_id: number;
 	orderItem_id: number;
-	tag: string;
+	condition: string;
 	status: string;
 	quantity: string;
 	remarks: string;

@@ -100,7 +100,7 @@ export function OrderProfile({data}: ProfileProps) {
 				<Separator className="my-4" />
 				<div className="grid gap-3 ">
 					<div className="font-semibold">Logs</div>
-					<ScrollArea className="h-[320px]">
+					<ScrollArea className="h-[200px]">
 						{data?.messages.map((msg, index) => (
 							<div key={index} className="flex items-center">
 								<p className="pl-5 flex-1">

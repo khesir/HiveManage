@@ -60,7 +60,7 @@ export function OrderList() {
 	if (orders.length === 0) {
 		return (
 			<Card className="relative w-full h-[170px] overflow-hidden">
-				<CardTitle className="h-full font-semibold text-xl  hover:underline flex Products-center justify-center">
+				<CardTitle className="h-full font-semibold text-lg  hover:underline flex items-center justify-center">
 					No product Available
 				</CardTitle>
 			</Card>

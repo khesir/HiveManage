@@ -41,6 +41,7 @@ export default function ProductWithDetailsList({
 		};
 		fetchProducts();
 	}, [offset, pageLimit, sort, category_id, product_name]);
+	console.log(inventoryRecord);
 	return (
 		<InventoryRecordTable
 			columns={columns}

@@ -24,31 +24,27 @@ export const columns: ColumnDef<ItemRecordsWithDetails>[] = [
 		},
 	},
 	{
-		accessorKey: 'item_record_id',
-		header: 'ID',
-	},
-	{
 		accessorKey: 'supplier.name',
 		header: 'SUPPLIER NAME',
 	},
 	{
-		id: 'tag',
-		header: 'Tag',
-		cell: ({row}) => <Badge>{row.original.tag}</Badge>,
+		id: 'condition',
+		header: 'Condition',
+		cell: ({row}) => <Badge>{row.original.condition}</Badge>,
 	},
 	{
 		id: 'stock',
-		header: 'STOCK',
+		header: 'Stock',
 		cell: ({row}) => (row.original.stock ? row.original.stock : 'N/A'),
 	},
 	{
 		id: 'reserve_stock',
-		header: 'RESERVE STOCK',
+		header: 'Reserve Stock',
 		cell: ({row}) => (row.original.stock ? row.original.reserve_stock : 'N/A'),
 	},
 	{
 		id: 'unit_price',
-		header: 'UNIT PRICE',
+		header: 'Unit Price',
 		cell: ({row}) =>
 			row.original.unit_price ? row.original.unit_price : 'N/A',
 	},

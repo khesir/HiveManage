@@ -93,6 +93,10 @@ function App() {
 									<Route index element={<OrderPage />} />
 									<Route path="create" element={<CreateOrderPage />} />
 									<Route path="view/:id" />
+									<Route
+										path="view/product/:id"
+										element={<InventoryViewPage />}
+									/>
 								</Route>
 								<Route path="suppliers">
 									<Route index element={<SupplierPage />} />

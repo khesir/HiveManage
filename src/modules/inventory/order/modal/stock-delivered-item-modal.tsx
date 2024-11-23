@@ -8,7 +8,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import {toast} from 'sonner';
-import {AxiosError} from 'axios';
+import axios from 'axios';
 import {OrderTrackingItemWithDetails} from '../../_components/validation/order';
 import {request} from '@/api/axios';
 import {useState} from 'react';
@@ -31,8 +31,9 @@ export function StockDeliveredItemModal({data}: OrderTrackingProps) {
 					supplier_id: data.order?.supplier_id,
 					product_id: data.product.product_id,
 					stock: data.quantity,
-					tag: data.tag,
+					condition: data.condition,
 				};
+				console.log(newData);
 				await request(
 					'POST',
 					`api/v1/ims/order/${data.order?.order_id}/order-items/${data.orderItem_id}/tracking/${data.tracking_id}/stock-in`,
@@ -46,7 +47,15 @@ export function StockDeliveredItemModal({data}: OrderTrackingProps) {
 			}
 		} catch (error) {
 			console.log(error);
-			toast.error((error as AxiosError).response?.data as string);
+			let errorMessage = 'An unexpected error occurred';
+			if (axios.isAxiosError(error)) {
+				errorMessage =
+					error.response?.data?.message || // Use the `message` field if available
+					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
+					'Failed to process request';
+			}
+
+			toast.error(errorMessage);
 		}
 	};
 

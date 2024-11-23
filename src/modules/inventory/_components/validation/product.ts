@@ -8,7 +8,7 @@ export const inventorySchema = z.object({
 	item_record_id: z.number().optional(),
 	supplier_id: z.number().optional(),
 	product_id: z.number().optional(),
-	tag: z.string().min(1),
+	condition: z.string().min(1),
 	stock: z.string().min(1),
 	unit_price: z.string().min(1),
 	created_at: z.string().optional(),
@@ -20,7 +20,7 @@ export type ItemRecordsWithDetails = {
 	item_record_id: number;
 	supplier_id: number;
 	product_id: number;
-	tag: string;
+	condition: string;
 	stock: number;
 	unit_price: number;
 	reserve_stock: number;

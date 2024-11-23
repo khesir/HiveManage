@@ -87,7 +87,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 	const [totalQuantity, setTotalQuantity] = useState<number>(0);
 	const defaultTrackItem = {
 		orderItem_id: '',
-		tag: '',
+		condition: '',
 		status: '',
 		quantity: '',
 		remark: '',
@@ -147,7 +147,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 			setLoading(false);
 		}
 	};
-	const validTags = [
+	const validConditions = [
 		'New',
 		'Old',
 		'Damaged',
@@ -170,7 +170,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 				onSubmit={form.handleSubmit(processForm)}
 				className="space-y-3 px-5"
 			>
-				{/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
+				<pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
 				<ScrollArea className="flex flex-col gap-5 h-[calc(90vh-190px)]">
 					{fields.map((field, index) => (
 						<Card key={field.id} className="p-5 mb-5 mx-2">
@@ -201,7 +201,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 									<AccordionContent className="px-3 flex flex-col gap-5">
 										<FormField
 											control={form.control}
-											name={`track_record.${index}.tag`}
+											name={`track_record.${index}.condition`}
 											render={({field}) => (
 												<FormItem>
 													<FormLabel>Tag</FormLabel>
@@ -220,7 +220,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 															</SelectTrigger>
 														</FormControl>
 														<SelectContent>
-															{validTags.map((data, key) => (
+															{validConditions.map((data, key) => (
 																<SelectItem key={key} value={data.toString()}>
 																	{data}
 																</SelectItem>
@@ -311,7 +311,7 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 						type="button"
 						onClick={() =>
 							append({
-								tag: '',
+								condition: '',
 								status: '',
 								quantity: '',
 								remarks: '',

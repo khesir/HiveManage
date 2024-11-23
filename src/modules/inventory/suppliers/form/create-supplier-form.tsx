@@ -31,7 +31,7 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {Textarea} from '@/components/ui/textarea';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Separator} from '@radix-ui/react-dropdown-menu';
-import {AxiosError} from 'axios';
+import axios, {AxiosError} from 'axios';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
 import {Category} from '../../_components/validation/category';
@@ -131,7 +131,15 @@ function CreateSupplierForm({closeModal}: Formprops) {
 			// navigate(-1);
 		} catch (error) {
 			console.log(error);
-			toast.error((error as AxiosError).response?.data as string);
+			let errorMessage = 'An unexpected error occurred';
+			if (axios.isAxiosError(error)) {
+				errorMessage =
+					error.response?.data?.message || // Use the `message` field if available
+					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
+					'Failed to process request';
+			}
+
+			toast.error(errorMessage);
 		}
 	};
 

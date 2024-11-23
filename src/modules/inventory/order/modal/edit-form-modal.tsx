@@ -8,7 +8,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import {toast} from 'sonner';
-import {AxiosError} from 'axios';
+import axios from 'axios';
 import {
 	OrderTrackingItemWithDetails,
 	OrderTrackItem,
@@ -77,7 +77,15 @@ export function EditFormModal({data}: OrderTrackingProps) {
 			setTrack(track + 1);
 		} catch (error) {
 			console.log(error);
-			toast.error((error as AxiosError).response?.data as string);
+			let errorMessage = 'An unexpected error occurred';
+			if (axios.isAxiosError(error)) {
+				errorMessage =
+					error.response?.data?.message || // Use the `message` field if available
+					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
+					'Failed to process request';
+			}
+
+			toast.error(errorMessage);
 		} finally {
 			setLoading(false);
 		}
@@ -119,7 +127,7 @@ export function EditFormModal({data}: OrderTrackingProps) {
 						<div className="px-3 flex flex-col gap-5">
 							<FormField
 								control={form.control}
-								name={`tag`}
+								name={`condition`}
 								render={({field}) => (
 									<FormItem>
 										<FormLabel>Tag</FormLabel>

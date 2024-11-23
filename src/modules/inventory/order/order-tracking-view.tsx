@@ -11,7 +11,7 @@ import {Badge} from '@/components/ui/badge';
 import {Card} from '@/components/ui/card';
 import {CreateTrackItem} from './form/create-track-item-form';
 import {Button} from '@/components/ui/button';
-import {MoreVertical} from 'lucide-react';
+import {MoreHorizontal, MoreVertical} from 'lucide-react';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -20,30 +20,25 @@ import {
 import {MarkItemCompleteFunction} from './modal/mark-item-complete-modal';
 import {EditFormModal} from './modal/edit-form-modal';
 import {DeleteConfirmModal} from './modal/delete-confirm-modal';
-import {dateParser} from '@/lib/util/utils';
 import {StockDeliveredItemModal} from './modal/stock-delivered-item-modal';
 import useTrackReferesh from '../_components/hooks/uset-track-refresh';
 
 const columns: ColumnDef<OrderTrackingItemWithDetails>[] = [
 	{
-		accessorKey: 'tracking_id',
-		header: 'ID',
-	},
-	{
 		accessorKey: 'quantity',
-		header: 'QUANTITY',
+		header: 'Qty',
 	},
 	{
-		accessorKey: 'tag',
-		header: 'TAG',
+		accessorKey: 'condition',
+		header: 'Condition',
 	},
 	{
 		accessorKey: 'status',
-		header: 'STATUS',
+		header: 'Status',
 	},
 	{
 		accessorKey: 'remarks',
-		header: 'REMARKS',
+		header: 'Remarks',
 		cell: ({row}) => (row.original.remarks ? row.original.remarks : 'N/A'),
 	},
 	{
@@ -55,11 +50,6 @@ const columns: ColumnDef<OrderTrackingItemWithDetails>[] = [
 			) : (
 				<Badge className="bg-red-600">False</Badge>
 			),
-	},
-	{
-		accessorKey: 'last_updated',
-		header: 'Last Updated',
-		cell: ({row}) => dateParser(row.original.last_updated ?? ''),
 	},
 	{
 		id: 'action',
@@ -131,15 +121,29 @@ export function OrderTrackingView({data}: OrderTrackingProps) {
 		setIsModalOpen(!isModalOpen);
 	};
 	return (
-		<div className="m-5 grid grid-cols-3 gap-5">
+		<div className="grid grid-cols-3 gap-5">
 			<div className="col-span-2">
-				<div className="flex gap-5 items-center">
+				<div className="flex gap-3 items-center">
 					<h2 className="text-3xl font-bold tracking-tight">
 						{data.product.name}
 					</h2>
 					<div>
 						<Badge>{data.status}</Badge>
 					</div>
+					<DropdownMenu>
+						<DropdownMenuTrigger>
+							<Button
+								size={'icon'}
+								className="h-5 w-5 items-center"
+								variant={'ghost'}
+							>
+								<MoreHorizontal className="h-5 w-5" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<Button>Delete</Button>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 				<p className="text-sm text-muted-foreground">
 					{data.product.description}

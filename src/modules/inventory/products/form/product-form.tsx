@@ -16,7 +16,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import {toast} from 'sonner';
-import {AxiosError} from 'axios';
+import axios, {AxiosError} from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import {Category} from '../../_components/validation/category';
@@ -101,7 +101,7 @@ export function CreateProductForm() {
 	const defaultItemRecord: ItemRecords = {
 		supplier_id: undefined,
 		product_id: undefined,
-		tag: '',
+		condition: '',
 		stock: '',
 		unit_price: '',
 	};
@@ -151,7 +151,6 @@ export function CreateProductForm() {
 				item_record: data.item_record,
 				product_categories: selectedCategories,
 			};
-			console.log(newData);
 			const formData = new FormData();
 			appendFormData(newData, formData);
 			console.log('FormData contents:', ...formData.entries());
@@ -160,7 +159,15 @@ export function CreateProductForm() {
 			navigate(-1);
 		} catch (error) {
 			console.log(error);
-			toast.error((error as AxiosError).response?.data as string);
+			let errorMessage = 'An unexpected error occurred';
+			if (axios.isAxiosError(error)) {
+				errorMessage =
+					error.response?.data?.message || // Use the `message` field if available
+					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
+					'Failed to process request';
+			}
+
+			toast.error(errorMessage);
 		}
 	};
 
@@ -212,7 +219,7 @@ export function CreateProductForm() {
 							onClick={() =>
 								append({
 									supplier_id: undefined,
-									tag: '',
+									condition: '',
 									stock: '',
 									unit_price: '',
 								})
@@ -545,10 +552,10 @@ export function CreateProductForm() {
 											/>
 											<FormField
 												control={form.control}
-												name={`item_record.${index}.tag`}
+												name={`item_record.${index}.condition`}
 												render={({field}) => (
 													<FormItem>
-														<FormLabel>Tags</FormLabel>
+														<FormLabel>Condition</FormLabel>
 														<FormControl>
 															<Select
 																disabled={loading}
@@ -560,7 +567,7 @@ export function CreateProductForm() {
 																	<SelectTrigger>
 																		<SelectValue
 																			defaultValue={field.value}
-																			placeholder="Select a Tag"
+																			placeholder="Select a condition"
 																		/>
 																	</SelectTrigger>
 																</FormControl>
