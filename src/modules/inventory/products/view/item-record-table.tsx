@@ -25,9 +25,8 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon, PaperclipIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {ItemRecordsWithDetails} from '@/modules/inventory/_components/validation/product';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -35,23 +34,24 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
+import {ItemRecords} from '../../_components/validation/item-record';
+import {Input} from '@/components/ui/input';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	pageSizetags?: number[];
 	pageCount: number;
+	searchKey: string;
 }
 // type SelectedValue = {
 // 	id: number; // Selected ID
 // 	name: string; // Selected name
 // };
-export function InventoryRecordTable<
-	TData extends ItemRecordsWithDetails,
-	TValue,
->({
+export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 	columns,
 	data,
+	searchKey,
 	pageCount,
 	pageSizetags = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
@@ -123,7 +123,7 @@ export function InventoryRecordTable<
 		manualPagination: true,
 		manualFiltering: true,
 	});
-	// const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
+	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
 
 	// ====================================================================================
 	// Search Funtion
@@ -225,58 +225,24 @@ export function InventoryRecordTable<
 			`${location.pathname}?${createQueryString({
 				page: pageIndex + 1,
 				limit: pageSize,
-				status: tagFilter,
 				sort: order,
 			})}`,
 			{replace: true},
 		);
 	};
 
-	// tag Filter
-	const [tagFilter, settagFilter] = useState<string | null>(
-		searchParams.get('tag'),
-	);
-	const handletagFilterChange = (tag_id: string | null) => {
-		if (tag_id === tagFilter) return;
-
-		const newtag = tag_id === null ? null : tag_id;
-		settagFilter(newtag);
-
-		// Reset to the first page on filter change and update the URL
-		navigate(
-			`${location.pathname}?${createQueryString({
-				page: 1,
-				limit: pageSize,
-				sort: sortOrder,
-				tag: newtag,
-			})}`,
-			{replace: true},
-		);
-
-		setPagination((prev) => ({...prev, pageIndex: 0}));
-	};
-
-	const itemTags = [
-		'New',
-		'Old',
-		'Damaged',
-		'Refurbished',
-		'Used',
-		'Antique',
-		'Repaired',
-	];
 	return (
 		<>
 			<div className="flex justify-between gap-3 md:gap-0">
 				<div className="flex gap-2">
-					{/* <Input
-						placeholder={`Find product...`}
+					<Input
+						placeholder={`Find Supplier...`}
 						value={searchValue ?? ''} // Bind the input value to the current filter value
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)
 						} // Update filter value}
 						className="w-full md:max-w-lg"
-					/> */}
+					/>
 					<DropdownMenu>
 						<DropdownMenuTrigger>
 							<Button variant={'outline'}>
@@ -307,131 +273,12 @@ export function InventoryRecordTable<
 							</Button>
 						</DropdownMenuContent>
 					</DropdownMenu>
-					<DropdownMenu>
-						<DropdownMenuTrigger>
-							<Button variant={'outline'} className="border-dashed">
-								Status
-								{itemTags.find((tag) => tag === tagFilter) ? (
-									<div className="flex items-center">
-										<Separator orientation="vertical" className="mx-2 h-4" />
-										<Badge
-											variant={'secondary'}
-											className="rounded-sm px-1 font-normal"
-										>
-											{itemTags.find((tag) => tag === tagFilter)}
-										</Badge>
-									</div>
-								) : (
-									''
-								)}
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="flex flex-col">
-							<Button
-								variant={'ghost'}
-								onClick={() => handletagFilterChange(null)}
-							>
-								Remove filter
-							</Button>
-							<Separator />
-							{itemTags.map((data, index) => (
-								<Button
-									key={index}
-									variant={tagFilter === data ? 'default' : 'ghost'}
-									onClick={() => handletagFilterChange(data!)}
-								>
-									{data}
-								</Button>
-							))}
-						</DropdownMenuContent>
-					</DropdownMenu>
 				</div>
-				{/* <Popover>
-					<PopoverTrigger asChild>
-						<Button variant="outline" className="border-dashed">
-							<PlusCircledIcon className="mr-2 h-4 w-4" />
-							Categories
-							{selectedValues.size > 0 && (
-								<>
-									<Separator orientation="vertical" className="mx-2 h-4" />
-									<Badge
-										variant="secondary"
-										className="rounded-sm px-1 font-normal lg:hidden"
-									>
-										{selectedValues.size}
-									</Badge>
-									<div className="hidden space-x-1 lg:flex">
-										{selectedValues.size > 2 ? (
-											<Badge
-												variant="secondary"
-												className="rounded-sm px-1 font-normal"
-											>
-												{selectedValues.size} selected
-											</Badge>
-										) : (
-											selectedValuesArray.map((value) => (
-												<Badge
-													variant="secondary"
-													key={value.id}
-													className="rounded-sm px-1 font-normal"
-												>
-													{value.name}
-												</Badge>
-											))
-										)}
-									</div>
-								</>
-							)}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent className="w-[200px] p-0" align="start">
-						<Command>
-							<CommandInput placeholder={title} />
-							<CommandList>
-								<CommandEmpty>No results found.</CommandEmpty>
-								<CommandGroup>
-									{categories.map((tag) => (
-										<CommandItem
-											key={tag.tag_id}
-											onSelect={() =>
-												handleSelect(tag.tag_id!, tag.name)
-											}
-										>
-											<div
-												className={cn(
-													'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-													selectedValuesArray.some(
-														(value) => value.id === tag.tag_id,
-													)
-														? 'bg-primary text-primary-foreground'
-														: 'opacity-50 [&_svg]:invisible',
-												)}
-											>
-												<CheckIcon className="h-4 w-4" aria-hidden="true" />
-											</div>
-											<span>{tag.name}</span>
-										</CommandItem>
-									))}
-								</CommandGroup>
-								{selectedValues.size > 0 && (
-									<>
-										<CommandSeparator />
-										<CommandGroup>
-											<CommandItem
-												onSelect={() => setSelectedValues(new Set())}
-												className="justify-center text-center"
-											>
-												Clear filters
-											</CommandItem>
-										</CommandGroup>
-									</>
-								)}
-							</CommandList>
-						</Command>
-					</PopoverContent>
-				</Popover> */}
+				<Button onClick={() => navigate('create')}>
+					<PaperclipIcon className="mr-2 h-5 w-5" /> Create Record
+				</Button>
 			</div>
-			<ScrollArea className="h-[calc(95vh-220px)] rounded-md border">
+			<ScrollArea className="h-[calc(100vh-230px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (

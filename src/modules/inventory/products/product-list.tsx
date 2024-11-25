@@ -1,9 +1,9 @@
 import {PaginationResponse, request} from '@/api/axios';
 import {useEffect, useState} from 'react';
-import {ProductWithRelatedTables} from '../_components/validation/product';
 import {ProductWithDetailsTable} from './product-table';
 import {columns} from './columns';
 import {Category} from '../_components/validation/category';
+import {Product} from '../_components/validation/product';
 
 interface ProductWithDetails {
 	searchParams: URLSearchParams;
@@ -13,7 +13,7 @@ export default function ProductWithDetailsList({
 	searchParams,
 }: ProductWithDetails) {
 	const [pageCount, setPageCount] = useState<number>(0);
-	const [products, setProducts] = useState<ProductWithRelatedTables[]>([]);
+	const [products, setProducts] = useState<Product[]>([]);
 	const [categories, setCategories] = useState<Category[]>([]);
 
 	const page = Number(searchParams.get('page')) || 1;
@@ -30,7 +30,7 @@ export default function ProductWithDetailsList({
 					'GET',
 					`/api/v1/ims/category?no_pagination=true`,
 				),
-				request<PaginationResponse<ProductWithRelatedTables>>(
+				request<PaginationResponse<Product>>(
 					'GET',
 					`/api/v1/ims/product?limit=${pageLimit}&offset=${offset}` +
 						(sort ? `&sort=${sort}` : '') +

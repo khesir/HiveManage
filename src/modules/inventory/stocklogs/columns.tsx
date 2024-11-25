@@ -1,8 +1,8 @@
-import {StockLogsWithDetails} from '@/modules/inventory/_components/validation/product';
 import {dateParser} from '@/lib/util/utils';
 import {ColumnDef} from '@tanstack/react-table';
+import {StockLogs} from '../_components/validation/stock-logs';
 
-export const columns: ColumnDef<StockLogsWithDetails>[] = [
+export const columns: ColumnDef<StockLogs>[] = [
 	{
 		accessorKey: 'item.product.name',
 		header: 'Name',

@@ -1,8 +1,8 @@
 import {ColumnDef} from '@tanstack/react-table';
-import {SupplierWithRelatedData} from '../_components/validation/supplier';
 import {Badge} from '@/components/ui/badge';
+import {Supplier} from '../_components/validation/supplier';
 
-export const columns: ColumnDef<SupplierWithRelatedData>[] = [
+export const columns: ColumnDef<Supplier>[] = [
 	{
 		accessorKey: 'profile_link',
 		header: 'IMAGE',
@@ -11,9 +11,11 @@ export const columns: ColumnDef<SupplierWithRelatedData>[] = [
 				<div className="aspect-square relative w-[80px]">
 					<img
 						src={
-							row.original.profile_link
+							typeof row.original.profile_link === 'string'
 								? row.original.profile_link
-								: '/img/placeholder.jpg'
+								: row.original.profile_link
+									? URL.createObjectURL(row.original.profile_link)
+									: '/img/placeholder.jpg'
 						}
 						alt={`Suppplier ID ${row.original.supplier_id} - ${row.original.name}`}
 						className="rounded-lg"
@@ -39,7 +41,7 @@ export const columns: ColumnDef<SupplierWithRelatedData>[] = [
 								variant={'secondary'}
 								className="rounded-sm px-1 font-normal"
 							>
-								{category.category.name}
+								{category.category?.name}
 							</Badge>
 						))}
 				</div>

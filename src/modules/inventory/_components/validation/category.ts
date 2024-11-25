@@ -18,15 +18,6 @@ export const productCategorySchema = z.object({
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
+	category: categorySchema.optional(),
 });
 export type ProductCategory = z.infer<typeof productCategorySchema>;
-
-export type ProductCategoryWithDetails = {
-	product_category_id: number;
-	product_id: number;
-	category_id: number;
-	created_at: string;
-	last_updated: string;
-	deleted_at: string;
-	category: Category;
-};

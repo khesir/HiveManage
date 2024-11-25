@@ -1,8 +1,8 @@
 import {PaginationResponse, request} from '@/api/axios';
 import {useState, useEffect} from 'react';
-import {ItemRecordsWithDetails} from '../../_components/validation/product';
-import {InventoryRecordTable} from './inventory-record-table';
+import {InventoryRecordTable} from './item-record-table';
 import {columns} from './columns';
+import {ItemRecords} from '../../_components/validation/item-record';
 
 interface InventoryRecordProps {
 	searchParams: URLSearchParams;
@@ -14,9 +14,7 @@ export default function ProductWithDetailsList({
 	product_id,
 }: InventoryRecordProps) {
 	const [pageCount, setPageCount] = useState<number>(0);
-	const [inventoryRecord, setInventoryRecord] = useState<
-		ItemRecordsWithDetails[]
-	>([]);
+	const [inventoryRecord, setInventoryRecord] = useState<ItemRecords[]>([]);
 
 	const page = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
@@ -27,11 +25,9 @@ export default function ProductWithDetailsList({
 	const product_name = searchParams.get('product_name') || undefined;
 	useEffect(() => {
 		const fetchProducts = async () => {
-			const inventoryResponse = await request<
-				PaginationResponse<ItemRecordsWithDetails>
-			>(
+			const inventoryResponse = await request<PaginationResponse<ItemRecords>>(
 				'GET',
-				`/api/v1/ims/product/${product_id}/inventory-record?limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/ims/product/${product_id}/item-record?limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : '') +
 					(category_id ? `&category_id=${category_id}` : '') +
 					(product_name ? `&product_name=${product_name}` : ''),
@@ -41,9 +37,9 @@ export default function ProductWithDetailsList({
 		};
 		fetchProducts();
 	}, [offset, pageLimit, sort, category_id, product_name]);
-	console.log(inventoryRecord);
 	return (
 		<InventoryRecordTable
+			searchKey={''}
 			columns={columns}
 			data={inventoryRecord}
 			pageCount={pageCount}

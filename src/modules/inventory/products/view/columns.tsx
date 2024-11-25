@@ -1,10 +1,17 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
-import {ItemRecordsWithDetails} from '../../_components/validation/product';
-export const columns: ColumnDef<ItemRecordsWithDetails>[] = [
+import {ItemRecords} from '../../_components/validation/item-record';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {Button} from '@/components/ui/button';
+import {MoreVertical} from 'lucide-react';
+export const columns: ColumnDef<ItemRecords>[] = [
 	{
 		accessorKey: 'supplier.profile_link',
-		header: 'IMAGE',
+		header: 'Image',
 		cell: ({row}) => {
 			return (
 				<div className="aspect-square relative w-[70px]">
@@ -25,27 +32,51 @@ export const columns: ColumnDef<ItemRecordsWithDetails>[] = [
 	},
 	{
 		accessorKey: 'supplier.name',
-		header: 'SUPPLIER NAME',
+		header: 'Name',
 	},
 	{
-		id: 'condition',
-		header: 'Condition',
-		cell: ({row}) => <Badge>{row.original.condition}</Badge>,
+		id: 'category',
+		header: 'Category',
+		cell: ({row}) => {
+			return (
+				<div className="flex flex-wrap gap-2">
+					{row.original.supplier?.categories &&
+						row.original.supplier.categories.map((category, index) => (
+							<Badge
+								key={index}
+								variant={'secondary'}
+								className="rounded-sm px-1 font-normal"
+							>
+								{category.category?.name}
+							</Badge>
+						))}
+				</div>
+			);
+		},
 	},
 	{
 		id: 'stock',
-		header: 'Stock',
-		cell: ({row}) => (row.original.stock ? row.original.stock : 'N/A'),
-	},
-	{
-		id: 'reserve_stock',
-		header: 'Reserve Stock',
-		cell: ({row}) => (row.original.stock ? row.original.reserve_stock : 'N/A'),
-	},
-	{
-		id: 'unit_price',
-		header: 'Unit Price',
+		header: 'Total Stock',
 		cell: ({row}) =>
-			row.original.unit_price ? row.original.unit_price : 'N/A',
+			row.original.total_stock ? row.original.total_stock : 'N/A',
+	},
+	{
+		id: 'action',
+		cell: ({row}) => {
+			const data = row.original;
+			return (
+				<DropdownMenu>
+					<DropdownMenuTrigger>
+						<Button size={'icon'} className="h-8 w-8" variant={'outline'}>
+							<MoreVertical className="h-4 w-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<Button>View More</Button>
+						<Button>Create Order</Button>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			);
+		},
 	},
 ];

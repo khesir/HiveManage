@@ -114,13 +114,13 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 
 	const trackRecordValues = watch();
 	useEffect(() => {
-		// Calculate the total quantity
 		const total = trackRecordValues.track_record.reduce(
 			(acc, curr) => acc + (parseInt(curr.quantity) || 0),
 			0,
 		);
 		setTotalQuantity(total);
 	}, [trackRecordValues]);
+
 	const processForm = async (formData: OrderTrackItemArray) => {
 		try {
 			setLoading(true);

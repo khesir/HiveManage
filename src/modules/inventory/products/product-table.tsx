@@ -28,7 +28,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {ProductWithRelatedTables} from '@/modules/inventory/_components/validation/product';
+import {Product} from '@/modules/inventory/_components/validation/product';
 import {Input} from '@/components/ui/input';
 import useProducts from '../_components/hooks/use-products';
 import {Category} from '../_components/validation/category';
@@ -55,10 +55,7 @@ interface DataTableProps<TData, TValue> {
 // 	id: number; // Selected ID
 // 	name: string; // Selected name
 // };
-export function ProductWithDetailsTable<
-	TData extends ProductWithRelatedTables,
-	TValue,
->({
+export function ProductWithDetailsTable<TData extends Product, TValue>({
 	columns,
 	categories,
 	data,
@@ -182,7 +179,7 @@ export function ProductWithDetailsTable<
 	// Set the first employee data to Zustand on initial render
 	useEffect(() => {
 		if (data.length > 0) {
-			const rdata: ProductWithRelatedTables = data[0];
+			const rdata: Product = data[0];
 			useProducts.getState().setProduct(rdata);
 		}
 	}, [data]);
@@ -190,7 +187,7 @@ export function ProductWithDetailsTable<
 	// This handles the employee viewing by click
 	const handleRowClick = (row: Row<TData>) => {
 		// Access the data of the clicked row
-		const rowData: ProductWithRelatedTables = row.original;
+		const rowData: Product = row.original;
 
 		// Do something with the row data
 		useProducts.getState().setProduct(rowData);
@@ -276,7 +273,7 @@ export function ProductWithDetailsTable<
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)
 						} // Update filter value}
-						className="w-full md:max-w-lg"
+						className="w-full md:max-w-xl"
 					/>
 					<DropdownMenu>
 						<DropdownMenuTrigger>
@@ -355,96 +352,12 @@ export function ProductWithDetailsTable<
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				<Button>
+				<Button onClick={() => navigate('create')}>
 					<Plus className="mr-2 h-4 w-4" />
-					Action
+					Add Product
 				</Button>
-				{/* <Popover>
-					<PopoverTrigger asChild>
-						<Button variant="outline" className="border-dashed">
-							<PlusCircledIcon className="mr-2 h-4 w-4" />
-							Categories
-							{selectedValues.size > 0 && (
-								<>
-									<Separator orientation="vertical" className="mx-2 h-4" />
-									<Badge
-										variant="secondary"
-										className="rounded-sm px-1 font-normal lg:hidden"
-									>
-										{selectedValues.size}
-									</Badge>
-									<div className="hidden space-x-1 lg:flex">
-										{selectedValues.size > 2 ? (
-											<Badge
-												variant="secondary"
-												className="rounded-sm px-1 font-normal"
-											>
-												{selectedValues.size} selected
-											</Badge>
-										) : (
-											selectedValuesArray.map((value) => (
-												<Badge
-													variant="secondary"
-													key={value.id}
-													className="rounded-sm px-1 font-normal"
-												>
-													{value.name}
-												</Badge>
-											))
-										)}
-									</div>
-								</>
-							)}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent className="w-[200px] p-0" align="start">
-						<Command>
-							<CommandInput placeholder={title} />
-							<CommandList>
-								<CommandEmpty>No results found.</CommandEmpty>
-								<CommandGroup>
-									{categories.map((category) => (
-										<CommandItem
-											key={category.category_id}
-											onSelect={() =>
-												handleSelect(category.category_id!, category.name)
-											}
-										>
-											<div
-												className={cn(
-													'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-													selectedValuesArray.some(
-														(value) => value.id === category.category_id,
-													)
-														? 'bg-primary text-primary-foreground'
-														: 'opacity-50 [&_svg]:invisible',
-												)}
-											>
-												<CheckIcon className="h-4 w-4" aria-hidden="true" />
-											</div>
-											<span>{category.name}</span>
-										</CommandItem>
-									))}
-								</CommandGroup>
-								{selectedValues.size > 0 && (
-									<>
-										<CommandSeparator />
-										<CommandGroup>
-											<CommandItem
-												onSelect={() => setSelectedValues(new Set())}
-												className="justify-center text-center"
-											>
-												Clear filters
-											</CommandItem>
-										</CommandGroup>
-									</>
-								)}
-							</CommandList>
-						</Command>
-					</PopoverContent>
-				</Popover> */}
 			</div>
-			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
+			<ScrollArea className="h-[calc(120vh-200px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (

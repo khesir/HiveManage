@@ -14,24 +14,22 @@ import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {dateParser} from '@/lib/util/utils';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-import {StockLogsWithDetails} from '../../_components/validation/stock_logs';
+import {StockLogs} from '../../_components/validation/stock-logs';
 
 interface Props {
 	product_id: string;
 }
 
 export function StockLogsMini({product_id}: Props) {
-	const [fullStockLogs, setFullStockLogs] = useState<StockLogsWithDetails[]>(
-		[],
-	);
-	const [stockLogs, setStockLogs] = useState<StockLogsWithDetails[]>([]);
+	const [fullStockLogs, setFullStockLogs] = useState<StockLogs[]>([]);
+	const [stockLogs, setStockLogs] = useState<StockLogs[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageIndex, setPageIndex] = useState<number>(0);
 	const pageSize = 10;
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
-			const res = await request<PaginationResponse<StockLogsWithDetails>>(
+			const res = await request<PaginationResponse<StockLogs>>(
 				'GET',
 				`/api/v1/ims/product/${product_id}/stock-logs?no_pagination=true`,
 			);
@@ -86,7 +84,7 @@ export function StockLogsMini({product_id}: Props) {
 							</Card>
 						))
 					) : (
-						<div>No available Task</div>
+						<div>No logs yet</div>
 					)}
 				</div>
 			</ScrollArea>

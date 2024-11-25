@@ -42,6 +42,7 @@ import CreateProductPage from './pages/inventory/product/product-create-page';
 import OrderPage from './pages/inventory/product/orders/orders-page';
 import SupplierPage from './pages/inventory/product/suppliers/supplier-page';
 import CreateOrderPage from './pages/inventory/product/orders/create-order-page';
+import InventoryRecordCreatePage from './pages/inventory/product/inventoryView/inventory-record-create';
 
 function App() {
 	return (
@@ -88,6 +89,10 @@ function App() {
 							<Route path="products">
 								<Route index element={<ProductPage />} />
 								<Route path="view/:id" element={<InventoryViewPage />} />
+								<Route
+									path="view/:id/create"
+									element={<InventoryRecordCreatePage />}
+								/>
 								<Route path="create" element={<CreateProductPage />} />
 								<Route path="orders">
 									<Route index element={<OrderPage />} />
@@ -145,6 +150,10 @@ function App() {
 							<Route path="products">
 								<Route index element={<ProductPage />} />
 								<Route path="view/:id" element={<InventoryViewPage />} />
+								<Route
+									path="view/:id/create"
+									element={<InventoryRecordCreatePage />}
+								/>
 								<Route path="create" element={<CreateProductPage />} />
 								<Route path="orders">
 									<Route index element={<OrderPage />} />
@@ -193,6 +202,10 @@ function App() {
 							<Route path="products">
 								<Route index element={<ProductPage />} />
 								<Route path="view/:id" element={<InventoryViewPage />} />
+								<Route
+									path="view/:id/create"
+									element={<InventoryRecordCreatePage />}
+								/>
 								<Route path="create" element={<CreateProductPage />} />
 								<Route path="orders">
 									<Route index element={<OrderPage />} />
