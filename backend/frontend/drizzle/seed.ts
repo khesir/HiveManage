@@ -33,7 +33,6 @@ import {
   employee_roles,
   remarkcontent,
   product_category,
-  price_history,
   joborder_services,
   roles,
   position,
@@ -1907,86 +1906,6 @@ async function seedJobOrderServices(db: PostgresJsDatabase<SchemaType>) {
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
-async function seedPriceHistory(db: PostgresJsDatabase<SchemaType>) {
-  const productIds = await db.select().from(product);
-
-  // Define real data for price history records
-  const pricehistoryRecords = [
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-15'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-02-01'),
-      last_updated: new Date('2023-02-20'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIds).product_id,
-      price: faker.finance.amount({ min: 500, max: 3000 }),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-25'),
-    },
-    // Add more records as needed
-  ];
-
-  // Insert the real data into the database
-  await db.insert(price_history).values(pricehistoryRecords);
-
-  log.info('Price History records seeded successfully');
-}
-
 async function seedItemRecord(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier); // Fetch existing supplier IDs
   const productIds = await db.select().from(product); // Fetch existing product IDs
@@ -2121,48 +2040,37 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
 
   log.info('Product records seeded successfully');
 }
-
 async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
   const categoryRecords = [
     {
-      name: 'Processors',
+      name: 'Computers & Laptops',
       content:
-        'High-performance CPUs designed for demanding applications and gaming.',
+        'Laptops, desktops, and all-in-one PCs for all your computing needs.',
     },
     {
-      name: 'Graphics Cards',
+      name: 'Components',
+      content: 'Essential components to build or upgrade your system.',
+    },
+    {
+      name: 'Peripherals',
+      content: 'Accessories to enhance your computing experience.',
+    },
+    {
+      name: 'Networking',
+      content: 'Devices to ensure seamless connectivity and networking.',
+    },
+    {
+      name: 'Accessories',
       content:
-        'Advanced GPUs for gaming and professional graphics applications.',
+        'Supporting products like laptop bags, docking stations, and stands.',
     },
     {
-      name: 'Motherboards',
-      content:
-        'The backbone of the computer, connecting all components together.',
+      name: 'Software',
+      content: 'Operating systems, productivity tools, and security software.',
     },
     {
-      name: 'Memory (RAM)',
-      content:
-        'Fast and reliable memory for smooth multitasking and performance.',
-    },
-    {
-      name: 'Storage Drives',
-      content: 'SSDs and HDDs for storing your operating system and files.',
-    },
-    {
-      name: 'Monitors',
-      content: 'High-resolution displays for an immersive viewing experience.',
-    },
-    {
-      name: 'Keyboards',
-      content: 'Ergonomic and responsive keyboards for comfortable typing.',
-    },
-    {
-      name: 'Mice',
-      content: 'Precision mice for accurate control and gaming.',
-    },
-    {
-      name: 'Storage Accessories',
-      content: 'External drives and docking stations for additional storage.',
+      name: 'Others',
+      content: 'Miscellaneous items like refurbished products and warranties.',
     },
   ];
 
@@ -2433,12 +2341,11 @@ async function main() {
     // Inventory
     await seedCategory(db);
     await seedSupplier(db);
-    await seedProduct(db);
-    await seedProductCategory(db);
-    await seedItemRecord(db);
-    await seedPriceHistory(db);
+    // await seedProduct(db);
+    // await seedProductCategory(db);
+    // await seedItemRecord(db);
 
-    await seedOrder(db);
+    // await seedOrder(db);
     // Participants and related data
     await seedCustomer(db); // Seed customers first
     // await seedInquiry(db);

@@ -52,7 +52,7 @@ productRoute.use(
 );
 
 productRoute.use(
-  '/:product_id/inventory-record',
+  '/:product_id/item-record',
   validateProductID,
   inventoryRecordRoute,
 );

@@ -610,6 +610,7 @@ export const product = pgTable('product', {
   description: varchar('description', { length: 255 }),
   img_url: varchar('img_url'),
   stock_limit: integer('stock_limit'),
+  total_stock: integer('total_stock').default(0),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -636,27 +637,15 @@ export const item = pgTable('item', {
   item_record_id: integer('item_record_id').references(
     () => item_record.item_record_id,
   ),
-  serial_number: varchar('serial_number').notNull(),
-  batch_number: varchar('serial_number').notNull(),
+  serial_number: varchar('serial_number'),
+  batch_number: varchar('batch_number'),
   item_type: itemTypeEnum('item_type').notNull(),
   item_condition: itemConditionsEnum('item_condition').notNull(),
   item_status: itemStatusEnum('item_status').notNull(),
+  quantity: integer('quantity'),
   unit_price: decimal('unit_price', { precision: 10, scale: 2 }),
   selling_price: decimal('selling_price', { precision: 10, scale: 2 }),
   warranty_expiry_date: varchar('warranty_expiry_date'),
-  created_at: timestamp('created_at').defaultNow(),
-  last_updated: timestamp('last_updated')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-  deleted_at: timestamp('deleted_at'),
-});
-//Price History
-export const price_history = pgTable('price_history', {
-  price_history_id: serial('price_history_id').primaryKey(),
-  product_id: integer('product_id').references(() => product.product_id),
-  price: decimal('price', { precision: 10, scale: 2 }),
-  change_date: timestamp('change_date').defaultNow(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -862,7 +851,6 @@ export const schema: SchemaType = {
   orderItem,
   item,
   item_record,
-  price_history,
   product_category,
 
   inquiry,

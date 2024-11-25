@@ -2,7 +2,6 @@ import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import {
   category,
   item_record,
-  price_history,
   product,
   product_category,
   SchemaType,
@@ -39,10 +38,14 @@ export class ProductService {
           stock_limit: data.stock_limit,
         })
         .returning({ product_id: product.product_id });
-      await tx.insert(price_history).values({
-        price: String(data.price_history),
-        product_id: newProduct.product_id,
-      });
+      if (data.product_categories && data.product_categories.length > 0) {
+        for (const category of data.product_categories) {
+          await tx.insert(product_category).values({
+            product_id: newProduct.product_id,
+            category_id: category.category_id,
+          });
+        }
+      }
     });
   }
 
@@ -52,11 +55,11 @@ export class ProductService {
     offset: number,
     no_pagination: boolean,
     category_id: string | undefined,
-    product_name: string | undefined,
+    name: string | undefined,
   ) {
     const conditions = [isNull(product.deleted_at)];
-    if (product_name) {
-      conditions.push(sql`${product.name} LIKE ${'%' + product_name + '%'}`);
+    if (name) {
+      conditions.push(sql`${product.name} LIKE ${'%' + name + '%'}`);
     }
     const totalCountQuery = await this.db
       .select({
@@ -115,26 +118,6 @@ export class ProductService {
       {},
     );
 
-    const priceHistory = await this.db
-      .select()
-      .from(price_history)
-      .where(isNull(price_history.deleted_at));
-
-    const priceHistoryByProduct = priceHistory.reduce<
-      Record<number, unknown[]>
-    >((acc, price) => {
-      const recordID = price.product_id;
-      if (recordID !== null && !(recordID in acc)) {
-        acc[recordID] = [];
-      }
-      if (recordID !== null) {
-        acc[recordID].push({
-          ...price,
-        });
-      }
-      return acc;
-    }, {});
-
     const query = this.db
       .select()
       .from(product)
@@ -166,7 +149,6 @@ export class ProductService {
       })
       .map((row) => ({
         ...row,
-        price_history: priceHistoryByProduct[row.product_id] || [],
         product_categories: categoryByProduct[row.product_id] || [],
         item_record: itemRecordsByProduct[row.product_id] || [],
       }));
@@ -221,26 +203,6 @@ export class ProductService {
       return acc;
     }, {});
 
-    const priceHistory = await this.db
-      .select()
-      .from(price_history)
-      .where(isNull(price_history.deleted_at));
-
-    const priceHistoryByProduct = priceHistory.reduce<
-      Record<number, unknown[]>
-    >((acc, price) => {
-      const recordID = price.product_id;
-      if (recordID !== null && !(recordID in acc)) {
-        acc[recordID] = [];
-      }
-      if (recordID !== null) {
-        acc[recordID].push({
-          ...price,
-        });
-      }
-      return acc;
-    }, {});
-
     const result = await this.db
       .select()
       .from(product)
@@ -248,7 +210,6 @@ export class ProductService {
 
     const productWithDetails = result.map((row) => ({
       ...row,
-      price_history: priceHistoryByProduct[row.product_id] || [],
       product_categories: categoryByProduct[row.product_id] || [],
       item_record: inventoryRecordByProduct[row.product_id] || [],
     }));

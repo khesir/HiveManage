@@ -1,5 +1,5 @@
 {
-  "id": "29bcf31b-419c-4817-94ba-1520e393eb70",
+  "id": "c01fd19e-bc01-42a9-9024-d359fa6d5180",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -883,7 +883,13 @@
           "name": "serial_number",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "batch_number": {
+          "name": "batch_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "item_type": {
           "name": "item_type",
@@ -905,6 +911,12 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "unit_price": {
           "name": "unit_price",
@@ -1780,75 +1792,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.price_history": {
-      "name": "price_history",
-      "schema": "",
-      "columns": {
-        "price_history_id": {
-          "name": "price_history_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "change_date": {
-          "name": "change_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "price_history_product_id_product_product_id_fk": {
-          "name": "price_history_product_id_product_product_id_fk",
-          "tableFrom": "price_history",
-          "tableTo": "product",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "product_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.product": {
       "name": "product",
       "schema": "",
@@ -1882,6 +1825,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "total_stock": {
+          "name": "total_stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",

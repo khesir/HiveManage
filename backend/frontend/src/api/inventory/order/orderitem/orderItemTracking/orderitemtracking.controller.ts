@@ -110,9 +110,9 @@ export class OrderItemTracking {
   async stockIn(req: Request, res: Response, next: NextFunction) {
     try {
       const { order_item_id, order_id } = req.params;
-      const { supplier_id, product_id, stock, condition } = req.body;
+      const { supplier_id, product_id, total_stock } = req.body;
       await this.orderItemTracking.processItem(
-        { supplier_id, product_id, stock, condition },
+        { supplier_id, product_id, total_stock },
         order_item_id,
         order_id,
       );

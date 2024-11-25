@@ -259,10 +259,12 @@ CREATE TABLE IF NOT EXISTS "inquiry" (
 CREATE TABLE IF NOT EXISTS "item" (
 	"item_id" serial PRIMARY KEY NOT NULL,
 	"item_record_id" integer,
-	"serial_number" varchar NOT NULL,
+	"serial_number" varchar,
+	"batch_number" varchar,
 	"item_type" "item_type" NOT NULL,
 	"item_condition" "item_condition" NOT NULL,
 	"item_status" "item_status" NOT NULL,
+	"quantity" integer,
 	"unit_price" numeric(10, 2),
 	"selling_price" numeric(10, 2),
 	"warranty_expiry_date" varchar,
@@ -390,22 +392,13 @@ CREATE TABLE IF NOT EXISTS "position" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "price_history" (
-	"price_history_id" serial PRIMARY KEY NOT NULL,
-	"product_id" integer,
-	"price" numeric(10, 2),
-	"change_date" timestamp DEFAULT now(),
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product" (
 	"product_id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255),
 	"description" varchar(255),
 	"img_url" varchar,
 	"stock_limit" integer,
+	"total_stock" integer DEFAULT 0,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -718,12 +711,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "personal_info" ADD CONSTRAINT "personal_info_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "price_history" ADD CONSTRAINT "price_history_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

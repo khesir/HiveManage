@@ -11,7 +11,11 @@ export class ItemService {
   }
 
   async createItem(data: CreateItem) {
-    await this.db.insert(item).values(data);
+    await this.db.insert(item).values({
+      ...data,
+      unit_price: data.unit_price.toString(),
+      selling_price: data.selling_price.toString(),
+    });
   }
 
   async getAllItem(

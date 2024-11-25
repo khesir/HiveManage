@@ -56,13 +56,16 @@ export class ItemRecordController {
 
   async createItemRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id, product_id, total_stock } = req.body;
-
-      await this.itemrecordService.createItemRecord({
-        supplier_id,
+      const product_id = req.params.product_id;
+      const { supplier_id, total_stock, item } = req.body;
+      await this.itemrecordService.createItemRecord(
+        {
+          supplier_id,
+          total_stock,
+          item,
+        },
         product_id,
-        total_stock,
-      });
+      );
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',

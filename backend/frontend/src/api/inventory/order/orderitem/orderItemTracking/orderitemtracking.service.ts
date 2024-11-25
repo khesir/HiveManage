@@ -14,7 +14,7 @@ import {
   CreateOrderItemTracking,
   UpdateOrderItemTracking,
 } from './orderitemtracking.model';
-import { CreateInventoryRecord } from '../../../product/inventoryrecord/itemrecord.model';
+import { CreateItemRecord } from '../../../product/inventoryrecord/itemrecord.model';
 
 export class OrderItemTrackingService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -85,7 +85,7 @@ export class OrderItemTrackingService {
       .where(eq(orderItemTracking.tracking_id, Number(paramsId)));
   }
 
-  async processItem(data: CreateInventoryRecord, id: string, order_id: string) {
+  async processItem(data: CreateItemRecord, id: string, order_id: string) {
     await this.db.transaction(async (tx) => {
       await tx
         .update(orderItemTracking)
@@ -96,13 +96,13 @@ export class OrderItemTrackingService {
       await tx.insert(orderLogs).values({
         order_id: Number(order_id),
         title: `Item Pushed to Inventory`,
-        message: `${data.stock} Items has been pushed to inventory`,
+        message: `${data.total_stock} Items has been pushed to inventory`,
       });
       await tx.insert(stocksLogs).values({
         product_id: data.product_id,
-        quantity: data.stock,
+        quantity: data.total_stock,
         movement_type: 'Stock-In',
-        action: `${data.stock} New Stock added from order`,
+        action: `${data.total_stock} New Stock added from order`,
       });
     });
   }

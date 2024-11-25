@@ -4,7 +4,6 @@ import {
   customer,
   employee,
   item_record,
-  price_history,
   product,
   product_category,
   sales_items,
@@ -114,24 +113,6 @@ export class SalesItemService {
       return acc;
     }, {});
 
-    const priceHistory = await this.db
-      .select()
-      .from(price_history)
-      .where(isNull(price_history.deleted_at));
-    const priceHistoryByProduct = priceHistory.reduce<
-      Record<number, unknown[]>
-    >((acc, price) => {
-      const recordID = price.product_id;
-      if (recordID !== null && !(recordID in acc)) {
-        acc[recordID] = [];
-      }
-      if (recordID !== null) {
-        acc[recordID].push({
-          ...price,
-        });
-      }
-      return acc;
-    }, {});
     const result = await this.db
       .select()
       .from(sales_items)
@@ -152,7 +133,6 @@ export class SalesItemService {
       ...row.sales_items,
       product: {
         ...row.product,
-        price_history: priceHistoryByProduct[row.product!.product_id],
         product_categories: categoryByProduct[row.product!.product_id],
         item_record: inventoryRecordByProduct[row.product!.product_id],
       },
@@ -216,25 +196,6 @@ export class SalesItemService {
       return acc;
     }, {});
 
-    const priceHistory = await this.db
-      .select()
-      .from(price_history)
-      .where(isNull(price_history.deleted_at));
-
-    const priceHistoryByProduct = priceHistory.reduce<
-      Record<number, unknown[]>
-    >((acc, price) => {
-      const recordID = price.product_id;
-      if (recordID !== null && !(recordID in acc)) {
-        acc[recordID] = [];
-      }
-      if (recordID !== null) {
-        acc[recordID].push({
-          ...price,
-        });
-      }
-      return acc;
-    }, {});
     const result = await this.db
       .select()
       .from(sales_items)
@@ -248,7 +209,6 @@ export class SalesItemService {
       ...row.sales_items,
       product: {
         ...row.product,
-        price_history: priceHistoryByProduct[row.product!.product_id],
         product_categories: categoryByProduct[row.product!.product_id],
         item_record: inventoryRecordByProduct[row.product!.product_id],
       },

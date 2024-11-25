@@ -15,15 +15,10 @@ export const CreateItem = z.object({
     'Repaired',
   ]),
   item_status: z.enum(['On Stock', 'Sold', 'Depleted']),
-  unit_price: z
-    .number()
-    .min(1)
-    .transform((value) => value.toFixed(2)), // Convert to string
-  selling_price: z
-    .number()
-    .min(1)
-    .transform((value) => value.toFixed(2)), // Convert to string
-  warranty_expiry_date: z.date().transform((value) => value.toISOString()), // Convert Date to ISO string
+  quantity: z.number().min(1),
+  unit_price: z.number().min(1),
+  selling_price: z.number().min(1),
+  warranty_expiry_date: z.string().optional(),
 });
 
 export const UpdateItem = z.object({
@@ -40,16 +35,31 @@ export const UpdateItem = z.object({
     'Antique',
     'Repaired',
   ]),
-  item_status: z.enum(['On Stock', 'Sold', 'Depleted']),
-  unit_price: z
-    .number()
-    .min(1)
-    .transform((value) => value.toFixed(2)), // Convert to string
-  selling_price: z
-    .number()
-    .min(1)
-    .transform((value) => value.toFixed(2)), // Convert to string
-  warranty_expiry_date: z.date().transform((value) => value.toISOString()), // Convert Date to ISO string
+  item_status: z.enum([
+    // Sales-Related Statuses
+    'On Stock',
+    'Reserved',
+    'Sold',
+    'Returned',
+    'Depleted',
+    'Pending Payment',
+    // Order-Related Statuses
+    'On Order',
+    'In Transit',
+    'Returned',
+    'Pending Inspection',
+    // Service-Related Statuses
+    'In Service',
+    'Under Repair',
+    'Awaiting Service',
+    'Ready for Pickup',
+    'Retired',
+  ]),
+  usage_type: z.enum(['Sales', 'Service', 'Both']).optional(),
+  quantity: z.number().min(1),
+  unit_price: z.number().min(1),
+  selling_price: z.number().min(1),
+  warranty_expiry_date: z.string(),
 });
 
 export type CreateItem = z.infer<typeof CreateItem>;

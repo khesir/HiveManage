@@ -4,7 +4,7 @@ import { OrderItemTracking } from './orderitemtracking.controller';
 import { validateOrderItemId } from './orderitemtracking.middleware';
 import { validateRequest } from '@/src/middlewares';
 import { updateOrderTrackingSchema } from './orderitemtracking.model';
-import { CreateInventoryRecord } from '../../../product/inventoryrecord/itemrecord.model';
+import { CreateItemRecord } from '../../../product/inventoryrecord/itemrecord.model';
 
 const orderTrackingRoute = Router({ mergeParams: true });
 const orderItemTracking = new OrderItemTracking(db);
@@ -30,7 +30,7 @@ orderTrackingRoute.delete(
 
 orderTrackingRoute.post(
   '/:order_item_id/stock-in',
-  [validateOrderItemId, validateRequest({ body: CreateInventoryRecord })],
+  [validateOrderItemId, validateRequest({ body: CreateItemRecord })],
   orderItemTracking.stockIn.bind(orderItemTracking),
 );
 

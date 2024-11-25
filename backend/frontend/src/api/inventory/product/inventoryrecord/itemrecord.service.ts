@@ -1,4 +1,5 @@
 import {
+  item,
   item_record,
   product,
   SchemaType,
@@ -15,8 +16,73 @@ export class ItemRecordService {
     this.db = db;
   }
 
-  async createItemRecord(data: CreateItemRecord) {
-    await this.db.insert(item_record).values(data);
+  async createItemRecord(data: CreateItemRecord, product_id: string) {
+    return this.db.transaction(async (tx) => {
+      // Fetch existing record
+      console.log(product_id);
+      console.log(data);
+      const [relatedData] = await tx
+        .select()
+        .from(item_record)
+        .where(
+          and(
+            eq(item_record.supplier_id, data.supplier_id),
+            eq(item_record.product_id, Number(product_id)),
+          ),
+        );
+
+      // Update existing record or create a new one
+      let itemRecordId: number;
+      console.log(relatedData);
+      if (relatedData) {
+        // Update total stock in `item_record`
+        await tx
+          .update(item_record)
+          .set({
+            total_stock: (relatedData.total_stock ?? 0) + data.total_stock,
+          })
+          .where(eq(item_record.item_record_id, relatedData.item_record_id));
+
+        itemRecordId = relatedData.item_record_id;
+      } else {
+        // Create new `item_record`
+        const [newData] = await tx
+          .insert(item_record)
+          .values({
+            supplier_id: data.supplier_id,
+            product_id: Number(product_id),
+            total_stock: data.total_stock,
+          })
+          .returning({ item_record_id: item_record.item_record_id });
+
+        itemRecordId = newData.item_record_id;
+      }
+
+      // Update product total stock
+      const [existingProduct] = await tx
+        .select()
+        .from(product)
+        .where(eq(product.product_id, Number(product_id)));
+
+      await tx
+        .update(product)
+        .set({
+          total_stock: (existingProduct?.total_stock ?? 0) + data.total_stock,
+        })
+        .where(eq(product.product_id, Number(product_id)));
+
+      // Insert items into `item` table
+      if (data.item) {
+        const itemRecords = data.item.map((itemData) => ({
+          ...itemData,
+          item_record_id: itemRecordId,
+          unit_price: itemData.unit_price.toString(),
+          selling_price: itemData.selling_price.toString(),
+        }));
+
+        await tx.insert(item).values(itemRecords);
+      }
+    });
   }
 
   async getAllItemRecord(
