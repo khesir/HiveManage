@@ -5,6 +5,8 @@ import { ItemController } from './item.controller';
 import { validateItemID } from './item.middleware';
 import { CreateItem, UpdateItem } from './item.model';
 import { validateRequest } from '@/src/middlewares';
+import serialRoute from './serializeItems/serialize.route';
+import batchRoute from './batchItems/batch.route';
 
 const itemRoute = Router({ mergeParams: true });
 const itemController = new ItemController(db);
@@ -30,5 +32,8 @@ itemRoute.delete(
   validateItemID,
   itemController.deleteItem.bind(itemController),
 );
+
+itemRoute.use('/:item_id/serialized', validateItemID, serialRoute);
+itemRoute.use('/:item_id/batch', validateItemID, batchRoute);
 
 export default itemRoute;

@@ -623,6 +623,7 @@ export const item_record = pgTable('item_record', {
   item_record_id: serial('item_record_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
   product_id: integer('product_id').references(() => product.product_id),
+  ordered_qty: integer('ordered_qty').default(0),
   total_stock: integer('stock'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -637,14 +638,47 @@ export const item = pgTable('item', {
   item_record_id: integer('item_record_id').references(
     () => item_record.item_record_id,
   ),
-  serial_number: varchar('serial_number'),
-  batch_number: varchar('batch_number'),
-  item_type: itemTypeEnum('item_type').notNull(),
-  item_condition: itemConditionsEnum('item_condition').notNull(),
-  item_status: itemStatusEnum('item_status').notNull(),
-  quantity: integer('quantity'),
-  unit_price: decimal('unit_price', { precision: 10, scale: 2 }),
-  selling_price: decimal('selling_price', { precision: 10, scale: 2 }),
+  item_type: varchar('item_type').notNull(),
+  item_status: varchar('item_status').notNull(),
+  ordered_qty: integer('ordered_qty').default(0),
+  quantity: integer('quantity').default(0),
+  reorder_level: integer('reorder_level').default(0),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+export const batchItems = pgTable('batch_items', {
+  batch_item_id: serial('batch_item_id').primaryKey(),
+  item_id: integer('item_id').references(() => item.item_id),
+  batch_number: varchar('batch_number').notNull(),
+  condition: varchar('condition').notNull(),
+  status: varchar('status').notNull(),
+  quantity: integer('quantity').default(0),
+  reserved_quantity: integer('reserved_quantity').default(0),
+  unit_price: integer('unit_price').default(0),
+  selling_price: integer('selling_price').default(0),
+  production_date: varchar('production_date'),
+  expiration_date: varchar('expiration_date'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+export const serializeItems = pgTable('serialized_items', {
+  serialized_item_id: serial('batch_item_id').primaryKey(),
+  item_id: integer('item_id').references(() => item.item_id),
+  serial_number: varchar('serial_number').notNull(),
+  condition: varchar('condition').notNull(),
+  status: varchar('status').notNull(),
+  unit_price: integer('unit_price').default(0),
+  selling_price: integer('selling_price').default(0),
   warranty_expiry_date: varchar('warranty_expiry_date'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
@@ -680,7 +714,7 @@ export const product_category = pgTable('product_category', {
 
 //Category
 export const category = pgTable('category', {
-  category_id: serial('category_id').primaryKey(), // Primary key with auto-increment
+  category_id: serial('category_id').primaryKey(),
   name: varchar('name', { length: 255 }), // Category name, up to 255 characters
   content: varchar('content', { length: 255 }), // Additional information about the category, up to 255 characters
   created_at: timestamp('created_at').defaultNow(),
@@ -693,33 +727,33 @@ export const category = pgTable('category', {
 
 //Supplier
 export const supplier = pgTable('supplier', {
-  supplier_id: serial('supplier_id').primaryKey(), // Primary key with auto-increment
-  name: varchar('name', { length: 255 }), // Supplier name, up to 255 characters
-  contact_number: varchar('contact_number', { length: 255 }), // Supplier contact number, up to 255 characters
-  remarks: varchar('remarks', { length: 255 }), // Additional remarks, up to 255 characters
+  supplier_id: serial('supplier_id').primaryKey(),
+  name: varchar('name', { length: 255 }),
+  contact_number: varchar('contact_number', { length: 255 }),
+  remarks: varchar('remarks', { length: 255 }),
   relationship: varchar('relationship'),
   profile_link: varchar('remark'),
-  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
     .notNull()
-    .$onUpdate(() => new Date()), // Timestamp for last update
-  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
 });
 
 //Order
 export const order = pgTable('order', {
-  order_id: serial('order_id').primaryKey(), // Primary key with auto-increment
+  order_id: serial('order_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
-  ordered_value: integer('ordered_value'), // Number of items ordered
-  expected_arrival: varchar('expected_arrival'), // Expected arrival date
+  ordered_value: integer('ordered_value'),
+  expected_arrival: varchar('expected_arrival'),
   status: varchar('status'),
-  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
     .notNull()
-    .$onUpdate(() => new Date()), // Timestamp for last update
-  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
 });
 
 export const orderLogs = pgTable('orderLogs', {
@@ -737,9 +771,9 @@ export const orderItemTracking = pgTable('orderItemTracking', {
     .notNull(),
   condition: varchar('condition'),
   status: varchar('status'),
-  quantity: integer('quantity').notNull(), // Quantity associated with this condition/status
+  quantity: integer('quantity').notNull(),
   isStocked: boolean('isStocked').default(false),
-  remarks: text('remarks'), // Optional remarks for more details (e.g., "Box damaged during shipping"),
+  remarks: text('remarks'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -751,15 +785,15 @@ export const orderItemTracking = pgTable('orderItemTracking', {
 export const orderItem = pgTable('orderItem', {
   orderItem_id: serial('orderItem_id').primaryKey(),
   order_id: integer('order_id').references(() => order.order_id),
-  product_id: integer('product_id').references(() => product.product_id),
+  item_id: integer('item_id').references(() => item.item_id),
   quantity: integer('quantity'),
   price: decimal('price', { precision: 50, scale: 2 }),
   status: varchar('status'),
-  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
     .notNull()
-    .$onUpdate(() => new Date()), // Timestamp for last update
+    .$onUpdate(() => new Date()),
 });
 //  =======================================================================================
 // =================================== Service ==========================================

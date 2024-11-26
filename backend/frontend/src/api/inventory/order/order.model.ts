@@ -29,7 +29,7 @@ export const CreateOrder = z.object({
   order_items: z
     .array(
       z.object({
-        product_id: z.number().min(1),
+        item_id: z.number().min(1),
         quantity: z.string().min(1),
         price: z.string().min(1),
         status: orderItemEnum,
@@ -39,7 +39,7 @@ export const CreateOrder = z.object({
 });
 
 export const UpdateOrder = z.object({
-  product_id: z.number().min(1),
+  item_id: z.number().min(1),
   items_ordered: z.number().min(1),
   expected_arrival: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',

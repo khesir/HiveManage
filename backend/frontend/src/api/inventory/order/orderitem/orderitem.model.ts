@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const UpdateOrderItem = z.object({
   order_id: z.number().optional(),
-  product_id: z.number().min(1),
+  item_id: z.number().min(1),
   quantity: z.string().min(1),
   price: z.string().min(1),
   status: z.string().min(1),

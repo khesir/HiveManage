@@ -2,35 +2,21 @@ import { Request, Response, NextFunction } from 'express';
 import { SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { HttpStatus } from '@/lib/HttpStatus';
-import { ItemService } from './item.service';
+import { SerializeItemService } from './serialize.service';
 
-export class ItemController {
-  private itemService: ItemService;
+export class SerializeItemController {
+  private itemService: SerializeItemService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.itemService = new ItemService(pool);
+    this.itemService = new SerializeItemService(pool);
   }
 
-  async getAllItem(req: Request, res: Response, next: NextFunction) {
-    const item_record_id = req.params.item_record_id as string;
-    const sort = (req.query.sort as string) || 'asc';
-    const limit = parseInt(req.query.limit as string) || 10;
-    const offset = parseInt(req.query.offset as string) || 0;
-
+  async getAllSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.itemService.getAllItem(
-        item_record_id,
-        sort,
-        limit,
-        offset,
-      );
+      const data = await this.itemService.getAllSerializeItem();
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Data Retrieved Successfully',
-        total_data: data.totalData,
-        limit: limit,
-        offset: offset,
-        data: data.itemWithDetails,
+        data: data,
       });
     } catch (error) {
       res
@@ -40,10 +26,10 @@ export class ItemController {
     }
   }
 
-  async getItemById(req: Request, res: Response, next: NextFunction) {
+  async getSerializeItemById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { item_id } = req.params;
-      const data = await this.itemService.getItemByID(item_id);
+      const { batch_id } = req.params;
+      const data = await this.itemService.getSerializeItemByID(batch_id);
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res
@@ -53,27 +39,31 @@ export class ItemController {
     }
   }
 
-  async createItem(req: Request, res: Response, next: NextFunction) {
+  async createSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        item_record_id,
-        item_type,
+        item_id,
+        serial_number,
         item_condition,
         item_status,
-        quantity,
+        unit_price,
+        selling_price,
+        warranty_expiry_date,
       } = req.body;
 
-      await this.itemService.createItem({
-        item_record_id,
-        item_type,
+      await this.itemService.createSerializeItem({
+        item_id,
+        serial_number,
         item_condition,
         item_status,
-        quantity,
+        unit_price,
+        selling_price,
+        warranty_expiry_date,
       });
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
-        message: 'Successfully Created Item ',
+        message: 'Successfully Created SerializeItem ',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -85,30 +75,37 @@ export class ItemController {
     }
   }
 
-  async updateItem(req: Request, res: Response, next: NextFunction) {
+  async updateSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { item_id } = req.params;
+      const { batch_id } = req.params;
       const {
-        item_record_id,
-        item_type,
+        item_id,
+        serial_number,
         item_condition,
         item_status,
-        quantity,
+        unit_price,
+        selling_price,
+        production_date,
+        expiration_date,
       } = req.body;
 
-      await this.itemService.updateItem(
+      await this.itemService.updateSerializeItem(
         {
-          item_record_id,
-          item_type,
+          item_id,
+          serial_number,
           item_condition,
           item_status,
-          quantity,
+
+          unit_price,
+          selling_price,
+          production_date,
+          expiration_date,
         },
-        Number(item_id),
+        Number(batch_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Item Updated Successfully ',
+        message: 'SerializeItem Updated Successfully ',
       });
     } catch (error) {
       res
@@ -118,13 +115,13 @@ export class ItemController {
     }
   }
 
-  async deleteItem(req: Request, res: Response, next: NextFunction) {
+  async deleteSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { item_id } = req.params;
-      await this.itemService.deleteItem(Number(item_id));
+      await this.itemService.deleteSerializeItem(Number(item_id));
       res.status(200).json({
         status: 'Success',
-        message: `Item ID:${item_id} is deleted Successfully`,
+        message: `SerializeItem ID:${item_id} is deleted Successfully`,
       });
     } catch (error) {
       res

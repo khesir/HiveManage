@@ -31,7 +31,7 @@ export class OrderItemTrackingService {
         orderItem,
         eq(orderItem.orderItem_id, orderItemTracking.orderItem_id),
       )
-      .leftJoin(product, eq(product.product_id, orderItem.product_id))
+      .leftJoin(product, eq(product.product_id, orderItem.item_id))
       .leftJoin(order, eq(order.order_id, orderItem.order_id))
       .where(eq(orderItemTracking.orderItem_id, Number(orderItem_id)));
     const finalresult = result.map((row) => ({

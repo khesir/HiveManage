@@ -2,30 +2,7 @@ import { z } from 'zod';
 
 export const CreateItem = z.object({
   item_record_id: z.number().min(1),
-  serial_number: z.string().min(1),
-  batch_number: z.string().min(1),
-  item_type: z.enum(['Batch', 'Serialized']),
-  item_condition: z.enum([
-    'New',
-    'Old',
-    'Damage',
-    'Refurbished',
-    'Used',
-    'Antique',
-    'Repaired',
-  ]),
-  item_status: z.enum(['On Stock', 'Sold', 'Depleted']),
-  quantity: z.number().min(1),
-  unit_price: z.number().min(1),
-  selling_price: z.number().min(1),
-  warranty_expiry_date: z.string().optional(),
-});
-
-export const UpdateItem = z.object({
-  item_record_id: z.number().min(1),
-  serial_number: z.string().min(1),
-  batch_number: z.string().min(1),
-  item_type: z.enum(['Batch', 'Serialized']),
+  item_type: z.enum(['Batch', 'Serialized', 'Both']),
   item_condition: z.enum([
     'New',
     'Old',
@@ -36,30 +13,46 @@ export const UpdateItem = z.object({
     'Repaired',
   ]),
   item_status: z.enum([
-    // Sales-Related Statuses
-    'On Stock',
-    'Reserved',
+    'OnStock',
     'Sold',
-    'Returned',
     'Depleted',
+    'Returned',
     'Pending Payment',
-    // Order-Related Statuses
     'On Order',
     'In Transit',
-    'Returned',
+    'Return Requested',
     'Pending Inspection',
-    // Service-Related Statuses
     'In Service',
     'Under Repair',
     'Awaiting Service',
     'Ready for Pickup',
     'Retired',
   ]),
-  usage_type: z.enum(['Sales', 'Service', 'Both']).optional(),
   quantity: z.number().min(1),
-  unit_price: z.number().min(1),
-  selling_price: z.number().min(1),
-  warranty_expiry_date: z.string(),
+  reorder_level: z.number().optional(),
+});
+
+export const UpdateItem = z.object({
+  item_record_id: z.number().min(1),
+  item_type: z.enum(['Batch', 'Serialized', 'Both']),
+  item_status: z.enum([
+    'OnStock',
+    'Sold',
+    'Depleted',
+    'Returned',
+    'Pending Payment',
+    'On Order',
+    'In Transit',
+    'Return Requested',
+    'Pending Inspection',
+    'In Service',
+    'Under Repair',
+    'Awaiting Service',
+    'Ready for Pickup',
+    'Retired',
+  ]),
+  quantity: z.number().min(1),
+  reorder_level: z.number().optional(),
 });
 
 export type CreateItem = z.infer<typeof CreateItem>;

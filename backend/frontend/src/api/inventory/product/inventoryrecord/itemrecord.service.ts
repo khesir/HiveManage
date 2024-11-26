@@ -1,8 +1,10 @@
 import {
+  batchItems,
   item,
   item_record,
   product,
   SchemaType,
+  serializeItems,
   supplier,
 } from '@/drizzle/drizzle.schema';
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
@@ -18,69 +20,70 @@ export class ItemRecordService {
 
   async createItemRecord(data: CreateItemRecord, product_id: string) {
     return this.db.transaction(async (tx) => {
-      // Fetch existing record
       console.log(product_id);
       console.log(data);
-      const [relatedData] = await tx
-        .select()
-        .from(item_record)
-        .where(
-          and(
-            eq(item_record.supplier_id, data.supplier_id),
-            eq(item_record.product_id, Number(product_id)),
-          ),
-        );
-
-      // Update existing record or create a new one
-      let itemRecordId: number;
-      console.log(relatedData);
-      if (relatedData) {
-        // Update total stock in `item_record`
-        await tx
-          .update(item_record)
-          .set({
-            total_stock: (relatedData.total_stock ?? 0) + data.total_stock,
-          })
-          .where(eq(item_record.item_record_id, relatedData.item_record_id));
-
-        itemRecordId = relatedData.item_record_id;
-      } else {
-        // Create new `item_record`
-        const [newData] = await tx
-          .insert(item_record)
-          .values({
-            supplier_id: data.supplier_id,
-            product_id: Number(product_id),
-            total_stock: data.total_stock,
-          })
-          .returning({ item_record_id: item_record.item_record_id });
-
-        itemRecordId = newData.item_record_id;
-      }
-
-      // Update product total stock
-      const [existingProduct] = await tx
+      // Fetch Product data and update totalstock
+      const [productData] = await tx
         .select()
         .from(product)
         .where(eq(product.product_id, Number(product_id)));
 
       await tx
         .update(product)
-        .set({
-          total_stock: (existingProduct?.total_stock ?? 0) + data.total_stock,
-        })
+        .set({ total_stock: (productData.total_stock ?? 0) + data.total_stock })
         .where(eq(product.product_id, Number(product_id)));
+      // Create Record
+      const [newItemRecord] = await tx
+        .insert(item_record)
+        .values({
+          product_id: Number(product_id),
+          supplier_id: data.supplier_id,
+          total_stock: data.total_stock,
+        })
+        .returning({ item_record_id: item_record.item_record_id });
 
-      // Insert items into `item` table
+      // Create Item
       if (data.item) {
-        const itemRecords = data.item.map((itemData) => ({
-          ...itemData,
-          item_record_id: itemRecordId,
-          unit_price: itemData.unit_price.toString(),
-          selling_price: itemData.selling_price.toString(),
-        }));
+        const [newItem] = await tx
+          .insert(item)
+          .values({
+            item_record_id: newItemRecord.item_record_id,
+            item_type: data.item.item_type,
+            item_status: data.item.item_status,
+            quantity: data.item.quantity,
+            reorder_level: data.item.reorder_level,
+          })
+          .returning({ item_id: item.item_id });
+        // Iterate and create each batch Items and serialize_items
+        if (data.item.serialize_items && data.item.serialize_items.length > 0) {
+          const itemData = data.item.serialize_items.map((serialize) => ({
+            item_id: newItem.item_id,
+            serial_number: serialize.serial_number,
+            condition: serialize.item_condition,
+            status: serialize.item_status,
+            unit_price: serialize.unit_price,
+            selling_price: serialize.selling_price,
+            warranty_expiry_date: serialize.warranty_expiry_date,
+          }));
 
-        await tx.insert(item).values(itemRecords);
+          await tx.insert(serializeItems).values(itemData);
+        }
+        if (data.item.batch_items && data.item.batch_items.length > 0) {
+          const itemData = data.item.batch_items.map((batch) => ({
+            item_id: newItem.item_id,
+            batch_number: batch.batch_number,
+            condition: batch.item_condition,
+            status: batch.item_status,
+            unit_price: batch.unit_price,
+            selling_price: batch.selling_price,
+            quantity: batch.quantity,
+            reserved_quantity: batch.reserved_quantity,
+            production_date: batch.production_date,
+            expiration_date: batch.expiration_date,
+          }));
+
+          await tx.insert(batchItems).values(itemData);
+        }
       }
     });
   }

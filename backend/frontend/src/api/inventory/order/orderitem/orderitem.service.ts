@@ -1,4 +1,4 @@
-import { asc, desc, eq, isNull, sql } from 'drizzle-orm';
+import { asc, desc, eq, isNull, sql, and } from 'drizzle-orm';
 import {
   category,
   order,
@@ -38,14 +38,24 @@ export class OrderItemService {
 
         await tx.insert(orderLogs).values({
           order_id: Number(order_id),
-          title: `Product #${item.product_id} added`,
+          title: `Product #${item.item_id} added`,
           message: `Quantity added ${item.quantity}`,
         });
       }
     });
   }
 
-  async getAllOrderItem(sort: string, limit: number, offset: number) {
+  async getAllOrderItem(
+    sort: string,
+    limit: number,
+    offset: number,
+    item_id: number | undefined,
+  ) {
+    const conditions = [];
+
+    if (item_id) {
+      conditions.push(eq(orderItem.item_id, item_id));
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -81,7 +91,8 @@ export class OrderItemService {
       .select()
       .from(orderItem)
       .leftJoin(order, eq(orderItem.orderItem_id, order.order_id))
-      .leftJoin(product, eq(product.product_id, orderItem.product_id))
+      .leftJoin(product, eq(product.product_id, orderItem.item_id))
+      .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(orderItem.created_at) : desc(orderItem.created_at),
       )
@@ -128,7 +139,7 @@ export class OrderItemService {
       .select()
       .from(orderItem)
       .leftJoin(order, eq(orderItem.orderItem_id, order.order_id))
-      .leftJoin(product, eq(product.product_id, orderItem.product_id))
+      .leftJoin(product, eq(product.product_id, orderItem.item_id))
       .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
 
     const OrderitemsWithDetails = result.map((row) => ({

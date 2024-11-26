@@ -1,5 +1,5 @@
 {
-  "id": "c01fd19e-bc01-42a9-9024-d359fa6d5180",
+  "id": "cb84ded5-616a-444b-b3e8-e2740afef471",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -151,6 +151,120 @@
           ],
           "columnsTo": [
             "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.batch_items": {
+      "name": "batch_items",
+      "schema": "",
+      "columns": {
+        "batch_item_id": {
+          "name": "batch_item_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "item_id": {
+          "name": "item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "batch_number": {
+          "name": "batch_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "condition": {
+          "name": "condition",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "reserved_quantity": {
+          "name": "reserved_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "selling_price": {
+          "name": "selling_price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "production_date": {
+          "name": "production_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expiration_date": {
+          "name": "expiration_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "batch_items_item_id_item_item_id_fk": {
+          "name": "batch_items_item_id_item_item_id_fk",
+          "tableFrom": "batch_items",
+          "tableTo": "item",
+          "columnsFrom": [
+            "item_id"
+          ],
+          "columnsTo": [
+            "item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -879,62 +993,38 @@
           "primaryKey": false,
           "notNull": false
         },
-        "serial_number": {
-          "name": "serial_number",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "batch_number": {
-          "name": "batch_number",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "item_type": {
           "name": "item_type",
-          "type": "item_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "item_condition": {
-          "name": "item_condition",
-          "type": "item_condition",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
         "item_status": {
           "name": "item_status",
-          "type": "item_status",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "ordered_qty": {
+          "name": "ordered_qty",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
         },
         "quantity": {
           "name": "quantity",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
-        "unit_price": {
-          "name": "unit_price",
-          "type": "numeric(10, 2)",
+        "reorder_level": {
+          "name": "reorder_level",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
-        },
-        "selling_price": {
-          "name": "selling_price",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "warranty_expiry_date": {
-          "name": "warranty_expiry_date",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",
@@ -997,6 +1087,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "ordered_qty": {
+          "name": "ordered_qty",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
         },
         "stock": {
           "name": "stock",
@@ -1357,8 +1454,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "product_id": {
-          "name": "product_id",
+        "item_id": {
+          "name": "item_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1411,15 +1508,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "orderItem_product_id_product_product_id_fk": {
-          "name": "orderItem_product_id_product_product_id_fk",
+        "orderItem_item_id_item_item_id_fk": {
+          "name": "orderItem_item_id_item_item_id_fk",
           "tableFrom": "orderItem",
-          "tableTo": "product",
+          "tableTo": "item",
           "columnsFrom": [
-            "product_id"
+            "item_id"
           ],
           "columnsTo": [
-            "product_id"
+            "item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2789,6 +2886,100 @@
           ],
           "columnsTo": [
             "service_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.serialized_items": {
+      "name": "serialized_items",
+      "schema": "",
+      "columns": {
+        "batch_item_id": {
+          "name": "batch_item_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "item_id": {
+          "name": "item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "serial_number": {
+          "name": "serial_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "condition": {
+          "name": "condition",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "selling_price": {
+          "name": "selling_price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "warranty_expiry_date": {
+          "name": "warranty_expiry_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "serialized_items_item_id_item_item_id_fk": {
+          "name": "serialized_items_item_id_item_item_id_fk",
+          "tableFrom": "serialized_items",
+          "tableTo": "item",
+          "columnsFrom": [
+            "item_id"
+          ],
+          "columnsTo": [
+            "item_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

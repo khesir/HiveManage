@@ -4,13 +4,14 @@ import {
   order,
   orderItem,
   orderLogs,
-  product,
-  product_category,
+  item,
   SchemaType,
   supplier,
+  product_category,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateOrder } from './order.model';
+import { UpdateOrderItem } from './orderitem/orderitem.model';
 
 export class OrderService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -24,6 +25,7 @@ export class OrderService {
     limit: number,
     offset: number,
     no_pagination: boolean,
+    item_id: number | undefined,
   ) {
     const totalCountQuery = await this.db
       .select({
@@ -34,7 +36,7 @@ export class OrderService {
 
     const totalData = totalCountQuery[0].count;
     // Supplier Categories
-    const productCategories = await this.db
+    const itemCategories = await this.db
       .select()
       .from(product_category)
       .leftJoin(
@@ -42,42 +44,44 @@ export class OrderService {
         eq(category.category_id, product_category.category_id),
       )
       .where(isNull(product_category.deleted_at));
-    const categoryBySupplier = productCategories.reduce<
-      Record<number, unknown[]>
-    >((acc, product_category) => {
-      const supplierID = product_category.product_category.supplier_id;
-      if (supplierID !== null && !(supplierID in acc)) {
-        acc[supplierID] = [];
-      }
-      if (supplierID !== null) {
-        acc[supplierID].push({
-          ...product_category.product_category,
-          category: { ...product_category.category },
-        });
-      }
-      return acc;
-    }, {});
+    const categoryBySupplier = itemCategories.reduce<Record<number, unknown[]>>(
+      (acc, product_category) => {
+        const supplierID = product_category.product_category.supplier_id;
+        if (supplierID !== null && !(supplierID in acc)) {
+          acc[supplierID] = [];
+        }
+        if (supplierID !== null) {
+          acc[supplierID].push({
+            ...product_category.product_category,
+            category: { ...product_category.category },
+          });
+        }
+        return acc;
+      },
+      {},
+    );
 
-    const categoryByProduct = productCategories.reduce<
-      Record<number, unknown[]>
-    >((acc, product_category) => {
-      const productID = product_category.product_category.supplier_id;
-      if (productID !== null && !(productID in acc)) {
-        acc[productID] = [];
-      }
-      if (productID !== null) {
-        acc[productID].push({
-          ...product_category.product_category,
-          category: { ...product_category.category },
-        });
-      }
-      return acc;
-    }, {});
+    const categoryByProduct = itemCategories.reduce<Record<number, unknown[]>>(
+      (acc, product_category) => {
+        const itemID = product_category.product_category.supplier_id;
+        if (itemID !== null && !(itemID in acc)) {
+          acc[itemID] = [];
+        }
+        if (itemID !== null) {
+          acc[itemID].push({
+            ...product_category.product_category,
+            category: { ...product_category.category },
+          });
+        }
+        return acc;
+      },
+      {},
+    );
     // Order items
     const orderItems = await this.db
       .select()
       .from(orderItem)
-      .leftJoin(product, eq(product.product_id, orderItem.product_id));
+      .leftJoin(item, eq(item.item_id, orderItem.item_id));
     const orderItemsByOrderID = orderItems.reduce<Record<number, unknown[]>>(
       (acc, orderItem) => {
         const orderID = orderItem.orderItem.order_id;
@@ -87,11 +91,33 @@ export class OrderService {
         if (orderID !== null) {
           acc[orderID].push({
             ...orderItem.orderItem,
-            product: {
-              ...orderItem.product,
-              product_categories:
-                orderItem.product?.product_id !== undefined
-                  ? categoryByProduct[orderItem.product.product_id]
+            item: {
+              ...orderItem.item,
+              item_categories:
+                orderItem.item?.item_id !== undefined
+                  ? categoryByProduct[orderItem.item.item_id]
+                  : undefined,
+            },
+          });
+        }
+        return acc;
+      },
+      {},
+    );
+    const orderItemsByProduct = orderItems.reduce<Record<number, unknown[]>>(
+      (acc, orderItem) => {
+        const itemID = orderItem.orderItem.item_id;
+        if (itemID !== null && !(itemID in acc)) {
+          acc[itemID] = [];
+        }
+        if (itemID !== null) {
+          acc[itemID].push({
+            ...orderItem.orderItem,
+            item: {
+              ...orderItem.item,
+              item_categories:
+                orderItem.item?.item_id !== undefined
+                  ? categoryByProduct[orderItem.item.item_id]
                   : undefined,
             },
           });
@@ -132,19 +158,32 @@ export class OrderService {
       query.limit(limit).offset(offset);
     }
     const result = await query;
-    console.log(result.length);
-    const finalResult = result.map((row) => ({
-      ...row.order,
-      supplier: {
-        ...row.supplier,
-        product_categories:
-          row.supplier?.supplier_id !== undefined
-            ? categoryBySupplier[row.supplier.supplier_id]
-            : [],
-      },
-      order_item: orderItemsByOrderID[row.order.order_id],
-      messages: orderLogsByOrderID[row.order.order_id],
-    }));
+    const finalResult = result
+      .filter((row) => {
+        const orderItems: UpdateOrderItem[] =
+          (orderItemsByProduct[row.order.order_id] as UpdateOrderItem[]) || [];
+
+        // Include products based on category_id condition
+        if (item_id) {
+          // If category_id is specified, check if the product belongs to the category
+          return orderItems.some((item) => item.item_id === item_id);
+        }
+
+        // If category_id is not specified, include all products
+        return true;
+      })
+      .map((row) => ({
+        ...row.order,
+        supplier: {
+          ...row.supplier,
+          item_categories:
+            row.supplier?.supplier_id !== undefined
+              ? categoryBySupplier[row.supplier.supplier_id]
+              : [],
+        },
+        order_item: orderItemsByOrderID[row.order.order_id],
+        messages: orderLogsByOrderID[row.order.order_id],
+      }));
     console.log(totalData);
     return { totalData, finalResult };
   }
@@ -173,7 +212,7 @@ export class OrderService {
         for (const item of data.order_items) {
           await tx.insert(orderItem).values({
             order_id: Number(inseredID.order_id),
-            product_id: Number(item.product_id),
+            item_id: Number(item.item_id),
             quantity: Number(item.quantity),
             price: item.price.toString(),
             status: item.status,

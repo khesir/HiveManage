@@ -151,6 +151,23 @@ CREATE TABLE IF NOT EXISTS "auditLog" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "batch_items" (
+	"batch_item_id" serial PRIMARY KEY NOT NULL,
+	"item_id" integer,
+	"batch_number" varchar NOT NULL,
+	"condition" varchar NOT NULL,
+	"status" varchar NOT NULL,
+	"quantity" integer DEFAULT 0,
+	"reserved_quantity" integer DEFAULT 0,
+	"unit_price" integer DEFAULT 0,
+	"selling_price" integer DEFAULT 0,
+	"production_date" varchar,
+	"expiration_date" varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "borrow" (
 	"borrow_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
@@ -259,15 +276,11 @@ CREATE TABLE IF NOT EXISTS "inquiry" (
 CREATE TABLE IF NOT EXISTS "item" (
 	"item_id" serial PRIMARY KEY NOT NULL,
 	"item_record_id" integer,
-	"serial_number" varchar,
-	"batch_number" varchar,
-	"item_type" "item_type" NOT NULL,
-	"item_condition" "item_condition" NOT NULL,
-	"item_status" "item_status" NOT NULL,
-	"quantity" integer,
-	"unit_price" numeric(10, 2),
-	"selling_price" numeric(10, 2),
-	"warranty_expiry_date" varchar,
+	"item_type" varchar NOT NULL,
+	"item_status" varchar NOT NULL,
+	"ordered_qty" integer DEFAULT 0,
+	"quantity" integer DEFAULT 0,
+	"reorder_level" integer DEFAULT 0,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -277,6 +290,7 @@ CREATE TABLE IF NOT EXISTS "item_record" (
 	"item_record_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
 	"product_id" integer,
+	"ordered_qty" integer DEFAULT 0,
 	"stock" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -328,7 +342,7 @@ CREATE TABLE IF NOT EXISTS "order" (
 CREATE TABLE IF NOT EXISTS "orderItem" (
 	"orderItem_id" serial PRIMARY KEY NOT NULL,
 	"order_id" integer,
-	"product_id" integer,
+	"item_id" integer,
 	"quantity" integer,
 	"price" numeric(50, 2),
 	"status" varchar,
@@ -527,6 +541,20 @@ CREATE TABLE IF NOT EXISTS "sales_items" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "serialized_items" (
+	"batch_item_id" serial PRIMARY KEY NOT NULL,
+	"item_id" integer,
+	"serial_number" varchar NOT NULL,
+	"condition" varchar NOT NULL,
+	"status" varchar NOT NULL,
+	"unit_price" integer DEFAULT 0,
+	"selling_price" integer DEFAULT 0,
+	"warranty_expiry_date" varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "service" (
 	"service_id" serial PRIMARY KEY NOT NULL,
 	"employee_id" integer,
@@ -579,6 +607,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "auditLog" ADD CONSTRAINT "auditLog_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "batch_items" ADD CONSTRAINT "batch_items_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -686,7 +720,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -831,6 +865,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "sales_items" ADD CONSTRAINT "sales_items_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "serialized_items" ADD CONSTRAINT "serialized_items_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
