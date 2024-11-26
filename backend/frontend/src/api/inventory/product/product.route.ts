@@ -68,7 +68,7 @@ productRoute.use(
 );
 
 productRoute.use(
-  '/:product_id/prodvarsupp/',
+  '/:product_id/prodvarsupp',
   validateProductID,
   productvarsuppRoute,
 );

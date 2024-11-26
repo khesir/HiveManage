@@ -55,11 +55,12 @@ export class ProductVariantController {
 
   async createProductVariant(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, variant_name, attribute } = req.body;
+      const { product_id, img_url, variant_name, attribute } = req.body;
 
       await this.productvariantService.createProductVariant({
         // Ensure correct method name
         product_id,
+        img_url,
         variant_name,
         attribute,
       });
@@ -81,10 +82,10 @@ export class ProductVariantController {
   async updateProductVariant(req: Request, res: Response, next: NextFunction) {
     try {
       const { variant_id } = req.params;
-      const { product_id, variant_name, attribute } = req.body;
+      const { product_id, img_url, variant_name, attribute } = req.body;
 
       await this.productvariantService.updateProductVariant(
-        { product_id, variant_name, attribute },
+        { product_id, img_url, variant_name, attribute },
         Number(variant_id),
       );
       res.status(HttpStatus.OK.code).json({

@@ -14,7 +14,7 @@ productvariantRoute.get(
 );
 
 productvariantRoute.get(
-  '/:product_category_id',
+  '/:variant_id',
   validateProductVariantID,
   productvariantController.getProductVariantById.bind(productvariantController),
 );
@@ -26,13 +26,13 @@ productvariantRoute.post(
 );
 
 productvariantRoute.put(
-  '/:product_category_id',
+  '/:variant_id',
   [validateRequest({ body: UpdateProductVariant }), validateProductVariantID],
   productvariantController.updateProductVariant.bind(productvariantController),
 );
 
 productvariantRoute.delete(
-  '/:product_category_id',
+  '/:variant_id',
   validateProductVariantID,
   productvariantController.deleteProductVariant.bind(productvariantController),
 );
