@@ -618,6 +618,37 @@ export const product = pgTable('product', {
     .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at'),
 });
+
+//Product Variant Supplier
+export const prdvariantsupp = pgTable('prdvariantsupp', {
+  prdvariantsupp_id: serial('prdvariantsupp_id').primaryKey(),
+  variant_id: integer('variants_id').references(() => variant.variant_id),
+  supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
+  supply_price: real('supplier_price'),
+  minimum_order_quan: integer('minimum_order_quan'),
+  lead_time_days: varchar('lead_time_days'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
+
+//Product Variant
+export const variant = pgTable('variant', {
+  variant_id: serial('variant_id').primaryKey(),
+  product_id: integer('product_id').references(() => product.product_id),
+  img_url: varchar('img_url'),
+  variant_name: varchar('variant_name'),
+  attribute: jsonb('attribute'),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
 // Inventory Record
 export const item_record = pgTable('item_record', {
   item_record_id: serial('item_record_id').primaryKey(),
@@ -879,6 +910,8 @@ export const schema: SchemaType = {
   // Inventory
   stocksLogs,
   product,
+  prdvariantsupp,
+  variant,
   category,
   supplier,
   order,

@@ -38,6 +38,8 @@ import {
   position,
   orderLogs,
   item_record,
+  prdvariantsupp,
+  variant,
 } from './drizzle.schema';
 import log from '../lib/logger';
 import { db, pool } from './pool';
@@ -2040,6 +2042,98 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
 
   log.info('Product records seeded successfully');
 }
+
+async function seedProductVariantSupplier(db: PostgresJsDatabase<SchemaType>) {
+  // Fetch existing variant and supplier data
+  const variants = await db.select().from(variant);
+  const suppliers = await db.select().from(supplier);
+
+  const productVariantSuppliers = [
+    {
+      variant_id: variants[0]?.variant_id,
+      supplier: suppliers[0]?.supplier_id,
+      supply_price: 150.25,
+      minimum_order_quan: 10,
+      lead_time_days: '7',
+    },
+    {
+      variant_id: variants[1]?.variant_id,
+      supplier: suppliers[1]?.supplier_id,
+      supply_price: 200.5,
+      minimum_order_quan: 20,
+      lead_time_days: '14',
+    },
+    {
+      variant_id: variants[2]?.variant_id,
+      supplier: suppliers[2]?.supplier_id,
+      supply_price: 100.75,
+      minimum_order_quan: 5,
+      lead_time_days: '3',
+    },
+    {
+      variant_id: variants[3]?.variant_id,
+      supplier: suppliers[0]?.supplier_id,
+      supply_price: 300.0,
+      minimum_order_quan: 50,
+      lead_time_days: '30',
+    },
+    {
+      variant_id: variants[4]?.variant_id,
+      supplier: suppliers[1]?.supplier_id,
+      supply_price: 250.0,
+      minimum_order_quan: 15,
+      lead_time_days: '10',
+    },
+  ];
+
+  // Insert the real data into the database
+  await db.insert(prdvariantsupp).values(productVariantSuppliers);
+
+  log.info('Product Variants Supplier records seeded successfully');
+}
+
+async function seedProductVariant(db: PostgresJsDatabase<SchemaType>) {
+  const products = await db.select().from(product);
+
+  const variants = [
+    {
+      product_id: products[0]?.product_id,
+      img_url: 'https://example.com/images/variant-1.jpg',
+      variant_name: '16GB RAM - Silver',
+      attribute: { RAM: '16GB', Color: 'Silver', Storage: '512GB SSD' },
+    },
+    {
+      product_id: products[1]?.product_id,
+      img_url: 'https://example.com/images/variant-2.jpg',
+      variant_name: '8GB RAM - Black',
+      attribute: { RAM: '8GB', Color: 'Black', Storage: '256GB SSD' },
+    },
+    {
+      product_id: products[2]?.product_id,
+      img_url: 'https://example.com/images/variant-3.jpg',
+      variant_name: '64GB Storage - Blue',
+      attribute: { Storage: '64GB', Color: 'Blue', Camera: '12MP' },
+    },
+    {
+      product_id: products[3]?.product_id,
+      img_url: 'https://example.com/images/variant-4.jpg',
+      variant_name: '128GB Storage - Red',
+      attribute: { Storage: '128GB', Color: 'Red', Battery: '4500mAh' },
+    },
+    {
+      product_id: products[4]?.product_id,
+      img_url: 'https://example.com/images/variant-5.jpg',
+      variant_name: '4K Display - White',
+      attribute: { Resolution: '4K', Size: '27 inch', RefreshRate: '144Hz' },
+    },
+  ];
+
+  // Insert the real data into the database
+  await db.insert(variant).values(variants);
+
+  log.info('Product Variants records seeded successfully');
+}
+
 async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
   const categoryRecords = [
     {
@@ -2341,7 +2435,9 @@ async function main() {
     // Inventory
     await seedCategory(db);
     await seedSupplier(db);
-    // await seedProduct(db);
+    await seedProduct(db);
+    await seedProductVariantSupplier(db);
+    await seedProductVariant(db);
     // await seedProductCategory(db);
     // await seedItemRecord(db);
 

@@ -11,6 +11,8 @@ import { CreateProduct, UpdateProduct } from './product.model';
 import productcategoryRoute from './productcategory/productcategory.route';
 import inventoryRecordRoute from './inventoryrecord/itemrecord.route';
 import stockLogsRoute from '../stocksLogs/stockslogs.route';
+import productvariantRoute from './prodvar/prodvar.route';
+import productvarsuppRoute from './prodvarsupp/prodvarsupp.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
@@ -58,5 +60,17 @@ productRoute.use(
 );
 
 productRoute.use('/:product_id/stock-logs', validateProductID, stockLogsRoute);
+
+productRoute.use(
+  '/:product_id/variant',
+  validateProductID,
+  productvariantRoute,
+);
+
+productRoute.use(
+  '/:product_id/prodvarsupp',
+  validateProductID,
+  productvarsuppRoute,
+);
 
 export default productRoute;
