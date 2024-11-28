@@ -19,8 +19,11 @@ export class SerializeItemService {
     await this.db.insert(serializeItems).values(batchData);
   }
 
-  async getAllSerializeItem() {
-    const data = await this.db.select().from(serializeItems);
+  async getAllSerializeItem(item_id: number) {
+    const data = await this.db
+      .select()
+      .from(serializeItems)
+      .where(eq(serializeItems.item_id, item_id));
     return data;
   }
 

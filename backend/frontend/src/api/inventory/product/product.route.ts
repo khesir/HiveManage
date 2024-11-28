@@ -9,10 +9,10 @@ import {
 } from './product.middleware';
 import { CreateProduct, UpdateProduct } from './product.model';
 import productcategoryRoute from './productcategory/productcategory.route';
-import inventoryRecordRoute from './inventoryrecord/itemrecord.route';
 import stockLogsRoute from '../stocksLogs/stockslogs.route';
 import productvariantRoute from './prodvar/prodvar.route';
 import productvarsuppRoute from './prodvarsupp/prodvarsupp.route';
+import itemRecordRoute from './inventoryrecord/itemrecord.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
@@ -56,7 +56,7 @@ productRoute.use(
 productRoute.use(
   '/:product_id/item-record',
   validateProductID,
-  inventoryRecordRoute,
+  itemRecordRoute,
 );
 
 productRoute.use('/:product_id/stock-logs', validateProductID, stockLogsRoute);

@@ -13,7 +13,8 @@ export class BatchController {
 
   async getAllBatch(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.itemService.getAllBatch();
+      const item_id = parseInt(req.params.item_id);
+      const data = await this.itemService.getAllBatch(item_id);
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         data: data,

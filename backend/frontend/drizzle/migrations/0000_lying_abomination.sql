@@ -159,6 +159,7 @@ CREATE TABLE IF NOT EXISTS "batch_items" (
 	"status" varchar NOT NULL,
 	"quantity" integer DEFAULT 0,
 	"reserved_quantity" integer DEFAULT 0,
+	"pending_quantity" integer DEFAULT 0,
 	"unit_price" integer DEFAULT 0,
 	"selling_price" integer DEFAULT 0,
 	"production_date" varchar,
@@ -276,6 +277,7 @@ CREATE TABLE IF NOT EXISTS "inquiry" (
 CREATE TABLE IF NOT EXISTS "item" (
 	"item_id" serial PRIMARY KEY NOT NULL,
 	"item_record_id" integer,
+	"variant_id" integer,
 	"item_type" varchar NOT NULL,
 	"item_status" varchar NOT NULL,
 	"ordered_qty" integer DEFAULT 0,
@@ -696,6 +698,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "item" ADD CONSTRAINT "item_item_record_id_item_record_item_record_id_fk" FOREIGN KEY ("item_record_id") REFERENCES "public"."item_record"("item_record_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "item" ADD CONSTRAINT "item_variant_id_variant_variant_id_fk" FOREIGN KEY ("variant_id") REFERENCES "public"."variant"("variant_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

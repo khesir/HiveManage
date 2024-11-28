@@ -20,56 +20,96 @@ export class ItemRecordService {
 
   async createItemRecord(data: CreateItemRecord, product_id: string) {
     return this.db.transaction(async (tx) => {
-      console.log(product_id);
-      console.log(data);
-      // Fetch Product data and update totalstock
+      // Fetch Product data and update total_stock
       const [productData] = await tx
         .select()
         .from(product)
         .where(eq(product.product_id, Number(product_id)));
 
+      if (!productData) {
+        throw new Error(`Product with ID ${product_id} not found.`);
+      }
+
       await tx
         .update(product)
         .set({ total_stock: (productData.total_stock ?? 0) + data.total_stock })
         .where(eq(product.product_id, Number(product_id)));
-      // Create Record
-      const [newItemRecord] = await tx
-        .insert(item_record)
-        .values({
-          product_id: Number(product_id),
-          supplier_id: data.supplier_id,
-          total_stock: data.total_stock,
-        })
-        .returning({ item_record_id: item_record.item_record_id });
 
-      // Create Item
+      // Check if Item Record exists
+      const [itemRecordData] = await tx
+        .select()
+        .from(item_record)
+        .where(
+          and(
+            eq(item_record.product_id, Number(product_id)),
+            eq(item_record.supplier_id, data.supplier_id),
+          ),
+        );
+
+      let newItemRecordId: number;
+      if (!itemRecordData) {
+        // Create a new Item Record if it doesn't exist
+        const [newItemRecord] = await tx
+          .insert(item_record)
+          .values({
+            product_id: Number(product_id),
+            supplier_id: data.supplier_id,
+            total_stock: data.total_stock,
+          })
+          .returning({ item_record_id: item_record.item_record_id });
+
+        if (!newItemRecord) {
+          throw new Error(
+            `Failed to create item record for product ID ${product_id}.`,
+          );
+        }
+
+        newItemRecordId = newItemRecord.item_record_id;
+      } else {
+        // Use existing Item Record ID
+        newItemRecordId = itemRecordData.item_record_id;
+      }
+
+      // Create Item if provided
       if (data.item) {
         const [newItem] = await tx
           .insert(item)
           .values({
-            item_record_id: newItemRecord.item_record_id,
+            item_record_id: newItemRecordId,
+            variant_id: data.item.variant_id,
             item_type: data.item.item_type,
             item_status: data.item.item_status,
             quantity: data.item.quantity,
             reorder_level: data.item.reorder_level,
           })
           .returning({ item_id: item.item_id });
-        // Iterate and create each batch Items and serialize_items
-        if (data.item.serialize_items && data.item.serialize_items.length > 0) {
-          const itemData = data.item.serialize_items.map((serialize) => ({
-            item_id: newItem.item_id,
-            serial_number: serialize.serial_number,
-            condition: serialize.item_condition,
-            status: serialize.item_status,
-            unit_price: serialize.unit_price,
-            selling_price: serialize.selling_price,
-            warranty_expiry_date: serialize.warranty_expiry_date,
-          }));
 
-          await tx.insert(serializeItems).values(itemData);
+        if (!newItem) {
+          throw new Error(
+            `Failed to create item for item record ID ${newItemRecordId}.`,
+          );
         }
+
+        // Handle Serialized Items
+        if (data.item.serialize_items && data.item.serialize_items.length > 0) {
+          const serializedItemsData = data.item.serialize_items.map(
+            (serialize) => ({
+              item_id: newItem.item_id,
+              serial_number: serialize.serial_number,
+              condition: serialize.item_condition,
+              status: serialize.item_status,
+              unit_price: serialize.unit_price,
+              selling_price: serialize.selling_price,
+              warranty_expiry_date: serialize.warranty_expiry_date,
+            }),
+          );
+
+          await tx.insert(serializeItems).values(serializedItemsData);
+        }
+
+        // Handle Batch Items
         if (data.item.batch_items && data.item.batch_items.length > 0) {
-          const itemData = data.item.batch_items.map((batch) => ({
+          const batchItemsData = data.item.batch_items.map((batch) => ({
             item_id: newItem.item_id,
             batch_number: batch.batch_number,
             condition: batch.item_condition,
@@ -82,7 +122,7 @@ export class ItemRecordService {
             expiration_date: batch.expiration_date,
           }));
 
-          await tx.insert(batchItems).values(itemData);
+          await tx.insert(batchItems).values(batchItemsData);
         }
       }
     });

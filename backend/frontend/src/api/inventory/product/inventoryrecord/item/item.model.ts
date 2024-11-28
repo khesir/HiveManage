@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const CreateItem = z.object({
   item_record_id: z.number().min(1),
+  variant_id: z.number().min(1),
   item_type: z.enum(['Batch', 'Serialized', 'Both']),
   item_condition: z.enum([
     'New',
@@ -34,6 +35,7 @@ export const CreateItem = z.object({
 
 export const UpdateItem = z.object({
   item_record_id: z.number().min(1),
+  variant_id: z.number().min(1),
   item_type: z.enum(['Batch', 'Serialized', 'Both']),
   item_status: z.enum([
     'OnStock',

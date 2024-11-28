@@ -13,7 +13,8 @@ export class SerializeItemController {
 
   async getAllSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.itemService.getAllSerializeItem();
+      const item_id = parseInt(req.params.item_id);
+      const data = await this.itemService.getAllSerializeItem(item_id);
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         data: data,

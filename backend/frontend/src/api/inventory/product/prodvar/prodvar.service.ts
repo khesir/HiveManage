@@ -14,9 +14,17 @@ export class ProductVariantService {
     await this.db.insert(variant).values(data);
   }
 
-  async getAllProductVariant(sort: string, limit: number, offset: number) {
+  async getAllProductVariant(
+    sort: string,
+    limit: number,
+    offset: number,
+    product_id: number | undefined,
+    no_pagination: boolean,
+  ) {
     const conditions = [isNull(variant.deleted_at)];
-
+    if (product_id) {
+      conditions.push(eq(variant.product_id, product_id));
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -26,17 +34,19 @@ export class ProductVariantService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(variant)
-      .leftJoin(product, eq(variant.product_id, variant.variant_id))
+      .leftJoin(product, eq(variant.product_id, product.product_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(variant.created_at) : desc(variant.created_at),
-      )
-      .limit(limit)
-      .offset(offset);
+      );
 
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+    const result = await query;
     const productvariantWithDetails = result.map((row) => ({
       ...row.variant,
       product: {

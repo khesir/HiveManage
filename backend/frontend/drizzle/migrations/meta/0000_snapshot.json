@@ -1,5 +1,5 @@
 {
-  "id": "e24942a7-021b-4dca-8297-03dcfbba7d5a",
+  "id": "147fd623-94a6-4320-8f7b-ca3930179318",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -202,6 +202,13 @@
         },
         "reserved_quantity": {
           "name": "reserved_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "pending_quantity": {
+          "name": "pending_quantity",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -993,6 +1000,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "variant_id": {
+          "name": "variant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "item_type": {
           "name": "item_type",
           "type": "varchar",
@@ -1058,6 +1071,19 @@
           ],
           "columnsTo": [
             "item_record_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "item_variant_id_variant_variant_id_fk": {
+          "name": "item_variant_id_variant_variant_id_fk",
+          "tableFrom": "item",
+          "tableTo": "variant",
+          "columnsFrom": [
+            "variant_id"
+          ],
+          "columnsTo": [
+            "variant_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

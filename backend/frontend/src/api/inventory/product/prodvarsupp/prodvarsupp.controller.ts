@@ -19,13 +19,14 @@ export class ProductVariantSupplierController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const product_id = parseInt(req.params.product_id as string) || undefined;
     try {
       const data =
         await this.productvariantsuppService.getAllProductVarSupplier(
           sort,
           limit,
           offset,
+          product_id,
         );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

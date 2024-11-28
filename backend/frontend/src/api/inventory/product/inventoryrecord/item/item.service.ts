@@ -1,4 +1,9 @@
-import { item, item_record, SchemaType } from '@/drizzle/drizzle.schema';
+import {
+  item,
+  item_record,
+  SchemaType,
+  variant,
+} from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateItem } from './item.model';
 import { isNull, eq, sql, and, asc, desc } from 'drizzle-orm';
@@ -11,11 +16,7 @@ export class ItemService {
   }
 
   async createItem(data: CreateItem) {
-    await this.db.insert(item).values({
-      ...data,
-      unit_price: data.unit_price.toString(),
-      selling_price: data.selling_price.toString(),
-    });
+    await this.db.insert(item).values(data);
   }
 
   async getAllItem(
@@ -46,6 +47,7 @@ export class ItemService {
         item_record,
         eq(item_record.item_record_id, item.item_record_id),
       )
+      .leftJoin(variant, eq(variant.variant_id, item.variant_id))
       .where(and(...conditions))
       .orderBy(sort === 'asc' ? asc(item.created_at) : desc(item.created_at))
       .limit(limit)
@@ -55,6 +57,9 @@ export class ItemService {
       ...row.item,
       item_record: {
         ...row.item_record,
+      },
+      variant: {
+        ...row.variant,
       },
     }));
     return { totalData, itemWithDetails };
@@ -68,12 +73,16 @@ export class ItemService {
         item_record,
         eq(item_record.item_record_id, item.item_record_id),
       )
+      .leftJoin(variant, eq(variant.variant_id, item.variant_id))
       .where(eq(item.item_id, Number(item_id)));
 
     const itemWithDetails = result.map((row) => ({
       ...row.item,
       item_record: {
         ...row.item_record,
+      },
+      variant: {
+        ...row.variant,
       },
     }));
 
