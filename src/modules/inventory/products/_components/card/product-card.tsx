@@ -8,13 +8,11 @@ import {Badge} from '@/components/ui/badge';
 import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {File} from 'lucide-react';
-import {
-	ProductCategoryWithDetails,
-	ProductWithRelatedTables,
-} from '../../_components/validation/product';
+import {Product} from '../../../_components/validation/product';
+import {ProductCategory} from '../../../_components/validation/category';
 
 interface ProfileProps {
-	data: ProductWithRelatedTables | undefined;
+	data: Product | undefined;
 }
 export function ProductCard({data}: ProfileProps) {
 	const navigate = useNavigate();
@@ -31,7 +29,11 @@ export function ProductCard({data}: ProfileProps) {
 				></div>
 				<div className="relative z-10 flex gap-4">
 					<img
-						src={data?.img_url ? data?.img_url : '/img/placeholder.jpg'}
+						src={
+							typeof data?.img_url === 'string'
+								? data.img_url
+								: '/img/placeholder.jpg'
+						}
 						alt={`Product ID ${data?.product_id} - ${data?.name}`}
 						className="rounded-lg w-20 h-20 object-cover"
 					/>
@@ -69,22 +71,18 @@ export function ProductCard({data}: ProfileProps) {
 							<span>{data?.name}</span>
 						</li>{' '}
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Serializable</span>
-							<span>{data?.on_listing}</span>
-						</li>
-						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Categories</span>
 							{data?.product_categories?.length ? (
 								<>
 									{data.product_categories
 										.slice(0, 3)
-										.map((category: ProductCategoryWithDetails) => (
+										.map((category: ProductCategory) => (
 											<Badge
 												key={category.category_id}
 												variant={'secondary'}
 												className="rounded-sm px-1 font-normal"
 											>
-												{category.category.name}
+												{category.category?.name}
 											</Badge>
 										))}
 									{data.product_categories.length > 3 && (
@@ -100,12 +98,12 @@ export function ProductCard({data}: ProfileProps) {
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Re-Order Level</span>
-							<span>{data?.re_order_level}</span>
+							<span>{data?.stock_limit}</span>
 						</li>
-						<li className="flex flex-col gap-3">
+						{/* <li className="flex flex-col gap-3">
 							<span className="text-muted-foreground">Price</span>
-							<span className="pl-3">{data?.price_history?.[0]?.price}</span>
-						</li>
+							<span className="pl-3">{data?.total_stock}</span>
+						</li> */}
 					</ul>
 				</div>
 				{/* {showOrderDetails && (

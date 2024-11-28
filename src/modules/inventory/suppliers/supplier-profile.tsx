@@ -6,15 +6,15 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
-import {SupplierWithRelatedData} from '../_components/validation/supplier';
 import {Badge} from '@/components/ui/badge';
-import {ProductCategoryWithDetails} from '../_components/validation/category';
 import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {File} from 'lucide-react';
+import {Supplier} from '../_components/validation/supplier';
+import {ProductCategory} from '../_components/validation/category';
 
 interface ProfileProps {
-	data: SupplierWithRelatedData | undefined;
+	data: Supplier | undefined;
 	showOrderDetails?: boolean;
 }
 export function SupplierProfile({data, showOrderDetails = true}: ProfileProps) {
@@ -33,7 +33,9 @@ export function SupplierProfile({data, showOrderDetails = true}: ProfileProps) {
 				<div className="relative z-10 flex gap-4">
 					<img
 						src={
-							data?.profile_link ? data?.profile_link : '/img/placeholder.jpg'
+							typeof data?.profile_link === 'string'
+								? data?.profile_link
+								: '/img/placeholder.jpg'
 						}
 						alt={`Supplier ID ${data?.supplier_id} - ${data?.name}`}
 						className="rounded-lg w-20 h-20 object-cover"
@@ -81,13 +83,13 @@ export function SupplierProfile({data, showOrderDetails = true}: ProfileProps) {
 								<>
 									{data.categories
 										.slice(0, 3)
-										.map((category: ProductCategoryWithDetails) => (
+										.map((category: ProductCategory) => (
 											<Badge
 												key={category.category_id}
 												variant={'secondary'}
 												className="rounded-sm px-1 font-normal"
 											>
-												{category.category.name}
+												{category.category?.name}
 											</Badge>
 										))}
 									{data.categories.length > 3 && (

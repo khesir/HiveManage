@@ -1,4 +1,4 @@
-import {CreateProductForm} from '../../products/form/product-form';
+import {CreateProductForm} from '../../products/_components/form/product-form';
 
 export default function CreateProductSection() {
 	return (

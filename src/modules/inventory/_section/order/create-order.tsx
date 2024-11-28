@@ -1,4 +1,4 @@
-import {CreateOrderForm} from '../../order/form/creat-order-form';
+import {CreateOrderForm} from '../../order/_components/form/creat-order-form';
 
 export default function CreateOrderSection() {
 	return (

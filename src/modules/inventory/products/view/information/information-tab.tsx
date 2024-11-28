@@ -5,12 +5,12 @@ import {useEffect, useState} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
 
 import {ApiRequest, request} from '@/api/axios';
-import {ProductStockCard} from '../../card/product-stock-card';
+import {ProductStockCard} from '../../_components/card/product-stock-card';
 import {StockLogsMini} from '../../stocklogs/stocklogs-mini';
-import ProductWithDetailsList from '../item-record-list';
 import {Product} from '@/modules/inventory/_components/validation/product';
-import {ProductOrder} from '../../card/product-order';
+import {ProductOrder} from '../../_components/card/product-order';
 import {InformationCard} from './information-card';
+import {ViewRecordTabs} from '../item-record-tabs';
 
 export function ProductInformationTab() {
 	const [searchParams] = useSearchParams();
@@ -55,7 +55,7 @@ export function ProductInformationTab() {
 							/>
 						</div>
 					</div>
-					<ProductWithDetailsList searchParams={searchParams} product_id={id} />
+					<ViewRecordTabs searchParams={searchParams} product_id={id} />
 				</div>
 				<div className="flex flex-col gap-4">
 					<div className="flex lg:hidden">

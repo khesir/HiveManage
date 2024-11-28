@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
-import {SupplierWithRelatedData} from '../_components/validation/supplier';
+import {Supplier} from '../_components/validation/supplier';
 import {columns} from './columns';
 import {SupplierTable} from './supplier-table';
 
@@ -13,7 +13,7 @@ export default function SupplierList({
 	searchParams,
 	modalRefreshTrigger,
 }: paramsProps) {
-	const [supplier, setSupplier] = useState<SupplierWithRelatedData[]>([]);
+	const [supplier, setSupplier] = useState<Supplier[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 
 	const page = Number(searchParams.get('page')) || 1;
@@ -23,7 +23,7 @@ export default function SupplierList({
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
-			const res = await request<PaginationResponse<SupplierWithRelatedData>>(
+			const res = await request<PaginationResponse<Supplier>>(
 				'GET',
 				`/api/v1/ims/supplier?limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : ''),

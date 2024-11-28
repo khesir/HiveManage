@@ -69,6 +69,7 @@ const itemRecordSchema = z.object({
 	item_record_id: z.number().optional(),
 	supplier_id: z.number().optional(),
 	product_id: z.number().optional(),
+	ordered_qty: z.number().optional(),
 	total_stock: z.number().min(1),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),

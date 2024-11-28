@@ -25,22 +25,10 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {
-	CaravanIcon,
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	PaperclipIcon,
-} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon, Shirt} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Separator} from '@/components/ui/separator';
-import {Badge} from '@/components/ui/badge';
-import {ItemRecords} from '../../_components/validation/item-record';
 import {Input} from '@/components/ui/input';
+import {ProductVariantSupplier} from '@/modules/inventory/_components/validation/variant-supplier';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -53,7 +41,7 @@ interface DataTableProps<TData, TValue> {
 // 	id: number; // Selected ID
 // 	name: string; // Selected name
 // };
-export function InventoryRecordTable<TData extends ItemRecords, TValue>({
+export function VariantTable<TData extends ProductVariantSupplier, TValue>({
 	columns,
 	data,
 	searchKey,
@@ -237,54 +225,21 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 	};
 
 	return (
-		<div className="space-y-3">
+		<>
 			<div className="flex justify-between gap-3 md:gap-0 py-3">
 				<div className="flex gap-2">
 					<Input
-						placeholder={`Find Supplier...`}
+						placeholder={`Find Variant...`}
 						value={searchValue ?? ''} // Bind the input value to the current filter value
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)
 						} // Update filter value}
 						className="w-full md:max-w-lg"
 					/>
-					<DropdownMenu>
-						<DropdownMenuTrigger>
-							<Button variant={'outline'}>
-								Sort:{' '}
-								<div className="flex items-center">
-									<Separator orientation="vertical" className="mx-2 h-4" />
-									<Badge
-										variant={'secondary'}
-										className="rounded-sm px-1 font-normal"
-									>
-										{sortOrder === 'asc' ? 'Ascending' : 'Descending'}
-									</Badge>
-								</div>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="flex flex-col">
-							<Button
-								variant={sortOrder === 'asc' ? 'default' : 'ghost'}
-								onClick={() => handleSortOrderChange('asc')}
-							>
-								Ascending
-							</Button>
-							<Button
-								variant={sortOrder === 'desc' ? 'default' : 'ghost'}
-								onClick={() => handleSortOrderChange('desc')}
-							>
-								Descending
-							</Button>
-						</DropdownMenuContent>
-					</DropdownMenu>
 				</div>
 				<div className="flex gap-2">
-					<Button onClick={() => navigate('orders/create')}>
-						<CaravanIcon className="mr-2 h-5 w-5" /> Create Purchase Order
-					</Button>
-					<Button onClick={() => navigate('create')}>
-						<PaperclipIcon className="mr-2 h-5 w-5" /> Create Record
+					<Button onClick={() => navigate('variant/create')}>
+						<Shirt className="mr-2 h-5 w-5" /> Create Variant
 					</Button>
 				</div>
 			</div>
@@ -418,6 +373,6 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

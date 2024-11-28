@@ -44,7 +44,6 @@ export function OrderList() {
 				`/api/v1/ims/order?limit=${pageLimit}&offeset=${offset}` +
 					(sort ? `&sort=${sort}` : ''),
 			);
-			console.log(res.data);
 			setOrders(res.data);
 			setOrder(res.data[0]);
 			setPageCount(Math.ceil(res.total_data / pageLimit));

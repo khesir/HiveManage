@@ -1,5 +1,5 @@
 import {toast} from 'sonner';
-import {Order, orderSchema} from '../../_components/validation/order';
+import {Order, orderSchema} from '../../../_components/validation/order';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {AxiosError} from 'axios';
@@ -20,7 +20,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {useState, useEffect} from 'react';
-import {Supplier} from '../../_components/validation/supplier';
+import {Supplier} from '../../../_components/validation/supplier';
 import {Heading} from '@/components/ui/heading';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
@@ -51,7 +51,7 @@ import {
 import {
 	ProductCategoryWithDetails,
 	ProductWithRelatedTables,
-} from '../../_components/validation/product';
+} from '../../../_components/validation/product';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
 

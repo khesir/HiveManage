@@ -1,4 +1,4 @@
-import {CreateInventoryRecord} from '../../products/view/form/create-record';
+import {CreateInventoryRecord} from '../../products/view/_components/form/create-record';
 
 export default function CreateInventoryRecordSection() {
 	return (

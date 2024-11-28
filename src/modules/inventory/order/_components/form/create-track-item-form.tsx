@@ -13,7 +13,7 @@ import {
 	OrderItemWithDetails,
 	OrderTrackItemArray,
 	orderTrackItemArraySchema,
-} from '../../_components/validation/order';
+} from '../../../_components/validation/order';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';

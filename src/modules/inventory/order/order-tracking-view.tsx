@@ -9,7 +9,7 @@ import {DataTable} from '@/components/table/data-table';
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
 import {Card} from '@/components/ui/card';
-import {CreateTrackItem} from './form/create-track-item-form';
+import {CreateTrackItem} from './_components/form/create-track-item-form';
 import {Button} from '@/components/ui/button';
 import {MoreHorizontal, MoreVertical} from 'lucide-react';
 import {
@@ -17,10 +17,10 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {MarkItemCompleteFunction} from './modal/mark-item-complete-modal';
-import {EditFormModal} from './modal/edit-form-modal';
-import {DeleteConfirmModal} from './modal/delete-confirm-modal';
-import {StockDeliveredItemModal} from './modal/stock-delivered-item-modal';
+import {MarkItemCompleteFunction} from './_components/modal/mark-item-complete-modal';
+import {EditFormModal} from './_components/modal/edit-form-modal';
+import {DeleteConfirmModal} from './_components/modal/delete-confirm-modal';
+import {StockDeliveredItemModal} from './_components/modal/stock-delivered-item-modal';
 import useTrackReferesh from '../_components/hooks/uset-track-refresh';
 
 const columns: ColumnDef<OrderTrackingItemWithDetails>[] = [

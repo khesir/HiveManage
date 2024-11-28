@@ -13,7 +13,7 @@ import {
 	OrderTrackingItemWithDetails,
 	OrderTrackItem,
 	orderTrackItemSchema,
-} from '../../_components/validation/order';
+} from '../../../_components/validation/order';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {
@@ -35,7 +35,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {Input} from '@/components/ui/input';
 import {useEffect, useState} from 'react';
 import {request} from '@/api/axios';
-import useTrackReferesh from '../../_components/hooks/uset-track-refresh';
+import useTrackReferesh from '../../../_components/hooks/uset-track-refresh';
 
 interface OrderTrackingProps {
 	data: OrderTrackingItemWithDetails;

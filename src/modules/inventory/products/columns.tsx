@@ -6,7 +6,7 @@ import {Product} from '../_components/validation/product';
 export const columns: ColumnDef<Product>[] = [
 	{
 		accessorKey: 'img_url',
-		header: 'IMAGE',
+		header: 'Img',
 		cell: ({row}) => {
 			return (
 				<div className="aspect-square relative w-[80px]">
@@ -31,11 +31,11 @@ export const columns: ColumnDef<Product>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'NAME',
+		header: 'Name',
 	},
 	{
 		id: 'category',
-		header: 'CATEGORY',
+		header: 'Category',
 		cell: ({row}) => {
 			return (
 				<div className="flex flex-wrap gap-2">
@@ -51,7 +51,7 @@ export const columns: ColumnDef<Product>[] = [
 	},
 	{
 		accessorKey: 'description',
-		header: 'DESCRIPTION',
+		header: 'Description',
 	},
 	{
 		id: 'action',

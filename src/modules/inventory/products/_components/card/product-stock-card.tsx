@@ -13,7 +13,7 @@ import {
 	PolarRadiusAxis,
 	Label,
 } from 'recharts';
-import {Product} from '../../_components/validation/product';
+import {Product} from '../../../_components/validation/product';
 
 interface ProductPriceCardProps {
 	product: Product;
@@ -38,11 +38,14 @@ export function ProductStockCard({product}: ProductPriceCardProps) {
 						</span>
 					</CardTitle>
 
-					<CardDescription>Active Orders</CardDescription>
+					<CardDescription>Pending stocks</CardDescription>
 					<CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
-						50
+						{product.item_record?.reduce(
+							(acc, record) => acc + (record.ordered_qty || 0),
+							0,
+						)}
 						<span className="text-sm font-normal tracking-normal text-muted-foreground">
-							orders
+							units
 						</span>
 					</CardTitle>
 				</CardHeader>

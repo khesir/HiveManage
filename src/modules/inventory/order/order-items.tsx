@@ -9,7 +9,7 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 import {OrderWithDetails} from '../_components/validation/order';
 import useOrderItemStore from '../_components/hooks/use-order-items';
 import {Badge} from '@/components/ui/badge';
-import {AddProductForm} from './modal/add-order-products';
+import {AddProductForm} from './_components/modal/add-order-products';
 import {
 	Tooltip,
 	TooltipContent,
@@ -19,9 +19,9 @@ import {
 import {OrderTrackingView} from './order-tracking-view';
 
 import {useEffect, useState} from 'react';
-import {ProductCard} from '../products/card/product-card';
+import {ProductCard} from '../products/_components/card/product-card';
 import {Checkbox} from '@/components/ui/checkbox';
-import {ProductWithRelatedTables} from '../_components/validation/product';
+import {Product} from '../_components/validation/product';
 
 interface ProfileProps {
 	data: OrderWithDetails | undefined;
@@ -29,19 +29,14 @@ interface ProfileProps {
 
 export function OrderItems({data}: ProfileProps) {
 	const {orderItem, setOrderItem} = useOrderItemStore();
-	const [selectedProducts, setSelectedProducts] = useState<
-		ProductWithRelatedTables[]
-	>([]);
+	const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
 
 	useEffect(() => {
 		if (data && data.order_item) {
 			setOrderItem(data.order_item[0]);
 		}
 	}, [data]);
-	const handleCheckboxChange = (
-		product: ProductWithRelatedTables,
-		isChecked: boolean,
-	) => {
+	const handleCheckboxChange = (product: Product, isChecked: boolean) => {
 		setSelectedProducts(
 			(prev) =>
 				isChecked
@@ -63,7 +58,6 @@ export function OrderItems({data}: ProfileProps) {
 			</div>
 		);
 	}
-	console.log(selectedProducts);
 	return (
 		<div className="flex gap-5 w-full h-full">
 			<div className="flex-0 flex flex-col justify-between gap-2 h-full">
@@ -74,7 +68,7 @@ export function OrderItems({data}: ProfileProps) {
 					<ScrollArea className="px-2">
 						<div className="space-y-2">
 							{data?.order_item?.map((item) => (
-								<TooltipProvider key={item.product_id}>
+								<TooltipProvider key={item.item_id}>
 									<Tooltip>
 										<TooltipTrigger>
 											<Card

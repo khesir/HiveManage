@@ -1,13 +1,8 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
 import {ItemRecords} from '../../_components/validation/item-record';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {Button} from '@/components/ui/button';
-import {MoreVertical} from 'lucide-react';
+import {useNavigate} from 'react-router-dom';
 export const columns: ColumnDef<ItemRecords>[] = [
 	{
 		accessorKey: 'supplier.profile_link',
@@ -57,25 +52,23 @@ export const columns: ColumnDef<ItemRecords>[] = [
 	{
 		id: 'stock',
 		header: 'Total Stock',
-		cell: ({row}) =>
-			row.original.total_stock ? row.original.total_stock : 'N/A',
+		cell: ({row}) => (row.original.total_stock ? row.original.total_stock : 0),
+	},
+	{
+		accessorKey: 'ordered_qty',
+		header: 'Pending Stocks',
 	},
 	{
 		id: 'action',
 		cell: ({row}) => {
-			const data = row.original;
+			const navigate = useNavigate();
 			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger>
-						<Button size={'icon'} className="h-8 w-8" variant={'outline'}>
-							<MoreVertical className="h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent>
-						<Button>View More</Button>
-						<Button>Create Order</Button>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<Button
+					size={'sm'}
+					onClick={() => navigate(`record/${row.original.item_record_id}`)}
+				>
+					View Record
+				</Button>
 			);
 		},
 	},

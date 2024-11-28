@@ -13,12 +13,13 @@ const orderItemEnum = z.enum([
 
 export const orderItemSchema = z.object({
 	order_item_id: z.number().optional(),
+
 	order_id: z.number().optional(),
-	product_id: z.number().min(1),
+	item_id: z.number().min(1),
 	quantity: z.string().min(1),
 	price: z.string().min(1),
-	is_serialized: z.boolean().optional(),
 	status: orderItemEnum,
+
 	created_at: z.date().optional(),
 	last_updated: z.date().optional(),
 	deleted_at: z.date().nullable().optional(),
@@ -31,7 +32,7 @@ export const orderItemsArraySchema = z.object({
 export type OrderItemWithDetails = {
 	orderItem_id: number;
 	order_id: number;
-	product_id: number;
+	item_id: number;
 	quantity: number;
 	price: number;
 	status: string;

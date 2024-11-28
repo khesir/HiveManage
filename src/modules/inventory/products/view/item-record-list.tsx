@@ -9,7 +9,7 @@ interface InventoryRecordProps {
 	product_id: string;
 }
 
-export default function ProductWithDetailsList({
+export default function ItemRecordList({
 	searchParams,
 	product_id,
 }: InventoryRecordProps) {
