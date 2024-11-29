@@ -75,7 +75,7 @@
     "pino": "9.3.2",
     "pino-pretty": "11.2.2",
     "postgres": "3.4.4",
-    "supabase": "1.207.9",
+    "supabase": "^1.207.9",
     "swagger-jsdoc": "6.2.8",
     "swagger-ui-express": "5.0.1",
     "tsconfig-paths": "4.2.0",
