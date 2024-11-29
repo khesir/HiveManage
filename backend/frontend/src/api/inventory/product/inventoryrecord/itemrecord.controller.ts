@@ -45,7 +45,7 @@ export class ItemRecordController {
       const { item_record_id } = req.params;
       const data =
         await this.itemrecordService.getItemRecordByID(item_record_id);
-      res.status(200).json({ status: 'Success', message: data });
+      res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

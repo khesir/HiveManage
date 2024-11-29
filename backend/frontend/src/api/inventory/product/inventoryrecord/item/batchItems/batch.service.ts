@@ -19,8 +19,11 @@ export class BatchService {
     await this.db.insert(batchItems).values(batchData);
   }
 
-  async getAllBatch() {
-    const data = await this.db.select().from(batchItems);
+  async getAllBatch(item_id: number) {
+    const data = await this.db
+      .select()
+      .from(batchItems)
+      .where(eq(batchItems.item_id, item_id));
     return data;
   }
 

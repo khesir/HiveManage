@@ -669,6 +669,7 @@ export const item = pgTable('item', {
   item_record_id: integer('item_record_id').references(
     () => item_record.item_record_id,
   ),
+  variant_id: integer('variant_id').references(() => variant.variant_id),
   item_type: varchar('item_type').notNull(),
   item_status: varchar('item_status').notNull(),
   ordered_qty: integer('ordered_qty').default(0),
@@ -690,6 +691,7 @@ export const batchItems = pgTable('batch_items', {
   status: varchar('status').notNull(),
   quantity: integer('quantity').default(0),
   reserved_quantity: integer('reserved_quantity').default(0),
+  pending_quantity: integer('pending_quantity').default(0),
   unit_price: integer('unit_price').default(0),
   selling_price: integer('selling_price').default(0),
   production_date: varchar('production_date'),

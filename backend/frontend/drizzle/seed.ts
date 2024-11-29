@@ -2050,8 +2050,9 @@ async function seedProductVariantSupplier(db: PostgresJsDatabase<SchemaType>) {
 
   const productVariantSuppliers = [
     {
-      variant_id: variants[0].variant_id,
+a      variant_id: variants[0].variant_id,
       supplier: suppliers[0].supplier_id,
+
       supply_price: 150.25,
       minimum_order_quan: 10,
       lead_time_days: '7',
@@ -2059,6 +2060,7 @@ async function seedProductVariantSupplier(db: PostgresJsDatabase<SchemaType>) {
     {
       variant_id: variants[1].variant_id,
       supplier: suppliers[1].supplier_id,
+
       supply_price: 200.5,
       minimum_order_quan: 20,
       lead_time_days: '14',
@@ -2066,6 +2068,7 @@ async function seedProductVariantSupplier(db: PostgresJsDatabase<SchemaType>) {
     {
       variant_id: variants[2].variant_id,
       supplier: suppliers[2].supplier_id,
+
       supply_price: 100.75,
       minimum_order_quan: 5,
       lead_time_days: '3',
@@ -2073,13 +2076,16 @@ async function seedProductVariantSupplier(db: PostgresJsDatabase<SchemaType>) {
     {
       variant_id: variants[3].variant_id,
       supplier: suppliers[0].supplier_id,
+
       supply_price: 300.0,
       minimum_order_quan: 50,
       lead_time_days: '30',
     },
     {
+
       variant_id: variants[4].variant_id,
       supplier: suppliers[1].supplier_id,
+
       supply_price: 250.0,
       minimum_order_quan: 15,
       lead_time_days: '10',
@@ -2769,9 +2775,10 @@ async function main() {
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
-    await seedProductVariantSupplier(db);
     await seedProductVariant(db);
-    // await seedProductCategory(db);
+    await seedProductVariantSupplier(db);
+
+    await seedProductCategory(db);
     // await seedItemRecord(db);
 
     // await seedOrder(db);

@@ -57,6 +57,7 @@ export class ItemController {
     try {
       const {
         item_record_id,
+        variant_id,
         item_type,
         item_condition,
         item_status,
@@ -65,6 +66,7 @@ export class ItemController {
 
       await this.itemService.createItem({
         item_record_id,
+        variant_id,
         item_type,
         item_condition,
         item_status,
@@ -90,6 +92,7 @@ export class ItemController {
       const { item_id } = req.params;
       const {
         item_record_id,
+        variant_id,
         item_type,
         item_condition,
         item_status,
@@ -99,6 +102,7 @@ export class ItemController {
       await this.itemService.updateItem(
         {
           item_record_id,
+          variant_id,
           item_type,
           item_condition,
           item_status,

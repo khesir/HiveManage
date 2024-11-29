@@ -43,6 +43,7 @@ const serializeItem = z.object({
 
 const createItem = z.object({
   item_record_id: z.number().optional(),
+  variant_id: z.number().min(1),
   item_type: z.enum(['Batch', 'Serialized', 'Both']),
   item_status: z.enum([
     'OnStock',

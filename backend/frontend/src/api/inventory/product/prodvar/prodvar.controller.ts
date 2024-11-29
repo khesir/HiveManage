@@ -15,12 +15,15 @@ export class ProductVariantController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const product_id = parseInt(req.params.product_id) || undefined;
+    const no_pagination = req.query.no_pagination === 'true';
     try {
       const data = await this.productvariantService.getAllProductVariant(
         sort,
         limit,
         offset,
+        product_id,
+        no_pagination,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
