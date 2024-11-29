@@ -2098,33 +2098,232 @@ async function seedProductVariant(db: PostgresJsDatabase<SchemaType>) {
   const variants = [
     {
       product_id: products[0]?.product_id,
-      img_url: 'https://example.com/images/variant-1.jpg',
+      img_url: '',
       variant_name: '16GB RAM - Silver',
       attribute: { RAM: '16GB', Color: 'Silver', Storage: '512GB SSD' },
     },
     {
+      product_id: products[0]?.product_id,
+      variant_name: '16GB DDR4 RAM - 3200MHz',
+      attribute: { Size: '16GB', Type: 'DDR4', Speed: '3200MHz' },
+      img_url: '',
+    },
+    {
+      product_id: products[0]?.product_id,
+      variant_name: '32GB DDR4 RAM - 3600MHz',
+      attribute: { Size: '32GB', Type: 'DDR4', Speed: '3600MHz' },
+      img_url: '',
+    },
+    {
+      product_id: products[0]?.product_id,
+      variant_name: '8GB DDR5 RAM - 4800MHz',
+      attribute: { Size: '8GB', Type: 'DDR5', Speed: '4800MHz' },
+      img_url: '',
+    },
+    {
+      product_id: products[0]?.product_id,
+      variant_name: '16GB DDR5 RAM - 5200MHz',
+      attribute: { Size: '16GB', Type: 'DDR5', Speed: '5200MHz' },
+      img_url: '',
+    },
+    {
       product_id: products[1]?.product_id,
-      img_url: 'https://example.com/images/variant-2.jpg',
+      img_url: '',
       variant_name: '8GB RAM - Black',
       attribute: { RAM: '8GB', Color: 'Black', Storage: '256GB SSD' },
     },
     {
+      product_id: products[1]?.product_id,
+      variant_name: 'NVIDIA RTX 3060 - 12GB',
+      attribute: { GPU: 'RTX 3060', Memory: '12GB', Type: 'GDDR6' },
+      img_url: '',
+    },
+    {
+      product_id: products[1]?.product_id,
+      variant_name: 'NVIDIA RTX 3070 - 8GB',
+      attribute: { GPU: 'RTX 3070', Memory: '8GB', Type: 'GDDR6' },
+      img_url: '',
+    },
+    {
+      product_id: products[1]?.product_id,
+      variant_name: 'NVIDIA RTX 3080 - 10GB',
+      attribute: { GPU: 'RTX 3080', Memory: '10GB', Type: 'GDDR6X' },
+      img_url: '',
+    },
+    {
+      product_id: products[1]?.product_id,
+      variant_name: 'AMD RX 6700 XT - 12GB',
+      attribute: { GPU: 'RX 6700 XT', Memory: '12GB', Type: 'GDDR6' },
+      img_url: '',
+    },
+    {
+      product_id: products[1]?.product_id,
+      variant_name: 'AMD RX 6800 XT - 16GB',
+      attribute: { GPU: 'RX 6800 XT', Memory: '16GB', Type: 'GDDR6' },
+      img_url: '',
+    },
+    {
       product_id: products[2]?.product_id,
-      img_url: 'https://example.com/images/variant-3.jpg',
+      variant_name: '24-inch Full HD Monitor',
+      attribute: { Resolution: '1080p', Size: '24 inch', RefreshRate: '75Hz' },
+      img_url: '',
+    },
+    {
+      product_id: products[2]?.product_id,
+      variant_name: '27-inch QHD Monitor',
+      attribute: { Resolution: '1440p', Size: '27 inch', RefreshRate: '144Hz' },
+      img_url: '',
+    },
+    {
+      product_id: products[2]?.product_id,
+      variant_name: '32-inch UHD Monitor',
+      attribute: { Resolution: '4K', Size: '32 inch', RefreshRate: '60Hz' },
+      img_url: '',
+    },
+    {
+      product_id: products[2]?.product_id,
+      variant_name: '34-inch UltraWide Monitor',
+      attribute: {
+        Resolution: '3440x1440',
+        Size: '34 inch',
+        RefreshRate: '100Hz',
+      },
+      img_url: '',
+    },
+    {
+      product_id: products[2]?.product_id,
+      variant_name: '49-inch Super UltraWide Monitor',
+      attribute: {
+        Resolution: '5120x1440',
+        Size: '49 inch',
+        RefreshRate: '120Hz',
+      },
+      img_url: '',
+    },
+    {
+      product_id: products[2]?.product_id,
+      img_url: '',
       variant_name: '64GB Storage - Blue',
       attribute: { Storage: '64GB', Color: 'Blue', Camera: '12MP' },
     },
     {
       product_id: products[3]?.product_id,
-      img_url: 'https://example.com/images/variant-4.jpg',
+      img_url: '',
       variant_name: '128GB Storage - Red',
       attribute: { Storage: '128GB', Color: 'Red', Battery: '4500mAh' },
     },
     {
       product_id: products[4]?.product_id,
-      img_url: 'https://example.com/images/variant-5.jpg',
+      img_url: '',
       variant_name: '4K Display - White',
       attribute: { Resolution: '4K', Size: '27 inch', RefreshRate: '144Hz' },
+    },
+    {
+      product_id: products[3]?.product_id,
+      variant_name: 'Wireless Gaming Mouse',
+      attribute: { Connectivity: 'Wireless', DPI: '16000', Buttons: 6 },
+      img_url: '',
+    },
+    {
+      product_id: products[3]?.product_id,
+      variant_name: 'Wired Ergonomic Mouse',
+      attribute: { Connectivity: 'Wired', DPI: '12000', Buttons: 7 },
+      img_url: '',
+    },
+    {
+      product_id: products[3]?.product_id,
+      variant_name: 'Bluetooth Compact Mouse',
+      attribute: { Connectivity: 'Bluetooth', DPI: '8000', Buttons: 4 },
+      img_url: '',
+    },
+    {
+      product_id: products[3]?.product_id,
+      variant_name: 'RGB Gaming Mouse',
+      attribute: { Connectivity: 'Wired', DPI: '20000', Buttons: 8 },
+      img_url: '',
+    },
+    {
+      product_id: products[3]?.product_id,
+      variant_name: 'Trackball Precision Mouse',
+      attribute: { Connectivity: 'Wireless', DPI: '4000', Buttons: 5 },
+      img_url: '',
+    },
+    {
+      product_id: products[4]?.product_id,
+      variant_name: 'Mechanical Gaming Keyboard',
+      attribute: {
+        Switch: 'Cherry MX Red',
+        Layout: 'Full-size',
+        Backlight: 'RGB',
+      },
+      img_url: '',
+    },
+    {
+      product_id: products[4]?.product_id,
+      variant_name: 'Wireless Compact Keyboard',
+      attribute: {
+        Connectivity: 'Wireless',
+        Layout: 'Compact',
+        Backlight: 'White',
+      },
+      img_url: 'https://exam',
+    },
+    {
+      product_id: products[4]?.product_id,
+      variant_name: 'Ergonomic Split Keyboard',
+      attribute: { Layout: 'Split', Connectivity: 'Wired', Backlight: 'None' },
+      img_url: '',
+    },
+    {
+      product_id: products[4]?.product_id,
+      variant_name: 'Portable Bluetooth Keyboard',
+      attribute: {
+        Connectivity: 'Bluetooth',
+        Layout: 'Tenkeyless',
+        Backlight: 'None',
+      },
+      img_url: '',
+    },
+    {
+      product_id: products[4]?.product_id,
+      variant_name: 'Programmable Gaming Keyboard',
+      attribute: { Switch: 'Optical', Layout: 'Full-size', Backlight: 'RGB' },
+      img_url: '',
+    },
+    {
+      product_id: products[5]?.product_id,
+      variant_name: 'Gaming Laptop - High Performance',
+      attribute: {
+        CPU: 'Intel i7',
+        GPU: 'RTX 3070',
+        RAM: '16GB',
+        Storage: '1TB SSD',
+      },
+      img_url: '',
+    },
+    {
+      product_id: products[5]?.product_id,
+      variant_name: 'Ultrabook - Lightweight and Slim',
+      attribute: { CPU: 'Intel i5', RAM: '8GB', Storage: '512GB SSD' },
+      img_url: 'htt',
+    },
+    {
+      product_id: products[5]?.product_id,
+      variant_name: 'Business Laptop - Long Battery Life',
+      attribute: { CPU: 'Intel i7', RAM: '16GB', Storage: '1TB SSD' },
+      img_url: 'ht',
+    },
+    {
+      product_id: products[5]?.product_id,
+      variant_name: '2-in-1 Convertible Laptop',
+      attribute: { CPU: 'AMD Ryzen 5', RAM: '8GB', Storage: '512GB SSD' },
+      img_url: 'https',
+    },
+    {
+      product_id: products[5]?.product_id,
+      variant_name: 'Budget Laptop - Everyday Use',
+      attribute: { CPU: 'Intel i3', RAM: '4GB', Storage: '256GB SSD' },
+      img_url: '',
     },
   ];
 
@@ -2179,91 +2378,113 @@ async function seedProductCategory(db: PostgresJsDatabase<SchemaType>) {
   const suppliersIDs = await db.select().from(supplier);
   const productcategoryRecords = [
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
-    },
-    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
     {
       supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(suppliersIDs).supplier_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       category_id: faker.helpers.arrayElement(categoryIDs).category_id,
     },
   ];
