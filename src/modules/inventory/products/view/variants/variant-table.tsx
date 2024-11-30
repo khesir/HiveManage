@@ -25,10 +25,11 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon, Shirt} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {Input} from '@/components/ui/input';
-import {ProductVariantSupplier} from '@/modules/inventory/_components/validation/variant-supplier';
+import {CreateVariantModal} from '../_components/modals/create-variant-modal';
+import {ProductVariant} from '@/modules/inventory/_components/validation/variants';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -41,7 +42,7 @@ interface DataTableProps<TData, TValue> {
 // 	id: number; // Selected ID
 // 	name: string; // Selected name
 // };
-export function VariantTable<TData extends ProductVariantSupplier, TValue>({
+export function VariantTable<TData extends ProductVariant, TValue>({
 	columns,
 	data,
 	searchKey,
@@ -207,22 +208,22 @@ export function VariantTable<TData extends ProductVariantSupplier, TValue>({
 	// const resetFilter = () => {
 	// 	setSelectedValues(new Set());
 	// };
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
-		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
-	);
-	const handleSortOrderChange = (order: 'asc' | 'desc') => {
-		if (sortOrder === order) return;
+	// const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
+	// 	searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
+	// );
+	// const handleSortOrderChange = (order: 'asc' | 'desc') => {
+	// 	if (sortOrder === order) return;
 
-		setSortOrder(order);
-		navigate(
-			`${location.pathname}?${createQueryString({
-				page: pageIndex + 1,
-				limit: pageSize,
-				sort: order,
-			})}`,
-			{replace: true},
-		);
-	};
+	// 	setSortOrder(order);
+	// 	navigate(
+	// 		`${location.pathname}?${createQueryString({
+	// 			page: pageIndex + 1,
+	// 			limit: pageSize,
+	// 			sort: order,
+	// 		})}`,
+	// 		{replace: true},
+	// 	);
+	// };
 
 	return (
 		<>
@@ -238,9 +239,7 @@ export function VariantTable<TData extends ProductVariantSupplier, TValue>({
 					/>
 				</div>
 				<div className="flex gap-2">
-					<Button onClick={() => navigate('variant/create')}>
-						<Shirt className="mr-2 h-5 w-5" /> Create Variant
-					</Button>
+					<CreateVariantModal />
 				</div>
 			</div>
 			<ScrollArea className="h-[calc(100vh-230px)] rounded-md border">

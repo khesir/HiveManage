@@ -185,7 +185,7 @@ export function CreateInventoryRecord() {
 		'Antique',
 		'Repaired',
 	];
-	const batchStatus = ['Active', 'Sold', 'Depleted'];
+	const batchStatus = ['Active', 'Sold', 'Pending', 'Depleted'];
 	const serialStatus = ['Active', 'Sold', 'Decommisioned'];
 	if (res) {
 		return <Card className="flex gap-5"> {res} </Card>;

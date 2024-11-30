@@ -9,11 +9,6 @@ import {
 } from '@/components/ui/dialog';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {AlertTriangleIcon, Plus, Trash2Icon} from 'lucide-react';
-import {
-	OrderItemWithDetails,
-	OrderTrackItemArray,
-	orderTrackItemArraySchema,
-} from '../../../_components/validation/order';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useEffect, useState} from 'react';
@@ -45,12 +40,17 @@ import {
 } from '@/components/ui/accordion';
 import {cn} from '@/lib/util/utils';
 import {request} from '@/api/axios';
+import {
+	OrderTrackItemArray,
+	orderTrackItemArraySchema,
+} from '@/modules/inventory/_components/validation/order-tracking';
+import {OrderItem} from '@/modules/inventory/_components/validation/order-item';
 
 interface Formprops {
 	isModalOpen?: boolean;
 	closeModal: () => void;
 	itemCount: number;
-	data: OrderItemWithDetails;
+	data: OrderItem;
 }
 
 export function CreateTrackItem({
@@ -130,12 +130,12 @@ function CreateTrackItemForm({closeModal, itemCount, data}: Formprops) {
 			}
 			const newData = {
 				...formData,
-				product_name: data.product.name,
+				product_name: 'data.product.name',
 				quantity: totalQuantity,
 			};
 			await request(
 				'POST',
-				`api/v1/ims/order/${data.order_id}/order-items/${data.orderItem_id}/tracking`,
+				`api/v1/ims/order/${data.order_id}/order-items/1/tracking`,
 				newData,
 			);
 			toast.success('Supplier Added');

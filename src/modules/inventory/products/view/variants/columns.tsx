@@ -1,23 +1,24 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Button} from '@/components/ui/button';
 import {useNavigate} from 'react-router-dom';
-import {ProductVariantSupplier} from '@/modules/inventory/_components/validation/variant-supplier';
-export const columns: ColumnDef<ProductVariantSupplier>[] = [
+import {ProductVariant} from '@/modules/inventory/_components/validation/variants';
+import {AvatarCircles} from '@/components/ui/avatarcircles';
+export const columns: ColumnDef<ProductVariant>[] = [
 	{
-		accessorKey: 'variant.img_url',
+		accessorKey: 'img_url',
 		header: 'Image',
 		cell: ({row}) => {
 			return (
 				<div className="aspect-square relative w-[70px]">
 					<img
 						src={
-							row.original.supplier?.profile_link
-								? typeof row.original.supplier.profile_link === 'string'
-									? row.original.supplier.profile_link
-									: URL.createObjectURL(row.original.supplier.profile_link)
+							row.original.img_url
+								? typeof row.original.img_url === 'string'
+									? row.original.img_url
+									: URL.createObjectURL(row.original.img_url)
 								: '/img/placeholder.jpg'
 						}
-						alt={`product ID ${row.original.supplier?.supplier_id} - ${row.original.supplier?.name}`}
+						alt={`${row.original.variant_name} `}
 						className="rounded-lg"
 					/>
 				</div>
@@ -25,12 +26,20 @@ export const columns: ColumnDef<ProductVariantSupplier>[] = [
 		},
 	},
 	{
-		accessorKey: 'variant.variant_name',
+		accessorKey: 'variant_name',
 		header: 'Name',
 	},
 	{
 		accessorKey: 'supplier.name',
 		header: 'Provided By',
+		cell: ({row}) => {
+			const data =
+				row.original.prdvariantsupp?.map((varSupp) => ({
+					link: varSupp.supplier?.profile_link || '',
+					name: varSupp.supplier?.name || '',
+				})) || [];
+			return <AvatarCircles avatar={data} />;
+		},
 	},
 	{
 		id: 'action',

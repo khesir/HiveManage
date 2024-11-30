@@ -1,9 +1,9 @@
 import {PaginationResponse, request} from '@/api/axios';
-import {ProductVariantSupplier} from '@/modules/inventory/_components/validation/variant-supplier';
 import {useState, useEffect} from 'react';
 import {VariantTable} from './variant-table';
 import {columns} from './columns';
-import {useParams} from 'react-router-dom';
+import useTrackReferesh from '@/modules/inventory/_components/hooks/uset-track-refresh';
+import {ProductVariant} from '@/modules/inventory/_components/validation/variants';
 
 interface productVariantsProps {
 	searchParams: URLSearchParams;
@@ -15,10 +15,8 @@ export default function VariantList({
 	product_id,
 }: productVariantsProps) {
 	const [pageCount, setPageCount] = useState<number>(0);
-	const [productVariants, setProductVariants] = useState<
-		ProductVariantSupplier[]
-	>([]);
-	const {id} = useParams();
+	const [productVariants, setProductVariants] = useState<ProductVariant[]>([]);
+	const {track} = useTrackReferesh();
 	const page = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
 	const offset = (page - 1) * pageLimit;
@@ -26,17 +24,17 @@ export default function VariantList({
 	useEffect(() => {
 		const fetchProducts = async () => {
 			const inventoryResponse = await request<
-				PaginationResponse<ProductVariantSupplier>
+				PaginationResponse<ProductVariant>
 			>(
 				'GET',
-				`/api/v1/ims/product/${product_id}/prodvarsupp?limit=${pageLimit}&offset=${offset}`,
+				`/api/v1/ims/product/${product_id}/variant?limit=${pageLimit}&offset=${offset}`,
 			);
+			console.log(inventoryResponse.data);
 			setProductVariants(inventoryResponse.data);
 			setPageCount(Math.ceil(inventoryResponse.total_data / pageLimit));
 		};
 		fetchProducts();
-	}, [offset, pageLimit]);
-	console.log(productVariants);
+	}, [offset, pageLimit, track]);
 	return (
 		<VariantTable
 			searchKey={''}

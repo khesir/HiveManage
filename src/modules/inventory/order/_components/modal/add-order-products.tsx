@@ -10,10 +10,6 @@ import {
 } from '@/components/ui/dialog';
 import {toast} from 'sonner';
 import axios from 'axios';
-import {
-	orderItemsArraySchema,
-	OrderWithDetails,
-} from '../../../_components/validation/order';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {
@@ -52,7 +48,6 @@ import {
 } from '@/components/ui/card';
 import {cn} from '@/lib/util/utils';
 import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
-import {ProductCategoryWithDetails} from '../../../_components/validation/category';
 import {
 	Command,
 	CommandGroup,
@@ -60,22 +55,24 @@ import {
 	CommandItem,
 	CommandList,
 } from '@/components/ui/command';
-import {ProductWithRelatedTables} from '../../../_components/validation/product';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Badge} from '@/components/ui/badge';
+import {Order} from '@/modules/inventory/_components/validation/order';
+import {Product} from '@/modules/inventory/_components/validation/product';
+import { OrderItem } from '@/modules/inventory/_components/validation/order-item';
 interface OrderTrackingProps {
-	data: OrderWithDetails;
+	data: Order;
 }
 
 export function AddProductForm({data}: OrderTrackingProps) {
 	const [loading, setLoading] = useState(false);
 	const {track, setTrack} = useTrackReferesh();
-	const [products, setProducts] = useState<ProductWithRelatedTables[]>([]);
+	const [products, setProducts] = useState<Product[]>([]);
 	const [addedOrderValue, setAddedOrderValue] = useState<number>();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [formState, setFormState] = useState<{
 		search: {[key: number]: string};
-		selectedProduct: {[key: number]: ProductWithRelatedTables};
+		selectedProduct: {[key: number]: Product};
 	}>({
 		search: {},
 		selectedProduct: {},
@@ -84,9 +81,10 @@ export function AddProductForm({data}: OrderTrackingProps) {
 		setLoading(true);
 		const fetchData = async () => {
 			try {
-				const productResult = await request<
-					ApiRequest<ProductWithRelatedTables>
-				>('GET', `/api/v1/ims/product?no_pagination=true`);
+				const productResult = await request<ApiRequest<Product>>(
+					'GET',
+					`/api/v1/ims/product?no_pagination=true`,
+				);
 				setProducts(
 					Array.isArray(productResult.data)
 						? productResult.data
@@ -100,7 +98,7 @@ export function AddProductForm({data}: OrderTrackingProps) {
 		};
 		fetchData();
 	}, []);
-	const form = useForm<z.infer<typeof orderItemsArraySchema>>({
+	const form = useForm<OrderItem>({
 		resolver: zodResolver(orderItemsArraySchema),
 		defaultValues: {
 			items: [], // Set default values for items
@@ -185,10 +183,7 @@ export function AddProductForm({data}: OrderTrackingProps) {
 		}));
 	};
 	// Update selected product state for a specific field dynamically
-	const handleProductSelect = (
-		index: number,
-		product: ProductWithRelatedTables,
-	) => {
+	const handleProductSelect = (index: number, product: Product) => {
 		setFormState((prevState) => ({
 			...prevState,
 			selectedProduct: {

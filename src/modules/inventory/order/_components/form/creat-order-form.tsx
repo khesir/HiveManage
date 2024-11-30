@@ -2,7 +2,7 @@ import {toast} from 'sonner';
 import {Order, orderSchema} from '../../../_components/validation/order';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {AxiosError} from 'axios';
+import axios, {AxiosError} from 'axios';
 import {ApiRequest, request} from '@/api/axios';
 import {
 	Form,
@@ -48,21 +48,19 @@ import {
 	CommandItem,
 	CommandList,
 } from '@/components/ui/command';
-import {
-	ProductCategoryWithDetails,
-	ProductWithRelatedTables,
-} from '../../../_components/validation/product';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
+import {ProductCategory} from '@/modules/inventory/_components/validation/category';
+import {ProductVariant} from '@/modules/inventory/_components/validation/variants';
 
 export function CreateOrderForm() {
 	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-	const [products, setProducts] = useState<ProductWithRelatedTables[]>([]);
+	const [items, setItems] = useState<ProductVariant[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
 	const [formState, setFormState] = useState<{
 		search: {[key: number]: string};
-		selectedProduct: {[key: number]: ProductWithRelatedTables};
+		selectedProduct: {[key: number]: ProductVariant};
 	}>({
 		search: {}, // To store search state for each product (keyed by product index or ID)
 		selectedProduct: {}, // To store selected product state for each product
@@ -71,25 +69,14 @@ export function CreateOrderForm() {
 		setLoading(true);
 		const fetchData = async () => {
 			try {
-				const [supplierResult, productResult] = await Promise.all([
-					request<ApiRequest<Supplier>>(
-						'GET',
-						`/api/v1/ims/supplier?no_pagination=true`,
-					),
-					request<ApiRequest<ProductWithRelatedTables>>(
-						'GET',
-						`/api/v1/ims/product?no_pagination=true`,
-					),
-				]);
+				const supplierResult = await request<ApiRequest<Supplier>>(
+					'GET',
+					`/api/v1/ims/supplier?no_pagination=true`,
+				);
 				setSuppliers(
 					Array.isArray(supplierResult.data)
 						? supplierResult.data
 						: [supplierResult.data],
-				);
-				setProducts(
-					Array.isArray(productResult.data)
-						? productResult.data
-						: [productResult.data],
 				);
 			} catch (e) {
 				if (e instanceof Error) {
@@ -126,8 +113,13 @@ export function CreateOrderForm() {
 		control: control,
 		name: 'order_items',
 	});
+
 	// Watcher to calculate order value
 	const orderValueTracker = watch();
+	const supplierId = watch('supplier_id');
+	const orderItems = watch('order_items');
+	// Calculate order value when order items change
+	// anything that is serialize will be change to 1 and be disabled
 	useEffect(() => {
 		const total =
 			orderValueTracker.order_items?.reduce(
@@ -138,16 +130,22 @@ export function CreateOrderForm() {
 		setValue('ordered_value', String(total));
 	}, [orderValueTracker]);
 
-	const processForm = async (formData: Order) => {
-		try {
-			await request('POST', `api/v1/ims/order/`, formData);
-			toast.success('Order Added');
-			// navigate(-1);
-		} catch (error) {
-			console.log(error);
-			toast.error((error as AxiosError).response?.data as string);
-		}
-	};
+	// Fetch product variants when supplier ID changes
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const res = await request<ApiRequest<ProductVariant>>(
+					'GET',
+					`/api/v1/ims/variants?no_pagination=true&supplier_id=${supplierId}`,
+				);
+				setValue('order_items', []);
+				setItems(Array.isArray(res.data) ? res.data : [res.data]);
+			} catch (error) {
+				console.error('Error fetching product variants:', error);
+			}
+		};
+		if (supplierId) fetchData();
+	}, [supplierId]);
 
 	const orderStatus = [
 		'Pending',
@@ -168,6 +166,7 @@ export function CreateOrderForm() {
 		'Returned',
 		'Cancelled',
 	];
+	const itemType = ['Batch', 'Serialized', 'Both'];
 	// Update search state for a specific field dynamically
 	const handleSearchChange = (index: number, value: string) => {
 		setFormState((prevState) => ({
@@ -179,17 +178,42 @@ export function CreateOrderForm() {
 		}));
 	};
 	// Update selected product state for a specific field dynamically
-	const handleProductSelect = (
-		index: number,
-		product: ProductWithRelatedTables,
-	) => {
+	const handleProductSelect = (index: number, product: ProductVariant) => {
 		setFormState((prevState) => ({
 			...prevState,
 			selectedProduct: {
 				...prevState.selectedProduct,
-				[index]: product, // Use the index as a key to update the selected product state
+				[index]: product,
 			},
 		}));
+	};
+
+	const processForm = async (formData: Order) => {
+		try {
+			if (formData.order_items?.length == 0) {
+				toast.error('No order Items added');
+				return;
+			}
+			console.log();
+			await request('POST', `api/v1/ims/order/`, {
+				...formData,
+				supplier_id: Number(formData.supplier_id),
+				ordered_value: Number(formData.ordered_value),
+			});
+			toast.success('Order Added');
+			// navigate(-1);
+		} catch (error) {
+			console.log(error);
+			let errorMessage = 'An unexpected error occurred';
+			if (axios.isAxiosError(error)) {
+				errorMessage =
+					error.response?.data?.message || // Use the `message` field if available
+					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
+					'Failed to process request';
+			}
+
+			toast.error(errorMessage);
+		}
 	};
 
 	if (res) {
@@ -214,14 +238,16 @@ export function CreateOrderForm() {
 							type="button"
 							onClick={() =>
 								append({
+									variant_id: -1,
+									quantity: '1',
+									item_type: 'Batch',
 									product_id: -1,
-									quantity: '',
 									price: '',
 									status: 'Pending',
 								})
 							}
 						>
-							Add Stock
+							Add Items
 						</Button>
 						<Button
 							disabled={loading}
@@ -373,27 +399,74 @@ export function CreateOrderForm() {
 														<div className="relative z-10 flex gap-4">
 															<img
 																src={
-																	formState.selectedProduct[index]?.img_url
+																	typeof formState.selectedProduct[index]
+																		?.img_url === 'string'
 																		? formState.selectedProduct[index]?.img_url
-																		: '/img/placeholder.jpg'
+																		: formState.selectedProduct[index]
+																					?.img_url instanceof File
+																			? URL.createObjectURL(
+																					formState.selectedProduct[index]
+																						?.img_url,
+																				)
+																			: '/img/placeholder.jpg'
 																}
-																alt={`Product ID ${formState.selectedProduct[index]?.product_id} - ${formState.selectedProduct[index]?.name}`}
+																alt={`Product ID ${formState.selectedProduct[index]?.product_id} - ${formState.selectedProduct[index]?.variant_name}`}
 																className="rounded-lg w-20 h-20 object-cover"
 															/>
 															<div className="grid gap-0.5 text-white">
 																<CardTitle className="group flex items-center gap-2 text-lg">
-																	{`#${formState.selectedProduct[index]?.product_id} ${formState.selectedProduct[index]?.name}`}
+																	{`#${formState.selectedProduct[index]?.product_id} ${formState.selectedProduct[index]?.variant_name}`}
 																</CardTitle>
-																<CardDescription className="text-gray-400">
+																{/* <CardDescription className="text-gray-400">
 																	{
 																		formState.selectedProduct[index]
 																			?.description
 																	}
-																</CardDescription>
+																</CardDescription> */}
 															</div>
 														</div>
 													</CardHeader>
 												</Card>
+												<FormField
+													control={form.control}
+													name={`order_items.${index}.item_type`}
+													render={({field}) => (
+														<FormItem>
+															<FormLabel>Type</FormLabel>
+															<Select
+																disabled={loading}
+																onValueChange={(value) => {
+																	field.onChange(value);
+																	if (value === 'Serialized') {
+																		setValue(
+																			`order_items.${index}.quantity`,
+																			'1',
+																		);
+																	}
+																}}
+																value={field.value}
+																defaultValue={field.value}
+															>
+																<FormControl>
+																	<SelectTrigger>
+																		<SelectValue
+																			defaultValue={field.value}
+																			placeholder="Select a Item Type"
+																		/>
+																	</SelectTrigger>
+																</FormControl>
+																<SelectContent>
+																	{itemType.map((data, key) => (
+																		<SelectItem key={key} value={data}>
+																			{data}
+																		</SelectItem>
+																	))}
+																</SelectContent>
+															</Select>
+															<FormMessage />
+														</FormItem>
+													)}
+												/>
 												<FormField
 													control={form.control}
 													name={`order_items.${index}.quantity`}
@@ -403,8 +476,11 @@ export function CreateOrderForm() {
 															<FormControl>
 																<Input
 																	type="number"
-																	disabled={loading}
-																	placeholder="1000"
+																	disabled={
+																		orderItems?.[index]?.item_type ===
+																		'Serialized'
+																	}
+																	placeholder="Select Value"
 																	{...field}
 																/>
 															</FormControl>
@@ -435,7 +511,7 @@ export function CreateOrderForm() {
 													name={`order_items.${index}.status`}
 													render={({field}) => (
 														<FormItem>
-															<FormLabel>Product</FormLabel>
+															<FormLabel>Supplier</FormLabel>
 															<Select
 																disabled={loading}
 																onValueChange={field.onChange}
@@ -462,27 +538,34 @@ export function CreateOrderForm() {
 											<div className="flex-1">
 												<FormField
 													control={form.control}
-													name={`order_items.${index}.product_id`} // Dynamically access the product ID field for each order item
+													name={`order_items.${index}.variant_id`}
 													render={({field}) => (
 														<FormItem>
-															<FormLabel>Product</FormLabel>
+															<FormLabel>Items</FormLabel>
 															<Command>
 																<CommandInput
 																	placeholder="Search for a product..."
 																	value={formState.search[index] || ''}
 																	onValueChange={(value) => {
 																		handleSearchChange(index, value);
-																	}} // Update the search state
+																	}}
 																/>
-																<CommandList>
-																	{products.length > 0 ? (
+																<CommandList className="max-h-[350px]">
+																	{items.length > 0 ? (
 																		<CommandGroup heading="Products">
-																			{products.map((product) => (
+																			{items.map((item) => (
 																				<CommandItem
-																					key={product.product_id}
+																					key={item.variant_id}
 																					onSelect={() => {
-																						field.onChange(product.product_id);
-																						handleProductSelect(index, product);
+																						field.onChange(item.variant_id);
+																						handleProductSelect(index, item);
+																						if (
+																							orderItems &&
+																							orderItems[index]
+																						) {
+																							orderItems[index].product_id =
+																								Number(item.product_id);
+																						}
 																					}}
 																				>
 																					<div className="flex items-center gap-3">
@@ -490,28 +573,38 @@ export function CreateOrderForm() {
 																							<AvatarCircles
 																								avatar={[
 																									{
-																										link: product.img_url
-																											? product.img_url
-																											: '#',
-																										name: product.name,
+																										link:
+																											typeof item.img_url ===
+																											'string'
+																												? item.img_url
+																												: item.img_url instanceof
+																													  File
+																													? URL.createObjectURL(
+																															item.img_url,
+																														)
+																													: '#',
+																										name:
+																											item.variant_name ??
+																											'Unknown',
 																									},
 																								]}
 																							/>
 																						</div>
 																						<div className="flex-1">
-																							<div className="flex gap-3">
+																							<div className="flex gap-3 items-center">
 																								<p className="font-semibold">
-																									{product.name}
+																									{`${item.product?.name} - ${item.variant_name}`}
 																								</p>
 																								<div className="space-x-2">
-																									{product?.product_categories
+																									{item.product
+																										?.product_categories
 																										?.length ? (
 																										<>
-																											{product.product_categories
+																											{item.product?.product_categories
 																												.slice(0, 3)
 																												.map(
 																													(
-																														category: ProductCategoryWithDetails,
+																														category: ProductCategory,
 																													) => (
 																														<Badge
 																															key={
@@ -524,12 +617,13 @@ export function CreateOrderForm() {
 																														>
 																															{
 																																category
-																																	.category.name
+																																	?.category
+																																	?.name
 																															}
 																														</Badge>
 																													),
 																												)}
-																											{product
+																											{item.product
 																												.product_categories
 																												.length > 3 && (
 																												<Badge
@@ -537,7 +631,7 @@ export function CreateOrderForm() {
 																													className="rounded-sm px-1 font-normal"
 																												>
 																													+
-																													{product
+																													{item.product
 																														.product_categories
 																														.length - 3}
 																												</Badge>
@@ -546,9 +640,11 @@ export function CreateOrderForm() {
 																									) : null}
 																								</div>
 																							</div>
-																							<p className="text-sm text-gray-500">
-																								{product.description}
-																							</p>
+																							{item.product && (
+																								<p className="text-sm text-gray-500">
+																									{item.product.description}
+																								</p>
+																							)}
 																						</div>
 																					</div>
 																				</CommandItem>
@@ -574,9 +670,9 @@ export function CreateOrderForm() {
 						{fields.length <= 0 && (
 							<Card>
 								<CardHeader className="flex items-center">
-									<p>Currently no stock</p>
+									<p>No Order Items listed</p>
 									<CardDescription>
-										Press Add Stock button to add
+										Press Add Item button to add
 									</CardDescription>
 								</CardHeader>
 							</Card>

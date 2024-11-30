@@ -1,5 +1,33 @@
 import {z} from 'zod';
-
+const categorySchema = z.object({
+	category_id: z.number().optional(),
+	name: z.string().min(1),
+	content: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+const productCategorySchema = z.object({
+	product_category_id: z.number().min(1),
+	product_id: z.number().min(1),
+	category_id: z.number().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+	category: categorySchema.optional(),
+});
+const productSchema = z.object({
+	product_id: z.number().optional(),
+	name: z.string().min(1),
+	description: z.string().min(1),
+	img_url: z.string(),
+	stock_limit: z.number().min(1),
+	total_stock: z.number().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+	product_categories: z.array(productCategorySchema).optional(),
+});
 const productVariantSchema = z.object({
 	variant_id: z.number().optional(),
 	product_id: z.number().optional(),
@@ -8,8 +36,11 @@ const productVariantSchema = z.object({
 	attribute: z.record(z.union([z.string(), z.number(), z.boolean()])),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
+	product: productSchema.optional(),
 });
 
+// =====================================================================
+// Actual Record
 export const itemSchema = z.object({
 	item_id: z.number().optional(),
 	item_record_id: z.number().optional(),

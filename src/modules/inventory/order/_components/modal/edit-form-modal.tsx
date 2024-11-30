@@ -9,11 +9,6 @@ import {
 } from '@/components/ui/dialog';
 import {toast} from 'sonner';
 import axios from 'axios';
-import {
-	OrderTrackingItemWithDetails,
-	OrderTrackItem,
-	orderTrackItemSchema,
-} from '../../../_components/validation/order';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {
@@ -36,9 +31,13 @@ import {Input} from '@/components/ui/input';
 import {useEffect, useState} from 'react';
 import {request} from '@/api/axios';
 import useTrackReferesh from '../../../_components/hooks/uset-track-refresh';
+import {
+	OrderTrackItem,
+	orderTrackItemSchema,
+} from '@/modules/inventory/_components/validation/order-tracking';
 
 interface OrderTrackingProps {
-	data: OrderTrackingItemWithDetails;
+	data: OrderTrackItem;
 }
 
 export function EditFormModal({data}: OrderTrackingProps) {
