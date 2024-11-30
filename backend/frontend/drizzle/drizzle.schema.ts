@@ -624,9 +624,9 @@ export const prdvariantsupp = pgTable('prdvariantsupp', {
   prdvariantsupp_id: serial('prdvariantsupp_id').primaryKey(),
   variant_id: integer('variants_id').references(() => variant.variant_id),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
-  supply_price: real('supplier_price'),
-  minimum_order_quan: integer('minimum_order_quan'),
-  lead_time_days: varchar('lead_time_days'),
+  supply_price: real('supplier_price').default(0),
+  minimum_order_quan: integer('minimum_order_quan').default(0),
+  lead_time_days: varchar('lead_time_days').default('1 days'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -655,7 +655,7 @@ export const item_record = pgTable('item_record', {
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
   product_id: integer('product_id').references(() => product.product_id),
   ordered_qty: integer('ordered_qty').default(0),
-  total_stock: integer('stock'),
+  total_stock: integer('stock').default(0),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
@@ -818,8 +818,9 @@ export const orderItemTracking = pgTable('orderItemTracking', {
 export const orderItem = pgTable('orderItem', {
   orderItem_id: serial('orderItem_id').primaryKey(),
   order_id: integer('order_id').references(() => order.order_id),
-  item_id: integer('item_id').references(() => item.item_id),
-  quantity: integer('quantity'),
+  variant_id: integer('variant_id').references(() => variant.variant_id),
+  quantity: integer('quantity').default(1),
+  item_type: varchar('item_type').notNull(),
   price: decimal('price', { precision: 50, scale: 2 }),
   status: varchar('status'),
   created_at: timestamp('created_at').defaultNow(),

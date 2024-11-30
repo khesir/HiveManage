@@ -1,5 +1,5 @@
 {
-  "id": "ee1aef53-fc6c-4308-b97e-8e3832558c47",
+  "id": "246aa89f-88b4-4e28-ad76-bf1332030a54",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1125,7 +1125,8 @@
           "name": "stock",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",
@@ -1480,8 +1481,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "item_id": {
-          "name": "item_id",
+        "variant_id": {
+          "name": "variant_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1490,7 +1491,14 @@
           "name": "quantity",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 1
+        },
+        "item_type": {
+          "name": "item_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
         },
         "price": {
           "name": "price",
@@ -1534,15 +1542,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "orderItem_item_id_item_item_id_fk": {
-          "name": "orderItem_item_id_item_item_id_fk",
+        "orderItem_variant_id_variant_variant_id_fk": {
+          "name": "orderItem_variant_id_variant_variant_id_fk",
           "tableFrom": "orderItem",
-          "tableTo": "item",
+          "tableTo": "variant",
           "columnsFrom": [
-            "item_id"
+            "variant_id"
           ],
           "columnsTo": [
-            "item_id"
+            "variant_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1941,19 +1949,22 @@
           "name": "supplier_price",
           "type": "real",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "minimum_order_quan": {
           "name": "minimum_order_quan",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "lead_time_days": {
           "name": "lead_time_days",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'1 days'"
         },
         "created_at": {
           "name": "created_at",

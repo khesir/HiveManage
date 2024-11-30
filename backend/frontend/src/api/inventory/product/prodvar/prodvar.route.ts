@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
 import { ProductVariantController } from './prodvar.controller';
-import { validateProductVariantID } from './prodvar.middleware';
+import {
+  formDataToObject,
+  multerbase,
+  validateProductVariantID,
+} from './prodvar.middleware';
 import { CreateProductVariant, UpdateProductVariant } from './prodvar.model';
 
 const productvariantRoute = Router({ mergeParams: true });
@@ -21,7 +25,11 @@ productvariantRoute.get(
 
 productvariantRoute.post(
   '/',
-  [validateRequest({ body: CreateProductVariant })],
+  [
+    multerbase.single('img_url'),
+    formDataToObject,
+    validateRequest({ body: CreateProductVariant }),
+  ],
   productvariantController.createProductVariant.bind(productvariantController),
 );
 

@@ -17,6 +17,7 @@ export class ProductVariantController {
     const offset = parseInt(req.query.offset as string) || 0;
     const product_id = parseInt(req.params.product_id) || undefined;
     const no_pagination = req.query.no_pagination === 'true';
+    const supplier_id = parseInt(req.query.supplier_id as string) || undefined;
     try {
       const data = await this.productvariantService.getAllProductVariant(
         sort,
@@ -24,6 +25,7 @@ export class ProductVariantController {
         offset,
         product_id,
         no_pagination,
+        supplier_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -58,15 +60,18 @@ export class ProductVariantController {
 
   async createProductVariant(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, img_url, variant_name, attribute } = req.body;
-
-      await this.productvariantService.createProductVariant({
-        // Ensure correct method name
-        product_id,
-        img_url,
-        variant_name,
-        attribute,
-      });
+      const product_id = parseInt(req.params.product_id as string);
+      const { variant_name, attribute, suppliers } = req.body;
+      console.log(req.file);
+      await this.productvariantService.createProductVariant(
+        {
+          product_id,
+          variant_name,
+          attribute,
+          suppliers,
+        },
+        req.file,
+      );
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',

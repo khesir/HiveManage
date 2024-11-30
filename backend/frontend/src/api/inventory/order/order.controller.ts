@@ -17,14 +17,14 @@ export class OrderController {
     const offset = parseInt(req.query.offset as string) || 0;
     const sort = (req.query.sort as string) || 'asc';
     const no_pagination = req.query.no_pagination === 'true';
-    const item_id = parseInt(req.query.item_id as string) || undefined;
+    const variant_id = parseInt(req.query.variant_id as string) || undefined;
     try {
       const data = await this.orderService.getAllOrder(
         sort,
         limit,
         offset,
         no_pagination,
-        item_id,
+        variant_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

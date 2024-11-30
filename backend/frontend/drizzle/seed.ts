@@ -2050,7 +2050,7 @@ async function seedProductVariantSupplier(db: PostgresJsDatabase<SchemaType>) {
 
   const productVariantSuppliers = [
     {
-a      variant_id: variants[0].variant_id,
+      variant_id: variants[0].variant_id,
       supplier: suppliers[0].supplier_id,
 
       supply_price: 150.25,
@@ -2082,7 +2082,6 @@ a      variant_id: variants[0].variant_id,
       lead_time_days: '30',
     },
     {
-
       variant_id: variants[4].variant_id,
       supplier: suppliers[1].supplier_id,
 
@@ -2775,8 +2774,8 @@ async function main() {
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
-    await seedProductVariant(db);
-    await seedProductVariantSupplier(db);
+    // await seedProductVariant(db);
+    // await seedProductVariantSupplier(db);
 
     await seedProductCategory(db);
     // await seedItemRecord(db);

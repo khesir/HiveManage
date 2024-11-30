@@ -19,8 +19,8 @@ const orderItemEnum = z.enum([
 
 export const CreateOrder = z.object({
   order_id: z.number().optional(),
-  supplier_id: z.string().nullable().optional(),
-  ordered_value: z.string(),
+  supplier_id: z.number(),
+  ordered_value: z.number(),
   expected_arrival: z.string().optional(),
   status: orderStatusEnum,
   created_at: z.date().optional(),
@@ -29,7 +29,9 @@ export const CreateOrder = z.object({
   order_items: z
     .array(
       z.object({
-        item_id: z.number().min(1),
+        variant_id: z.number().min(1),
+        product_id: z.number().min(1),
+        item_type: z.string().min(1),
         quantity: z.string().min(1),
         price: z.string().min(1),
         status: orderItemEnum,

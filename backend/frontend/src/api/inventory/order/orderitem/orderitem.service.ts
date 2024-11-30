@@ -34,11 +34,12 @@ export class OrderItemService {
           ...item,
           order_id: Number(order_id),
           quantity: Number(item.quantity),
+          item_type: item.item_type, // Ensure item_type is included
         });
 
         await tx.insert(orderLogs).values({
           order_id: Number(order_id),
-          title: `Product #${item.item_id} added`,
+          title: `Product #${item.variant_id} added`,
           message: `Quantity added ${item.quantity}`,
         });
       }
@@ -49,12 +50,12 @@ export class OrderItemService {
     sort: string,
     limit: number,
     offset: number,
-    item_id: number | undefined,
+    variant_id: number | undefined,
   ) {
     const conditions = [];
 
-    if (item_id) {
-      conditions.push(eq(orderItem.item_id, item_id));
+    if (variant_id) {
+      conditions.push(eq(orderItem.variant_id, variant_id));
     }
     const totalCountQuery = await this.db
       .select({
@@ -91,7 +92,7 @@ export class OrderItemService {
       .select()
       .from(orderItem)
       .leftJoin(order, eq(orderItem.orderItem_id, order.order_id))
-      .leftJoin(product, eq(product.product_id, orderItem.item_id))
+      .leftJoin(product, eq(product.product_id, orderItem.variant_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(orderItem.created_at) : desc(orderItem.created_at),
@@ -139,7 +140,7 @@ export class OrderItemService {
       .select()
       .from(orderItem)
       .leftJoin(order, eq(orderItem.orderItem_id, order.order_id))
-      .leftJoin(product, eq(product.product_id, orderItem.item_id))
+      .leftJoin(product, eq(product.product_id, orderItem.variant_id))
       .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
 
     const OrderitemsWithDetails = result.map((row) => ({

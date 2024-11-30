@@ -15,14 +15,14 @@ export class OrderItemsController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    const item_id = parseInt(req.query.item_id as string) || undefined;
+    const variant_id = parseInt(req.query.variant_id as string) || undefined;
 
     try {
       const data = await this.orderitemService.getAllOrderItem(
         sort,
         limit,
         offset,
-        item_id,
+        variant_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -83,10 +83,11 @@ export class OrderItemsController {
   async updateOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { orderItem_id } = req.params;
-      const { order_id, item_id, quantity, price, status } = req.body;
+      const { order_id, variant_id, quantity, price, status, item_type } =
+        req.body;
 
       await this.orderitemService.updateOrderItem(
-        { order_id, item_id, quantity, price, status },
+        { order_id, variant_id, quantity, price, status, item_type },
         orderItem_id,
       );
       res.status(HttpStatus.OK.code).json({

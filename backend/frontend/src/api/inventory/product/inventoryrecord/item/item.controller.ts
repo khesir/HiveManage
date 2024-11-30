@@ -12,11 +12,10 @@ export class ItemController {
   }
 
   async getAllItem(req: Request, res: Response, next: NextFunction) {
-    const item_record_id = req.params.item_record_id as string;
+    const item_record_id = (req.params.item_record_id as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
     try {
       const data = await this.itemService.getAllItem(
         item_record_id,

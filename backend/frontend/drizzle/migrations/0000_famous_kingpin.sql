@@ -293,7 +293,7 @@ CREATE TABLE IF NOT EXISTS "item_record" (
 	"supplier_id" integer,
 	"product_id" integer,
 	"ordered_qty" integer DEFAULT 0,
-	"stock" integer,
+	"stock" integer DEFAULT 0,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -344,8 +344,9 @@ CREATE TABLE IF NOT EXISTS "order" (
 CREATE TABLE IF NOT EXISTS "orderItem" (
 	"orderItem_id" serial PRIMARY KEY NOT NULL,
 	"order_id" integer,
-	"item_id" integer,
-	"quantity" integer,
+	"variant_id" integer,
+	"quantity" integer DEFAULT 1,
+	"item_type" varchar NOT NULL,
 	"price" numeric(50, 2),
 	"status" varchar,
 	"created_at" timestamp DEFAULT now(),
@@ -412,9 +413,9 @@ CREATE TABLE IF NOT EXISTS "prdvariantsupp" (
 	"prdvariantsupp_id" serial PRIMARY KEY NOT NULL,
 	"variants_id" integer,
 	"supplier_id" integer,
-	"supplier_price" real,
-	"minimum_order_quan" integer,
-	"lead_time_days" varchar,
+	"supplier_price" real DEFAULT 0,
+	"minimum_order_quan" integer DEFAULT 0,
+	"lead_time_days" varchar DEFAULT '1 days',
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -751,7 +752,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_item_id_item_item_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."item"("item_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_variant_id_variant_variant_id_fk" FOREIGN KEY ("variant_id") REFERENCES "public"."variant"("variant_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

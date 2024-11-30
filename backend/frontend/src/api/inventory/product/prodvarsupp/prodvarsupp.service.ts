@@ -1,13 +1,13 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import {
   prdvariantsupp,
+  product,
   SchemaType,
   supplier,
   variant,
 } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateProductVariantSupplier } from './prodvarsupp.model';
-import { CreateProductVariant } from '../prodvar/prodvar.model';
 
 export class ProductVarSupplierService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -27,27 +27,17 @@ export class ProductVarSupplierService {
     product_id: number | undefined,
   ) {
     const conditions = [isNull(prdvariantsupp.deleted_at)];
-
-    const productVariantsData = await this.db.select().from(variant);
-    const variantByproductID = productVariantsData.reduce<
-      Record<number, unknown[]>
-    >((acc, variant) => {
-      const productID = variant.product_id;
-      if (productID !== null && !(productID in acc)) {
-        acc[productID] = [];
-      }
-      if (productID !== null) {
-        acc[productID].push({
-          ...variant,
-        });
-      }
-      return acc;
-    }, {});
+    if (product_id) {
+      conditions.push(eq(product.product_id, product_id));
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
       })
       .from(prdvariantsupp)
+      .leftJoin(variant, eq(prdvariantsupp.variant_id, variant.variant_id))
+      .leftJoin(product, eq(product.product_id, variant.product_id))
+      .leftJoin(supplier, eq(prdvariantsupp.supplier_id, supplier.supplier_id))
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
@@ -56,6 +46,7 @@ export class ProductVarSupplierService {
       .select()
       .from(prdvariantsupp)
       .leftJoin(variant, eq(prdvariantsupp.variant_id, variant.variant_id))
+      .leftJoin(product, eq(product.product_id, variant.product_id))
       .leftJoin(supplier, eq(prdvariantsupp.supplier_id, supplier.supplier_id))
       .where(and(...conditions))
       .orderBy(
@@ -66,29 +57,16 @@ export class ProductVarSupplierService {
       .limit(limit)
       .offset(offset);
 
-    const productvariantSupplierWithDetails = result
-      .filter((row) => {
-        const productID = row.variant?.product_id;
-        const variantItems: CreateProductVariant[] =
-          productID !== null && productID !== undefined
-            ? (variantByproductID[productID] as CreateProductVariant[]) || []
-            : [];
-        if (product_id) {
-          return variantItems.some((item) => item.product_id === product_id);
-        }
-
-        return true;
-      })
-      .map((row) => ({
-        ...row.prdvariantsupp,
-        variant: {
-          ...row.variant,
-        },
-        supplier: {
-          ...row.supplier,
-        },
-      }));
-
+    const productvariantSupplierWithDetails = result.map((row) => ({
+      ...row.prdvariantsupp,
+      variant: {
+        ...row.variant,
+      },
+      supplier: {
+        ...row.supplier,
+      },
+    }));
+    console.log(productvariantSupplierWithDetails);
     return { totalData, productvariantSupplierWithDetails };
   }
 
