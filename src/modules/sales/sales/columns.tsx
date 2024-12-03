@@ -57,19 +57,6 @@ export const columns: ColumnDef<ServiceWithDetails>[] = [
 		cell: ({row}) => dateParser(row?.original?.last_updated ?? ''),
 	},
 	{
-		id: 'has_reservation',
-		header: 'Reservation',
-		cell: ({row}) => {
-			return (
-				<Badge
-					className={`${row.original.has_reservation ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
-				>
-					{row.original.has_reservation ? 'Active' : 'Inactive'}
-				</Badge>
-			);
-		},
-	},
-	{
 		id: 'has_sales_item',
 		header: 'Sales',
 		cell: ({row}) => {
@@ -83,19 +70,6 @@ export const columns: ColumnDef<ServiceWithDetails>[] = [
 		},
 	},
 	{
-		id: 'has_borrow',
-		header: 'Borrow',
-		cell: ({row}) => {
-			return (
-				<Badge
-					className={`${row.original.has_borrow ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
-				>
-					{row.original.has_borrow ? 'Active' : 'Inactive'}
-				</Badge>
-			);
-		},
-	},
-	{
 		id: 'has_job_order',
 		header: 'Joborder',
 		cell: ({row}) => {
@@ -104,6 +78,32 @@ export const columns: ColumnDef<ServiceWithDetails>[] = [
 					className={`${row.original.has_job_order ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
 				>
 					{row.original.has_job_order ? 'Active' : 'Inactive'}
+				</Badge>
+			);
+		},
+	},
+	{
+		id: 'has_reservation',
+		header: 'Reservation',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={`${row.original.has_reservation ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
+				>
+					{row.original.has_reservation ? 'Active' : 'Inactive'}
+				</Badge>
+			);
+		},
+	},
+	{
+		id: 'has_borrow',
+		header: 'Borrow',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={`${row.original.has_borrow ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
+				>
+					{row.original.has_borrow ? 'Active' : 'Inactive'}
 				</Badge>
 			);
 		},

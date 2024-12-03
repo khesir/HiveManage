@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {OrderWithDetails} from '../_components/validation/order';
+import {OrderWithDetails} from '../../_components/validation/order';
 import {Separator} from '@/components/ui/separator';
 import {dateParser} from '@/lib/util/utils';
 import {ScrollArea} from '@/components/ui/scroll-area';
@@ -16,7 +16,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Button} from '@/components/ui/button';
-import useOrderStore from '../_components/hooks/use-orders';
+import useOrderStore from '../../_components/hooks/use-orders';
 import {toast} from 'sonner';
 import {AxiosError} from 'axios';
 

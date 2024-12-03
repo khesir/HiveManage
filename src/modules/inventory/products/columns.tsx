@@ -40,10 +40,8 @@ export const columns: ColumnDef<Product>[] = [
 			return (
 				<div className="flex flex-wrap gap-2">
 					{row.original.product_categories &&
-						row.original.product_categories.map((category) => (
-							<Badge key={category.category_id}>
-								{category.category?.name}
-							</Badge>
+						row.original.product_categories.map((category, index) => (
+							<Badge key={index}>{category.category?.name}</Badge>
 						))}
 				</div>
 			);

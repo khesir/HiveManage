@@ -1,6 +1,6 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
-import {ItemRecords} from '../../_components/validation/item-record';
+import {ItemRecords} from '../../../../_components/validation/item-record';
 import {Button} from '@/components/ui/button';
 import {useNavigate} from 'react-router-dom';
 export const columns: ColumnDef<ItemRecords>[] = [

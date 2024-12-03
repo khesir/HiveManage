@@ -93,6 +93,7 @@ export function JobOrderCard() {
 						`api/v1/sms/joborder-types`,
 					),
 				]);
+				console.log(joborderRes.data);
 				const joborderData =
 					(joborderRes.data[0] as JobOrderWithDetails) || null;
 				if (joborderData) {

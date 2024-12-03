@@ -1,13 +1,13 @@
 import {Card} from '@/components/ui/card';
 
-import useOrderStore from '../_components/hooks/use-orders';
+import useOrderStore from '../../_components/hooks/use-orders';
 
-import {SupplierProfile} from '../suppliers/supplier-profile';
+import {SupplierProfile} from '../../suppliers/supplier-profile';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {OrderProfile} from './order-profile';
 import {OrderItems} from './order-items';
 import {useEffect} from 'react';
-import useOrderItemStore from '../_components/hooks/use-order-items';
+import useOrderItemStore from '../../_components/hooks/use-order-items';
 import {useNavigate} from 'react-router-dom';
 
 export function OrderContent() {

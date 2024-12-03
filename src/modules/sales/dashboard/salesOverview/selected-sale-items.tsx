@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/tooltip';
 import {ServiceWithDetails} from '@/lib/sales-zod-schema';
 import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
-import {ProductCategoryWithDetails} from '@/modules/inventory/_components/validation/category';
 import {TooltipTrigger} from '@radix-ui/react-tooltip';
 import {Bell, Trash2, Users} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
@@ -33,6 +32,11 @@ export function SelectedSaleItems() {
 	const navigate = useNavigate();
 	const {user} = useEmployeeRoleDetailsStore();
 	const handleNavigate = () => {
+		const salesData = salesHookData['sales_product'] || [];
+		if (salesData.length <= 0) {
+			toast.error('Cart must have some items to proceed');
+			return;
+		}
 		navigate('/sales/create-service');
 	};
 	const {salesHookData, setSaleHookData} = useSalesHook();
@@ -49,13 +53,16 @@ export function SelectedSaleItems() {
 					: ({service_id: 0} as unknown as ServiceWithDetails),
 			);
 			const data = {
-				service_title: `Service #${res.service_id + 1}`,
-				service_description: `Is handled by ${user?.employee.firstname} ${user?.employee.middlename} ${user?.employee.lastname}`,
-				employee_id: user?.employee.employee_id,
-				status: 'Active',
-				has_sales_item: false,
-				has_borrow: false,
-				has_job_order: false,
+				service: {
+					service_title: `Service #${res.service_id + 1}`,
+					service_description: `Is handled by ${user?.employee.firstname} ${user?.employee.middlename} ${user?.employee.lastname}`,
+					employee_id: user?.employee.employee_id,
+					service_status: 'Active',
+					has_sales_item: false,
+					has_borrow: false,
+					has_job_order: false,
+					has_reservation: false,
+				},
 			};
 			setSaleHookData('service', [data]);
 			toast(`Service Created ${Number(res.service_id) + 1}`);
@@ -69,9 +76,8 @@ export function SelectedSaleItems() {
 		}
 	};
 	const handleDelete = (data: any) => {
-		setSaleHookData('sales_item', [data], 'remove');
+		setSaleHookData('sales_product', [data], 'remove');
 	};
-	console.log(salesHookData);
 	return (
 		<>
 			<div className="flex items-center justify-between gap-3">
@@ -132,7 +138,7 @@ export function SelectedSaleItems() {
 										? ' ' +
 											Math.round(
 												salesHookData['sales_product'].reduce(
-													(total, item) => total + item.data.total_price,
+													(total, item) => total + item.record.total_price,
 													0,
 												),
 											)
@@ -147,7 +153,7 @@ export function SelectedSaleItems() {
 											? '₱ ' +
 												Math.round(
 													salesHookData['sales_product']?.reduce(
-														(total, item) => total + item.data.total_price,
+														(total, item) => total + item.record.total_price,
 														0,
 													),
 												)
@@ -159,11 +165,11 @@ export function SelectedSaleItems() {
 										Total
 									</span>
 									<span>
-										{salesHookData['sales_item']
+										{salesHookData['sales_product']
 											? '₱ ' +
 												Math.round(
-													salesHookData['sales_item']?.reduce(
-														(total, item) => total + item.data.total_price,
+													salesHookData['sales_product']?.reduce(
+														(total, item) => total + item.record.total_price,
 														0,
 													),
 												)
@@ -182,54 +188,49 @@ export function SelectedSaleItems() {
 								className="relative w-full h-[150px] flex items-center justify-start overflow-hidden"
 								key={index}
 							>
-								{/* Handles Borrow, Reserve and Sales */}
-								{item.data.type !== 'Joborder' ? (
+								{item.record.type !== 'Joborder' ? (
 									<CardHeader className="flex-grow">
 										<CardTitle className="hover:underline">
 											<span className="text-xs">
-												{item.data.type !== 'Sales'
-													? `( ${item.data.type} )`
+												{item.record.type !== 'Sales'
+													? `( ${item.record.type} )`
 													: ''}
 											</span>{' '}
 											<span className="font-semibold text-sm">
 												{' '}
-												{item.product.product_id} - {item.product.name}
+												{item.record.record_number} -{' '}
+												{item.variantRecord.product.name} |{' '}
+												{item.variantRecord.variant_name}
 											</span>
 											{/* Adjust this to display the actual item name if available */}
 										</CardTitle>
 										<CardDescription className="font-semibold text-sm">
-											<div className="flex gap-2 flex-wrap">
-												{item.product.product_categories &&
-													item.product.product_categories.map(
-														(category: ProductCategoryWithDetails) => (
-															<Badge key={category.category_id}>
-																{category.category.name}
-															</Badge>
-														),
-													)}
-											</div>
 											<div className="flex gap-1">
-												Price: {item.product.price_history[0].price}
+												Price: {item.record.price}
 											</div>
 											<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
-												Qty: {item.data.quantity}
+												Qty: {item.record.quantity}
 											</p>
 										</CardDescription>
 									</CardHeader>
 								) : (
 									// Handles Job order card
 									<CardHeader className="flex-grow">
-										<CardTitle className="hover:underline">
+										<CardTitle className="hover:underline flex items-center gap-3">
 											<span className="font-semibold text-sm">
-												{item.data.type} - ID:{' '}
-												{' ' + item.data.related_data.joborder.uuid}
+												{item.record.type} Service No.{' '}
+												{' ' + item.record.record_number}{' '}
 											</span>
+											<Badge>{item.record.joborder_status}</Badge>
 											{/* Adjust this to display the actual item name if available */}
 										</CardTitle>
-										<CardDescription className="font-semibold text-sm">
-											<div className="flex gap-2 flex-wrap">
-												<Badge>{item.data.related_data.joborder.status}</Badge>
-											</div>
+										<CardDescription>
+											ID: {' ' + item.record.uuid}
+										</CardDescription>
+										<CardDescription>
+											<Badge>
+												{item.record.record_number} {item.record.joborder_type}
+											</Badge>
 										</CardDescription>
 									</CardHeader>
 								)}

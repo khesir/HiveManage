@@ -8,7 +8,7 @@ import {
 	CardTitle,
 	CardFooter,
 } from '@/components/ui/card';
-import {OrderItem} from '@/modules/inventory/_components/validation/order';
+import {OrderItem} from '@/modules/inventory/_components/validation/order-item';
 import {BookUpIcon, CaravanIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';

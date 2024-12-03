@@ -1,15 +1,15 @@
 import {create} from 'zustand';
-import {OrderItemWithDetails} from '../validation/order';
+import {OrderItem} from '../validation/order-item';
 
 type PropsProps = {
-	orderItem: OrderItemWithDetails | null;
-	setOrderItem: (newData: OrderItemWithDetails) => void;
+	orderItem: OrderItem | null;
+	setOrderItem: (newData: OrderItem) => void;
 	resetOrderItem: () => void;
 };
 
 const useOrderItemStore = create<PropsProps>((set) => ({
 	orderItem: null,
-	setOrderItem: (newData: OrderItemWithDetails) =>
+	setOrderItem: (newData: OrderItem) =>
 		set(() => ({
 			orderItem: newData,
 		})),

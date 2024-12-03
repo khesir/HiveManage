@@ -39,8 +39,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import {ItemRecords} from '../../_components/validation/item-record';
 import {Input} from '@/components/ui/input';
+import {Item} from '@/modules/inventory/_components/validation/item';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -53,7 +53,7 @@ interface DataTableProps<TData, TValue> {
 // 	id: number; // Selected ID
 // 	name: string; // Selected name
 // };
-export function InventoryRecordTable<TData extends ItemRecords, TValue>({
+export function ProductItemSummaryTable<TData extends Item, TValue>({
 	columns,
 	data,
 	searchKey,

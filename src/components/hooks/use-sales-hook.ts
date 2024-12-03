@@ -31,12 +31,10 @@ export const useSalesHook = create<SalesHook>((set) => ({
 						...state.salesHookData,
 						[type]: existingData.filter(
 							(item) =>
-								// This finds the matching id where item_id is equal and check if type is equal
-								// Then remove it by !
 								!data.some(
 									(d) =>
-										d.data.item_id === item.data.item_id &&
-										d.data.type === item.data.type,
+										d.record.record_number === item.record.record_number &&
+										d.record.type === item.record.type,
 								),
 						),
 					};

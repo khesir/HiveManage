@@ -29,6 +29,7 @@ import {
 	JobOrderType,
 } from '@/modules/sales/_components/validation/joborder';
 import {PaginationResponse, request} from '@/api/axios';
+import {toast} from 'sonner';
 
 interface JoborderProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;
@@ -70,35 +71,59 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 	const processForm = (formData: Joborder) => {
 		// Process data here
 		setLoading(true);
-		if (!salesHookData['service']) {
-			alert('Create service First!');
-		}
-		const updateService = {
-			...salesHookData['service'][0],
-			has_job_order: true,
-		};
-		setSaleHookData('service', [updateService], 'clear');
-		const joborderData = {
-			service_id: undefined,
-			uuid: formData.uuid,
-			fee: formData.fee,
-			status: formData.joborder_status,
-		};
-		const salesItemData = {
-			data: {
-				item_id: -1,
-				service_id: undefined,
-				quantity: 0,
-				type: 'Joborder',
-				total_price: 0,
-				related_data: {
-					joborder: joborderData,
+		try {
+			if (!salesHookData['service']) {
+				toast.error('Create service First!');
+			}
+			const existingJoborders = salesHookData['sales_product'] || [];
+			const existingJoborder = existingJoborders.find(
+				(exisitingData) =>
+					exisitingData.record.record_number === formData.joborder_type_id &&
+					exisitingData.record.type === 'Joborder',
+			);
+
+			if (existingJoborder) {
+				toast.error('Can only hold 1 joborder per transaction');
+				return;
+			}
+			const typeData = joborderTypes.find(
+				(row) =>
+					row.joborder_type_id!.toString() ===
+					formData.joborder_type_id?.toString(),
+			);
+			const serviceData = {
+				record: {
+					record_number: formData.joborder_type_id,
+					uuid: formData.uuid,
+					total_price: formData.fee,
+					price: formData.fee,
+					joborder_type: typeData?.name,
+					type: 'Joborder',
+
+					joborder_type_id: formData.joborder_type_id,
+					fee: formData.fee,
+					total_price_cost: formData.fee,
+					joborder_status: formData.joborder_status,
 				},
-			},
-		};
-		setSaleHookData('sales_item', [salesItemData], 'append');
-		setLoading(false);
-		handleIsEditing('', undefined);
+			};
+			setSaleHookData('sales_product', [serviceData], 'append');
+
+			const updateService = {
+				service: {
+					...salesHookData['service'][0].service,
+					has_job_order: true,
+				},
+			};
+			console.log(updateService);
+			setSaleHookData('service', [updateService], 'clear');
+			setLoading(false);
+			handleIsEditing('', undefined);
+		} catch (e) {
+			console.log(e);
+			toast.error('Unexpected Error on submission');
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -108,6 +133,7 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 				className="w-full space-y-8"
 			>
 				<Button onClick={() => handleIsEditing('', undefined)}>Back</Button>
+				{/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
 				<Card className="flex flex-col">
 					<div className="flex flex-col gap-3 pl-5 pt-5">
 						<h1 className="font-semibold text-lg">Job order</h1>
@@ -121,7 +147,7 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 							name="uuid"
 							render={({field}) => (
 								<FormItem>
-									<FormLabel>Joborder Type</FormLabel>
+									<FormLabel>UUID</FormLabel>
 									<FormControl>
 										<Input disabled={true} {...field} />
 									</FormControl>
@@ -134,9 +160,9 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 							name="fee"
 							render={({field}) => (
 								<FormItem>
-									<FormLabel>Joborder Fee</FormLabel>
+									<FormLabel>Fee</FormLabel>
 									<FormControl>
-										<Input disabled={true} {...field} />
+										<Input disabled={loading} {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -147,7 +173,7 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 							name="joborder_type_id"
 							render={({field}) => (
 								<FormItem>
-									<FormLabel>Joborder Type</FormLabel>
+									<FormLabel>Type</FormLabel>
 									<Select
 										disabled={loading}
 										onValueChange={(value) => field.onChange(Number(value))}
@@ -181,7 +207,7 @@ export function JoborderForm({handleIsEditing, fee}: JoborderProps) {
 							name="joborder_status"
 							render={({field}) => (
 								<FormItem>
-									<FormLabel>Joborder Status</FormLabel>
+									<FormLabel>Status</FormLabel>
 									<Select
 										disabled={loading}
 										onValueChange={field.onChange}

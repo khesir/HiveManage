@@ -19,7 +19,7 @@ export const joborderSchema = z.object({
 		'Rejected',
 		'Closed',
 	]),
-	total_cost_price: z.number().min(1),
+	total_cost_price: z.number().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),

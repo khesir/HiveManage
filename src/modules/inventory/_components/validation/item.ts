@@ -38,6 +38,28 @@ const productVariantSchema = z.object({
 	last_updated: z.string().optional(),
 	product: productSchema.optional(),
 });
+const supplierSchema = z.object({
+	supplier_id: z.number().optional(),
+	name: z.string().min(1),
+	contact_number: z.string().min(1),
+	remarks: z.string().min(1),
+	profile_link: z.string(),
+	relationship: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+const itemRecordSchema = z.object({
+	item_record_id: z.number().optional(), // Autoincrement main ID
+	product_id: z.number().optional(), // This is handled in the backend
+	supplier_id: z.number().min(1),
+	ordered_qty: z.number().optional(),
+	total_stock: z.number().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+	supplier: supplierSchema.optional(),
+});
 
 // =====================================================================
 // Actual Record
@@ -71,12 +93,15 @@ export const itemSchema = z.object({
 		'Ready for Pickup',
 		'Retired',
 	]),
+	reserve_qty: z.number().min(1),
+	ordered_qty: z.number().min(1),
 	quantity: z.number().min(1),
 	reorder_level: z.number().optional(),
 	created_at: z.date().optional(),
 	last_updated: z.date().optional(),
 	deleted_at: z.date().nullable().optional(),
 
+	item_record: itemRecordSchema.optional(),
 	variant: productVariantSchema.optional(),
 });
 export type Item = z.infer<typeof itemSchema>;

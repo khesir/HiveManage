@@ -6,44 +6,52 @@ import {
 	CardContent,
 } from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import {OrderWithDetails} from '../_components/validation/order';
-import useOrderItemStore from '../_components/hooks/use-order-items';
+import useOrderItemStore from '../../_components/hooks/use-order-items';
 import {Badge} from '@/components/ui/badge';
-import {AddProductForm} from './_components/modal/add-order-products';
+import {AddProductForm} from '../_components/modal/add-order-products';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {OrderTrackingView} from './order-tracking-view';
+import {OrderTrackingView} from '../order-tracking-view';
 
 import {useEffect, useState} from 'react';
-import {ProductCard} from '../products/_components/card/product-card';
+import {ProductCard} from '../../products/_components/card/product-card';
 import {Checkbox} from '@/components/ui/checkbox';
-import {Product} from '../_components/validation/product';
+import {Order} from '../../_components/validation/order';
+import {OrderItem} from '../../_components/validation/order-item';
+import {ApiRequest, request} from '@/api/axios';
 
 interface ProfileProps {
-	data: OrderWithDetails | undefined;
+	data: Order | undefined;
 }
 
 export function OrderItems({data}: ProfileProps) {
 	const {orderItem, setOrderItem} = useOrderItemStore();
-	const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+	const [selectedProducts, setSelectedProducts] = useState<OrderItem[]>([]);
+	const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
 	useEffect(() => {
-		if (data && data.order_item) {
-			setOrderItem(data.order_item[0]);
-		}
+		const fetchData = async () => {
+			const res = await request<ApiRequest<OrderItem>>(
+				'GET',
+				`/api/v1/ims/order/${data?.order_id}/order-items?no_pagination=true`,
+			);
+			console.log(res.data);
+			setOrderItems(Array.isArray(res.data) ? res.data : [res.data]);
+		};
+		fetchData();
 	}, [data]);
-	const handleCheckboxChange = (product: Product, isChecked: boolean) => {
-		setSelectedProducts(
-			(prev) =>
-				isChecked
-					? [...prev, product] // Add product if checked
-					: prev.filter((item) => item.product_id !== product.product_id), // Remove product if unchecked
-		);
-	};
+	// const handleCheckboxChange = (product: Product, isChecked: boolean) => {
+	// 	setSelectedProducts(
+	// 		(prev) =>
+	// 			isChecked
+	// 				? [...prev, product] // Add product if checked
+	// 				: prev.filter((item) => item.product_id !== product.product_id), // Remove product if unchecked
+	// 	);
+	// };
 	if (!data) {
 		return (
 			<div className="flex-1 flex flex-col gap-2">
@@ -67,7 +75,7 @@ export function OrderItems({data}: ProfileProps) {
 					</div>
 					<ScrollArea className="px-2">
 						<div className="space-y-2">
-							{data?.order_item?.map((item) => (
+							{orderItems.map((item) => (
 								<TooltipProvider key={item.item_id}>
 									<Tooltip>
 										<TooltipTrigger>
@@ -79,10 +87,10 @@ export function OrderItems({data}: ProfileProps) {
 													<div className="flex flex-col items-start w-full">
 														<div className="flex gap-3 justify-between w-full items-center">
 															<CardTitle className="text-sm">
-																{`#${item.orderItem_id} - ${item.product.name}`}
+																{`#${item.order_item_id} - ${item.item?.variant?.variant_name}`}
 															</CardTitle>
 
-															{item.status === 'Delivered' ||
+															{/* {item.status === 'Delivered' ||
 																(item.status === 'Partially Delivered' && (
 																	<Checkbox
 																		onCheckedChange={(isChecked) =>
@@ -92,7 +100,7 @@ export function OrderItems({data}: ProfileProps) {
 																			)
 																		}
 																	/>
-																))}
+																))} */}
 														</div>
 														<div>
 															<Badge>{item.status}</Badge>
@@ -107,12 +115,12 @@ export function OrderItems({data}: ProfileProps) {
 														{' '}
 														<p>{`Unit Price: ${item.price}`}</p>
 													</CardDescription>
-													<CardDescription className="text-sm">{`Price: ${item.price * item.quantity}`}</CardDescription>
+													<CardDescription className="text-sm">{`Price: ${Number(item.price) * Number(item.quantity)}`}</CardDescription>
 												</CardContent>
 											</Card>
 										</TooltipTrigger>
 										<TooltipContent side="right" className="w-[50vh]">
-											<ProductCard data={item.product} />
+											<ProductCard data={item.item?.variant?.product} />
 										</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
@@ -120,15 +128,15 @@ export function OrderItems({data}: ProfileProps) {
 						</div>
 					</ScrollArea>
 				</div>
-				<AddProductForm data={data} />
+				{/* <AddProductForm data={data} /> */}
 			</div>
-			<div className="flex-1 w-full">
+			{/* <div className="flex-1 w-full">
 				{orderItem ? (
 					<OrderTrackingView data={orderItem} />
 				) : (
 					<p>Render Something else</p>
 				)}
-			</div>
+			</div> */}
 		</div>
 	);
 }

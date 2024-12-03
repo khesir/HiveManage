@@ -3,14 +3,18 @@ import {ColumnDef} from '@tanstack/react-table';
 
 export const columns: ColumnDef<SalesItemWithDetails>[] = [
 	{
-		accessorKey: 'item.product.name',
+		id: 'item_name',
 		header: 'Name',
-		accessorFn: (row) => `${row.product.name} - ${row.product.name}`,
+		accessorFn: (row) => `${row.item.variant.variant_name}`,
 		cell: (info) => info.getValue(),
 		filterFn: 'includesString',
 	},
 	{
-		accessorKey: 'item.product.price',
+		accessorKey: 'item.item_type',
+		header: 'Item Type',
+	},
+	{
+		accessorKey: 'item.variant.price',
 		header: 'Price',
 	},
 	{

@@ -1,6 +1,6 @@
 import {ApiRequest, request} from '@/api/axios';
 import {DataTable} from '@/components/table/data-table';
-import { Button } from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 import {Item} from '@/modules/inventory/_components/validation/item';
 import {SerializeItem} from '@/modules/inventory/_components/validation/serialize-items';
 import {ColumnDef} from '@tanstack/react-table';
@@ -40,7 +40,6 @@ interface BatchRecordProps {
 export function SerializeRecord({data}: BatchRecordProps) {
 	const [SerializeItems, setSerializeItems] = useState<SerializeItem[]>([]);
 	const {id, item_record_id} = useParams();
-  console.log(data.item_id);
 	useEffect(() => {
 		const fetchData = async () => {
 			const res = await request<ApiRequest<SerializeItem>>(

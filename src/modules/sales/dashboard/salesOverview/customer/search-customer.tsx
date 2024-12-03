@@ -1,108 +1,110 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {PaginationResponse, request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
-import {Input} from '@/components/ui/input';
+import {
+	Command,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from '@/components/ui/command';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 import {Customer} from '@/lib/cms-zod-schema';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+
 interface SearchCustomerProps {
-	processCreate: (data: any[]) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	processCreate: (data: Customer) => void;
 }
+
 export function SearchCustomer({processCreate}: SearchCustomerProps) {
-	const [query, setQuery] = useState<string>(''); // Search query (email or fullname)
-	const [customer, setCustomer] = useState<Customer | undefined>(undefined);
-	const [loading, setLoading] = useState<boolean>(false);
+	const [customers, setCustomers] = useState<Customer[]>([]);
+	const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
-	const handleSearch = async () => {
-		setLoading(true);
-		try {
-			console.log('Searching for Customer');
-
-			// Make the request to your backend with query params
-			const response = await request<PaginationResponse<Customer>>(
-				'GET',
-				`/api/v1/cms/customer?fullname=${query}`,
-			);
-			// Set the customer data if found
-			if (response.data.length > 0) {
-				setCustomer(response.data[0]);
-			} else {
-				setCustomer(undefined); // No customer found
+	// Function to handle customer search
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				// Fetch all customers from the backend
+				const response = await request<PaginationResponse<Customer>>(
+					'GET',
+					`/api/v1/cms/customer?no_pagination=true`,
+				);
+				setCustomers(response.data);
+			} catch (error) {
+				console.error('Error fetching customer:', error);
+				setCustomers([]);
 			}
-		} catch (error) {
-			console.error('Error fetching customer:', error);
-			setCustomer(undefined); // Handle case where no customer is found or an error occurs
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	const handleConfirm = () => {
-		processCreate([customer]);
-	};
+		};
+		fetchData();
+	}, []);
 
 	return (
 		<div className="flex flex-col gap-2">
 			<h1 className="font-semibold">Search Customer</h1>
-			<div className="flex gap-5">
-				<Input
-					type="string"
-					placeholder="eg. name, email"
-					value={query}
-					onChange={(e) => setQuery(e.target.value)} // Update the query state
-				/>
-				<Button onClick={handleSearch} disabled={loading}>
-					{loading ? 'Searching...' : 'Search'}
-				</Button>
-			</div>
-
-			{customer ? (
-				<>
-					<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid">
-						<ul className="grid gap-3">
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Fullname</span>
-								<span>
-									{customer.lastname}, {customer.firstname}{' '}
-									{customer.middlename}
-								</span>
-							</li>
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Contact</span>
-								<span>{customer.contact_phone}</span>
-							</li>
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Socials</span>
-								<span>on progress</span>
-							</li>
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Address Line</span>
-								<span>{customer.addressline}</span>
-							</li>
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Barangay</span>
-								<span>{customer.barangay}</span>
-							</li>
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Province</span>
-								<span>{customer.province}</span>
-							</li>
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Email</span>
-								<span>{customer.email}</span>
-							</li>
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Standing</span>
-								<span>{customer.standing}</span>
-							</li>
-						</ul>
-					</Card>
-					<Button className="" onClick={() => handleConfirm}></Button>
-				</>
-			) : (
-				<Card className="p-3 flex justify-center font-semibold">
-					Search for a Customer
-				</Card>
+			{/* ShadCN Command Component for displaying search results */}
+			<Command>
+				<CommandInput placeholder="Search for a customer..." />
+				<CommandList className="max-h-[350px]">
+					{customers.length > 0 ? (
+						<CommandGroup heading="Customers">
+							{customers.map((customer) => (
+								<CommandItem
+									key={customer.customer_id}
+									onSelect={() => {
+										setSelectedCustomer(customer);
+										setIsModalOpen(true);
+									}}
+								>
+									<div className="flex items-center gap-3">
+										<div className="flex-1">
+											<p className="font-semibold">{`${customer.firstname} ${customer.middlename} ${customer.lastname}`}</p>
+											<p className="text-sm text-gray-500">{customer.email}</p>
+										</div>
+									</div>
+								</CommandItem>
+							))}
+						</CommandGroup>
+					) : (
+						<p className="p-3 text-sm text-gray-500">No customers found.</p>
+					)}
+				</CommandList>
+			</Command>
+			{isModalOpen && (
+				<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+					<DialogContent className="sm:max-w-[425px]">
+						<DialogHeader>
+							<DialogTitle> Selected employee</DialogTitle>
+							<DialogDescription>
+								<Card className="p-4">
+									<p className="font-semibold">{`${selectedCustomer?.firstname} ${selectedCustomer?.middlename} ${selectedCustomer?.lastname}`}</p>
+									<p className="text-sm text-gray-500">
+										{selectedCustomer?.email}
+									</p>
+								</Card>
+							</DialogDescription>
+						</DialogHeader>
+						<DialogFooter>
+							<Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+							<Button
+								onClick={() => {
+									setIsModalOpen(false);
+									processCreate(selectedCustomer!);
+								}}
+							>
+								Confirm
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
 			)}
 		</div>
 	);

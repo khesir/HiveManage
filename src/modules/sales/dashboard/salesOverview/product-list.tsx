@@ -1,5 +1,4 @@
 import {PaginationResponse, request} from '@/api/axios';
-import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {
@@ -8,7 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {Input} from '@/components/ui/input';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {
 	Select,
@@ -17,23 +15,52 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {ProductWithRelatedTables} from '@/modules/inventory/_components/validation/product';
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet';
+import {Item} from '@/modules/inventory/_components/validation/item';
+import {Product} from '@/modules/inventory/_components/validation/product';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
+import {ColumnDef} from '@tanstack/react-table';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useNavigate, useSearchParams} from 'react-router-dom';
-import {toast} from 'sonner';
-
+import {Separator} from '@/components/ui/separator';
+import {DataTable} from './_components/table/table';
+import {CombinedRecord} from './productTables/combined-record';
+import useItemStore from './_components/hooks/use-custom-item';
+const itemColumns: ColumnDef<Item>[] = [
+	{
+		accessorKey: 'variant.variant_name',
+		header: 'Variant Name',
+	},
+	{
+		accessorKey: 'item_type',
+		header: 'Type',
+	},
+	{
+		accessorKey: 'item_status',
+		header: 'Status',
+	},
+	{
+		accessorKey: 'quantity',
+		header: 'qty',
+	},
+];
 export function ProductsList() {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 
-	const [Products, setProducts] = useState<ProductWithRelatedTables[]>([]);
+	const [Products, setProducts] = useState<Product[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [pageLimit, setPageLimit] = useState<number>(
 		Number(searchParams.get('limit')) || 10,
 	);
-	const [quantities, setQuantities] = useState<{[key: number]: number}>({}); // State to track quantities for each product
 
 	const page = Number(searchParams.get('page')) || 1;
 	const offset = (page - 1) * pageLimit;
@@ -43,7 +70,7 @@ export function ProductsList() {
 
 	useEffect(() => {
 		const fetchProducts = async () => {
-			const res = await request<PaginationResponse<ProductWithRelatedTables>>(
+			const res = await request<PaginationResponse<Product>>(
 				'GET',
 				`/api/v1/ims/product?on_listing=true&limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : ''),
@@ -62,96 +89,6 @@ export function ProductsList() {
 	};
 	const handlePageLimitChange = (newLimit: number) => {
 		setPageLimit(newLimit);
-	};
-
-	const handleQuantityChange = (
-		productId: number,
-		value: string,
-		availableQuantity: number,
-	) => {
-		const newValue = Math.min(Number(value), availableQuantity); // Cap the value
-		setQuantities((prev) => ({
-			...prev,
-			[productId]: newValue < 0 ? 0 : newValue, // Ensure value is non-negative
-		}));
-	};
-
-	// Handling interactivity
-	const {salesHookData, setSaleHookData} = useSalesHook();
-
-	const handleAddproduct = (product: ProductWithRelatedTables) => {
-		if (!salesHookData['service']) {
-			alert('Create service First!');
-		}
-		const updateService = {
-			...salesHookData['service'][0],
-			has_job_order: true,
-		};
-		setSaleHookData('service', [updateService], 'clear');
-		const quantity = quantities[product.product_id] || 0;
-
-		if (quantity <= 0) {
-			alert('Please enter a valid quantity.');
-			return;
-		}
-
-		const existingProducts = salesHookData['sales_product'] || [];
-
-		const existingproduct = existingProducts.find(
-			(data) =>
-				data.data.product_id === product.product_id &&
-				data.data.type === 'Sales',
-		);
-
-		if (existingproduct) {
-			// If the product exists, calculate the new total quantity
-			const newQuantity = existingproduct.data.quantity + quantity;
-			console.log(existingproduct);
-			// Check if the new product exceeds the available stock
-			if (newQuantity > product.total_stocks) {
-				alert('Not enough Products available.');
-				return;
-			}
-
-			// Update the existing product with the new quantity and total price
-			const updatedData = {
-				...existingproduct,
-				data: {
-					...existingproduct.data,
-					quantity: newQuantity,
-					total_price: newQuantity * 0,
-				},
-			};
-			// Replace the existing product in the sales_product array
-			const updatedProducts = existingProducts.map((data) =>
-				data.data.product_id === product.product_id ? updatedData : data,
-			);
-
-			// Update the state
-			setSaleHookData('sales_product', updatedProducts, 'clear'); // Use 'clear' to replace the existing Products
-			toast(`Updated ${product.name} qty: ${newQuantity} in the cart`);
-		} else {
-			// If the product does not exist, check if there's enough stock
-			if (quantity > product.total_stocks) {
-				// Assume product.quantity is the available stock
-				alert('Not enough Products available.');
-				return;
-			}
-
-			// Add the product to the cart
-			const data = {
-				data: {
-					product_id: product.product_id,
-					service_id: undefined,
-					quantity: quantity,
-					type: 'Sales',
-					total_price: quantity * 0,
-				},
-				product,
-			};
-			setSaleHookData('sales_product', [data], 'append');
-			toast(`Added ${product.name} qty: ${quantity} to the cart`);
-		}
 	};
 
 	if (Products.length === 0) {
@@ -187,18 +124,16 @@ export function ProductsList() {
 									<CardDescription>
 										<div className="space-x-1">
 											{product.product_categories &&
-												product.product_categories.map((category) => (
-													<Badge key={category.category_id}>
-														{category.category.name}
-													</Badge>
+												product.product_categories.map((category, index) => (
+													<Badge key={index}>{category.category?.name}</Badge>
 												))}
 										</div>
-										<div>
+										{/* <div>
 											Qty {product.total_stocks} - Price:{' '}
 											{product.price_history && product.price_history.length > 0
 												? product.price_history[0].price
 												: 'Not set'}
-										</div>
+										</div> */}
 										<div className="w-[60%] text-justify">
 											{product.description}
 										</div>
@@ -206,7 +141,7 @@ export function ProductsList() {
 								</CardHeader>
 							</div>
 							<div className="absolute bottom-1 right-3 gap-2 flex Products-end justify-end">
-								<Button variant={'ghost'}>View Details</Button>
+								{/* <Button variant={'ghost'}>View Details</Button>
 								<div className="flex flex-col gap-3">
 									<Input
 										className="w-[100px]"
@@ -228,7 +163,32 @@ export function ProductsList() {
 									>
 										Add
 									</Button>
-								</div>
+								</div> */}
+								<Sheet>
+									<SheetTrigger asChild>
+										<Button
+											onClick={() =>
+												useItemStore.getState().resetSelectedItem()
+											}
+										>
+											View Items
+										</Button>
+									</SheetTrigger>
+									<SheetContent className="max-w-none w-[700px]">
+										<SheetHeader>
+											<SheetTitle>{product.name}</SheetTitle>
+											<SheetDescription>
+												All available items that is under {product.name} product
+											</SheetDescription>
+											<DataTable
+												columns={itemColumns}
+												data={product.item || []}
+											/>
+											<Separator />
+											<CombinedRecord />
+										</SheetHeader>
+									</SheetContent>
+								</Sheet>
 							</div>
 						</Card>
 					))}

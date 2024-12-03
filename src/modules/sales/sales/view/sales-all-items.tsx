@@ -32,6 +32,7 @@ export function SalesAllItem({item_type}: SalesAllItemProps) {
 					(sales_item_type ? `&sales_item_type=${sales_item_type}` : '') +
 					(sort ? `&sort=${sort}` : ''),
 			);
+			console.log(res.data);
 			setSalesItem(res.data);
 			setSelectedSalesItemWithDetails(res.data);
 			setPageCount(Math.ceil(res.total_data / pageLimit));

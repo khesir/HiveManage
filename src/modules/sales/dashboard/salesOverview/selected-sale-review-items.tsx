@@ -10,7 +10,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import {Copy, PackageOpenIcon} from 'lucide-react';
+import {PackageOpenIcon} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 
 export function SelectedSaleReviewItems() {
@@ -25,14 +25,6 @@ export function SelectedSaleReviewItems() {
 				<div className="grid gap-0.5">
 					<CardTitle className="group flex items-center gap-2 text-lg">
 						Service #123
-						<Button
-							size="icon"
-							variant="outline"
-							className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-						>
-							<Copy className="h-3 w-3" />
-							<span className="sr-only">Copy Order ID</span>
-						</Button>
 					</CardTitle>
 					<CardDescription>Date: November 23, 2023</CardDescription>
 				</div>
@@ -53,58 +45,57 @@ export function SelectedSaleReviewItems() {
 			<CardContent className="m-0 p-0 border-y-2">
 				<ScrollArea className="relative h-[calc(90vh-220px)]">
 					<div className="relative flex flex-col gap-3 z-10 m-3">
-						{salesHookData['sales_item'] &&
-						salesHookData['sales_item'].length > 0 ? (
-							salesHookData['sales_item'].map((item, index) => (
+						{salesHookData['sales_product'] &&
+						salesHookData['sales_product'].length > 0 ? (
+							salesHookData['sales_product'].map((item, index) => (
 								<Card
 									className="relative w-full h-[150px] flex items-center justify-start overflow-hidden"
 									key={index}
 								>
-									{/* Handles Borrow, Reserve and Sales */}
-									{item.data.type !== 'Joborder' ? (
+									{item.record.type !== 'Joborder' ? (
 										<CardHeader className="flex-grow">
 											<CardTitle className="hover:underline">
 												<span className="text-xs">
-													{item.data.type !== 'Sales'
-														? `( ${item.data.type} )`
+													{item.record.type !== 'Sales'
+														? `( ${item.record.type} )`
 														: ''}
 												</span>{' '}
 												<span className="font-semibold text-sm">
 													{' '}
-													{item.item.product.name} -{' '}
-													{item.item.product.supplier.name}
+													{item.record.record_number} -{' '}
+													{item.variantRecord.product.name} |{' '}
+													{item.variantRecord.variant_name}
 												</span>
 												{/* Adjust this to display the actual item name if available */}
 											</CardTitle>
 											<CardDescription className="font-semibold text-sm">
-												<div className="flex gap-2 flex-wrap">
-													<Badge>{item.item.product.category.name}</Badge>
-													<Badge>{item.item.tag}</Badge>
-												</div>
 												<div className="flex gap-1">
-													Price: {item.item.product.price}
+													Price: {item.record.price}
 												</div>
 												<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
-													Qty: {item.data.quantity}
+													Qty: {item.record.quantity}
 												</p>
 											</CardDescription>
 										</CardHeader>
 									) : (
 										// Handles Job order card
 										<CardHeader className="flex-grow">
-											<CardTitle className="hover:underline">
+											<CardTitle className="hover:underline flex items-center gap-3">
 												<span className="font-semibold text-sm">
-													{item.data.type} - ID:{' '}
-													{' ' + item.data.related_data.joborder.uuid}
+													{item.record.type} Service No.{' '}
+													{' ' + item.record.record_number}{' '}
 												</span>
+												<Badge>{item.record.joborder_status}</Badge>
 												{/* Adjust this to display the actual item name if available */}
 											</CardTitle>
-											<CardDescription className="font-semibold text-sm">
-												<div className="flex gap-2 flex-wrap">
-													<Badge>
-														{item.data.related_data.joborder.status}
-													</Badge>
-												</div>
+											<CardDescription>
+												ID: {' ' + item.record.uuid}
+											</CardDescription>
+											<CardDescription>
+												<Badge>
+													{item.record.record_number}{' '}
+													{item.record.joborder_type}
+												</Badge>
 											</CardDescription>
 										</CardHeader>
 									)}
@@ -122,47 +113,47 @@ export function SelectedSaleReviewItems() {
 				</ScrollArea>
 			</CardContent>
 			<CardFooter className=" bg-muted/50 flex flex-col items-start w-full">
-				<p className="font-semibold text-md">
+				<p>
 					Item Listed(
-					{salesHookData['sales_item']?.length
-						? salesHookData['sales_item'].length
+					{salesHookData['sales_product']?.length
+						? salesHookData['sales_product'].length
 						: '0'}
 					)- ₱
-					{salesHookData['sales_item']?.length
+					{salesHookData['sales_product']?.length
 						? ' ' +
 							Math.round(
-								salesHookData['sales_item'].reduce(
-									(total, item) => total + item.data.total_price,
+								salesHookData['sales_product'].reduce(
+									(total, item) => total + item.record.total_price,
 									0,
 								),
 							)
 						: ' 0'}
 				</p>
 
-				<ul className="grid gap-3 grid-cols-3 w-full">
+				<ul className="grid gap-3 grid-cols-3">
 					<span className="text-muted-foreground col-span-2">Fees</span>
-					<span className="font-semibold">
-						{salesHookData['sales_item']
+					<span>
+						{salesHookData['sales_product']
 							? '₱ ' +
 								Math.round(
-									salesHookData['sales_item']?.reduce(
-										(total, item) => total + item.data.total_price,
+									salesHookData['sales_product']?.reduce(
+										(total, item) => total + item.record.total_price,
 										0,
 									),
 								)
 							: ' 0'}
 					</span>
 					<span className="text-muted-foreground col-span-2">VAT</span>
-					<span className="font-semibold">0</span>
+					<span>0 %</span>
 					<span className="text-muted-foreground col-span-2 flex justify-end mr-5">
 						Total
 					</span>
-					<span className="font-semibold">
-						{salesHookData['sales_item']
+					<span>
+						{salesHookData['sales_product']
 							? '₱ ' +
 								Math.round(
-									salesHookData['sales_item']?.reduce(
-										(total, item) => total + item.data.total_price,
+									salesHookData['sales_product']?.reduce(
+										(total, item) => total + item.record.total_price,
 										0,
 									),
 								)

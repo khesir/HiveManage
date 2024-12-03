@@ -52,11 +52,13 @@ import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
 import {ProductCategory} from '@/modules/inventory/_components/validation/category';
 import {ProductVariant} from '@/modules/inventory/_components/validation/variants';
+import {useNavigate} from 'react-router-dom';
 
 export function CreateOrderForm() {
 	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 	const [items, setItems] = useState<ProductVariant[]>([]);
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 	const [res, setRes] = useState<string | null>(null);
 	const [formState, setFormState] = useState<{
 		search: {[key: number]: string};
@@ -194,14 +196,13 @@ export function CreateOrderForm() {
 				toast.error('No order Items added');
 				return;
 			}
-			console.log();
 			await request('POST', `api/v1/ims/order/`, {
 				...formData,
 				supplier_id: Number(formData.supplier_id),
 				ordered_value: Number(formData.ordered_value),
 			});
 			toast.success('Order Added');
-			// navigate(-1);
+			navigate(-1);
 		} catch (error) {
 			console.log(error);
 			let errorMessage = 'An unexpected error occurred';
@@ -238,10 +239,10 @@ export function CreateOrderForm() {
 							type="button"
 							onClick={() =>
 								append({
+									product_id: -1,
 									variant_id: -1,
 									quantity: '1',
 									item_type: 'Batch',
-									product_id: -1,
 									price: '',
 									status: 'Pending',
 								})
@@ -410,12 +411,12 @@ export function CreateOrderForm() {
 																				)
 																			: '/img/placeholder.jpg'
 																}
-																alt={`Product ID ${formState.selectedProduct[index]?.product_id} - ${formState.selectedProduct[index]?.variant_name}`}
+																alt={`Product ID ${formState.selectedProduct[index]?.variant_id} - ${formState.selectedProduct[index]?.variant_name}`}
 																className="rounded-lg w-20 h-20 object-cover"
 															/>
 															<div className="grid gap-0.5 text-white">
 																<CardTitle className="group flex items-center gap-2 text-lg">
-																	{`#${formState.selectedProduct[index]?.product_id} ${formState.selectedProduct[index]?.variant_name}`}
+																	{`#${formState.selectedProduct[index]?.variant_id} ${formState.selectedProduct[index]?.variant_name}`}
 																</CardTitle>
 																{/* <CardDescription className="text-gray-400">
 																	{
@@ -559,6 +560,9 @@ export function CreateOrderForm() {
 																					onSelect={() => {
 																						field.onChange(item.variant_id);
 																						handleProductSelect(index, item);
+																						// DO NOT REMOVE THIS
+																						// This handles the item-record creation for orders
+																						// if removed, system will cause validation error of product_id
 																						if (
 																							orderItems &&
 																							orderItems[index]

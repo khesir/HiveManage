@@ -36,7 +36,7 @@ import {CreateCustomer} from '../api/create-customer';
 import {useNavigate} from 'react-router-dom';
 
 interface CreateCustomerFormProps {
-	processCreate?: (data: any[]) => void;
+	processCreate?: (data: Customer) => void;
 }
 export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [loading, setLoading] = useState(false);
