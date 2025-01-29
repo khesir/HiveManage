@@ -1,17 +1,17 @@
 import {create} from 'zustand';
-import {ProductWithRelatedTables} from '../validation/product';
+import {Product} from '../validation/product';
 
 type PropsProps = {
-	data: ProductWithRelatedTables | null;
-	setProduct: (newData: Partial<ProductWithRelatedTables>) => void;
+	data: Product | null;
+	setProduct: (newData: Partial<Product>) => void;
 	resetProducts: () => void;
 };
 
 const useProducts = create<PropsProps>((set) => ({
 	data: null,
-	setProduct: (newData: Partial<ProductWithRelatedTables>) =>
+	setProduct: (newData: Partial<Product>) =>
 		set((state) => ({
-			data: {...(state.data ?? {}), ...newData} as ProductWithRelatedTables,
+			data: {...(state.data ?? {}), ...newData} as Product,
 		})),
 	resetProducts: () => set({data: null}),
 }));

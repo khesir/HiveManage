@@ -12,18 +12,13 @@ import {
 	EmployeeViewPage,
 } from './pages/admin';
 
-import {
-	CustomerDatabasePage,
-	OverviewPage,
-	SalesDashboardPage,
-	ServicePages,
-} from './pages/sales';
+import {OverviewPage, SalesDashboardPage, ServicePages} from './pages/sales';
 
 // TODO: Sort this to each index found in root of page file index.ts
 import {CreateServicePage} from './pages/sales/systems/overview/create-service-page';
 import ViewServicePage from './pages/sales/systems/service/view-service-page';
-import CustomerCreatePage from './pages/sales/systems/customer/customer-create-page';
-import CustomerViewPage from './pages/sales/systems/customer/customer-view-page';
+import CustomerCreatePage from './pages/customer/customer-create-page';
+import CustomerViewPage from './pages/customer/customer-view-page';
 import TechOverview from './pages/tech/systems/overview/overview-page';
 import Settings from './pages/general/settings';
 import Terminal from './pages/general/terminal';
@@ -44,6 +39,7 @@ import SupplierPage from './pages/inventory/product/suppliers/supplier-page';
 import CreateOrderPage from './pages/inventory/product/orders/create-order-page';
 import InventoryRecordCreatePage from './pages/inventory/product/inventoryView/inventory-record-create';
 import RecordViewPage from './pages/inventory/product/record/record-view-page';
+import CustomerDatabasePage from './pages/customer/customer-page';
 
 function App() {
 	return (

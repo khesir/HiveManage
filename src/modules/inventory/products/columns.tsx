@@ -1,7 +1,5 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
-import {Button} from '@/components/ui/button';
-import {useNavigate, useLocation} from 'react-router-dom';
 import {Product} from '../_components/validation/product';
 export const columns: ColumnDef<Product>[] = [
 	{
@@ -26,10 +24,6 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorKey: 'product_id',
-		header: 'ID',
-	},
-	{
 		accessorKey: 'name',
 		header: 'Name',
 	},
@@ -51,27 +45,4 @@ export const columns: ColumnDef<Product>[] = [
 		accessorKey: 'description',
 		header: 'Description',
 	},
-	{
-		id: 'action',
-		cell: ({row}: {row: {original: Product}}) => (
-			<ActionsCell {...row.original} />
-		),
-	},
 ];
-
-const ActionsCell = (data: Product) => {
-	const navigate = useNavigate();
-	const location = useLocation();
-	const handleClick = (service_id: number) => {
-		const id = Number(service_id);
-		if (location.pathname.startsWith('/sales')) {
-			navigate(`/sales/inventory/products/view/${id}`);
-		} else if (location.pathname.startsWith('/admin')) {
-			navigate(`/admin/inventory/products/view/${id}`);
-		} else if (location.pathname.startsWith('/tech')) {
-			navigate(`/tech/inventory/products/view/${id}`);
-		}
-	};
-
-	return <Button onClick={() => handleClick(data.product_id!)}>View</Button>;
-};

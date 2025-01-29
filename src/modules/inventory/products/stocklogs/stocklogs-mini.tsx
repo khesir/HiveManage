@@ -52,7 +52,7 @@ export function StockLogsMini({product_id}: Props) {
 
 	return (
 		<div className="px-3">
-			<ScrollArea className="h-[calc(90vh-210px)] px-2">
+			<ScrollArea className="h-[calc(100vh-200px)] px-2">
 				<div className="flex flex-col gap-3">
 					{stockLogs.length !== 0 ? (
 						stockLogs.map((data, index) => (

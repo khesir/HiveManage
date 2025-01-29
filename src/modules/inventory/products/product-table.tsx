@@ -273,7 +273,7 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)
 						} // Update filter value}
-						className="w-full md:max-w-xl"
+						className="w-[40vh] "
 					/>
 					<DropdownMenu>
 						<DropdownMenuTrigger>
@@ -357,7 +357,7 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 					Add Product
 				</Button>
 			</div>
-			<ScrollArea className="h-[calc(120vh-200px)] rounded-md border">
+			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (

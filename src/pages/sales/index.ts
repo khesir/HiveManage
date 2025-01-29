@@ -1,5 +1,4 @@
 // Exporting pages from the 'systems' subfolder
-export {default as CustomerDatabasePage} from './systems/customer-page';
 export {default as OverviewPage} from './systems/overview-page';
 export {default as ServicePages} from './systems/service-page';
 

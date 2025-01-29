@@ -288,7 +288,7 @@ export function ProductItemSummaryTable<TData extends Item, TValue>({
 					</Button>
 				</div>
 			</div>
-			<ScrollArea className="h-[calc(100vh-230px)] rounded-md border">
+			<ScrollArea className="h-[calc(80vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
