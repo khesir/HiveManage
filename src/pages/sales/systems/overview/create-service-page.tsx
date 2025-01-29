@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import {SalesCreateService} from '@/modules/sales/_sections/overview/sales-create-service';
+import {SalesCreateService} from '@/modules/sales/_sections/sales-create-service';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'sales/dashboard'},
