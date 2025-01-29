@@ -36,7 +36,7 @@ import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {cn} from '@/lib/util/utils';
 import {Customer} from '@/lib/cms-zod-schema';
-import useCustomerFormStore from '@/modules/sales/customer/hooks/use-customer-form';
+import useCustomerFormStore from '@/modules/customer/hooks/use-customer-form';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

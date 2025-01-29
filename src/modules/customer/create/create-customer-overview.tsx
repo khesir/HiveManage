@@ -1,16 +1,11 @@
-import useCustomerFormStore from '@/modules/sales/customer/hooks/use-customer-form';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import {Separator} from '@/components/ui/separator';
-import {dateParser} from '@/lib/util/utils';
+import useCustomerFormStore from '@/modules/customer/hooks/use-customer-form';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 
-export function CustomerProfile() {
+import {Separator} from '@/components/ui/separator';
+
+export function CreateCustomerOverview() {
 	const {data} = useCustomerFormStore();
+
 	if (!data) {
 		return (
 			<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
@@ -25,13 +20,8 @@ export function CustomerProfile() {
 			<CardHeader className="flex flex-row items-start bg-muted/50">
 				<div className="grid gap-0.5">
 					<CardTitle className="group flex items-center gap-2 text-lg">
-						{`#${data.customer_id} ${data.lastname}, ${data.firstname}`}
+						{`${data.lastname}, ${data.firstname} ${data.middlename}`}
 					</CardTitle>
-					{data && (
-						<CardDescription>
-							Joined date: {dateParser(data.created_at ?? '')}
-						</CardDescription>
-					)}
 				</div>
 			</CardHeader>
 			<CardContent className="p-6 text-sm">
@@ -41,7 +31,7 @@ export function CustomerProfile() {
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Standing</span>
 							<span>{data.standing}</span>
-						</li>{' '}
+						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Email</span>
 							<span>{data.email}</span>
@@ -56,7 +46,7 @@ export function CustomerProfile() {
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Socials</span>
-							<span>{data.contact_phone}</span>
+							<span>In progress</span>
 						</li>
 					</ul>
 				</div>

@@ -1,5 +1,4 @@
-import useCustomerFormStore from '@/modules/sales/customer/hooks/use-customer-form';
-import {Button} from '@/components/ui/button';
+import useCustomerFormStore from '@/modules/customer/hooks/use-customer-form';
 import {
 	Card,
 	CardContent,
@@ -9,11 +8,8 @@ import {
 } from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
 import {dateParser} from '@/lib/util/utils';
-import {File} from 'lucide-react';
-import {useNavigate} from 'react-router-dom';
 
 export function CustomerProfile() {
-	const navigate = useNavigate();
 	const {data} = useCustomerFormStore();
 	if (!data) {
 		return (
@@ -36,40 +32,6 @@ export function CustomerProfile() {
 							Joined date: {dateParser(data.created_at ?? '')}
 						</CardDescription>
 					)}
-				</div>
-				<div className="ml-auto flex items-center gap-1">
-					<Button
-						size="sm"
-						variant="outline"
-						className="h-8 gap-1"
-						onClick={() => {
-							navigate(`view/${data.customer_id}`);
-						}}
-					>
-						<File className="h-3.5 w-3.5" />
-						<span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-							View More
-						</span>
-					</Button>
-					{/* <DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								size="icon"
-								variant="outline"
-								className="h-8 w-8"
-								onClick={() => navigate(`view/${data.customer_id}`)}
-							>
-								<MoreVertical className="h-3.5 w-3.5" />
-								<span className="sr-only">More</span>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem>Edit</DropdownMenuItem>
-							<DropdownMenuItem>Export</DropdownMenuItem>
-							<DropdownMenuSeparator />
-															<DropdownMenuItem>Trash</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu> */}
 				</div>
 			</CardHeader>
 			<CardContent className="p-6 text-sm">
@@ -94,7 +56,7 @@ export function CustomerProfile() {
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Socials</span>
-							<span>not tested</span>
+							<span>{data.contact_phone}</span>
 						</li>
 					</ul>
 				</div>

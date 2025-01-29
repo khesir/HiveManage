@@ -1,6 +1,6 @@
 import {Separator} from '@/components/ui/separator';
-import {ViewCustomerDetails} from '../../customer/view/customer-details';
-import {CustomerProfile} from '../../customer/list/customer-profile';
+import {ViewCustomerDetails} from '../../../customer/view/customer-details';
+import {CustomerProfile} from '../../../customer/list/customer-profile';
 
 export default function CustomerViewSection() {
 	return (

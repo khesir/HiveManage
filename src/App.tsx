@@ -50,6 +50,8 @@ function App() {
 		<BrowserRouter>
 			<Router>
 				<Route index path="/" element={<AuthenticationPage />} />
+				<Route path="*" element={<NotFound />} />
+				<Route path="unauthorized" element={<Unauthorized />} />
 
 				{/* Admin Layout */}
 				<Route path="admin" element={<MainLayout userType={'admin'} />}>
@@ -200,7 +202,7 @@ function App() {
 					</Route>
 				</Route>
 
-				{/* TODO: Sales Layout */}
+				{/* Sales Layout */}
 				<Route path="sales" element={<MainLayout userType={'sales'} />}>
 					<Route element={<RequireAuth allowedRoles={['Sales']} />}>
 						<Route path="dashboard" element={<SalesDashboardPage />} />
@@ -266,8 +268,6 @@ function App() {
 						<Route path="inquiry" element={<InquiryPage />} />
 					</Route>
 				</Route>
-				<Route path="*" element={<NotFound />} />
-				<Route path="unauthorized" element={<Unauthorized />} />
 			</Router>
 		</BrowserRouter>
 	);

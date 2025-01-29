@@ -1,5 +1,5 @@
 import {Tabs, TabsList, TabsTrigger, TabsContent} from '@/components/ui/tabs';
-import {JoborderProfiler} from '../joborder-profile';
+import {JoborderProfiler} from '../../sales/service/joborder/joborder-profile';
 import {Card, CardHeader} from '@/components/ui/card';
 import {useJoborderStore} from '@/modules/sales/_components/hooks/use-joborder-store';
 import {JoborderPriceBreakDown} from './joborder-price-breakdown';

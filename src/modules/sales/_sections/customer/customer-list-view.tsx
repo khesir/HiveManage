@@ -1,8 +1,8 @@
 import {Separator} from '@/components/ui/separator';
 import {Heading} from '@/components/ui/heading';
 import {useSearchParams} from 'react-router-dom';
-import CustomerList from '../../customer/list/customer-list';
-import {CustomerProfile} from '../../customer/list/customer-profile';
+import CustomerList from '../../../customer/list/customer-list';
+import {CustomerProfile} from '../../../customer/list/customer-profile';
 
 export default function CustomerListView() {
 	const [searchParams] = useSearchParams();
