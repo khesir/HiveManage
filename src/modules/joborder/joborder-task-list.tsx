@@ -3,15 +3,16 @@ import {PaginationResponse, request} from '@/api/axios';
 import {Card, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useState, useEffect} from 'react';
-import {TaskWithDetails} from '../../_components/validation/task';
 import {Button} from '@/components/ui/button';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useNavigate, useLocation} from 'react-router-dom';
-import useTicketStore from '../../_components/hooks/use-ticket-store';
-import useTaskStore from '../../_components/hooks/use-task-store';
+
 import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
-import {JobOrderWithDetails} from '../../_components/validation/joborder';
+import { JobOrderWithDetails } from './_components/validation/joborder';
+import { TaskWithDetails } from './_components/validation/task';
+import useTaskStore from '../sales/_components/hooks/use-task-store';
+import useTicketStore from '../sales/_components/hooks/use-ticket-store';
 
 interface JoborderTaskListProps {
 	joborderData: JobOrderWithDetails;

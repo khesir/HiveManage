@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import JoborderView from '@/modules/sales/_sections/service/joborder-view';
+import JoborderView from '@/modules/joborder/_sections/joborder/joborder-view';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: '/tech/dashboard'},

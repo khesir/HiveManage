@@ -32,8 +32,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {TaskWithDetails} from '../../../../_components/validation/task';
-import useAddFormStatus from '../../../../_components/hooks/use-ticket-form';
+import useAddFormStatus from '@/modules/sales/_components/hooks/use-ticket-form';
+import {TaskWithDetails} from '../../_components/validation/task';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

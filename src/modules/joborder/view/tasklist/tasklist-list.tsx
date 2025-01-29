@@ -1,11 +1,11 @@
 import {PaginationResponse, request} from '@/api/axios';
 import {useState, useEffect} from 'react';
 import {useSearchParams} from 'react-router-dom';
-import {useJoborderStore} from '../../../../_components/hooks/use-joborder-store.ts';
 import {columns} from './columns';
 import {TaskTable} from './tasklist-table';
-import {TaskWithDetails} from '../../../../_components/validation/task';
 import {TicketsSettings} from '@/modules/_configSettings/config';
+import {useJoborderStore} from '@/modules/sales/_components/hooks/use-joborder-store';
+import {TaskWithDetails} from '../../_components/validation/task';
 
 export function TaskList() {
 	const {joborderData} = useJoborderStore();

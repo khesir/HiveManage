@@ -27,7 +27,7 @@ import {
 	Joborder,
 	joborderSchema,
 	JobOrderType,
-} from '@/modules/sales/_components/validation/joborder';
+} from '@/modules/joborder/_components/validation/joborder';
 import {PaginationResponse, request} from '@/api/axios';
 import {toast} from 'sonner';
 

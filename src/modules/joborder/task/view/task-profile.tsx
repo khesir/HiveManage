@@ -5,8 +5,8 @@ import {
 	CardTitle,
 	CardDescription,
 } from '@/components/ui/card';
+import {useJoborderStore} from '@/modules/sales/_components/hooks/use-joborder-store';
 import {Plus, UserCircle} from 'lucide-react';
-import {useJoborderStore} from '../../../../_components/hooks/use-joborder-store.ts';
 
 export function TaskListProfile() {
 	const {joborderData} = useJoborderStore();

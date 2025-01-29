@@ -2,8 +2,8 @@ import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {useSearchParams} from 'react-router-dom';
-import useCustomerFormStore from '@/modules/customer/hooks/use-customer-form';
-import ServiceList from '../../sales/sales/service_list';
+import useCustomerFormStore from '@/modules/customer/_components/hooks/use-customer-form';
+import ServiceList from '../../../sales/sales/service_list';
 
 export function ViewCustomerDetails() {
 	const [searchParams] = useSearchParams();

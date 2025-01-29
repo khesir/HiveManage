@@ -8,7 +8,6 @@ import {
 	CardFooter,
 } from '@/components/ui/card';
 import {Circle, MoreVertical, Ticket} from 'lucide-react';
-import useTicketStore from '../../../../_components/hooks/use-ticket-store';
 import {dateParser} from '@/lib/util/utils';
 import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
 import {
@@ -18,6 +17,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import useTicketStore from '@/modules/sales/_components/hooks/use-ticket-store';
 
 export function TaskContent() {
 	const {data} = useTicketStore();

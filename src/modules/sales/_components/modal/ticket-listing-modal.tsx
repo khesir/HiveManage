@@ -21,8 +21,8 @@ import {
 } from '@/components/ui/select';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {Input} from '@/components/ui/input';
-import {TaskWithDetails} from '../validation/task';
-import {JobOrderWithDetails} from '../validation/joborder';
+import {TaskWithDetails} from '../../../joborder/_components/validation/task';
+import {JobOrderWithDetails} from '../../../joborder/_components/validation/joborder';
 import useTicketArrayStore from '../hooks/use-ticket-array-store';
 import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
 

@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {JobOrderWithDetails} from '../validation/joborder';
+import {JobOrderWithDetails} from '../../../joborder/_components/validation/joborder';
 
 type JoborderStore = {
 	joborderData: JobOrderWithDetails | null;

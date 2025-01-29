@@ -1,4 +1,4 @@
-import {Task} from '../validation/task';
+import {Task} from '../../../joborder/_components/validation/task';
 import {ItemWithDetails} from '@/modules/inventory/_components/validation/product';
 
 export const SubmitTicket = async (

@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
-import {ItemLisitingModal} from '../../../_components/modal/item-listing-modal';
+import {ItemLisitingModal} from '../../_components/modal/item-listing-modal';
 
 interface BorrowFormProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;

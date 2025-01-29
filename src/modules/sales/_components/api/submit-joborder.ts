@@ -1,5 +1,5 @@
 import {ApiRequest, request} from '@/api/axios';
-import {Joborder, JobOrderWithDetails} from '../validation/joborder';
+import {Joborder, JobOrderWithDetails} from '../../../joborder/_components/validation/joborder';
 
 export const CreateJoborder = async (
 	data: Joborder,

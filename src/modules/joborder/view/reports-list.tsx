@@ -4,8 +4,8 @@ import {Card, CardHeader, CardTitle, CardFooter} from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {dateParser} from '@/lib/util/utils';
 
-import {JobOrderWithDetails} from '@/modules/sales/_components/validation/joborder';
-import {ReportsWithDetails} from '@/modules/sales/_components/validation/reports';
+import {JobOrderWithDetails} from '@/modules/joborder/_components/validation/joborder';
+import {ReportsWithDetails} from '@/modules/joborder/_components/validation/reports';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {useState, useEffect} from 'react';

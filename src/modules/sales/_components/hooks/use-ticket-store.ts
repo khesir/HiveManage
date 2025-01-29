@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {TaskWithDetails} from '../validation/task';
+import {TaskWithDetails} from '../../../joborder/_components/validation/task';
 
 type TicketStore = {
 	data: TaskWithDetails | null;

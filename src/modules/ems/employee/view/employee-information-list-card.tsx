@@ -10,7 +10,7 @@ import {EmployeeRolesWithDetails} from '../../_components/validation/employeeRol
 import {PaginationResponse, request} from '@/api/axios';
 import ServiceList from '@/modules/sales/sales/service_list';
 import {Separator} from '@/components/ui/separator';
-import {JoborderList} from '@/modules/sales/service/joborder/joborder-list';
+import {JoborderList} from '@/modules/joborder/joborder-list';
 
 export function EmployeeInformationListCard() {
 	const {selectedEmployee, setSelectedEmployee} = useEmployeeStore();

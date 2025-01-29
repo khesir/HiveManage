@@ -1,11 +1,10 @@
-import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
+import {Heading} from '@/components/ui/heading';
 import {useSearchParams} from 'react-router-dom';
-import {JoborderList} from '../../service/joborder/joborder-list';
-import {JoborderTabsList} from '../../service/joborder/joborder-tabs';
-import {JoborderDirectCard} from '../../service/joborder/joborder-direct-card';
+import CustomerList from '../_components/list/customer-list';
+import {CustomerProfile} from '../_components/list/customer-profile';
 
-export default function JoborderSection() {
+export default function CustomerListView() {
 	const [searchParams] = useSearchParams();
 
 	return (
@@ -15,20 +14,19 @@ export default function JoborderSection() {
 				<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
 					<div className="flex flex-col gap-4">
 						<Heading
-							title={`Joborder`}
+							title={`Customer Database`}
 							description="Manange Customer (Server side table functionalities.)"
 						/>
 						<Separator />
 					</div>
-					{/* Assigned Joborde list here */}
-					<JoborderList searchParams={searchParams} />
+					<CustomerList searchParams={searchParams} />
 				</div>
 				<div className="flex flex-col gap-4">
 					<div className="flex lg:hidden">
 						<Separator />
 					</div>
-					<JoborderDirectCard />
-					<JoborderTabsList />
+					{/* Service Profile */}
+					<CustomerProfile />
 				</div>
 			</div>
 		</div>

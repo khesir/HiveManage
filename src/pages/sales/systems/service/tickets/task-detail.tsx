@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import ViewTask from '@/modules/sales/_sections/task/view-task';
+import ViewTask from '@/modules/joborder/_sections/task/view-task';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'sales/dashboard'},

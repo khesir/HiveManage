@@ -1,6 +1,6 @@
 import {Card, CardContent} from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
-import {JobOrderWithDetails} from '@/modules/sales/_components/validation/joborder';
+import {JobOrderWithDetails} from '@/modules/joborder/_components/validation/joborder';
 
 interface JoborderPriceBreakDownProps {
 	data: JobOrderWithDetails;

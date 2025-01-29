@@ -1,11 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {
-	Task,
-	taskSchema,
-	TaskType,
-} from '../../../../_components/validation/task';
+
 import {TicketsSettings} from '@/modules/_configSettings/config';
 import {
 	Form,
@@ -26,7 +22,6 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {ApiRequest, request} from '@/api/axios';
-import useAddFormStatus from '../../../../_components/hooks/use-ticket-form';
 import {Textarea} from '@/components/ui/textarea';
 import {ItemLisitingModal} from '@/modules/sales/_components/modal/item-listing-modal';
 import {X} from 'lucide-react';
@@ -34,6 +29,8 @@ import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/
 import {toast} from 'sonner';
 import {useJoborderStore} from '@/modules/sales/_components/hooks/use-joborder-store';
 import {SubmitTicket} from '@/modules/sales/_components/api/submit-ticket';
+import useAddFormStatus from '@/modules/sales/_components/hooks/use-ticket-form';
+import {Task, TaskType, taskSchema} from '../../_components/validation/task';
 
 export function TaskAdd() {
 	const {joborderData} = useJoborderStore();

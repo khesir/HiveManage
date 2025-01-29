@@ -2,9 +2,10 @@ import {ColumnDef} from '@tanstack/react-table';
 import useServiceFormStore from '@/components/hooks/use-service-store';
 import {Button} from '@/components/ui/button';
 import {useNavigate, useLocation} from 'react-router-dom';
-import {TaskWithDetails} from '../../../../_components/validation/task';
-import useTicketStore from '../../../../_components/hooks/use-ticket-store';
+
 import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
+import {TaskWithDetails} from '../../_components/validation/task';
+import useTicketStore from '@/modules/sales/_components/hooks/use-ticket-store';
 
 export const ActionsCell = (data: TaskWithDetails) => {
 	const {setServiceFormData} = useServiceFormStore();

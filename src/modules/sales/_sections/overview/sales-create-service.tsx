@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {Separator} from '@/components/ui/separator';
-import {CreateCustomerForm} from '../../../../customer/create/create-customer';
+import {CreateCustomerForm} from '../../../customer/_components/create/create-customer';
 import {Heading} from '@/components/ui/heading'; // Assuming you have a custom Heading component
-import {SelectedSaleReviewItems} from '../../../dashboard/selected-sale-review-items';
+import {SelectedSaleReviewItems} from '../../dashboard/selected-sale-review-items';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {SearchCustomer} from '../../../dashboard/customer/search-customer';
+import {SearchCustomer} from '../../dashboard/customer/search-customer';
 import {Button} from '@/components/ui/button';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {useEffect, useState} from 'react';

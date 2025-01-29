@@ -22,7 +22,7 @@ import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/use-selected-item';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
-import {ItemLisitingModal} from '../../../_components/modal/item-listing-modal';
+import {ItemLisitingModal} from '../../_components/modal/item-listing-modal';
 
 interface ReservationFormProps {
 	handleIsEditing: (value: string, fee: number | undefined) => void;

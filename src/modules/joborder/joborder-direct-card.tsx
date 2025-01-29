@@ -7,8 +7,8 @@ import {
 } from '@/components/ui/card';
 import {dateParser} from '@/lib/util/utils';
 import {useNavigate} from 'react-router-dom';
-import {useJoborderStore} from '../../_components/hooks/use-joborder-store.ts';
 import {File} from 'lucide-react';
+import {useJoborderStore} from '../sales/_components/hooks/use-joborder-store';
 
 export function JoborderDirectCard() {
 	const navigate = useNavigate();

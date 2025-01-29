@@ -1,7 +1,7 @@
 import {Input} from '@/components/ui/input';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {ProductsList} from './product-list';
-import {ServiceList} from './salesOverview/services';
+import {ServiceList} from './services';
 
 export function SalesInhouseTable() {
 	return (

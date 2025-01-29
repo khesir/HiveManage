@@ -1,8 +1,8 @@
 import {Tabs, TabsList, TabsTrigger, TabsContent} from '@/components/ui/tabs';
 import {JoborderProfiler} from './joborder-profile';
 import {JoborderTaskList} from './joborder-task-list';
-import {useJoborderStore} from '../../_components/hooks/use-joborder-store.ts';
 import {Card, CardHeader} from '@/components/ui/card';
+import {useJoborderStore} from '../sales/_components/hooks/use-joborder-store';
 
 export function JoborderTabsList() {
 	const {joborderData} = useJoborderStore();

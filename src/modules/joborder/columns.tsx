@@ -1,11 +1,11 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
-import {JobOrderWithDetails} from '../../_components/validation/joborder';
 import {EmployeeAvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
-import {useJoborderStore} from '../../_components/hooks/use-joborder-store';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
+import {JobOrderWithDetails} from './_components/validation/joborder';
+import {useJoborderStore} from '../sales/_components/hooks/use-joborder-store';
 
 export const getColumns = (
 	showAction: boolean,

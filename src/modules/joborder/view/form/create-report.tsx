@@ -12,11 +12,11 @@ import {Input} from '@/components/ui/input';
 
 import {Textarea} from '@/components/ui/textarea';
 import useAddFormStatus from '@/modules/sales/_components/hooks/use-ticket-form';
-import {JobOrderWithDetails} from '@/modules/sales/_components/validation/joborder';
+import {JobOrderWithDetails} from '@/modules/joborder/_components/validation/joborder';
 import {
 	Reports,
 	reportsSchema,
-} from '@/modules/sales/_components/validation/reports';
+} from '@/modules/joborder/_components/validation/reports';
 import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';

@@ -5,15 +5,14 @@ import {
 	CardDescription,
 } from '@/components/ui/card';
 import {dateParser} from '@/lib/util/utils';
-import {useJoborderStore} from '../../_components/hooks/use-joborder-store.ts';
+import {useJoborderStore} from '../../../sales/_components/hooks/use-joborder-store.ts';
 import {Separator} from '@/components/ui/separator';
 import {Button} from '@/components/ui/button';
 import {Ticket} from 'lucide-react';
-import {ViewJoborderTasks} from '../../../joborder/view/view-joborder-tabs.tsx';
-import {ViewJoborderProfileTabs} from '../../../joborder/view/view-joborder-profile-tabs.tsx';
-import {EmployeeCardCount} from '../../../joborder/view/employee-card-count.tsx';
-import {TaskAdd} from '../../service/joborder/view/form/taskAdd';
-import useAddFormStatus from '../../_components/hooks/use-ticket-form';
+import {ViewJoborderTasks} from '../../view/view-joborder-tabs.tsx';
+import {ViewJoborderProfileTabs} from '../../view/view-joborder-profile-tabs.tsx';
+import {EmployeeCardCount} from '../../view/employee-card-count.tsx';
+import useAddFormStatus from '../../../sales/_components/hooks/use-ticket-form.ts';
 import {useEffect, useState} from 'react';
 import {
 	Dialog,
@@ -26,8 +25,9 @@ import {
 import {ApiRequest, request} from '@/api/axios';
 import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee.ts';
 import {AssignEmployeeWithDetails} from '@/lib/sales-zod-schema';
-import {CreateReport} from '../../service/joborder/view/form/create-report';
-import {AssignEmployeeModal} from '../../_components/modal/assign-employee-modal.tsx';
+import {AssignEmployeeModal} from '../../../sales/_components/modal/assign-employee-modal.tsx';
+import {TaskAdd} from '../../view/form/taskAdd.tsx';
+import {CreateReport} from '../../view/form/create-report.tsx';
 
 export default function JoborderView() {
 	const {joborderData} = useJoborderStore();
