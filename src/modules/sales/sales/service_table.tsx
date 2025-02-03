@@ -7,7 +7,7 @@ import {
 	getPaginationRowModel,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import {Link, useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -24,8 +24,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
+import {Button, buttonVariants} from '@/components/ui/button';
+import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ServiceWithDetails} from '@/lib/sales-zod-schema';
 import {
@@ -34,6 +34,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Input} from '@/components/ui/input';
+import { cn } from '@/lib/util/utils';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -164,7 +165,7 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 				<div className="space-x-2 flex">
 					{!isDetails && (
 						<Input
-							placeholder={`Find Customer...`}
+							placeholder={`Find Service...`}
 							// value={searchValue ?? ''} // Bind the input value to the current filter value
 							// onChange={(event) =>
 							// 	table.getColumn(searchKey)?.setFilterValue(event.target.value)
@@ -238,6 +239,14 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 							</DropdownMenu>
 						</>
 					)}
+				</div>
+				<div className="flex justify-between gap-3 md:gap-0">
+					<Link
+						to={'create'}
+						className={cn(buttonVariants({variant: 'default'}))}
+						>
+						<Plus className="mr-2 h-4 w-4" /> Add Services
+					</Link>
 				</div>
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
