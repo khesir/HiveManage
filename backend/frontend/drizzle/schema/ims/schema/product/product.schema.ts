@@ -1,0 +1,34 @@
+import {
+  boolean,
+  integer,
+  pgEnum,
+  pgTable,
+  real,
+  serial,
+  timestamp,
+} from 'drizzle-orm/pg-core';
+import { productDetails } from './productDetails.schema';
+import { supplier } from './supplier.schema';
+
+export const productStatus = pgEnum('product_status', [
+  'Unavailable',
+  'Sold',
+  'Available',
+]);
+
+export const product = pgTable('product', {
+  product_id: serial('product_id').primaryKey(),
+  supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
+  product_details_id: integer('product_details_id').references(
+    () => productDetails.product_details_id,
+  ),
+  price: real('price').default(0),
+  is_serialize: boolean('is_serialize').default(false),
+  status: productStatus('product_status').notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+  last_updated: timestamp('last_updated')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
+});
