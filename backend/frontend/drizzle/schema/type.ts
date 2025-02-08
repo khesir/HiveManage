@@ -1,6 +1,4 @@
 import { pgTable } from 'drizzle-orm/pg-core';
-import { payment, receipt } from '../drizzle.schema';
-import { inquiry } from './customer/schema/inquiry.schema';
 import {
   employee,
   roles,
@@ -29,6 +27,8 @@ import {
   reserveItems,
 } from './services';
 import { sales, salesItems } from './sales';
+import { payment, receipt } from './payment';
+import { inquiry, customerGroup, customer } from './customer';
 
 export type SchemaType = {
   [key: string]: ReturnType<typeof pgTable>;
@@ -74,4 +74,6 @@ export const schema: SchemaType = {
   discountProducts,
 
   inquiry,
+  customerGroup,
+  customer,
 } as const;
