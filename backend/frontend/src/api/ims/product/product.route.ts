@@ -12,7 +12,7 @@ import productcategoryRoute from './productcategory/productcategory.route';
 import stockLogsRoute from '../stocksLogs/stockslogs.route';
 import productvariantRoute from './prodvar/prodvar.route';
 import productvarsuppRoute from './prodvarsupp/prodvarsupp.route';
-import itemRecordRoute from './inventoryrecord/itemrecord.route';
+import itemRecordRoute from './productRecord/itemrecord.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);

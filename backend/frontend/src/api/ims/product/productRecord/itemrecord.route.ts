@@ -4,7 +4,7 @@ import { db } from '@/drizzle/pool';
 import { ItemRecordController } from './itemrecord.controller';
 import { validateItemRecordID } from './itemrecord.middleware';
 import { CreateItemRecord, UpdateItemRecord } from './itemrecord.model';
-import itemRoute from './item/item.route';
+import itemRoute from '../product_details/item.route';
 
 const itemRecordRoute = Router({ mergeParams: true });
 const itemRecordController = new ItemRecordController(db);

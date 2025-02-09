@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import log from '@/lib/logger';
 import serviceRoute from './service/serviceses.route';
-import jobordertypesRoute from './jobordertypes/jobordertypes.route';
+import jobordertypesRoute from './service/joborder/jobordertypes/jobordertypes.route';
 import joborderRoute from './service/joborder/joborder.route';
 import assignedEmployeeRoute from './service/joborder/assignedemployees/assignedemployees.route';
-import remarktypesRoute from './remarktype/remarktype.route';
+import remarktypesRoute from './service/joborder/remarktype/remarktype.route';
 import remarkTicketsRoute from './service/joborder/remarktickets/remarkticket.route';
 
 const smsRoute = Router({ mergeParams: true });

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import departmentRoute from './company/department/department.route';
-import designationRoute from './company/designation/designation.route';
+import departmentRoute from './department/department.route';
+import designationRoute from './designation/designation.route';
 import employeeRoute from './employee/employee/employee.route';
 
 import employeeroleRoute from './roles/roles.route';

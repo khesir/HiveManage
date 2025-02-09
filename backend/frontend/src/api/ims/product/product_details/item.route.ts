@@ -5,7 +5,7 @@ import { ItemController } from './item.controller';
 import { validateItemID } from './item.middleware';
 import { CreateItem, UpdateItem } from './item.model';
 import { validateRequest } from '@/src/middlewares';
-import serialRoute from './serializeItems/serialize.route';
+import serialRoute from '../serializeItems/serialize.route';
 import batchRoute from './batchItems/batch.route';
 
 const itemRoute = Router({ mergeParams: true });

@@ -3,12 +3,11 @@ import express from 'express';
 import { HttpStatus } from '@/lib/config';
 
 import emsRoute from './ems/index';
-import imsRoute from './inventory/inventory.route';
+import imsRoute from './ims/inventory.route';
 
 import log from '@/lib/logger';
 import cmsRoute from './cms/cms.route';
 import smsRoute from './sales/sales.route';
-import auditRoute from './auditlogs/auditlogs.route';
 
 const baseRoute = express.Router({ mergeParams: true });
 
@@ -27,7 +26,6 @@ log.info('Sales Management System endpoints ready');
 baseRoute.use('/cms', cmsRoute);
 log.info('Customer Managment System endpoints ready');
 
-baseRoute.use('/auditLogs', auditRoute);
 log.info('Loggings Ready');
 
 baseRoute.get('/', (req, res) => {
