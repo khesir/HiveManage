@@ -2,9 +2,9 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
-import { designation } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { db } from '@/drizzle/pool';
+import { designation } from '@/drizzle/schema/ems';
 
 export async function validateDesignationID(
   req: Request,

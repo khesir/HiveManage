@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { roles } from '@/drizzle/drizzle.schema';
+import { roles } from '@/drizzle/schema/ems';
 
 // There's a globally used
 // middleware like error handling and schema validation

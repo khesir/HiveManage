@@ -1,16 +1,17 @@
 import { asc, desc, eq, isNull, and, sql, like, or } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import {
-  department,
-  designation,
-  employee,
-  employee_roles,
-  employmentInformation,
-  personalInformation,
-  SchemaType,
-} from '@/drizzle/drizzle.schema';
+
 import { CreateEmployee, UpdateEmployee } from './employee.model';
 import { SupabaseService } from '@/supabase/supabase.service';
+import { SchemaType } from '@/drizzle/schema/type';
+import {
+  employee,
+  personalInformation,
+  employmentInformation,
+  department,
+  designation,
+  employeeRoles,
+} from '@/drizzle/schema/ems';
 
 export class EmployeeService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -145,9 +146,9 @@ export class EmployeeService {
       // Update EmployeeRoles
       if (data.role_id) {
         await tx
-          .update(employee_roles)
+          .update(employeeRoles)
           .set({ role_id: Number(data.role_id) })
-          .where(eq(employee_roles.employee_id, paramsId));
+          .where(eq(employeeRoles.employee_id, paramsId));
       }
       // Upload file
       let filePath = undefined;

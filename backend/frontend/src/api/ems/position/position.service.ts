@@ -1,7 +1,8 @@
 import { eq, isNull } from 'drizzle-orm';
-import { position, SchemaType } from '@/drizzle/drizzle.schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreatePosition, UpdatePosition } from './position.model';
+import { position } from '@/drizzle/schema/ems';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class PositionService {
   private db: PostgresJsDatabase<SchemaType>;

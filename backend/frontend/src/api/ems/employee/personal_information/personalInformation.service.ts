@@ -1,7 +1,8 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { personalInformation, SchemaType } from '@/drizzle/drizzle.schema';
 import { PersonalInformation } from './personalInformation.model';
+import { SchemaType } from '@/drizzle/schema/type';
+import { personalInformation } from '@/drizzle/schema/ems';
 
 export class PersonalInformationService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -18,7 +19,7 @@ export class PersonalInformationService {
     console.log(employeeID);
     if (personalID && !isNaN(Number(personalID))) {
       conditions.push(
-        eq(personalInformation.personal_information_id, Number(personalID)),
+        eq(personalInformation.personal_info_id, Number(personalID)),
       );
     }
 
@@ -47,13 +48,13 @@ export class PersonalInformationService {
     await this.db
       .update(personalInformation)
       .set(data)
-      .where(eq(personalInformation.personal_information_id, paramsId));
+      .where(eq(personalInformation.personal_info_id, paramsId));
   }
 
   async deletePersonalInformation(paramsId: number) {
     await this.db
       .update(personalInformation)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(personalInformation.personal_information_id, paramsId));
+      .where(eq(personalInformation.personal_info_id, paramsId));
   }
 }

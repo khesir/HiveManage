@@ -4,7 +4,7 @@ import multer from 'multer';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { employee, employee_roles } from '@/drizzle/drizzle.schema';
+import { employee, employeeRoles } from '@/drizzle/schema/ems';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -18,11 +18,11 @@ export async function validatEmployeeRoleID(
   try {
     const EmployeeAccount = await db
       .select()
-      .from(employee_roles)
+      .from(employeeRoles)
       .where(
         and(
-          eq(employee_roles.employee_roles_id, Number(employee_role_id)),
-          isNull(employee_roles.deleted_at),
+          eq(employeeRoles.employee_roles_id, Number(employee_role_id)),
+          isNull(employeeRoles.deleted_at),
         ),
       );
     if (!EmployeeAccount) {

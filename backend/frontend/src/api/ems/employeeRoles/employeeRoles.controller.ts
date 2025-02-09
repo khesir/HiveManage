@@ -1,8 +1,8 @@
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.schema';
 import { EmployeeRolesService } from './employeeRoles.service';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class EmployeeRolesController {
   private employeeaccountService: EmployeeRolesService;

@@ -3,7 +3,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 import { HttpStatus } from '@/lib/config';
 import { EmploymentInformationService } from './employmentInformation.service';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class EmploymentInformationController {
   private employmentInformationService: EmploymentInformationService;

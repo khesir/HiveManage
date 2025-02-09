@@ -1,7 +1,7 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { eq, and, isNull } from 'drizzle-orm';
-
-import { department, SchemaType } from '@/drizzle/drizzle.schema';
+import { department } from '@/drizzle/schema/ems';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class DepartmentService {
   private db: PostgresJsDatabase<SchemaType>;

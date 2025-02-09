@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/config';
 import { DesignationService } from './designation.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class DesignationController {
   private designationService: DesignationService;

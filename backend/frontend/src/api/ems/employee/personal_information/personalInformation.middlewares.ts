@@ -2,9 +2,9 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
-import { employee, personalInformation } from '@/drizzle/drizzle.schema';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { db } from '@/drizzle/pool';
+import { employee, personalInformation } from '@/drizzle/schema/ems';
 
 export async function validatePersonalId(
   req: Request,
@@ -19,10 +19,7 @@ export async function validatePersonalId(
       .from(personalInformation)
       .where(
         and(
-          eq(
-            personalInformation.personal_information_id,
-            Number(personalInfo_id),
-          ),
+          eq(personalInformation.personal_info_id, Number(personalInfo_id)),
           isNull(personalInformation.deleted_at),
         ),
       );

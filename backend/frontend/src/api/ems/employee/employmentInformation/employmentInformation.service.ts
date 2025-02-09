@@ -1,12 +1,13 @@
 import { eq, isNull, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
+
+import { EmploymentInformation } from './employmentInformation.model';
 import {
+  employmentInformation,
   department,
   designation,
-  employmentInformation,
-  SchemaType,
-} from '@/drizzle/drizzle.schema';
-import { EmploymentInformation } from './employmentInformation.model';
+} from '@/drizzle/schema/ems';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class EmploymentInformationService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -23,10 +24,7 @@ export class EmploymentInformationService {
 
     if (employmentID && !isNaN(Number(employmentID))) {
       conditions.push(
-        eq(
-          employmentInformation.employment_information_id,
-          Number(employmentID),
-        ),
+        eq(employmentInformation.employment_info_id, Number(employmentID)),
       );
     } else if (employeeID && !isNaN(Number(employeeID))) {
       conditions.push(
@@ -73,12 +71,12 @@ export class EmploymentInformationService {
     await this.db
       .update(employmentInformation)
       .set(data)
-      .where(eq(employmentInformation.employment_information_id, employmentID));
+      .where(eq(employmentInformation.employment_info_id, employmentID));
   }
   async deleteEmployementInformation(employmentID: number) {
     await this.db
       .update(employmentInformation)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(employmentInformation.employment_information_id, employmentID));
+      .where(eq(employmentInformation.employment_info_id, employmentID));
   }
 }

@@ -9,15 +9,7 @@ import {
   or,
   sql,
 } from 'drizzle-orm';
-import {
-  employee,
-  employee_roles,
-  employmentInformation,
-  personalInformation,
-  position,
-  roles,
-  SchemaType,
-} from '@/drizzle/drizzle.schema';
+
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import {
   CreateEmployeeRoles,
@@ -28,6 +20,15 @@ import { SupabaseService } from '@/supabase/supabase.service';
 import { CreateEmployee } from '../employee/employee/employee.model';
 import { PersonalInformation } from '../employee/personal_information/personalInformation.model';
 import { EmploymentInformation } from '../employee/employmentInformation/employmentInformation.model';
+import {
+  employee,
+  employmentInformation,
+  personalInformation,
+  roles,
+  position,
+  employeeRoles,
+} from '@/drizzle/schema/ems';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class EmployeeRolesService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -82,7 +83,7 @@ export class EmployeeRolesService {
         email,
         password,
       );
-      await tx.insert(employee_roles).values({
+      await tx.insert(employeeRoles).values({
         employee_id: Number(newEmployee.employee_id),
         role_id: Number(data.employee_role_role_id),
         user_id: user.data.user?.id,
@@ -101,9 +102,9 @@ export class EmployeeRolesService {
 
   async updateStatus(data: Status, employee_role_id: string) {
     await this.db
-      .update(employee_roles)
+      .update(employeeRoles)
       .set(data)
-      .where(eq(employee_roles.employee_roles_id, Number(employee_role_id)));
+      .where(eq(employeeRoles.employee_roles_id, Number(employee_role_id)));
   }
 
   async getAllEmployeeAccount(
@@ -117,7 +118,7 @@ export class EmployeeRolesService {
     fullname: string | undefined,
     position_id: string | undefined,
   ) {
-    const conditions = [isNull(employee_roles.deleted_at)];
+    const conditions = [isNull(employeeRoles.deleted_at)];
     const employeeIds: number[] = [];
     const employeePosIDs: number[] = [];
     // Name Filter
@@ -135,20 +136,20 @@ export class EmployeeRolesService {
       employeeIds.push(...employeeData.map((emp) => emp.employee_id));
 
       if (employeeIds.length > 0) {
-        conditions.push(inArray(employee_roles.employee_id, employeeIds));
+        conditions.push(inArray(employeeRoles.employee_id, employeeIds));
       }
     }
     // Status Filter
     if (status) {
-      conditions.push(eq(employee_roles.status, status));
+      conditions.push(eq(employeeRoles.status, status));
     }
     // Employee ID Filter
     if (employee_id) {
-      conditions.push(eq(employee_roles.employee_id, Number(employee_id)));
+      conditions.push(eq(employeeRoles.employee_id, Number(employee_id)));
     }
     // Supabase UserID Filter
     if (user_id) {
-      conditions.push(eq(employee_roles.user_id, user_id));
+      conditions.push(eq(employeeRoles.user_id, user_id));
     }
     // Role Filter
     if (role_id) {
@@ -167,7 +168,7 @@ export class EmployeeRolesService {
         );
       employeePosIDs.push(...empPos.map((emp) => emp.employee_id));
       if (employeePosIDs.length > 0) {
-        conditions.push(inArray(employee_roles.employee_id, employeePosIDs));
+        conditions.push(inArray(employeeRoles.employee_id, employeePosIDs));
       }
     }
 
@@ -175,22 +176,22 @@ export class EmployeeRolesService {
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(employee_roles)
+      .from(employeeRoles)
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
 
     const result = await this.db
       .select()
-      .from(employee_roles)
-      .leftJoin(employee, eq(employee.employee_id, employee_roles.employee_id))
-      .leftJoin(roles, eq(roles.role_id, employee_roles.role_id))
+      .from(employeeRoles)
+      .leftJoin(employee, eq(employee.employee_id, employeeRoles.employee_id))
+      .leftJoin(roles, eq(roles.role_id, employeeRoles.role_id))
       .leftJoin(position, eq(position.position_id, employee.position_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
-          ? asc(employee_roles.created_at)
-          : desc(employee_roles.created_at),
+          ? asc(employeeRoles.created_at)
+          : desc(employeeRoles.created_at),
       )
       .limit(limit)
       .offset(offset);
@@ -233,14 +234,14 @@ export class EmployeeRolesService {
   async getEmployeeAccountById(employee_roles_id: string) {
     const result = await this.db
       .select()
-      .from(employee_roles)
-      .leftJoin(employee, eq(employee.employee_id, employee_roles.employee_id))
-      .leftJoin(roles, eq(roles.role_id, employee_roles.role_id))
+      .from(employeeRoles)
+      .leftJoin(employee, eq(employee.employee_id, employeeRoles.employee_id))
+      .leftJoin(roles, eq(roles.role_id, employeeRoles.role_id))
       .leftJoin(position, eq(position.position_id, employee.position_id))
       .where(
         and(
-          eq(employee_roles.employee_roles_id, Number(employee_roles_id)),
-          isNull(employee_roles.deleted_at),
+          eq(employeeRoles.employee_roles_id, Number(employee_roles_id)),
+          isNull(employeeRoles.deleted_at),
         ),
       );
 
@@ -280,8 +281,8 @@ export class EmployeeRolesService {
 
   async deleteEmployeeAccount(paramsId: number): Promise<void> {
     await this.db
-      .update(employee_roles)
+      .update(employeeRoles)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(employee_roles.employee_roles_id, paramsId));
+      .where(eq(employeeRoles.employee_roles_id, paramsId));
   }
 }

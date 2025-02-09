@@ -1,9 +1,9 @@
 import { SupabaseService } from '@/supabase/supabase.service';
 import { Login } from './auth.model';
-import { SchemaType } from '@/drizzle/drizzle.schema';
 import { db } from '@/drizzle/pool';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { EmployeeRolesService } from '../api/ems/employeeRoles/employeeRoles.service';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class AuthenticationService {
   private supabaseService: SupabaseService;
