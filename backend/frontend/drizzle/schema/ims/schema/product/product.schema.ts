@@ -19,8 +19,8 @@ export const productStatus = pgEnum('product_status', [
 export const product = pgTable('product', {
   product_id: serial('product_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
-  product_details_id: integer('product_details_id').references(
-    () => productDetails.product_details_id,
+  p_details_id: integer('p_details_id').references(
+    () => productDetails.p_details_id,
   ),
   price: real('price').default(0),
   is_serialize: boolean('is_serialize').default(false),

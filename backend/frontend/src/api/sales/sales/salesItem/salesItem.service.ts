@@ -10,7 +10,7 @@ import {
   SchemaType,
   service,
   supplier,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateSalesItem } from './salesItem.model';
 import { z } from 'zod';

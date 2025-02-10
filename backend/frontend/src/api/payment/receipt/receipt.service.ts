@@ -6,7 +6,7 @@ import {
   receipt,
   SchemaType,
   service,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateReceipt, UpdateReceipt } from './receipt.model';
 

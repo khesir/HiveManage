@@ -1,8 +1,8 @@
 import { eq, and, isNull } from 'drizzle-orm';
-import { payment } from '@/drizzle/drizzle.schema';
 import { NextFunction, Request, Response } from 'express';
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
+import { payment } from '@/drizzle/schema/payment';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -24,7 +24,6 @@ export async function validatePaymentID(
           isNull(payment.deleted_at),
         ),
       );
-    console.log(Payment);
     if (!Payment[0]) {
       return res.status(404).json({ message: 'Payment not found' });
     }

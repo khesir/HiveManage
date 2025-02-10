@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { employee, remarktype } from '@/drizzle/drizzle.schema';
+import { employee, remarktype } from '@/drizzle/drizzle.config';
 import { HttpStatus } from '@/lib/HttpStatus';
 
 // There's a globally used

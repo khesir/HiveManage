@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ReserveService } from './reserve.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/drizzle.config';
 
 export class ReserveController {
   private reserveService: ReserveService;

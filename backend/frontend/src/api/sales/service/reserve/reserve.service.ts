@@ -5,7 +5,7 @@ import {
   reserve,
   SchemaType,
   service,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateReserve } from './reserve.model';
 import z from 'zod/lib';

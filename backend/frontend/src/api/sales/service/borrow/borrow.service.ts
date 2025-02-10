@@ -6,7 +6,7 @@ import {
   sales_items,
   SchemaType,
   service,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateBorrow } from './borrow.model';
 

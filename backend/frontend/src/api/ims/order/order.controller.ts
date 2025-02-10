@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { OrderService } from './order.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/drizzle.config';
 
 export class OrderController {
   private orderService: OrderService;

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SalesItemService } from './salesItem.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/drizzle.config';
 
 export class SalesItemController {
   private salesitemService: SalesItemService;

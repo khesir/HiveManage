@@ -1,5 +1,5 @@
 import { eq, isNull } from 'drizzle-orm';
-import { jobordertype, SchemaType } from '@/drizzle/drizzle.schema';
+import { jobordertype, SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateJobOrderTypes } from './jobordertypes.model';
 

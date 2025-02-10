@@ -1,5 +1,5 @@
 import { eq, and, isNull } from 'drizzle-orm';
-import { sales_items } from '@/drizzle/drizzle.schema';
+import { sales_items } from '@/drizzle/drizzle.config';
 import { NextFunction, Request, Response } from 'express';
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';

@@ -1,6 +1,6 @@
 import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
 
-export const jobordertype = pgTable('job_order_type', {
+export const jobOrderType = pgTable('job_order_type', {
   joborder_type_id: serial('joborder_type_id').primaryKey(),
   name: varchar('name', { length: 255 }),
   description: varchar('description', { length: 255 }),

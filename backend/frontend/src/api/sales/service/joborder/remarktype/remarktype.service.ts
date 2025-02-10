@@ -1,5 +1,5 @@
 import { eq, isNull } from 'drizzle-orm';
-import { remarktype, SchemaType } from '@/drizzle/drizzle.schema';
+import { remarktype, SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateRemarkType } from './remarktype.model';
 

@@ -1,7 +1,7 @@
 import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/drizzle.config';
 import { RemarkReportsService } from './remarkreports.service';
 
 export class RemarkReportsController {

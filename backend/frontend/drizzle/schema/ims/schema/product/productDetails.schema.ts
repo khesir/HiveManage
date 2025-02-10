@@ -8,7 +8,7 @@ import {
 import { category } from './category.schema';
 
 export const productDetails = pgTable('product_details', {
-  product_details_id: serial('product_details_id').primaryKey(),
+  p_details_id: serial('p_details_id').primaryKey(),
   category_id: integer('category_id').references(() => category.category_id),
   name: varchar('name', { length: 255 }),
   description: varchar('description', { length: 255 }),

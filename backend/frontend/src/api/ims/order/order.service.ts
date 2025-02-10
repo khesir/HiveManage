@@ -12,7 +12,7 @@ import {
   batchItems,
   serializeItems,
   variant,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateOrder } from './order.model';
 import { UpdateOrderItem } from './orderitem/orderitem.model';

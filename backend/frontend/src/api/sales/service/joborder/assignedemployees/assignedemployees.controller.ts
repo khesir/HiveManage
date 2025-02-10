@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { AssignedEmployeeService } from './assignedemployees.service';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/drizzle.config';
 
 export class AssignedEmployeeController {
   private assignedemployeeService: AssignedEmployeeService;

@@ -8,7 +8,7 @@ import {
   jobordertype,
   SchemaType,
   service,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateJobOrder, UpdateJobOrder } from './joborder.model';
 

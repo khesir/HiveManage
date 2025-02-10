@@ -1,4 +1,4 @@
-import { SchemaType, serializeItems } from '@/drizzle/drizzle.schema';
+import { SchemaType, serializeItems } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq } from 'drizzle-orm';
 import { CreateSerialize } from './serialize.model';

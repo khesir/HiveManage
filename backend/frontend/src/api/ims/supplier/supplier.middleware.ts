@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { supplier } from '@/drizzle/drizzle.schema';
+import { supplier } from '@/drizzle/drizzle.config';
 import multer from 'multer';
 
 // There's a globally used

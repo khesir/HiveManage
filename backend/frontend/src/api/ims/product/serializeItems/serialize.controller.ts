@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SerializeItemService } from './serialize.service';

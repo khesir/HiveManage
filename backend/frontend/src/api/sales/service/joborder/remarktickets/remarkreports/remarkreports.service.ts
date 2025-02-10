@@ -4,7 +4,7 @@ import {
   remarktickets,
   reports,
   SchemaType,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import {
   CreateRemarkReports,

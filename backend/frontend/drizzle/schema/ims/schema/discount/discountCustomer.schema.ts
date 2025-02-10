@@ -2,8 +2,8 @@ import { customer } from '@/drizzle/schema/customer';
 import { customerGroup } from '@/drizzle/schema/customer/schema/customerGroup.schema';
 import { integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 
-export const discountCustomer = pgTable('discount_customer', {
-  discount_customer_id: serial('discount_customer_id').primaryKey(),
+export const discountCustomer = pgTable('discount_c', {
+  discount_customer_id: serial('discount_c_id').primaryKey(),
   customer_id: integer('customer_id').references(() => customer.customer_id),
   customer_group_id: integer('customer_group').references(
     () => customerGroup.customer_group_id,

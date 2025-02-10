@@ -7,7 +7,7 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { jobordertype } from './jobOrderType.schema';
+import { jobOrderType } from './jobOrderType.schema';
 
 export const jobOrderStatusEnum = pgEnum('joborder_status', [
   'Pending',
@@ -23,8 +23,8 @@ export const jobOrderStatusEnum = pgEnum('joborder_status', [
 
 export const jobOrder = pgTable('job_order', {
   job_order_id: serial('job_order_id').primaryKey(),
-  jobordertype: integer('job_order_id').references(
-    () => jobordertype.joborder_type_id,
+  job_order_type_id: integer('joborder_type_id').references(
+    () => jobOrderType.joborder_type_id,
   ),
   uuid: varchar('uuid', { length: 255 }),
   fee: integer('fee'),

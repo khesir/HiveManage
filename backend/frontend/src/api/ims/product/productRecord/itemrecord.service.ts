@@ -6,7 +6,7 @@ import {
   SchemaType,
   serializeItems,
   supplier,
-} from '@/drizzle/drizzle.schema';
+} from '@/drizzle/drizzle.config';
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateItemRecord } from './itemrecord.model';

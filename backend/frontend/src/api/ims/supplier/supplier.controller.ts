@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SupplierService } from './supplier.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.schema';
+import { SchemaType } from '@/drizzle/drizzle.config';
 
 export class SupplierController {
   private supplierService: SupplierService;

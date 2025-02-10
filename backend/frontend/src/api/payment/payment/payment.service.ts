@@ -1,23 +1,17 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
-import {
-  customer,
-  employee,
-  payment,
-  SchemaType,
-  service,
-} from '@/drizzle/drizzle.schema';
+
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreatePayment } from './payment.model';
+import { customer } from '@/drizzle/schema/customer';
+import { employee } from '@/drizzle/schema/ems';
+import { payment } from '@/drizzle/schema/payment';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class PaymentService {
   private db: PostgresJsDatabase<SchemaType>;
 
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
-  }
-
-  async createPayment(data: CreatePayment) {
-    await this.db.insert(payment).values(data);
   }
 
   async getAllPayment(
@@ -146,7 +140,7 @@ export class PaymentService {
       deleted_at: row.payment?.deleted_at,
     }));
 
-    return { totalData, paymentWithDetails };
+    return { totalData, paymentWithDetails: paymentWithDetails };
   }
 
   async getPaymentById(payment_id: number) {
@@ -204,6 +198,10 @@ export class PaymentService {
     }));
 
     return paymentWithDetails;
+  }
+
+  async createPayment(data: CreatePayment) {
+    await this.db.insert(payment).values(data);
   }
 
   async updatePayment(data: object, paramsId: number) {

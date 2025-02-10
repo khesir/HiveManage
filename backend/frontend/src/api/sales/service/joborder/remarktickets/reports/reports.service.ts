@@ -1,5 +1,5 @@
 import { and, eq, isNull, desc, asc, sql } from 'drizzle-orm';
-import { jobOrder, reports, SchemaType } from '@/drizzle/drizzle.schema';
+import { jobOrder, reports, SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ReportsService {

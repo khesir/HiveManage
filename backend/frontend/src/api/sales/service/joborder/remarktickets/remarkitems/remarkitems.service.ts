@@ -1,12 +1,9 @@
 import { and, eq, isNull, sql } from 'drizzle-orm';
-import {
-  product,
-  remarkitems,
-  remarktickets,
-  SchemaType,
-} from '@/drizzle/drizzle.schema';
+
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateRemarkItems, UpdateRemarkItems } from './remarkitems.model';
+import { product } from '@/drizzle/schema/ims';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class RemarkItemsService {
   private db: PostgresJsDatabase<SchemaType>;
