@@ -69,6 +69,7 @@ export class CustomerController {
         province,
         email,
         standing,
+        customer_group_id,
       } = req.body;
 
       await this.customerService.createCustomer({
@@ -81,6 +82,7 @@ export class CustomerController {
         province,
         email,
         standing,
+        customer_group_id,
       });
       res
         .status(HttpStatus.CREATED.code)
@@ -108,6 +110,7 @@ export class CustomerController {
         province,
         email,
         standing,
+        customer_group_id,
       } = req.body;
 
       await this.customerService.updateCustomer(
@@ -121,6 +124,7 @@ export class CustomerController {
           province,
           email,
           standing,
+          customer_group_id,
         },
         Number(customer_id),
       );

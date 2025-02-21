@@ -1,16 +1,14 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
-import {
-  assignedemployees,
-  customer,
-  employee,
-  jobOrder,
-  joborder_services,
-  jobordertype,
-  SchemaType,
-  service,
-} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateJobOrder, UpdateJobOrder } from './joborder.model';
+import { customer } from '@/drizzle/schema/customer';
+import { employee } from '@/drizzle/schema/ems';
+import {
+  assignedEmployees,
+  jobOrder,
+  jobOrderType,
+} from '@/drizzle/schema/services';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class JobOrderService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -29,14 +27,12 @@ export class JobOrderService {
     limit: number,
     offset: number,
     uuid: string | undefined,
-    service_id: string | undefined,
+    customer_id: string | undefined,
     joborder_status: string | undefined,
-    employee_id: string | undefined,
   ) {
     const conditions = [isNull(jobOrder.deleted_at)];
 
     if (joborder_status) {
-      // Define valid statuses as a string union type
       const validStatuses = [
         'Pending',
         'In Progress',
@@ -47,7 +43,7 @@ export class JobOrderService {
         'Approved',
         'Rejected',
         'Closed',
-      ] as const; // 'as const' infers a readonly tuple of strings
+      ] as const;
       if (
         validStatuses.includes(
           joborder_status as (typeof validStatuses)[number],
@@ -63,8 +59,8 @@ export class JobOrderService {
         throw new Error(`Invalid payment status: ${status}`);
       }
     }
-    if (service_id) {
-      conditions.push(eq(jobOrder.service_id, Number(service_id)));
+    if (customer_id) {
+      conditions.push(eq(jobOrder.customer_id, Number(customer_id)));
     }
     if (uuid) {
       conditions.push(sql`${jobOrder.uuid} LIKE ${'%' + uuid + '%'}`);
@@ -82,9 +78,11 @@ export class JobOrderService {
     const query = this.db
       .select()
       .from(jobOrder)
-      .leftJoin(service, eq(service.service_id, jobOrder.service_id))
-      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
+      .leftJoin(
+        jobOrderType,
+        eq(jobOrderType.joborder_type_id, jobOrder.job_order_type_id),
+      )
+      .leftJoin(customer, eq(customer.customer_id, jobOrder.customer_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(jobOrder.created_at) : desc(jobOrder.created_at),
@@ -100,24 +98,24 @@ export class JobOrderService {
     // Getting all employee that is asssigned using the joint table of assignedEmployee
     const joAssign = await this.db
       .select()
-      .from(assignedemployees)
+      .from(assignedEmployees)
       .leftJoin(
         employee,
-        eq(employee.employee_id, assignedemployees.employee_id),
+        eq(employee.employee_id, assignedEmployees.employee_id),
       )
-      .where(isNull(assignedemployees.deleted_at));
+      .where(isNull(assignedEmployees.deleted_at));
 
     const assignmentsByJoID = joAssign.reduce(
       (acc, assignment) => {
         if (
-          assignment.assignedemployees.job_order_id !== null &&
-          !(assignment.assignedemployees.job_order_id in acc)
+          assignment.assigned_employees.job_order_id !== null &&
+          !(assignment.assigned_employees.job_order_id in acc)
         ) {
-          acc[assignment.assignedemployees.job_order_id] = [];
+          acc[assignment.assigned_employees.job_order_id] = [];
         }
-        if (assignment.assignedemployees.job_order_id !== null) {
-          acc[assignment.assignedemployees.job_order_id].push({
-            ...assignment.assignedemployees,
+        if (assignment.assigned_employees.job_order_id !== null) {
+          acc[assignment.assigned_employees.job_order_id].push({
+            ...assignment.assigned_employees,
             employee: {
               ...assignment.employee,
             },
@@ -129,56 +127,21 @@ export class JobOrderService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<number, any[]>,
     );
-    // Filtering joborder types
-    const jotypes = await this.db
-      .select()
-      .from(joborder_services)
-      .leftJoin(
-        jobordertype,
-        eq(jobordertype.joborder_type_id, joborder_services.joborder_types_id),
-      )
-      .where(isNull(joborder_services.deleted_at));
-    const typesByJoService = jotypes.reduce(
-      (acc, type) => {
-        if (
-          type.joborder_services.job_order_id !== null &&
-          !(type.joborder_services.job_order_id in acc)
-        ) {
-          acc[type.joborder_services.job_order_id] = [];
-        }
-        if (type.joborder_services.job_order_id !== null) {
-          acc[type.joborder_services.job_order_id].push({
-            ...type.joborder_services,
-            joborder_type: {
-              ...type.jobordertype,
-            },
-          });
-        }
-        return acc;
-      },
-      // Too much work to write a typing for this
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {} as Record<number, any[]>,
-    );
-
     // Filter and map only job orders where the specified employee_id is involved
     const joborderitemWithDetails = result
       .filter((row) => {
-        const assignments = assignmentsByJoID[row.joborder.job_order_id] || [];
-        return Number(employee_id)
+        const assignments = assignmentsByJoID[row.job_order.job_order_id] || [];
+        return Number(employee)
           ? assignments.some(
-              (assignment) => assignment.employee_id === Number(employee_id),
+              (assignment) => assignment.employee_id === Number(employee),
             )
           : assignments.length > 0;
       })
       .map((row) => ({
-        ...row.joborder,
-        joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
-        joborder_type: typesByJoService[row.joborder.job_order_id] || [],
-        service: {
-          ...row.service,
-          employee: { ...row.employee },
-          customer: { ...row.customer },
+        ...row.job_order,
+        joborder_assign: assignmentsByJoID[row.job_order.job_order_id] || [],
+        customer: {
+          ...row.customer,
         },
       }));
     return { totalData, joborderitemWithDetails };
@@ -188,64 +151,35 @@ export class JobOrderService {
     const result = await this.db
       .select()
       .from(jobOrder)
-      .leftJoin(service, eq(service.service_id, jobOrder.service_id))
-      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
+      .leftJoin(
+        jobOrderType,
+        eq(jobOrderType.joborder_type_id, jobOrder.job_order_type_id),
+      )
+      .leftJoin(customer, eq(customer.customer_id, jobOrder.customer_id))
       .where(eq(jobOrder.job_order_id, Number(job_order_id)));
 
     const joAssign = await this.db
       .select()
-      .from(assignedemployees)
+      .from(assignedEmployees)
       .leftJoin(
         employee,
-        eq(employee.employee_id, assignedemployees.employee_id),
+        eq(employee.employee_id, assignedEmployees.employee_id),
       )
-      .where(isNull(assignedemployees.deleted_at));
+      .where(isNull(assignedEmployees.deleted_at));
 
     const assignmentsByJoID = joAssign.reduce(
       (acc, assignment) => {
         if (
-          assignment.assignedemployees.job_order_id !== null &&
-          !(assignment.assignedemployees.job_order_id in acc)
+          assignment.assigned_employees.job_order_id !== null &&
+          !(assignment.assigned_employees.job_order_id in acc)
         ) {
-          acc[assignment.assignedemployees.job_order_id] = [];
+          acc[assignment.assigned_employees.job_order_id] = [];
         }
-        if (assignment.assignedemployees.job_order_id !== null) {
-          acc[assignment.assignedemployees.job_order_id].push({
-            ...assignment.assignedemployees,
+        if (assignment.assigned_employees.job_order_id !== null) {
+          acc[assignment.assigned_employees.job_order_id].push({
+            ...assignment.assigned_employees,
             employee: {
               ...assignment.employee,
-            },
-          });
-        }
-        return acc;
-      },
-      // Too much work to write a typing for this
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {} as Record<number, any[]>,
-    );
-
-    const jotypes = await this.db
-      .select()
-      .from(joborder_services)
-      .leftJoin(
-        jobordertype,
-        eq(jobordertype.joborder_type_id, joborder_services.joborder_types_id),
-      )
-      .where(isNull(joborder_services.deleted_at));
-    const typesByJoService = jotypes.reduce(
-      (acc, type) => {
-        if (
-          type.joborder_services.job_order_id !== null &&
-          !(type.joborder_services.job_order_id in acc)
-        ) {
-          acc[type.joborder_services.job_order_id] = [];
-        }
-        if (type.joborder_services.job_order_id !== null) {
-          acc[type.joborder_services.job_order_id].push({
-            ...type.joborder_services,
-            joborder_type: {
-              ...type.jobordertype,
             },
           });
         }
@@ -257,51 +191,39 @@ export class JobOrderService {
     );
 
     const joborderitemWithDetails = result.map((row) => ({
-      joborder_id: row.joborder.job_order_id,
-      joborder_assign: assignmentsByJoID[row.joborder.job_order_id] || [],
-      joborder_type: typesByJoService[row.joborder.job_order_id] || [],
-      service: {
-        service_id: row.service?.service_id,
-        employee: {
-          employee_id: row.employee?.employee_id,
-          firstname: row.employee?.firstname,
-          middlename: row.employee?.middlename,
-          lastname: row.employee?.lastname,
-          email: row.employee?.email,
-          profile_link: row.employee?.profile_link,
-          created_at: row.employee?.created_at,
-          last_updated: row.employee?.last_updated,
-          deleted_at: row.employee?.deleted_at,
-        },
+      joborder_id: row.job_order.job_order_id,
+      joborder_assign: assignmentsByJoID[row.job_order.job_order_id] || [],
+      jobordertype: {
+        joborder_type_id: row.job_order_type?.joborder_type_id,
+        name: row.customer?.firstname,
+        description: row.customer?.lastname,
+        fee: row.customer?.contact_phone,
         customer: {
           customer_id: row.customer?.customer_id,
           firstname: row.customer?.firstname,
           lastname: row.customer?.lastname,
-          contact_phone: row.customer?.contact_phone,
+          contact: row.customer?.contact_phone,
+          email: row.customer?.email,
           socials: row.customer?.socials,
-          address_line: row.customer?.address_line,
-          baranay: row.customer?.address_line,
+          addressline: row.customer?.address_line,
+          barangay: row.customer?.barangay,
           province: row.customer?.province,
           standing: row.customer?.standing,
+          customer_group_id: row.customer?.customer_group_id,
         },
-        service_title: row.service?.service_title,
-        service_description: row.service?.service_description,
-        service_status: row.service?.service_status,
-        has_reservation: row.service?.has_reservation,
-        has_sales_item: row.service?.has_sales_item,
-        has_borrow: row.service?.has_borrow,
-        has_job_order: row.service?.has_job_order,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
+        joborder_name: row.job_order_type?.name,
+        jobtype_description: row.job_order_type?.description,
+        created_at: row.job_order_type?.created_at,
+        last_updated: row.job_order_type?.last_updated,
+        deleted_at: row.job_order_type?.deleted_at,
       },
-      uuid: row.joborder?.uuid,
-      fee: row.joborder?.fee,
-      joborder_status: row.joborder?.joborder_status,
-      total_cost_price: row.joborder?.total_cost_price,
-      created_at: row.joborder?.created_at,
-      last_updated: row.joborder?.last_updated,
-      deleted_at: row.joborder?.deleted_at,
+      uuid: row.job_order?.uuid,
+      fee: row.job_order?.fee,
+      joborder_status: row.job_order?.joborder_status,
+      total_cost_price: row.job_order?.total_cost_price,
+      created_at: row.job_order?.created_at,
+      last_updated: row.job_order?.last_updated,
+      deleted_at: row.job_order?.deleted_at,
     }));
 
     return joborderitemWithDetails;

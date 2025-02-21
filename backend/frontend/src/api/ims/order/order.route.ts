@@ -35,6 +35,6 @@ orderRoute.delete(
   orderController.deleteOrderById.bind(orderController),
 );
 
-orderRoute.use('/:order_id/order-items', validateOrderId, orderitemsRoute);
+orderRoute.use('/:order_id/orderitem', validateOrderId, orderitemsRoute);
 
 export default orderRoute;

@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ProductService } from './product.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class ProductController {
   private productService: ProductService;
@@ -15,19 +15,18 @@ export class ProductController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    const no_pagination = req.query.no_pagination === 'true';
-    const category_id = (req.query.category_id as string) || undefined;
-    const name = (req.query.name as string) || undefined;
+    const supplier_id = req.query.supplier_id
+      ? String(req.query.supplier_id)
+      : undefined;
 
     try {
       const data = await this.productService.getAllProduct(
+        supplier_id,
         sort,
         limit,
         offset,
-        no_pagination,
-        category_id,
-        name,
       );
+
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
@@ -37,9 +36,9 @@ export class ProductController {
         data: data.productWithDetails,
       });
     } catch (error) {
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
-        .json({ message: 'Internal Server Error ' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
       next(error);
     }
   }
@@ -59,17 +58,23 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, description, stock_limit, product_categories } = req.body;
+      const {
+        supplier_id,
+        product_details_id,
+        price,
+        discount,
+        is_serialize,
+        itemStatus,
+      } = req.body;
 
-      await this.productService.createProduct(
-        {
-          name,
-          description,
-          stock_limit,
-          product_categories,
-        },
-        req.file,
-      );
+      await this.productService.createProduct({
+        supplier_id,
+        product_details_id,
+        price,
+        discount,
+        is_serialize,
+        itemStatus,
+      });
 
       res
         .status(HttpStatus.CREATED.code)
@@ -87,16 +92,23 @@ export class ProductController {
   async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { product_id } = req.params;
-      const { category_id, supplier_id, name, description, stock_limit } =
-        req.body;
+      const {
+        supplier_id,
+        product_details_id,
+        price,
+        discount,
+        is_serialized,
+        itemStatus,
+      } = req.body;
 
       await this.productService.updateProduct(
         {
-          category_id,
           supplier_id,
-          name,
-          description,
-          stock_limit,
+          product_details_id,
+          price,
+          discount,
+          is_serialized,
+          itemStatus,
         },
         Number(product_id),
       );

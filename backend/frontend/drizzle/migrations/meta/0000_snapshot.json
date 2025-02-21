@@ -1,5 +1,5 @@
 {
-  "id": "ac6be0aa-b58b-4149-9157-7eb43896fb11",
+  "id": "0880dbfe-ba7c-4e0f-a7b0-5d5d2d1049de",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -76,6 +76,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "customer_group": {
+          "name": "customer_group",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -98,7 +104,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "customer_customer_group_customer_group_customer_group_id_fk": {
+          "name": "customer_customer_group_customer_group_customer_group_id_fk",
+          "tableFrom": "customer",
+          "tableTo": "customer_group",
+          "columnsFrom": [
+            "customer_group"
+          ],
+          "columnsTo": [
+            "customer_group_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -975,6 +995,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "discount_id": {
+          "name": "discount_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1023,6 +1049,19 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "discount_c_discount_id_discount_discount_id_fk": {
+          "name": "discount_c_discount_id_discount_discount_id_fk",
+          "tableFrom": "discount_c",
+          "tableTo": "discount",
+          "columnsFrom": [
+            "discount_id"
+          ],
+          "columnsTo": [
+            "discount_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1044,8 +1083,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "cateogry_id": {
-          "name": "cateogry_id",
+        "discount_id": {
+          "name": "discount_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "categor_id": {
+          "name": "categor_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1086,12 +1131,25 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "discount_p_cateogry_id_category_category_id_fk": {
-          "name": "discount_p_cateogry_id_category_category_id_fk",
+        "discount_p_discount_id_discount_discount_id_fk": {
+          "name": "discount_p_discount_id_discount_discount_id_fk",
+          "tableFrom": "discount_p",
+          "tableTo": "discount",
+          "columnsFrom": [
+            "discount_id"
+          ],
+          "columnsTo": [
+            "discount_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "discount_p_categor_id_category_category_id_fk": {
+          "name": "discount_p_categor_id_category_category_id_fk",
           "tableFrom": "discount_p",
           "tableTo": "category",
           "columnsFrom": [
-            "cateogry_id"
+            "categor_id"
           ],
           "columnsTo": [
             "category_id"
@@ -1131,9 +1189,22 @@
           "primaryKey": false,
           "notNull": false
         },
+        "message": {
+          "name": "message",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "status": {
           "name": "status",
-          "type": "varchar",
+          "type": "order_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_total": {
+          "name": "order_total",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -1193,6 +1264,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "quantity": {
           "name": "quantity",
           "type": "integer",
@@ -1225,6 +1302,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -1238,6 +1321,19 @@
           ],
           "columnsTo": [
             "order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "orderItem_product_id_product_product_id_fk": {
+          "name": "orderItem_product_id_product_product_id_fk",
+          "tableFrom": "orderItem",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1274,6 +1370,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": 0
+        },
+        "discount": {
+          "name": "discount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "is_serialize": {
           "name": "is_serialize",
@@ -1370,6 +1472,19 @@
           "primaryKey": false,
           "notNull": false
         },
+        "p_det_type": {
+          "name": "p_det_type",
+          "type": "pdet_Status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "p_det_status": {
+          "name": "p_det_status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "img_url": {
           "name": "img_url",
           "type": "varchar",
@@ -1444,6 +1559,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "record_name": {
+          "name": "record_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "qty": {
           "name": "qty",
           "type": "integer",
@@ -1451,19 +1572,25 @@
           "notNull": false,
           "default": 0
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
         "record_type": {
           "name": "record_type",
           "type": "record_type",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         },
         "last_updated": {
           "name": "last_updated",
@@ -1522,7 +1649,8 @@
         },
         "status": {
           "name": "status",
-          "type": "varchar",
+          "type": "serialprod_Status",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -1596,7 +1724,8 @@
         },
         "relationship": {
           "name": "relationship",
-          "type": "varchar",
+          "type": "supplierRelation_Status",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
         },
@@ -1632,6 +1761,81 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.couponredemptions": {
+      "name": "couponredemptions",
+      "schema": "",
+      "columns": {
+        "couponredemptions_id": {
+          "name": "couponredemptions_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "discount_id": {
+          "name": "discount_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "couponredemptions_customer_id_customer_customer_id_fk": {
+          "name": "couponredemptions_customer_id_customer_customer_id_fk",
+          "tableFrom": "couponredemptions",
+          "tableTo": "customer",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "customer_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "couponredemptions_discount_id_discount_discount_id_fk": {
+          "name": "couponredemptions_discount_id_discount_discount_id_fk",
+          "tableFrom": "couponredemptions",
+          "tableTo": "discount",
+          "columnsFrom": [
+            "discount_id"
+          ],
+          "columnsTo": [
+            "discount_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.payment": {
       "name": "payment",
       "schema": "",
@@ -1642,11 +1846,23 @@
           "primaryKey": true,
           "notNull": true
         },
-        "service_id": {
-          "name": "service_id",
+        "job_order_id": {
+          "name": "job_order_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "borrow_id": {
+          "name": "borrow_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sales_id": {
+          "name": "sales_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "service_type": {
           "name": "service_type",
@@ -1664,6 +1880,12 @@
         "vat_rate": {
           "name": "vat_rate",
           "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "discount_id": {
+          "name": "discount_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -1709,7 +1931,60 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "payment_job_order_id_job_order_job_order_id_fk": {
+          "name": "payment_job_order_id_job_order_job_order_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "job_order",
+          "columnsFrom": [
+            "job_order_id"
+          ],
+          "columnsTo": [
+            "job_order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payment_borrow_id_borrow_borrow_id_fk": {
+          "name": "payment_borrow_id_borrow_borrow_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "borrow",
+          "columnsFrom": [
+            "borrow_id"
+          ],
+          "columnsTo": [
+            "borrow_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payment_sales_id_sales_sales_id_fk": {
+          "name": "payment_sales_id_sales_sales_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "sales",
+          "columnsFrom": [
+            "sales_id"
+          ],
+          "columnsTo": [
+            "sales_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payment_discount_id_discount_discount_id_fk": {
+          "name": "payment_discount_id_discount_discount_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "discount",
+          "columnsFrom": [
+            "discount_id"
+          ],
+          "columnsTo": [
+            "discount_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -1732,6 +2007,12 @@
         "issued_data": {
           "name": "issued_data",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -1872,6 +2153,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "salesItem_type": {
+          "name": "salesItem_type",
+          "type": "sales_item_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
         "total_price": {
           "name": "total_price",
           "type": "real",
@@ -1950,6 +2238,12 @@
         "employee_id": {
           "name": "employee_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_leader": {
+          "name": "is_leader",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": false
         },
@@ -2115,12 +2409,30 @@
           "primaryKey": false,
           "notNull": false
         },
+        "borrow_date": {
+          "name": "borrow_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fee": {
+          "name": "fee",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "borrow_item_status": {
           "name": "borrow_item_status",
           "type": "borrowStatusEnum",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "return_date": {
+          "name": "return_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -2191,9 +2503,21 @@
           "primaryKey": false,
           "notNull": false
         },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "uuid": {
           "name": "uuid",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -2248,6 +2572,19 @@
           ],
           "columnsTo": [
             "joborder_type_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "job_order_customer_id_customer_customer_id_fk": {
+          "name": "job_order_customer_id_customer_customer_id_fk",
+          "tableFrom": "job_order",
+          "tableTo": "customer",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "customer_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2507,6 +2844,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "job_order_id": {
+          "name": "job_order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "reports_title": {
           "name": "reports_title",
           "type": "varchar(255)",
@@ -2541,7 +2884,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "reports_job_order_id_job_order_job_order_id_fk": {
+          "name": "reports_job_order_id_job_order_job_order_id_fk",
+          "tableFrom": "reports",
+          "tableTo": "job_order",
+          "columnsFrom": [
+            "job_order_id"
+          ],
+          "columnsTo": [
+            "job_order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -2719,12 +3076,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -2781,6 +3132,30 @@
         "Return/Refund"
       ]
     },
+    "public.employmentInfo_Status": {
+      "name": "employmentInfo_Status",
+      "schema": "public",
+      "values": [
+        "Active",
+        "On Leave",
+        "Terminated",
+        "Resigned",
+        "Suspended",
+        "Retired",
+        "Inactive"
+      ]
+    },
+    "public.employmentInfo_Type": {
+      "name": "employmentInfo_Type",
+      "schema": "public",
+      "values": [
+        "Regular",
+        "Probationary",
+        "Contractual",
+        "Seasonal",
+        "Temporary"
+      ]
+    },
     "public.discount_type": {
       "name": "discount_type",
       "schema": "public",
@@ -2800,13 +3175,40 @@
         "Coupon"
       ]
     },
+    "public.order_status": {
+      "name": "order_status",
+      "schema": "public",
+      "values": [
+        "Waiting for Arrival",
+        "Pending",
+        "Delivered",
+        "Returned",
+        "Pending Payment",
+        "Cancelled"
+      ]
+    },
     "public.product_status": {
       "name": "product_status",
       "schema": "public",
       "values": [
         "Unavailable",
         "Sold",
-        "Available"
+        "Available",
+        "Returned",
+        "Pending Payment",
+        "On Order",
+        "In Service",
+        "Awaiting Service",
+        "Return Requested",
+        "Retired"
+      ]
+    },
+    "public.pdet_Status": {
+      "name": "pdet_Status",
+      "schema": "public",
+      "values": [
+        "Batch",
+        "Serialized"
       ]
     },
     "public.record_type": {
@@ -2816,6 +3218,38 @@
         "Firsthand",
         "Secondhand",
         "Broken"
+      ]
+    },
+    "public.serialprod_Status": {
+      "name": "serialprod_Status",
+      "schema": "public",
+      "values": [
+        "Available",
+        "Sold",
+        "Decommissioned",
+        "Reserved",
+        "Pending",
+        "Returned"
+      ]
+    },
+    "public.supplierRelation_Status": {
+      "name": "supplierRelation_Status",
+      "schema": "public",
+      "values": [
+        "manufacturer",
+        "distributor",
+        "wholesaler",
+        "vendor",
+        "authorized dealer",
+        "OEM (Original Equipment Manufacturer)",
+        "peripheral supplier",
+        "component reseller",
+        "refurbished parts supplier",
+        "specialized parts supplier",
+        "network hardware supplier",
+        "value-added reseller",
+        "accessories supplier",
+        "logistics partner"
       ]
     },
     "public.payment_method": {
@@ -2858,9 +3292,19 @@
       "schema": "public",
       "values": [
         "Completed",
-        "Parially Completed",
+        "Partially Completed",
         "Cancelled",
         "Pending"
+      ]
+    },
+    "public.sales_item_type": {
+      "name": "sales_item_type",
+      "schema": "public",
+      "values": [
+        "Sales",
+        "Job Order",
+        "Borrow",
+        "Purchase"
       ]
     },
     "public.borrow_status": {
@@ -2908,12 +3352,9 @@
       "name": "remarktickets_status",
       "schema": "public",
       "values": [
-        "Open",
-        "In Progress",
         "Resolved",
-        "Closed",
         "Pending",
-        "Rejected"
+        "Removed"
       ]
     },
     "public.reserveStatusEnum": {

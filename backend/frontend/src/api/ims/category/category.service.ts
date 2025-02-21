@@ -1,5 +1,6 @@
+import { category } from '@/drizzle/schema/ims';
+import { SchemaType } from '@/drizzle/schema/type';
 import { eq, isNull, sql } from 'drizzle-orm';
-import { category, SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class CategoryService {

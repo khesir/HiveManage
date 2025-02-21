@@ -1,7 +1,8 @@
 import { eq, isNull } from 'drizzle-orm';
-import { remarktype, SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateRemarkType } from './remarktype.model';
+import { SchemaType } from '@/drizzle/schema/type';
+import { remarkType } from '@/drizzle/schema/services/schema/joborder/remarkType.schema';
 
 export class RemarkTypeService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -11,36 +12,36 @@ export class RemarkTypeService {
   }
 
   async createRemarkType(data: CreateRemarkType) {
-    await this.db.insert(remarktype).values(data);
+    await this.db.insert(remarkType).values(data);
   }
 
   async getAllRemarkType() {
     const result = await this.db
       .select()
-      .from(remarktype)
-      .where(isNull(remarktype.deleted_at));
+      .from(remarkType)
+      .where(isNull(remarkType.deleted_at));
     return result;
   }
 
   async getRemarkTypeById(paramsId: number) {
     const result = await this.db
       .select()
-      .from(remarktype)
-      .where(eq(remarktype.remark_type_id, paramsId));
+      .from(remarkType)
+      .where(eq(remarkType.remark_type_id, paramsId));
     return result[0];
   }
 
   async updateRemarkType(data: object, paramsId: number) {
     await this.db
-      .update(remarktype)
+      .update(remarkType)
       .set(data)
-      .where(eq(remarktype.remark_type_id, paramsId));
+      .where(eq(remarkType.remark_type_id, paramsId));
   }
 
   async deleteRemarkType(paramsId: number): Promise<void> {
     await this.db
-      .update(remarktype)
+      .update(remarkType)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(remarktype.remark_type_id, paramsId));
+      .where(eq(remarkType.remark_type_id, paramsId));
   }
 }

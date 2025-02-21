@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
 import { HttpStatus } from '@/lib/HttpStatus';
-import { order, product } from '@/drizzle/drizzle.config';
+import { order, product } from '@/drizzle/schema/ims';
 
 // There's a globally used
 // middlewere like error handling and schema validation

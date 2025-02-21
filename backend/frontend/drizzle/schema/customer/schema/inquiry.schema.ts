@@ -24,10 +24,10 @@ export const inquiry = pgTable('inquiry', {
   customer_id: integer('customer_id').references(() => customer.customer_id),
   inquiryTitle: varchar('inquiryTitle', { length: 255 }),
   inquiry_type: inquiryTypeEnum('inquiry_type').notNull(),
-  created_at: timestamp('created_at').defaultNow(), // Timestamp for creation
+  created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
     .notNull()
-    .$onUpdate(() => new Date()), // Timestamp for last update
-  deleted_at: timestamp('deleted_at'), // Timestamp for deletion, nullable
+    .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
 });

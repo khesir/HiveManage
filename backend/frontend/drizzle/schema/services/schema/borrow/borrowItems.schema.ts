@@ -1,4 +1,5 @@
 import {
+  date,
   integer,
   pgEnum,
   pgTable,
@@ -24,7 +25,10 @@ export const borrowItems = pgTable('borrow_items', {
   borrow_item_id: serial('borrow_item_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
   borrow_id: integer('borrow_id').references(() => borrow.borrow_id),
+  borrow_date: date('borrow_date'),
+  fee: integer('fee'),
   status: borrowItemStatusEnum('borrow_item_status').notNull(),
+  return_date: date('return_date'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

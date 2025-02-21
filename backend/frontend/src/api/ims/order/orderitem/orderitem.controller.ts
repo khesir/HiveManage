@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { OrderItemService } from './orderitem.service';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class OrderItemsController {
   private orderitemService: OrderItemService;
@@ -12,17 +12,19 @@ export class OrderItemsController {
   }
 
   async getAllOrderItem(req: Request, res: Response, next: NextFunction) {
+    const order_id = req.query.order_id
+      ? String(req.query.order_id)
+      : undefined;
     const sort = (req.query.sort as string) || 'asc';
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = Number(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    const variant_id = parseInt(req.query.variant_id as string) || undefined;
 
     try {
       const data = await this.orderitemService.getAllOrderItem(
+        order_id,
         sort,
         limit,
         offset,
-        variant_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -30,7 +32,7 @@ export class OrderItemsController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.OrderitemsWithDetails,
+        data: data.orderitemWithDetails,
       });
     } catch (error) {
       res
@@ -43,7 +45,9 @@ export class OrderItemsController {
   async getOrderItemById(req: Request, res: Response, next: NextFunction) {
     try {
       const { orderItem_id } = req.params;
-      const data = await this.orderitemService.getOrderItemById(orderItem_id);
+      const data = await this.orderitemService.getOrderItemById(
+        Number(orderItem_id),
+      );
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res
@@ -55,16 +59,15 @@ export class OrderItemsController {
 
   async createOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { order_id } = req.params;
-      const { order_value, order_items } = req.body;
+      const { order_id, product_id, quantity, price, status } = req.body;
 
-      await this.orderitemService.createOrderItem(
-        {
-          order_value,
-          order_items,
-        },
+      await this.orderitemService.createOrderItem({
         order_id,
-      );
+        product_id,
+        quantity,
+        price,
+        status,
+      });
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -83,11 +86,10 @@ export class OrderItemsController {
   async updateOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { orderItem_id } = req.params;
-      const { order_id, variant_id, quantity, price, status, item_type } =
-        req.body;
+      const { order_id, product_id, quantity, price, status } = req.body;
 
       await this.orderitemService.updateOrderItem(
-        { order_id, variant_id, quantity, price, status, item_type },
+        { order_id, product_id, quantity, price, status },
         orderItem_id,
       );
       res.status(HttpStatus.OK.code).json({

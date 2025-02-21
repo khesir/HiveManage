@@ -7,10 +7,12 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { order } from './order.schema';
+import { product } from '../product/product.schema';
 
 export const orderItem = pgTable('orderItem', {
   orderItem_id: serial('orderItem_id').primaryKey(),
   order_id: integer('order_id').references(() => order.order_id),
+  product_id: integer('product_id').references(() => product.product_id),
   quantity: integer('quantity').default(1),
   price: decimal('price', { precision: 50, scale: 2 }),
   status: varchar('status'),
@@ -19,4 +21,5 @@ export const orderItem = pgTable('orderItem', {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
+  deleted_at: timestamp('deleted_at'),
 });

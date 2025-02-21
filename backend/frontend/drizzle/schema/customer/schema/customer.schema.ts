@@ -1,4 +1,5 @@
 import {
+  integer,
   jsonb,
   pgEnum,
   pgTable,
@@ -6,6 +7,7 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { customerGroup } from './customerGroup.schema';
 
 export const customerStandingEnum = pgEnum('customer_standing', [
   'Active',
@@ -30,6 +32,9 @@ export const customer = pgTable('customer', {
   province: varchar('province', { length: 255 }),
   email: varchar('email', { length: 255 }),
   standing: customerStandingEnum('customer_standing').notNull(),
+  customer_group_id: integer('customer_group').references(
+    () => customerGroup.customer_group_id,
+  ),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

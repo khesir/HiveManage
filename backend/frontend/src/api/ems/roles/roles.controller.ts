@@ -38,9 +38,9 @@ export class EmployeeRoleController {
 
   async getEmployeeRoleById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_role_id } = req.params;
+      const { roles_id } = req.params;
       const data = await this.employeeroleService.getEmployeeRoleById(
-        Number(employee_role_id),
+        Number(roles_id),
       );
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
@@ -74,12 +74,12 @@ export class EmployeeRoleController {
 
   async updateEmployeeRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_role_id } = req.params;
+      const { roles_id } = req.params;
       const { name } = req.body;
 
       await this.employeeroleService.updateEmployeeRole(
         { name },
-        Number(employee_role_id),
+        Number(roles_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -95,13 +95,11 @@ export class EmployeeRoleController {
 
   async deleteEmployeeRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const { employee_role_id } = req.params;
-      await this.employeeroleService.deleteEmployeeRole(
-        Number(employee_role_id),
-      );
+      const { roles_id } = req.params;
+      await this.employeeroleService.deleteEmployeeRole(Number(roles_id));
       res.status(200).json({
         status: 'Success',
-        message: `Employee Role ID:${employee_role_id} is deleted Successfully`,
+        message: `Role ID:${roles_id} is deleted Successfully`,
       });
     } catch (error) {
       res

@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 const orderStatusEnum = z.enum([
+  'Waiting for Arrival',
   'Pending',
-  'Processing',
   'Delivered',
+  'Returned',
+  'Pending Payment',
   'Cancelled',
-  'Return',
-  'Shipped',
 ]);
 const orderItemEnum = z.enum([
   'Pending',
@@ -18,7 +18,6 @@ const orderItemEnum = z.enum([
 ]);
 
 export const CreateOrder = z.object({
-  order_id: z.number().optional(),
   supplier_id: z.number(),
   ordered_value: z.number(),
   expected_arrival: z.string().optional(),

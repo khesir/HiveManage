@@ -1,22 +1,43 @@
 import { z } from 'zod';
 
 export const CreateProduct = z.object({
-  name: z.union([z.string().min(1), z.number()]),
-  description: z.union([z.string().min(1), z.number()]),
-  stock_limit: z.number().min(1),
-  product_categories: z
-    .array(
-      z.object({
-        category_id: z.number(),
-      }),
-    )
-    .optional(),
+  supplier_id: z.number().min(1),
+  product_details_id: z.number().min(1),
+  price: z.number().min(1),
+  discount: z.number().min(1),
+  is_serialize: z.boolean(),
+  itemStatus: z.enum([
+    'Unavailable',
+    'Sold',
+    'Available',
+    'Returned',
+    'Pending Payment',
+    'On Order',
+    'In Service',
+    'Awaiting Service',
+    'Return Requested',
+    'Retired',
+  ]),
 });
 
 export const UpdateProduct = z.object({
-  name: z.string().min(1),
-  description: z.string().min(1),
-  stock_limit: z.number().min(1),
+  supplier_id: z.number().min(1),
+  product_details_id: z.number().min(1),
+  price: z.number().min(1),
+  discount: z.number().min(1),
+  is_serialize: z.boolean(),
+  itemStatus: z.enum([
+    'Unavailable',
+    'Sold',
+    'Available',
+    'Returned',
+    'Pending Payment',
+    'On Order',
+    'In Service',
+    'Awaiting Service',
+    'Return Requested',
+    'Retired',
+  ]),
 });
 
 export type CreateProduct = z.infer<typeof CreateProduct>;

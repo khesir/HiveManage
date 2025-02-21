@@ -10,15 +10,15 @@ import positionRoute from './position/position.route';
 
 const emsRoute = Router({ mergeParams: true });
 
-emsRoute.use('/departments', departmentRoute);
+emsRoute.use('/department', departmentRoute);
 
-emsRoute.use('/designations', designationRoute);
+emsRoute.use('/designation', designationRoute);
 
-emsRoute.use('/employees', employeeRoute);
+emsRoute.use('/employee', employeeRoute);
 
 emsRoute.use('/roles', employeeroleRoute);
 
-emsRoute.use('/employee-roles', employeeRolesRoute);
+emsRoute.use('/employeeRoles', employeeRolesRoute);
 
 emsRoute.use('/position', positionRoute);
 

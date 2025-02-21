@@ -4,10 +4,6 @@ import { db } from '@/drizzle/pool';
 import { RemarkTicketsController } from './remarkticket.controller';
 import { CreateRemarkTickets, UpdateRemarkTickets } from './remarkticket.model';
 import { validateRemarkTicketsID } from './remarkticket.middleware';
-import remarkItemsRoute from './remarkitems/remarkitems.route';
-import remarkReportsRoute from './remarkreports/remarkreports.route';
-import remarkassignedRoute from './remarkassigned/remarkassigned.route';
-import remarkContentRoute from './remarkcontent/remarkcontent.route';
 import reportsRoute from './reports/reports.route';
 
 const remarkTicketsRoute = Router({ mergeParams: true });
@@ -43,31 +39,7 @@ remarkTicketsRoute.delete(
 );
 
 remarkTicketsRoute.use(
-  '/:remark_id/remark-items',
-  validateRemarkTicketsID,
-  remarkItemsRoute,
-);
-
-remarkTicketsRoute.use(
-  '/:remark_id/remark-reports',
-  validateRemarkTicketsID,
-  remarkReportsRoute,
-);
-
-remarkTicketsRoute.use(
-  '/:remark_id/remark-assigned',
-  validateRemarkTicketsID,
-  remarkassignedRoute,
-);
-
-remarkTicketsRoute.use(
-  '/:remark_id/remark-content',
-  validateRemarkTicketsID,
-  remarkContentRoute,
-);
-
-remarkTicketsRoute.use(
-  '/:job_order_id/reports',
+  '/:remark_id/reports',
   validateRemarkTicketsID,
   reportsRoute,
 );

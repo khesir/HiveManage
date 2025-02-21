@@ -1,8 +1,6 @@
 import { z } from 'zod';
 
 export const CreateBorrow = z.object({
-  service_id: z.number().min(1),
-  sales_items_id: z.number().min(1),
   borrow_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
@@ -10,23 +8,17 @@ export const CreateBorrow = z.object({
     message: 'Invalid date format',
   }),
   fee: z.number().min(1),
-  tag_item: z.enum(['New', 'Used', 'Broken']),
+  customer_id: z.number().min(1),
   status: z.enum([
-    'Requested',
-    'Approved',
     'Borrowed',
-    'Returned',
-    'Overdue',
-    'Rejected',
+    'Confirmed',
     'Cancelled',
-    'Lost',
-    'Damaged',
+    'Pending',
+    'Completed',
   ]),
 });
 
 export const UpdateBorrow = z.object({
-  service_id: z.number().min(1),
-  sales_items_id: z.number().min(1),
   borrow_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
@@ -34,17 +26,13 @@ export const UpdateBorrow = z.object({
     message: 'Invalid date format',
   }),
   fee: z.number().min(1),
-  tag_item: z.enum(['New', 'Used', 'Broken']),
+  customer_id: z.number().min(1),
   status: z.enum([
-    'Requested',
-    'Approved',
     'Borrowed',
-    'Returned',
-    'Overdue',
-    'Rejected',
+    'Confirmed',
     'Cancelled',
-    'Lost',
-    'Damaged',
+    'Pending',
+    'Completed',
   ]),
 });
 

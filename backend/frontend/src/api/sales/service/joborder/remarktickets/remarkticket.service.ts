@@ -1,14 +1,8 @@
-import {
-  employee,
-  jobOrder,
-  remarkassigned,
-  remarktickets,
-  remarktype,
-  SchemaType,
-} from '@/drizzle/drizzle.config';
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateRemarkTickets } from './remarkticket.model';
+import { jobOrder, remarkTickets, remarkType } from '@/drizzle/schema/services';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class RemarkTicketsService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -18,7 +12,7 @@ export class RemarkTicketsService {
   }
 
   async createRemarkTickets(data: CreateRemarkTickets) {
-    await this.db.insert(remarktickets).values(data);
+    await this.db.insert(remarkTickets).values(data);
   }
 
   async getAllRemarkTickets(
@@ -29,18 +23,11 @@ export class RemarkTicketsService {
     limit: number,
     offset: number,
   ) {
-    const conditions = [isNull(remarktickets.deleted_at)];
+    const conditions = [isNull(remarkTickets.deleted_at)];
 
     if (remarktickets_status) {
       // Define valid statuses as a string union type
-      const validStatuses = [
-        'Open',
-        'In Progress',
-        'Resolved',
-        'Closed',
-        'Pending',
-        'Rejected',
-      ] as const; // 'as const' infers a readonly tuple of strings
+      const validStatuses = ['Removed', 'Resolved', 'Pending'] as const; // 'as const' infers a readonly tuple of strings
       if (
         validStatuses.includes(
           remarktickets_status as (typeof validStatuses)[number],
@@ -48,7 +35,7 @@ export class RemarkTicketsService {
       ) {
         conditions.push(
           eq(
-            remarktickets.remarktickets_status,
+            remarkTickets.remarktickets_status,
             remarktickets_status as (typeof validStatuses)[number],
           ),
         );
@@ -57,31 +44,31 @@ export class RemarkTicketsService {
       }
     }
     if (joborder_id) {
-      conditions.push(eq(remarktickets.job_order_id, Number(joborder_id)));
+      conditions.push(eq(remarkTickets.job_order_id, Number(joborder_id)));
     }
 
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(remarktickets)
+      .from(remarkTickets)
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
 
     const query = this.db
       .select()
-      .from(remarktickets)
+      .from(remarkTickets)
       .leftJoin(
-        remarktype,
-        eq(remarktype.remark_type_id, remarktickets.remark_type_id),
+        remarkType,
+        eq(remarkType.remark_type_id, remarkTickets.remark_type_id),
       )
-      .leftJoin(jobOrder, eq(jobOrder.job_order_id, remarktickets.job_order_id))
+      .leftJoin(jobOrder, eq(jobOrder.job_order_id, remarkTickets.job_order_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
-          ? asc(remarktickets.created_at)
-          : desc(remarktickets.created_at),
+          ? asc(remarkTickets.created_at)
+          : desc(remarkTickets.created_at),
       );
 
     // Control Pagination
@@ -91,66 +78,35 @@ export class RemarkTicketsService {
 
     const result = await query;
 
-    // Handles Other related data
-    const remarkAssign = await this.db
-      .select()
-      .from(remarkassigned)
-      .leftJoin(employee, eq(remarkassigned.employee_id, employee.employee_id))
-      .where(and(isNull(remarkassigned.deleted_at)));
-
-    const assignmentsByRemarkId = remarkAssign.reduce(
-      (acc, assignment) => {
-        if (
-          assignment.remarkassigned.remark_id !== null &&
-          !(assignment.remarkassigned.remark_id in acc)
-        ) {
-          acc[assignment.remarkassigned.remark_id] = [];
-        }
-        if (assignment.remarkassigned.remark_id !== null) {
-          acc[assignment.remarkassigned.remark_id].push({
-            ...assignment.remarkassigned,
-            employee: {
-              ...assignment.employee,
-            },
-          });
-        }
-        return acc;
-      },
-      // Too much work to write a typing for this
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {} as Record<number, any[]>,
-    );
     const remarkticketitemWithDetails = result.map((row) => ({
-      remark_id: row.remarktickets.remark_id,
+      remark_id: row.remark_tickets.remark_id,
       remark_type: {
-        remark_type_id: row.remarktype?.remark_type_id,
-        name: row.remarktype?.name,
-        description: row.remarktype?.description,
-        created_at: row.remarktype?.created_at,
-        last_updated: row.remarktype?.last_updated,
-        deleted_at: row.remarktype?.deleted_at,
+        remark_type_id: row.remark_type?.remark_type_id,
+        name: row.remark_type?.name,
+        description: row.remark_type?.description,
+        created_at: row.remark_type?.created_at,
+        last_updated: row.remark_type?.last_updated,
+        deleted_at: row.remark_type?.deleted_at,
       },
-      remark_assign: assignmentsByRemarkId[row.remarktickets.remark_id] || [],
       job_order: {
-        job_order_id: row.joborder?.job_order_id,
-        service_id: row.joborder?.service_id,
-        uuid: row.joborder?.uuid,
-        fee: row.joborder?.fee,
-        joborder_status: row.joborder?.joborder_status,
-        total_cost_price: row.joborder?.total_cost_price,
-        created_at: row.joborder?.created_at,
-        last_updated: row.joborder?.last_updated,
-        deleted_at: row.joborder?.deleted_at,
+        job_order_id: row.job_order?.job_order_id,
+        customer_id: row.job_order?.customer_id,
+        uuid: row.job_order?.uuid,
+        fee: row.job_order?.fee,
+        joborder_status: row.job_order?.joborder_status,
+        total_cost_price: row.job_order?.total_cost_price,
+        created_at: row.job_order?.created_at,
+        last_updated: row.job_order?.last_updated,
+        deleted_at: row.job_order?.deleted_at,
       },
-      title: row.remarktickets.title,
-      description: row.remarktickets?.description,
-      content: row.remarktickets?.content,
-      remarkticket_status: row.remarktickets?.remarktickets_status,
-      created_by: row.remarktickets?.created_by,
-      deadline: row.remarktickets?.deadline,
-      created_at: row.remarktickets?.created_at,
-      last_updated: row.remarktickets?.last_updated,
-      deleted_at: row.remarktickets?.deleted_at,
+      title: row.remark_tickets.title,
+      description: row.remark_tickets?.description,
+      content: row.remark_tickets?.content,
+      remarkticket_status: row.remark_tickets?.remarktickets_status,
+      deadline: row.remark_tickets?.deadline,
+      created_at: row.remark_tickets?.created_at,
+      last_updated: row.remark_tickets?.last_updated,
+      deleted_at: row.remark_tickets?.deleted_at,
     }));
 
     return { totalData, remarkticketitemWithDetails };
@@ -159,43 +115,42 @@ export class RemarkTicketsService {
   async getRemarkTicketsByID(remark_id: string) {
     const result = await this.db
       .select()
-      .from(remarktickets)
+      .from(remarkTickets)
       .leftJoin(
-        remarktype,
-        eq(remarktype.remark_type_id, remarktickets.remark_type_id),
+        remarkType,
+        eq(remarkType.remark_type_id, remarkTickets.remark_type_id),
       )
-      .leftJoin(jobOrder, eq(jobOrder.job_order_id, remarktickets.job_order_id))
-      .where(eq(remarktickets.remark_id, Number(remark_id)));
+      .leftJoin(jobOrder, eq(jobOrder.job_order_id, remarkTickets.job_order_id))
+      .where(eq(remarkTickets.remark_id, Number(remark_id)));
 
     const remarkticketitemWithDetails = result.map((row) => ({
-      remark_id: row.remarktickets.remark_id,
+      remark_id: row.remark_tickets.remark_id,
       remarktype: {
-        remark_type_id: row.remarktype?.remark_type_id,
-        name: row.remarktype?.name,
-        description: row.remarktype?.description,
-        created_at: row.remarktype?.created_at,
-        last_updated: row.remarktype?.last_updated,
-        deleted_at: row.remarktype?.deleted_at,
+        remark_type_id: row.remark_type?.remark_type_id,
+        name: row.remark_type?.name,
+        description: row.remark_type?.description,
+        created_at: row.remark_type?.created_at,
+        last_updated: row.remark_type?.last_updated,
+        deleted_at: row.remark_type?.deleted_at,
       },
       jobOrder: {
-        job_order_id: row.joborder?.job_order_id,
-        service_id: row.joborder?.service_id,
-        uuid: row.joborder?.uuid,
-        fee: row.joborder?.fee,
-        joborder_status: row.joborder?.joborder_status,
-        total_cost_price: row.joborder?.total_cost_price,
-        created_at: row.joborder?.created_at,
-        last_updated: row.joborder?.last_updated,
-        deleted_at: row.joborder?.deleted_at,
+        job_order_id: row.job_order?.job_order_id,
+        customer_id: row.job_order?.customer_id,
+        uuid: row.job_order?.uuid,
+        fee: row.job_order?.fee,
+        joborder_status: row.job_order?.joborder_status,
+        total_cost_price: row.job_order?.total_cost_price,
+        created_at: row.job_order?.created_at,
+        last_updated: row.job_order?.last_updated,
+        deleted_at: row.job_order?.deleted_at,
       },
-      description: row.remarktickets?.description,
-      content: row.remarktickets?.content,
-      remarkticket_status: row.remarktickets?.remarktickets_status,
-      created_by: row.remarktickets?.created_by,
-      deadline: row.remarktickets?.deadline,
-      created_at: row.remarktickets?.created_at,
-      last_updated: row.remarktickets?.last_updated,
-      deleted_at: row.remarktickets?.deleted_at,
+      description: row.remark_tickets?.description,
+      content: row.remark_tickets?.content,
+      remarkticket_status: row.remark_tickets?.remarktickets_status,
+      deadline: row.remark_tickets?.deadline,
+      created_at: row.remark_tickets?.created_at,
+      last_updated: row.remark_tickets?.last_updated,
+      deleted_at: row.remark_tickets?.deleted_at,
     }));
 
     return remarkticketitemWithDetails;
@@ -203,15 +158,15 @@ export class RemarkTicketsService {
 
   async updateRemarkTickets(data: object, paramsId: number) {
     await this.db
-      .update(remarktickets)
+      .update(remarkTickets)
       .set(data)
-      .where(eq(remarktickets.remark_id, paramsId));
+      .where(eq(remarkTickets.remark_id, paramsId));
   }
 
   async deleteRemarkTickets(paramsId: number): Promise<void> {
     await this.db
-      .update(remarktickets)
+      .update(remarkTickets)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(remarktickets.remark_id, paramsId));
+      .where(eq(remarkTickets.remark_id, paramsId));
   }
 }

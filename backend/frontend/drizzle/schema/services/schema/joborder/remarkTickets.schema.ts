@@ -10,12 +10,9 @@ import { jobOrder } from './jobOrder.schema';
 import { remarkType } from './remarkType.schema';
 
 export const remarktickets_status = pgEnum('remarktickets_status', [
-  'Open',
-  'In Progress',
   'Resolved',
-  'Closed',
   'Pending',
-  'Rejected',
+  'Removed',
 ]);
 
 export const remarkTickets = pgTable('remark_tickets', {

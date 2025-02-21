@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { ReceiptService } from './receipt.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class ReceiptController {
   private receiptService: ReceiptService;
@@ -12,14 +12,14 @@ export class ReceiptController {
   }
 
   async getAllReceipt(req: Request, res: Response, next: NextFunction) {
-    const service_id = (req.params.service_id as string) || undefined;
+    const payment_id = (req.params.payment_id as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
       const data = await this.receiptService.getAllReceipt(
-        service_id,
+        payment_id,
         sort,
         limit,
         offset,
@@ -55,10 +55,9 @@ export class ReceiptController {
 
   async createReceipt(req: Request, res: Response, next: NextFunction) {
     try {
-      const { service_id, payment_id, issued_date, total_amount } = req.body;
+      const { payment_id, issued_date, total_amount } = req.body;
 
       await this.receiptService.createReceipt({
-        service_id,
         payment_id,
         issued_date,
         total_amount,
@@ -79,10 +78,10 @@ export class ReceiptController {
   async updateReceipt(req: Request, res: Response, next: NextFunction) {
     try {
       const { receipt_id } = req.params;
-      const { service_id, payment_id, issued_date, total_amount } = req.body;
+      const { payment_id, issued_date, total_amount } = req.body;
 
       await this.receiptService.updateReceipt(
-        { service_id, payment_id, issued_date, total_amount },
+        { payment_id, issued_date, total_amount },
         Number(receipt_id),
       );
       res

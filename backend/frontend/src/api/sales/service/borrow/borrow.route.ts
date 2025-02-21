@@ -4,6 +4,7 @@ import { db } from '@/drizzle/pool';
 import { BorrowController } from './borrow.controller';
 import { validateBorrowID } from './borrow.middleware';
 import { CreateBorrow, UpdateBorrow } from './borrow.model';
+import borrowitemsRoute from './borrow_items/borrowitems.route';
 
 const borrowRoute = Router({ mergeParams: true });
 const borrowController = new BorrowController(db);
@@ -33,5 +34,7 @@ borrowRoute.delete(
   validateBorrowID,
   borrowController.deleteBorrow.bind(borrowController),
 );
+
+borrowRoute.use('/:borrow_id/borrowitem', validateBorrowID, borrowitemsRoute);
 
 export default borrowRoute;

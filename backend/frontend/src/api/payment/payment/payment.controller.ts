@@ -12,7 +12,6 @@ export class PaymentController {
   }
 
   async getAllPayment(req: Request, res: Response, next: NextFunction) {
-    const service_id = (req.params.service_id as string) || undefined;
     const payment_status = (req.query.payment_status as string) || undefined;
     const payment_method = (req.query.payment_method as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
@@ -20,22 +19,20 @@ export class PaymentController {
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const { totalData, paymentWithDetails } =
-        await this.paymentService.getAllPayment(
-          service_id,
-          payment_method,
-          payment_status,
-          sort,
-          limit,
-          offset,
-        );
+      const data = await this.paymentService.getAllPayment(
+        payment_method,
+        payment_status,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
         message: 'Data Retrieved Successfully',
-        total_data: totalData,
+        total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: paymentWithDetails,
+        data: data.paymentWithDetails,
       });
     } catch (error) {
       res
@@ -61,20 +58,26 @@ export class PaymentController {
   async createPayment(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        service_id,
+        job_order_id,
+        borrow_id,
+        sales_id,
         service_type,
         amount,
         vat_rate,
+        discount_id,
         payment_date,
         payment_method,
         payment_status,
       } = req.body;
 
       await this.paymentService.createPayment({
-        service_id,
+        job_order_id,
+        borrow_id,
+        sales_id,
         service_type,
         amount,
         vat_rate,
+        discount_id,
         payment_date,
         payment_method,
         payment_status,
@@ -96,15 +99,31 @@ export class PaymentController {
     try {
       const { payment_id } = req.params;
       const {
-        service_id,
+        job_order_id,
+        borrow_id,
+        sales_id,
+        service_type,
         amount,
+        vat,
+        discount_id,
         payment_date,
         payment_method,
         payment_status,
       } = req.body;
 
       await this.paymentService.updatePayment(
-        { service_id, amount, payment_date, payment_method, payment_status },
+        {
+          job_order_id,
+          borrow_id,
+          sales_id,
+          service_type,
+          amount,
+          vat,
+          discount_id,
+          payment_date,
+          payment_method,
+          payment_status,
+        },
         Number(payment_id),
       );
       res

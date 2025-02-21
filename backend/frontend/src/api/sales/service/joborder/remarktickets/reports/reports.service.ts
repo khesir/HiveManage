@@ -1,5 +1,6 @@
+import { reports, jobOrder } from '@/drizzle/schema/services';
+import { SchemaType } from '@/drizzle/schema/type';
 import { and, eq, isNull, desc, asc, sql } from 'drizzle-orm';
-import { jobOrder, reports, SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export class ReportsService {
@@ -53,15 +54,15 @@ export class ReportsService {
     const reportsWithDetails = result.map((row) => ({
       reports_id: row.reports.reports_id,
       jobOrder: {
-        jobOrder_id: row.joborder?.job_order_id,
-        service_id: row.joborder?.service_id,
-        uuid: row.joborder?.uuid,
-        fee: row.joborder?.fee,
-        joborder_status: row.joborder?.joborder_status,
-        total_cost_price: row.joborder?.total_cost_price,
-        created_at: row.joborder?.created_at,
-        last_updated: row.joborder?.last_updated,
-        deleted_at: row.joborder?.deleted_at,
+        jobOrder_id: row.job_order?.job_order_id,
+        customer_id: row.job_order?.customer_id,
+        uuid: row.job_order?.uuid,
+        fee: row.job_order?.fee,
+        joborder_status: row.job_order?.joborder_status,
+        total_cost_price: row.job_order?.total_cost_price,
+        created_at: row.job_order?.created_at,
+        last_updated: row.job_order?.last_updated,
+        deleted_at: row.job_order?.deleted_at,
       },
       reports_title: row.reports?.reports_title,
       remarks: row.reports?.remarks,
@@ -83,14 +84,14 @@ export class ReportsService {
       reports: {
         reports_id: row.reports.reports_id,
         jobOrder: {
-          jobOrder_id: row.joborder?.job_order_id,
-          service_id: row.joborder?.service_id,
-          uuid: row.joborder?.uuid,
-          fee: row.joborder?.fee,
-          joborder_status: row.joborder?.joborder_status,
-          created_at: row.joborder?.created_at,
-          last_updated: row.joborder?.last_updated,
-          deleted_at: row.joborder?.deleted_at,
+          jobOrder_id: row.job_order?.job_order_id,
+          customer_id: row.job_order?.customer_id,
+          uuid: row.job_order?.uuid,
+          fee: row.job_order?.fee,
+          joborder_status: row.job_order?.joborder_status,
+          created_at: row.job_order?.created_at,
+          last_updated: row.job_order?.last_updated,
+          deleted_at: row.job_order?.deleted_at,
         },
       },
       reports_title: row.reports?.reports_title,

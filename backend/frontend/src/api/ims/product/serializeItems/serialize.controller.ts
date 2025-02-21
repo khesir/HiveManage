@@ -1,23 +1,42 @@
 import { Request, Response, NextFunction } from 'express';
-import { SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SerializeItemService } from './serialize.service';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class SerializeItemController {
-  private itemService: SerializeItemService;
+  private serializedproductService: SerializeItemService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.itemService = new SerializeItemService(pool);
+    this.serializedproductService = new SerializeItemService(pool);
   }
 
-  async getAllSerializeItem(req: Request, res: Response, next: NextFunction) {
+  async getAllSerializedProducts(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const sort = (req.query.sort as string) || 'asc';
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+    const no_pagination = req.query.no_pagination === 'true';
+    const product_id = req.params.product_id as string;
+
     try {
-      const item_id = parseInt(req.params.item_id);
-      const data = await this.itemService.getAllSerializeItem(item_id);
+      const data = await this.serializedproductService.getAllSerializedProducts(
+        product_id,
+        no_pagination,
+        sort,
+        limit,
+        offset,
+      );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        data: data,
+        message: 'Data Retrieved Successfully',
+        total_data: data.totalData,
+        limit: limit,
+        offset: offset,
+        data: data.serializedproductsWithDetails,
       });
     } catch (error) {
       res
@@ -27,10 +46,17 @@ export class SerializeItemController {
     }
   }
 
-  async getSerializeItemById(req: Request, res: Response, next: NextFunction) {
+  async getSerializedProductById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { batch_id } = req.params;
-      const data = await this.itemService.getSerializeItemByID(batch_id);
+      const { serialized_item_id } = req.params;
+      const data =
+        await this.serializedproductService.getSerializedProductsById(
+          Number(serialized_item_id),
+        );
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
       res
@@ -42,29 +68,17 @@ export class SerializeItemController {
 
   async createSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        item_id,
-        serial_number,
-        item_condition,
-        item_status,
-        unit_price,
-        selling_price,
-        warranty_expiry_date,
-      } = req.body;
+      const { product_id, serial_number, status } = req.body;
 
-      await this.itemService.createSerializeItem({
-        item_id,
+      await this.serializedproductService.createSerializeItem({
+        product_id,
         serial_number,
-        item_condition,
-        item_status,
-        unit_price,
-        selling_price,
-        warranty_expiry_date,
+        status,
       });
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
-        message: 'Successfully Created SerializeItem ',
+        message: 'Successfully Created Serialize Product ',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -78,35 +92,20 @@ export class SerializeItemController {
 
   async updateSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { batch_id } = req.params;
-      const {
-        item_id,
-        serial_number,
-        item_condition,
-        item_status,
-        unit_price,
-        selling_price,
-        production_date,
-        expiration_date,
-      } = req.body;
+      const { serialized_item_id } = req.params;
+      const { product_id, serial_number, item_status } = req.body;
 
-      await this.itemService.updateSerializeItem(
+      await this.serializedproductService.updateSerializeItem(
         {
-          item_id,
+          product_id,
           serial_number,
-          item_condition,
           item_status,
-
-          unit_price,
-          selling_price,
-          production_date,
-          expiration_date,
         },
-        Number(batch_id),
+        Number(serialized_item_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'SerializeItem Updated Successfully ',
+        message: 'Serialize Product Updated Successfully ',
       });
     } catch (error) {
       res
@@ -118,11 +117,13 @@ export class SerializeItemController {
 
   async deleteSerializeItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { item_id } = req.params;
-      await this.itemService.deleteSerializeItem(Number(item_id));
+      const { serialized_item_id } = req.params;
+      await this.serializedproductService.deleteSerializeItem(
+        Number(serialized_item_id),
+      );
       res.status(200).json({
         status: 'Success',
-        message: `SerializeItem ID:${item_id} is deleted Successfully`,
+        message: `Serialize Product ID:${serialized_item_id} is deleted Successfully`,
       });
     } catch (error) {
       res

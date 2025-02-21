@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Define the structure for a single social profile
 const socialSchema = z.object({
   platform: z.enum([
     'Facebook',
@@ -10,7 +9,7 @@ const socialSchema = z.object({
     'TikTok',
     'YouTube',
   ]),
-  url: z.string().url(), // Ensures the URL is valid
+  url: z.string().url(),
 });
 
 export const CreateCustomer = z.object({
@@ -32,6 +31,7 @@ export const CreateCustomer = z.object({
     'Delinquent',
     'Prospect',
   ]),
+  customer_group_id: z.number().min(1),
 });
 
 export const UpdateCustomer = z.object({
@@ -53,6 +53,7 @@ export const UpdateCustomer = z.object({
     'Delinquent',
     'Prospect',
   ]),
+  customer_group_id: z.number().min(1),
 });
 
 export type CreateCustomer = z.infer<typeof CreateCustomer>;

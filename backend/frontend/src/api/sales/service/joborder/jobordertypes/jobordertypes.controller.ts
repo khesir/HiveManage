@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { JobOrderTypeService } from './jobordertypes.service';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class JobOrderTypesController {
   private jobordertypesService: JobOrderTypeService;
@@ -53,12 +53,11 @@ export class JobOrderTypesController {
 
   async createJobOrderTypes(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, description, joborder_types_status } = req.body;
+      const { name, description } = req.body;
 
       await this.jobordertypesService.createJobOrderTypes({
         name,
         description,
-        joborder_types_status,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -77,10 +76,10 @@ export class JobOrderTypesController {
   async updateJobOrderTypes(req: Request, res: Response, next: NextFunction) {
     try {
       const { joborder_types_id } = req.params;
-      const { name, description, joborder_types_status } = req.body;
+      const { name, description } = req.body;
 
       await this.jobordertypesService.updateJobOrderTypes(
-        { name, description, joborder_types_status },
+        { name, description },
         Number(joborder_types_id),
       );
       res.status(HttpStatus.OK.code).json({
