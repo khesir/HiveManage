@@ -503,6 +503,15 @@ CREATE TABLE IF NOT EXISTS "job_order_items" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "job_order_type" (
+	"joborder_type_id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(255),
+	"description" varchar(255),
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "remark_tickets" (
 	"remark_id" serial PRIMARY KEY NOT NULL,
 	"remark_type_id" integer,
@@ -551,15 +560,6 @@ CREATE TABLE IF NOT EXISTS "reserve_items" (
 	"reserve_id" integer,
 	"expiration_date" timestamp DEFAULT now(),
 	"reserve_item_status" "reserveStatusEnum" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "job_order_type" (
-	"joborder_type_id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(255),
-	"description" varchar(255),
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp

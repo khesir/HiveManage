@@ -1008,68 +1008,81 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedReceipt(db: PostgresJsDatabase<SchemaType>) {
+  const paymentIDs = await db.select().from(payment);
+
   const receiptRecords = [
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 50,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 75,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 100,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 20.0,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 150,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 150,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 150,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 150,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 150,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 150,
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
+      payment_id: faker.helpers.arrayElement(paymentIDs).payment_id,
       issued_date: faker.date.past().toISOString(),
       total_amount: 150,
       created_at: faker.date.recent(),
@@ -3454,7 +3467,6 @@ async function main() {
     await seedInquiry(db);
 
     // Sales and related data
-    await seedReceipt(db);
     await seedSales(db);
     await seedSalesItem(db);
     await seedBorrow(db);
@@ -3471,6 +3483,7 @@ async function main() {
     await seedJobOrder(db);
     await seedJobOrderItems(db);
     await seedPayment(db);
+    await seedReceipt(db);
 
     // Pass employee IDs to seedRemarkTickets
     await seedRemarkType(db);
