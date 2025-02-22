@@ -26,13 +26,12 @@ export class SalesService {
     const conditions = [isNull(sales.deleted_at)];
 
     if (status) {
-      // Define valid statuses as a string union type
       const validStatuses = [
         'Cancelled',
         'Partially Completed',
         'Pending',
         'Completed',
-      ] as const; // 'as const' infers a readonly tuple of strings
+      ] as const;
       if (validStatuses.includes(status as (typeof validStatuses)[number])) {
         conditions.push(
           eq(sales.status, status as (typeof validStatuses)[number]),

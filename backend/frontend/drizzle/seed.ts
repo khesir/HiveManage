@@ -3473,8 +3473,8 @@ async function main() {
     await seedSerializedItems(db);
 
     // Participants
-    await seedCustomer(db);
     await seedCustomerGroup(db);
+    await seedCustomer(db);
     await seedInquiry(db);
 
     // Sales and related data
