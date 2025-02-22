@@ -8,11 +8,6 @@ import {
   validateProductID,
 } from './product.middleware';
 import { CreateProduct, UpdateProduct } from './product.model';
-import productcategoryRoute from './productcategory/productcategory.route';
-import stockLogsRoute from '../stocksLogs/stockslogs.route';
-import productvariantRoute from './prodvar/prodvar.route';
-import productvarsuppRoute from './prodvarsupp/prodvarsupp.route';
-import itemRecordRoute from './productRecord/itemrecord.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
@@ -47,30 +42,18 @@ productRoute.delete(
   productController.deleteProduct.bind(productController),
 );
 
+productRoute.use('/:product_id/productRecord', validateProductID, productRoute);
+
 productRoute.use(
-  '/:product_id/productcategory',
+  '/:product_id/productDetails',
   validateProductID,
-  productcategoryRoute,
+  productRoute,
 );
 
 productRoute.use(
-  '/:product_id/item-record',
+  '/:product_id/serializeItems',
   validateProductID,
-  itemRecordRoute,
-);
-
-productRoute.use('/:product_id/stock-logs', validateProductID, stockLogsRoute);
-
-productRoute.use(
-  '/:product_id/variant',
-  validateProductID,
-  productvariantRoute,
-);
-
-productRoute.use(
-  '/:product_id/prodvarsupp',
-  validateProductID,
-  productvarsuppRoute,
+  productRoute,
 );
 
 export default productRoute;

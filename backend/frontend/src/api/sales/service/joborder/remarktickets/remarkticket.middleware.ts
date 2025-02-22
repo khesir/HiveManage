@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { remarktickets } from '@/drizzle/drizzle.config';
+import { remarkTickets } from '@/drizzle/schema/services';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -18,11 +18,11 @@ export async function validateRemarkTicketsID(
   try {
     const RemarkTickets = await db
       .select()
-      .from(remarktickets)
+      .from(remarkTickets)
       .where(
         and(
-          eq(remarktickets.remark_id, Number(remark_id)),
-          isNull(remarktickets.deleted_at),
+          eq(remarkTickets.remark_id, Number(remark_id)),
+          isNull(remarkTickets.deleted_at),
         ),
       );
 

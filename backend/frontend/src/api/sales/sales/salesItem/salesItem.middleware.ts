@@ -1,8 +1,8 @@
 import { eq, and, isNull } from 'drizzle-orm';
-import { sales_items } from '@/drizzle/drizzle.config';
 import { NextFunction, Request, Response } from 'express';
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
+import { salesItems } from '@/drizzle/schema/sales';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -15,17 +15,17 @@ export async function validateSalesItemID(
   const { sales_item_id } = req.params;
 
   try {
-    const SalesItem = await db
+    const salesItem = await db
       .select()
-      .from(sales_items)
+      .from(salesItems)
       .where(
         and(
-          eq(sales_items.sales_items_id, Number(sales_item_id)),
-          isNull(sales_items.deleted_at),
+          eq(salesItems.sales_items_id, Number(sales_item_id)),
+          isNull(salesItems.deleted_at),
         ),
       );
-    console.log(SalesItem);
-    if (!SalesItem[0]) {
+    console.log(salesItem);
+    if (!salesItem[0]) {
       return res.status(404).json({ message: 'Sales Item not found' });
     }
     next();

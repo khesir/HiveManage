@@ -3,31 +3,31 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { serializeItems } from '@/drizzle/drizzle.config';
+import { serializeProducts } from '@/drizzle/schema/ims';
 
 // There's a globally used
 // middleware like error handling and schema validation
 
-export async function validateSerializedID(
+export async function validateSerializedProductID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { serial_id } = req.params;
+  const { serialized_item_id } = req.params;
 
   try {
     const data = await db
       .select()
-      .from(serializeItems)
+      .from(serializeProducts)
       .where(
         and(
-          eq(serializeItems.serialized_item_id, Number(serial_id)),
-          isNull(serializeItems.deleted_at),
+          eq(serializeProducts.serialized_item_id, Number(serialized_item_id)),
+          isNull(serializeProducts.deleted_at),
         ),
       );
 
     if (!data[0]) {
-      return res.status(404).json({ message: 'Serialize Item not found' });
+      return res.status(404).json({ message: 'Serialize Product not found' });
     }
     next();
   } catch (error) {

@@ -1,14 +1,9 @@
 import { and, eq, isNull, asc, desc, sql } from 'drizzle-orm';
-import {
-  customer,
-  employee,
-  reserve,
-  SchemaType,
-  service,
-} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateReserve } from './reserve.model';
-import z from 'zod/lib';
+import { customer } from '@/drizzle/schema/customer';
+import { reserve } from '@/drizzle/schema/services';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class ReserveService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -17,16 +12,12 @@ export class ReserveService {
     this.db = db;
   }
 
-  async createReserve(data: z.infer<typeof CreateReserve>) {
-    // Validate the data with Zod schema
-    const parsedData = CreateReserve.parse(data);
-
-    // Insert the validated data into the database
-    await this.db.insert(reserve).values(parsedData);
+  async createReserve(data: CreateReserve) {
+    await this.db.insert(reserve).values(data);
   }
 
   async getAllReserve(
-    service_id: string | undefined,
+    customer_id: string | undefined,
     reserve_status: string | undefined,
     sort: string,
     limit: number,
@@ -56,8 +47,8 @@ export class ReserveService {
         throw new Error(`Invalid payment status: ${reserve_status}`);
       }
     }
-    if (service_id) {
-      conditions.push(eq(reserve.service_id, Number(service_id)));
+    if (customer_id) {
+      conditions.push(eq(reserve.customer_id, Number(customer_id)));
     }
 
     const totalCountQuery = await this.db
@@ -72,9 +63,7 @@ export class ReserveService {
     const result = await this.db
       .select()
       .from(reserve)
-      .leftJoin(service, eq(service.service_id, reserve.service_id))
-      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
+      .leftJoin(customer, eq(customer.customer_id, reserve.customer_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(reserve.created_at) : desc(reserve.created_at),
@@ -83,14 +72,8 @@ export class ReserveService {
       .offset(offset);
     const reserveWithDetails = result.map((row) => ({
       ...row.reserve,
-      service: {
-        ...row.service,
-        employee: {
-          ...row.employee,
-        },
-        customer: {
-          ...row.customer,
-        },
+      customer: {
+        ...row.customer,
       },
     }));
 
@@ -101,21 +84,13 @@ export class ReserveService {
     const result = await this.db
       .select()
       .from(reserve)
-      .leftJoin(service, eq(service.service_id, reserve.service_id))
-      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
+      .leftJoin(customer, eq(customer.customer_id, reserve.customer_id))
       .where(eq(reserve.reserve_id, Number(reserve_id)));
 
     const reserveWithDetails = result.map((row) => ({
       ...row.reserve,
-      service: {
-        ...row.service,
-        employee: {
-          ...row.employee,
-        },
-        customer: {
-          ...row.customer,
-        },
+      customer: {
+        ...row.customer,
       },
     }));
 

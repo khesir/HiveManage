@@ -7,6 +7,9 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { borrow, jobOrder } from '../../services';
+import { sales } from '../../sales';
+import { discount } from '../../ims';
 
 export const paymentStatusEnum = pgEnum('payment_status', [
   'Pending',
@@ -34,10 +37,13 @@ export const serviceType = pgEnum('service_type', [
 
 export const payment = pgTable('payment', {
   payment_id: serial('payment_id').primaryKey(),
-  service_id: integer('service_id').notNull(),
+  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
+  borrow_id: integer('borrow_id').references(() => borrow.borrow_id),
+  sales_id: integer('sales_id').references(() => sales.sales_id),
   service_type: serviceType('service_type').notNull(),
   amount: real('total_price'),
   vat_rate: real('vat_rate'),
+  discount_id: integer('discount_id').references(() => discount.discount_id),
   payment_date: varchar('payment_date'),
   payment_method: paymentMethodEnum('payment_method').notNull(),
   payment_status: paymentStatusEnum('payment_status').notNull(),

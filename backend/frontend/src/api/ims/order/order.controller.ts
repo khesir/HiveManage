@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { OrderService } from './order.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class OrderController {
   private orderService: OrderService;
@@ -13,18 +13,18 @@ export class OrderController {
   }
 
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
+    const supplier_id = req.query.supplier_id
+      ? String(req.query.order_id)
+      : undefined;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const sort = (req.query.sort as string) || 'asc';
-    const no_pagination = req.query.no_pagination === 'true';
-    const variant_id = parseInt(req.query.variant_id as string) || undefined;
     try {
       const data = await this.orderService.getAllOrder(
+        supplier_id,
         sort,
         limit,
         offset,
-        no_pagination,
-        variant_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -32,7 +32,7 @@ export class OrderController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.finalResult,
+        data: data.orderWithDetails,
       });
     } catch (error) {
       res
@@ -44,8 +44,8 @@ export class OrderController {
 
   async getOrderById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { order_item_id } = req.params;
-      const data = await this.orderService.getOrderById(Number(order_item_id));
+      const { order_id } = req.params;
+      const data = await this.orderService.getOrderById(Number(order_id));
       res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({

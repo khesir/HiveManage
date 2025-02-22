@@ -3,8 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { assignedemployees } from '@/drizzle/drizzle.config';
-
+import { assignedEmployees } from '@/drizzle/schema/services';
 // There's a globally used
 // middleware like error handling and schema validation
 
@@ -18,14 +17,14 @@ export async function validateAssignedEmployeeID(
   try {
     const AssignedEmployees = await db
       .select()
-      .from(assignedemployees)
+      .from(assignedEmployees)
       .where(
         and(
           eq(
-            assignedemployees.assigned_employee_id,
+            assignedEmployees.assigned_employee_id,
             Number(assigned_employee_id),
           ),
-          isNull(assignedemployees.deleted_at),
+          isNull(assignedEmployees.deleted_at),
         ),
       );
 

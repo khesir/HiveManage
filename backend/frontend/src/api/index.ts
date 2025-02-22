@@ -7,7 +7,8 @@ import imsRoute from './ims/inventory.route';
 
 import log from '@/lib/logger';
 import cmsRoute from './cms/cms.route';
-// import smsRoute from './sales/sales.route';
+import pmsRoute from './payment/proof.route';
+import smsRoute from './sales/sales.route';
 
 const baseRoute = express.Router({ mergeParams: true });
 
@@ -19,8 +20,12 @@ baseRoute.use('/ims', imsRoute);
 log.info('Inventory Management System endpoints ready');
 
 // // Sales Management System API
-// baseRoute.use('/sms', smsRoute);
-// log.info('Sales Management System endpoints ready');
+baseRoute.use('/sms', smsRoute);
+log.info('Sales Management System endpoints ready');
+
+// // Payment Management System API
+baseRoute.use('/pms', pmsRoute);
+log.info('Payment Management System endpoints ready');
 
 // // Customer Management System API
 baseRoute.use('/cms', cmsRoute);

@@ -1,7 +1,8 @@
 import { eq, isNull } from 'drizzle-orm';
-import { jobordertype, SchemaType } from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateJobOrderTypes } from './jobordertypes.model';
+import { jobOrderType } from '@/drizzle/schema/services';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class JobOrderTypeService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -11,14 +12,14 @@ export class JobOrderTypeService {
   }
 
   async createJobOrderTypes(data: CreateJobOrderTypes) {
-    await this.db.insert(jobordertype).values(data);
+    await this.db.insert(jobOrderType).values(data);
   }
 
   async getAllJobOrderTypes(limit: number, offset: number) {
     const result = await this.db
       .select()
-      .from(jobordertype)
-      .where(isNull(jobordertype.deleted_at))
+      .from(jobOrderType)
+      .where(isNull(jobOrderType.deleted_at))
       .limit(limit)
       .offset(offset);
     return result;
@@ -27,22 +28,22 @@ export class JobOrderTypeService {
   async getJobOrderTypesById(paramsId: number) {
     const result = await this.db
       .select()
-      .from(jobordertype)
-      .where(eq(jobordertype.joborder_type_id, paramsId));
+      .from(jobOrderType)
+      .where(eq(jobOrderType.joborder_type_id, paramsId));
     return result[0];
   }
 
   async updateJobOrderTypes(data: object, paramsId: number) {
     await this.db
-      .update(jobordertype)
+      .update(jobOrderType)
       .set(data)
-      .where(eq(jobordertype.joborder_type_id, paramsId));
+      .where(eq(jobOrderType.joborder_type_id, paramsId));
   }
 
   async deleteJobOrderTypes(paramsId: number): Promise<void> {
     await this.db
-      .update(jobordertype)
+      .update(jobOrderType)
       .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(jobordertype.joborder_type_id, paramsId));
+      .where(eq(jobOrderType.joborder_type_id, paramsId));
   }
 }

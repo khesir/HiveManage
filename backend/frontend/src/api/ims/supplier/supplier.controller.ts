@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SupplierService } from './supplier.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class SupplierController {
   private supplierService: SupplierService;
@@ -12,30 +12,15 @@ export class SupplierController {
   }
 
   async getAllSupplier(req: Request, res: Response, next: NextFunction) {
-    const limit = parseInt(req.query.limit as string) || 10; // default limit value
-    const offset = parseInt(req.query.offset as string) || 0; // default offset value
-    const sort = (req.query.sort as string) || 'asc';
-    const no_pagination = req.query.no_pagination === 'true';
+    const relationship = (req.query.relationship as string) || undefined;
     try {
-      // Fetch data count from the database
-      const data = await this.supplierService.getAllSupplier(
-        sort,
-        limit,
-        offset,
-        no_pagination,
-      );
-      res.status(HttpStatus.OK.code).json({
-        status: 'Success',
-        message: 'Data retrieved successfully',
-        total_data: data.totalData,
-        limit: limit,
-        offset: offset,
-        data: data.resultWithRelatedData,
-      });
+      const departments =
+        await this.supplierService.getAllSupplier(relationship);
+      res.status(HttpStatus.OK.code).json({ data: departments });
     } catch (error) {
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
-        .json({ message: 'Internal Server Error ' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
+        message: 'Internal Server Error',
+      });
       next(error);
     }
   }
@@ -59,30 +44,28 @@ export class SupplierController {
   async createSupplier(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        name,
+        company_name,
         contact_number,
         remarks,
         relationship,
-        product_categories,
+        profile_link,
       } = req.body;
 
-      await this.supplierService.createSupplier(
-        {
-          name,
-          contact_number,
-          remarks,
-          relationship,
-          product_categories,
-        },
-        req.file,
-      );
-      res
-        .status(HttpStatus.CREATED.code)
-        .json({ status: 'Success', message: 'Successfully Created Supplier' });
+      await this.supplierService.createSupplier({
+        company_name,
+        contact_number,
+        remarks,
+        relationship,
+        profile_link,
+      });
+      res.status(HttpStatus.CREATED.code).json({
+        status: 'Success',
+        message: 'Successfully Created Supplier ',
+      });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
-        status: 'Error',
-        message: 'Internal Server Error ',
+        status: 'Error ',
+        message: 'Internal Server Error',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR.code,
       });
       next(error);
@@ -92,10 +75,16 @@ export class SupplierController {
   async updateSupplier(req: Request, res: Response, next: NextFunction) {
     try {
       const { supplier_id } = req.params;
-      const { name, contact_number, remarks } = req.body;
+      const {
+        company_name,
+        contact_number,
+        remarks,
+        relationship,
+        profile_link,
+      } = req.body;
 
       await this.supplierService.updateSupplier(
-        { name, contact_number, remarks },
+        { company_name, contact_number, remarks, relationship, profile_link },
         Number(supplier_id),
       );
       res

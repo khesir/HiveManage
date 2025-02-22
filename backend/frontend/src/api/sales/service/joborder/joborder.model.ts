@@ -2,9 +2,10 @@ import { z } from 'zod';
 
 export const CreateJobOrder = z.object({
   joborder_type_id: z.number().min(1),
-  service_id: z.number().optional(),
+  customer_id: z.number().optional(),
   uuid: z.string().min(1),
   fee: z.number().min(1),
+  description: z.string().min(1),
   joborder_status: z.enum([
     'Pending',
     'In Progress',
@@ -21,9 +22,10 @@ export const CreateJobOrder = z.object({
 
 export const UpdateJobOrder = z.object({
   joborder_type_id: z.number().min(1),
-  service_id: z.number().optional(),
+  customer_id: z.number().optional(),
   uuid: z.string().min(1),
   fee: z.number().min(1),
+  description: z.string().min(1),
   joborder_status: z.enum([
     'Pending',
     'In Progress',

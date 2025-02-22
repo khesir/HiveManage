@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { AssignedEmployeeService } from './assignedemployees.service';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class AssignedEmployeeController {
   private assignedemployeeService: AssignedEmployeeService;
@@ -68,6 +68,7 @@ export class AssignedEmployeeController {
         job_order_id,
         employee_id,
         assigned_by,
+        is_leader: false,
       });
 
       res.status(HttpStatus.CREATED.code).json({

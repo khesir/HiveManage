@@ -1,14 +1,9 @@
 import { and, eq, isNull, sql, desc, asc } from 'drizzle-orm';
-import {
-  borrow,
-  customer,
-  employee,
-  sales_items,
-  SchemaType,
-  service,
-} from '@/drizzle/drizzle.config';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateBorrow } from './borrow.model';
+import { customer } from '@/drizzle/schema/customer';
+import { borrow } from '@/drizzle/schema/services';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class BorrowService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -22,7 +17,7 @@ export class BorrowService {
   }
 
   async getAllBorrow(
-    service_id: string | undefined,
+    customer_id: string | undefined,
     status: string | undefined,
     sort: string,
     limit: number,
@@ -33,15 +28,11 @@ export class BorrowService {
     if (status) {
       // Define valid statuses as a string union type
       const validStatuses = [
-        'Requested',
-        'Approved',
         'Borrowed',
-        'Returned',
-        'Overdue',
-        'Rejected',
+        'Confirmed',
         'Cancelled',
-        'Lost',
-        'Damaged',
+        'Pending',
+        'Completed',
       ] as const; // 'as const' infers a readonly tuple of strings
       if (validStatuses.includes(status as (typeof validStatuses)[number])) {
         conditions.push(
@@ -51,8 +42,8 @@ export class BorrowService {
         throw new Error(`Invalid payment status: ${status}`);
       }
     }
-    if (service_id) {
-      conditions.push(eq(borrow.service_id, Number(service_id)));
+    if (customer_id) {
+      conditions.push(eq(borrow.customer_id, Number(customer_id)));
     }
     const totalCountQuery = await this.db
       .select({
@@ -66,13 +57,7 @@ export class BorrowService {
     const result = await this.db
       .select()
       .from(borrow)
-      .leftJoin(service, eq(service.service_id, borrow.borrow_id))
-      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
-      .leftJoin(
-        sales_items,
-        eq(sales_items.sales_items_id, borrow.sales_item_id),
-      )
+      .leftJoin(customer, eq(customer.customer_id, borrow.customer_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(borrow.created_at) : desc(borrow.created_at),
@@ -82,17 +67,8 @@ export class BorrowService {
 
     const borrowWithDetails = result.map((row) => ({
       ...row.borrow,
-      service: {
-        ...row.service,
-        employee: {
-          ...row.employee,
-        },
-        customer: {
-          ...row.customer,
-        },
-      },
-      sales_items: {
-        ...row.sales_items,
+      customer: {
+        ...row.customer,
       },
     }));
 
@@ -103,27 +79,12 @@ export class BorrowService {
     const result = await this.db
       .select()
       .from(borrow)
-      .leftJoin(service, eq(service.service_id, borrow.service_id))
-      .leftJoin(employee, eq(employee.employee_id, service.employee_id))
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
-      .leftJoin(
-        sales_items,
-        eq(sales_items.sales_items_id, borrow.sales_item_id),
-      )
+      .leftJoin(customer, eq(customer.customer_id, borrow.customer_id))
       .where(eq(borrow.borrow_id, Number(borrow_id)));
     const borrowWithDetails = result.map((row) => ({
       ...row.borrow,
-      service: {
-        ...row.service,
-        employee: {
-          ...row.employee,
-        },
-        customer: {
-          ...row.customer,
-        },
-      },
-      sales_items: {
-        ...row.sales_items,
+      customer: {
+        ...row.customer,
       },
     }));
 

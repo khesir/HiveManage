@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const CreateReceipt = z.object({
-  service_id: z.number().min(1),
   payment_id: z.number().min(1),
   issued_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
@@ -10,7 +9,6 @@ export const CreateReceipt = z.object({
 });
 
 export const UpdateReceipt = z.object({
-  service_id: z.number().min(1),
   payment_id: z.number().min(1),
   issued_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',

@@ -9,7 +9,7 @@ import { customer } from '../../customer';
 
 export const salesStatus = pgEnum('sales_status', [
   'Completed',
-  'Parially Completed',
+  'Partially Completed',
   'Cancelled',
   'Pending',
 ]);

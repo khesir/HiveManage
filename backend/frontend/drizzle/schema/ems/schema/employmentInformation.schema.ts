@@ -1,5 +1,6 @@
 import {
   integer,
+  pgEnum,
   pgTable,
   serial,
   timestamp,
@@ -8,6 +9,24 @@ import {
 import { employee } from './employee.schema';
 import { department } from './department.schema';
 import { designation } from './designation.schema';
+
+export const employmentInfoType = pgEnum('employmentInfo_Type', [
+  'Regular',
+  'Probationary',
+  'Contractual',
+  'Seasonal',
+  'Temporary',
+]);
+
+export const employmentInfoStatus = pgEnum('employmentInfo_Status', [
+  'Active',
+  'On Leave',
+  'Terminated',
+  'Resigned',
+  'Suspended',
+  'Retired',
+  'Inactive',
+]);
 
 export const employmentInformation = pgTable('employment_info', {
   employment_info_id: serial('employment_info_id').primaryKey(),

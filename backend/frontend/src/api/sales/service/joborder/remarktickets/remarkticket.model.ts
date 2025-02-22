@@ -5,17 +5,9 @@ export const CreateRemarkTickets = z.object({
   job_order_id: z.number().min(1),
   title: z.string().min(1),
   description: z.string().min(1),
-  content: z.number().optional(),
-  remarktickets_status: z.enum([
-    'Resolved',
-    'Pending',
-    'In Progress',
-    'Rejected',
-    'Closed',
-    'Open',
-  ]), // Updated to match expected values
+  content: z.string().optional(),
+  remarktickets_status: z.enum(['Resolved', 'Pending', 'Removed']),
   deadline: z.string().optional(),
-  created_by: z.number().min(1),
 });
 
 export const UpdateRemarkTickets = z.object({
@@ -23,16 +15,8 @@ export const UpdateRemarkTickets = z.object({
   job_order_id: z.number().min(1),
   title: z.string().min(1),
   description: z.string().min(1),
-  content: z.number().optional(),
-  remarktickets_status: z.enum([
-    'Resolved',
-    'Pending',
-    'In Progress',
-    'Rejected',
-    'Closed',
-    'Open',
-  ]), // Updated to match expected values
-  created_by: z.number().min(1),
+  content: z.string().optional(),
+  remarktickets_status: z.enum(['Resolved', 'Pending', 'Removed']),
   deadline: z.string().optional(),
 });
 

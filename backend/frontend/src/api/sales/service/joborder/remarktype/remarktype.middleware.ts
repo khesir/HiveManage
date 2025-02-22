@@ -3,8 +3,9 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { employee, remarktype } from '@/drizzle/drizzle.config';
 import { HttpStatus } from '@/lib/HttpStatus';
+import { remarkType } from '@/drizzle/schema/services';
+import { employee } from '@/drizzle/schema/ems/schema/employee.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -19,11 +20,11 @@ export async function validateRemarkTypeID(
   try {
     const RemarkType = await db
       .select()
-      .from(remarktype)
+      .from(remarkType)
       .where(
         and(
-          eq(remarktype.remark_type_id, Number(remark_type_id)),
-          isNull(remarktype.deleted_at),
+          eq(remarkType.remark_type_id, Number(remark_type_id)),
+          isNull(remarkType.deleted_at),
         ),
       );
     console.log(RemarkType);

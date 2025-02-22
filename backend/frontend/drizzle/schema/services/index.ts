@@ -1,6 +1,6 @@
 export { reports } from './schema/joborder/reports.schema';
 export { jobOrder } from './schema/joborder/jobOrder.schema';
-export { jobordertype } from './schema/joborder/jobOrderType.schema';
+export { jobOrderType } from './schema/joborder/jobOrderType.schema';
 export { jobOrderItem } from './schema/joborder/jobOrderItems.schema';
 export { assignedEmployees } from './schema/joborder/assignedEmployee.schema';
 export { remarkTickets } from './schema/joborder/remarkTickets.schema';

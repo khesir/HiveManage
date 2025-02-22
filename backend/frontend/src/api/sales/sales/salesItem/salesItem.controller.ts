@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SalesItemService } from './salesItem.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class SalesItemController {
   private salesitemService: SalesItemService;
@@ -12,16 +12,15 @@ export class SalesItemController {
   }
 
   async getAllSalesItem(req: Request, res: Response, next: NextFunction) {
-    const service_id = (req.params.service_id as string) || undefined;
-    const sales_item_type = (req.query.sales_item_type as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    console.log(service_id);
+    const product_id = (req.query.product_id as string) || undefined;
+    const sale_id = (req.query.product_id as string) || undefined;
     try {
       const data = await this.salesitemService.getAllSalesItem(
-        service_id,
-        sales_item_type,
+        product_id,
+        sale_id,
         sort,
         limit,
         offset,
@@ -59,14 +58,14 @@ export class SalesItemController {
 
   async createSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { item_id, service_id, quantity, sales_item_type, total_price } =
+      const { product_id, sales_id, quantity, salesItem_type, total_price } =
         req.body;
 
       await this.salesitemService.createSalesItem({
-        item_id,
-        service_id,
+        product_id,
+        sales_id,
         quantity,
-        sales_item_type,
+        salesItem_type,
         total_price,
       });
       res.status(HttpStatus.CREATED.code).json({
@@ -85,19 +84,19 @@ export class SalesItemController {
 
   async updateSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_item_id } = req.params;
-      const { item_id, service_id, quantity, sales_item_type, total_price } =
+      const { sales_items_id } = req.params;
+      const { product_id, sale_id, quantity, salesItem_type, total_price } =
         req.body;
 
       await this.salesitemService.updateSalesItem(
         {
-          item_id,
-          service_id,
+          product_id,
+          sale_id,
           quantity,
-          sales_item_type,
+          salesItem_type,
           total_price,
         },
-        Number(sales_item_id),
+        Number(sales_items_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -113,11 +112,11 @@ export class SalesItemController {
 
   async deleteSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { sales_item_id } = req.params;
-      await this.salesitemService.deleteSalesItem(Number(sales_item_id));
+      const { sales_items_id } = req.params;
+      await this.salesitemService.deleteSalesItem(Number(sales_items_id));
       res.status(200).json({
         status: 'Success',
-        message: `Sales Item ID:${sales_item_id} is deleted Successfully`,
+        message: `Sales Item ID:${sales_items_id} is deleted Successfully`,
       });
     } catch (error) {
       res

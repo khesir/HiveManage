@@ -14,6 +14,13 @@ export const productStatus = pgEnum('product_status', [
   'Unavailable',
   'Sold',
   'Available',
+  'Returned',
+  'Pending Payment',
+  'On Order',
+  'In Service',
+  'Awaiting Service',
+  'Return Requested',
+  'Retired',
 ]);
 
 export const product = pgTable('product', {
@@ -23,8 +30,9 @@ export const product = pgTable('product', {
     () => productDetails.p_details_id,
   ),
   price: real('price').default(0),
+  discount: integer('discount'),
   is_serialize: boolean('is_serialize').default(false),
-  status: productStatus('product_status').notNull(),
+  itemStatus: productStatus('product_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

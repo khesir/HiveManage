@@ -5,6 +5,7 @@ import { validateRequest } from '@/src/middlewares';
 import { CustomerController } from './customer.controller';
 import { validateCustomerID } from './customer.middleware';
 import { CreateCustomer, UpdateCustomer } from './customer.model';
+import customergroupRoute from '../customergroup/customergroup.route';
 
 const customerRoute = Router({ mergeParams: true });
 const customerController = new CustomerController(db);
@@ -42,5 +43,11 @@ customerRoute.delete(
   customerController.deleteCustomer.bind(customerController),
 );
 log.info('DELETE /customer/:customer_id set');
+
+customerRoute.use(
+  ':customer_id/customergroup',
+  validateCustomerID,
+  customergroupRoute,
+);
 
 export default customerRoute;

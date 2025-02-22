@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { JobOrderService } from './joborder.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class JobOrderController {
   private joborderService: JobOrderService;
@@ -18,9 +18,8 @@ export class JobOrderController {
     const offset = parseInt(req.query.offset as string) || 0;
 
     const uuid = (req.query.uuid as string) || undefined;
-    const service_id = (req.params.service_id as string) || undefined;
+    const customer_id = (req.params.customer_id as string) || undefined;
     const joborder_status = (req.query.joborder_status as string) || undefined;
-    const employee_id = (req.query.employee_id as string) || undefined;
 
     try {
       const data = await this.joborderService.getAllJobOrder(
@@ -29,9 +28,8 @@ export class JobOrderController {
         limit,
         offset,
         uuid,
-        service_id,
         joborder_status,
-        employee_id,
+        customer_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -66,14 +64,21 @@ export class JobOrderController {
 
   async createJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const service_id = Number(req.params.service_id);
-      const { joborder_type_id, uuid, fee, joborder_status, total_price_cost } =
-        req.body;
+      const customer_id = Number(req.params.customer_id);
+      const {
+        joborder_type_id,
+        uuid,
+        description,
+        fee,
+        joborder_status,
+        total_price_cost,
+      } = req.body;
 
       await this.joborderService.createJobOrder({
         joborder_type_id,
-        service_id,
+        customer_id,
         uuid,
+        description,
         fee,
         joborder_status,
         total_price_cost,
@@ -95,15 +100,22 @@ export class JobOrderController {
   async updateJobOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { job_order_id } = req.params;
-      const service_id = Number(req.params.service_id);
-      const { joborder_type_id, uuid, fee, joborder_status, total_price_cost } =
-        req.body;
+      const customer_id = Number(req.params.customer_id);
+      const {
+        joborder_type_id,
+        uuid,
+        description,
+        fee,
+        joborder_status,
+        total_price_cost,
+      } = req.body;
 
       await this.joborderService.updateJobOrder(
         {
           joborder_type_id,
-          service_id,
+          customer_id,
           uuid,
+          description,
           fee,
           joborder_status,
           total_price_cost,

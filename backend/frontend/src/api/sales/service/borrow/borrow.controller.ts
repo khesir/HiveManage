@@ -2,7 +2,7 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { BorrowService } from './borrow.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { SchemaType } from '@/drizzle/drizzle.config';
+import { SchemaType } from '@/drizzle/schema/type';
 
 export class BorrowController {
   private borrowService: BorrowService;
@@ -12,7 +12,7 @@ export class BorrowController {
   }
 
   async getAllBorrow(req: Request, res: Response, next: NextFunction) {
-    const service_id = (req.params.service_id as string) || undefined;
+    const customer_id = (req.params.customer_id as string) || undefined;
     const status = (req.query.status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -20,7 +20,7 @@ export class BorrowController {
 
     try {
       const data = await this.borrowService.getAllBorrow(
-        service_id,
+        customer_id,
         status,
         sort,
         limit,
@@ -57,23 +57,13 @@ export class BorrowController {
 
   async createBorrow(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        service_id,
-        sales_items_id,
-        borrow_date,
-        return_date,
-        fee,
-        tag_item,
-        status,
-      } = req.body;
+      const { customer_id, borrow_date, return_date, fee, status } = req.body;
 
       await this.borrowService.createBorrow({
-        service_id,
-        sales_items_id,
+        customer_id,
         borrow_date,
         return_date,
         fee,
-        tag_item,
         status,
       });
       res
@@ -92,24 +82,14 @@ export class BorrowController {
   async updateBorrow(req: Request, res: Response, next: NextFunction) {
     try {
       const { borrow_id } = req.params;
-      const {
-        service_id,
-        sales_items_id,
-        borrow_date,
-        return_data,
-        fee,
-        tag_item,
-        status,
-      } = req.body;
+      const { customer_id, borrow_date, return_data, fee, status } = req.body;
 
       await this.borrowService.updateBorrow(
         {
-          service_id,
-          sales_items_id,
+          customer_id,
           borrow_date,
           return_data,
           fee,
-          tag_item,
           status,
         },
         Number(borrow_id),

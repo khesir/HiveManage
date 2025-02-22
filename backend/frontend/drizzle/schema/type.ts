@@ -20,7 +20,7 @@ import {
 import {
   jobOrder,
   reports,
-  jobordertype,
+  jobOrderType,
   reserve,
   borrow,
   borrowItems,
@@ -47,7 +47,7 @@ export const schema: SchemaType = {
   // Job Order
   jobOrder,
   reports,
-  jobordertype,
+  jobOrderType,
 
   //Services
   reserve,

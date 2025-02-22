@@ -2,35 +2,45 @@ import { Router } from 'express';
 import { db } from '@/drizzle/pool';
 import { validateRequest } from '@/src/middlewares';
 import { CreateSerialize } from './serialize.model';
-import { validateSerializedID } from './serialize.middleware';
+import { validateSerializedProductID } from './serialize.middleware';
 import { SerializeItemController } from './serialize.controller';
 
-const serialRoute = Router({ mergeParams: true });
-const serializedController = new SerializeItemController(db);
+const serialproductRoute = Router({ mergeParams: true });
+const serializedproductController = new SerializeItemController(db);
 
-serialRoute.get(
+serialproductRoute.get(
   '/',
-  serializedController.getAllSerializeItem.bind(serializedController),
+  serializedproductController.getAllSerializedProducts.bind(
+    serializedproductController,
+  ),
 );
-serialRoute.get(
-  '/:serial_id',
-  validateSerializedID,
-  serializedController.getSerializeItemById.bind(serializedController),
+serialproductRoute.get(
+  '/:serialized_item_id',
+  validateSerializedProductID,
+  serializedproductController.getSerializedProductById.bind(
+    serializedproductController,
+  ),
 );
-serialRoute.post(
+serialproductRoute.post(
   '/',
   [validateRequest({ body: CreateSerialize })],
-  serializedController.createSerializeItem.bind(serializedController),
+  serializedproductController.createSerializeItem.bind(
+    serializedproductController,
+  ),
 );
-serialRoute.put(
-  '/:serial_id',
+serialproductRoute.put(
+  '/:serialized_item_id',
   [validateRequest({ body: CreateSerialize })],
-  serializedController.updateSerializeItem.bind(serializedController),
+  serializedproductController.updateSerializeItem.bind(
+    serializedproductController,
+  ),
 );
-serialRoute.delete(
-  '/:serial_id',
-  validateSerializedID,
-  serializedController.deleteSerializeItem.bind(serializedController),
+serialproductRoute.delete(
+  '/:serialized_item_id',
+  validateSerializedProductID,
+  serializedproductController.deleteSerializeItem.bind(
+    serializedproductController,
+  ),
 );
 
-export default serialRoute;
+export default serialproductRoute;

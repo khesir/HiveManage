@@ -4,6 +4,7 @@ import { db } from '@/drizzle/pool';
 import { ReserveController } from './reserve.controller';
 import { validateReserveID } from './reserve.middleware';
 import { CreateReserve, UpdateReserve } from './reserve.model';
+import reserveitemsRoute from './reserveItems/reservevItem.route';
 
 const reserveRoute = Router({ mergeParams: true });
 const reserveController = new ReserveController(db);
@@ -32,6 +33,12 @@ reserveRoute.delete(
   '/:reserve_id',
   validateReserveID,
   reserveController.deleteReserve.bind(reserveController),
+);
+
+reserveRoute.use(
+  '/:reserve_id/reserveitems',
+  validateReserveID,
+  reserveitemsRoute,
 );
 
 export default reserveRoute;

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { jobordertype } from '@/drizzle/drizzle.config';
+import { jobOrderType } from '@/drizzle/schema/services/schema/joborder/jobOrderType.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -18,11 +18,11 @@ export async function validateJobOrderTypesID(
   try {
     const JobOrderTypes = await db
       .select()
-      .from(jobordertype)
+      .from(jobOrderType)
       .where(
         and(
-          eq(jobordertype.joborder_type_id, Number(joborder_type_id)),
-          isNull(jobordertype.deleted_at),
+          eq(jobOrderType.joborder_type_id, Number(joborder_type_id)),
+          isNull(jobOrderType.deleted_at),
         ),
       );
     console.log(JobOrderTypes);
