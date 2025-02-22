@@ -5,7 +5,7 @@ import { validateRequest } from '@/src/middlewares';
 import { CustomerController } from './customer.controller';
 import { validateCustomerID } from './customer.middleware';
 import { CreateCustomer, UpdateCustomer } from './customer.model';
-import customergroupRoute from './customergroup/customergroup.route';
+import customergroupRoute from '../customergroup/customergroup.route';
 
 const customerRoute = Router({ mergeParams: true });
 const customerController = new CustomerController(db);
