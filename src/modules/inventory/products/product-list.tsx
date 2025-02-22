@@ -25,7 +25,7 @@ export default function ProductWithDetailsList({
 	const product_name = searchParams.get('product_name') || undefined;
 	useEffect(() => {
 		const fetchProducts = async () => {
-			const [categoryRespoonce, productResponse] = await Promise.all([
+			const [categoryResponse, productResponse] = await Promise.all([
 				request<PaginationResponse<Category>>(
 					'GET',
 					`/api/v1/ims/category?no_pagination=true`,
@@ -38,7 +38,7 @@ export default function ProductWithDetailsList({
 						(product_name ? `&product_name=${product_name}` : ''),
 				),
 			]);
-			setCategories(categoryRespoonce.data);
+			setCategories(categoryResponse.data);
 			setProducts(productResponse.data);
 			setPageCount(Math.ceil(productResponse.total_data / pageLimit));
 		};

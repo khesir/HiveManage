@@ -1,5 +1,3 @@
-'use client';
-
 import {cn} from '@/lib/util/utils';
 import {useStore} from '@/components/appLayout/hooks/use-store';
 import {useSidebarToggle} from '@/components/appLayout/hooks/use-sidebar-toggle';

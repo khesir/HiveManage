@@ -35,11 +35,11 @@ export function UserNav() {
 		try {
 			await request('GET', '/auth/sign-out');
 			console.log(
-				`/api/v1/ems/employee-roles/${user?.employee_roles_id}/status`,
+				`/api/v1/ems/employeeRoles/${user?.employee_roles_id}/status`,
 			);
 			await request(
 				'PATCH',
-				`/api/v1/ems/employee-roles/${user?.employee_roles_id}/status`,
+				`/api/v1/ems/employeeRoles/${user?.employee_roles_id}/status`,
 				{status: 'Offline'},
 			);
 			clearUser();
@@ -57,7 +57,7 @@ export function UserNav() {
 				};
 				const empRoleData = await request<
 					PaginationResponse<EmployeeRolesWithDetails>
-				>('GET', `/api/v1/ems/employee-roles?user_id=${result.data.id}`);
+				>('GET', `/api/v1/ems/employeeRoles?user_id=${result.data.id}`);
 				setUser(empRoleData.data[0]);
 			};
 			fetchData();

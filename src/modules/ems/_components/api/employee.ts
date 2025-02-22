@@ -13,7 +13,7 @@ export async function UpdateEmployee(
 
 	const empRoleData = await request<
 		PaginationResponse<EmployeeRolesWithDetails>
-	>('GET', `/api/v1/ems/employee-roles?employee_id=${employee_id}`);
+	>('GET', `/api/v1/ems/employeeRoles?employee_id=${employee_id}`);
 	return empRoleData.data[0];
 }
 

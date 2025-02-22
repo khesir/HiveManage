@@ -126,7 +126,7 @@ export function CreateEmployeeForm() {
 			console.log('FormData contents:', ...formData.entries());
 			await request(
 				'POST',
-				`/api/v1/ems/employee-roles?email=${data.employee_email}`,
+				`/api/v1/ems/employeeRoles?email=${data.employee_email}`,
 				formData,
 			);
 			toast.success('Employee Added');

@@ -68,17 +68,16 @@ export default function UserAuthForm() {
 			// Fetch employee data
 			const employeeData = await request<
 				PaginationResponse<EmployeeRolesWithDetails>
-			>('GET', `/api/v1/ems/employee-roles?user_id=${result.data.user.id}`);
+			>('GET', `/api/v1/ems/employeeRoles?user_id=${result.data.user.id}`);
 
 			const res = employeeData.data[0];
 			setUser({...res, status: 'Online'});
 			await request(
 				'PATCH',
-				`/api/v1/ems/employee-roles/${res.employee_roles_id}/status`,
+				`/api/v1/ems/employeeRoles/${res.employee_roles_id}/status`,
 				{status: 'Online'},
 			);
 		} finally {
-			// Stop loading
 			setLoading(false);
 		}
 	};

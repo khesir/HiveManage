@@ -24,7 +24,7 @@ export default function EmployeeList({searchParams}: paramsProps) {
 		const fetchEmployees = async () => {
 			const res = await request<PaginationResponse<EmployeeRolesWithDetails>>(
 				'GET',
-				`/api/v1/ems/employee-roles?limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/ems/employeeRoles?limit=${pageLimit}&offset=${offset}` +
 					(status ? `&status=${status}` : '') +
 					(sort ? `&sort=${sort}` : '') +
 					(fullname ? `&fullname=${fullname}` : ''),
