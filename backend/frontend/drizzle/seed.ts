@@ -433,6 +433,7 @@ async function seedDesignations(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
+  const customergroupIDs = await db.select().from(customerGroup);
   const status = [
     'Active',
     'Inactive',
@@ -459,6 +460,8 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Metro Manila',
       email: 'johndoe@example.com',
       standing: faker.helpers.arrayElement(status),
+      customer_group_id:
+        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -473,6 +476,8 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Cebu',
       email: 'janesmith@example.com',
       standing: faker.helpers.arrayElement(status),
+      customer_group_id:
+        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -489,6 +494,8 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Davao',
       email: 'alicejohnson@example.com',
       standing: faker.helpers.arrayElement(status),
+      customer_group_id:
+        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -506,6 +513,8 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Quezon City',
       email: 'bobwilliams@example.com',
       standing: faker.helpers.arrayElement(status),
+      customer_group_id:
+        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -522,6 +531,8 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Manila',
       email: 'charliebrown@example.com',
       standing: faker.helpers.arrayElement(status),
+      customer_group_id:
+        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
