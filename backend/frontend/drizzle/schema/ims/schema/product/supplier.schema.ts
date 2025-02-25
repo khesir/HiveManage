@@ -23,7 +23,7 @@ export const supplierRelation = pgEnum('supplierRelation_Status', [
   'logistics partner',
 ]);
 
-export const supplier = pgTable('supplier', {
+export const supplier = pgTable('suppliers', {
   supplier_id: serial('supplier_id').primaryKey(),
   name: varchar('name', { length: 255 }),
   contact_number: varchar('contact_number', { length: 255 }),

@@ -2,25 +2,34 @@ import {
   integer,
   pgEnum,
   pgTable,
+  real,
   serial,
   timestamp,
-  varchar,
 } from 'drizzle-orm/pg-core';
 import { product } from './product.schema';
 
-export const recordType = pgEnum('record_type', [
-  'Firsthand',
+export const recordCondition = pgEnum('record_condition', [
+  'New',
   'Secondhand',
   'Broken',
 ]);
 
-export const productRecord = pgTable('product_record', {
+export const recordStatus = pgEnum('product_status', [
+  'Sold',
+  'Pending Payment',
+  'On Order',
+  'In Service',
+  'Awaiting Service',
+  'Return Requested',
+]);
+
+export const productRecord = pgTable('product_records', {
   product_record_id: serial('product_record_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
-  record_name: varchar('record_name', { length: 255 }),
-  qty: integer('qty').default(0),
-  record_type: recordType('record_type').notNull(),
-  status: varchar('status'),
+  quantity: integer('qty').default(0),
+  price: real('price').default(0),
+  condition: recordCondition('type').notNull(),
+  status: recordStatus('status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

@@ -251,7 +251,6 @@ CREATE TABLE IF NOT EXISTS "roles" (
 CREATE TABLE IF NOT EXISTS "category" (
 	"category_id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255),
-	"content" varchar(255),
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -337,7 +336,6 @@ CREATE TABLE IF NOT EXISTS "product" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product_details" (
 	"p_details_id" serial PRIMARY KEY NOT NULL,
-	"category_id" integer,
 	"name" varchar(255),
 	"description" varchar(255),
 	"p_det_type" "pdet_Status",
@@ -388,6 +386,15 @@ CREATE TABLE IF NOT EXISTS "couponredemptions" (
 	"couponredemptions_id" serial PRIMARY KEY NOT NULL,
 	"customer_id" integer,
 	"discount_id" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "product_category" (
+	"p_category_id" serial PRIMARY KEY NOT NULL,
+	"category_id" integer,
+	"p_details_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -686,12 +693,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "product_details" ADD CONSTRAINT "product_details_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "product_record" ADD CONSTRAINT "product_record_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -711,6 +712,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "couponredemptions" ADD CONSTRAINT "couponredemptions_discount_id_discount_discount_id_fk" FOREIGN KEY ("discount_id") REFERENCES "public"."discount"("discount_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "product_category" ADD CONSTRAINT "product_category_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "product_category" ADD CONSTRAINT "product_category_p_details_id_product_details_p_details_id_fk" FOREIGN KEY ("p_details_id") REFERENCES "public"."product_details"("p_details_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

@@ -8,6 +8,8 @@ import { SupabaseService } from '../supabase/supabase.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import mime from 'mime';
+import { SchemaType } from './schema/type';
+
 import { customer, customerGroup, inquiry } from './schema/customer';
 import {
   position,
@@ -31,7 +33,6 @@ import {
   discountCustomer,
   serializeProducts,
 } from './schema/ims';
-import { SchemaType } from './schema/type';
 import {
   assignedEmployees,
   borrow,
@@ -48,6 +49,7 @@ import { jobOrderType } from './schema/services/schema/joborder/jobOrderType.sch
 import { payment, receipt } from './schema/payment';
 import { sales, salesItems } from './schema/sales';
 import { couponredemptions } from './schema/ims/schema/discount/couponredeem';
+
 const supabase = new SupabaseService();
 
 const samplePosters = fs
@@ -2162,50 +2164,112 @@ async function seedJobOrderItems(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
   const productIDs = await db.select().from(product);
-  const statuses = ['Firsthand', 'Secondhand', 'Broken'] as const;
-
+  const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
+  const status = [
+    'Sold',
+    'Pending Payment',
+    'On Order',
+    'In Service',
+    'Awaiting Service',
+    'Return Requested',
+  ] as const;
   const productrecordRecords = [
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 10,
-      record_type: faker.helpers.arrayElement(statuses),
-      record_status: 'Available',
+      product_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
       deleted_at: faker.date.recent(),
     },
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 5,
-      record_type: faker.helpers.arrayElement(statuses),
-      record_status: 'Reserved',
+      product_id: 2,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
       deleted_at: faker.date.recent(),
     },
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 2,
-      record_type: faker.helpers.arrayElement(statuses),
-      record_status: 'Under Repair',
+      product_id: 3,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
       deleted_at: faker.date.recent(),
     },
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 8,
-      record_type: faker.helpers.arrayElement(statuses),
-      record_status: 'Sold Out',
+      product_id: 4,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
       deleted_at: faker.date.recent(),
     },
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      quantity: 3,
-      record_type: faker.helpers.arrayElement(statuses),
-      record_status: 'Available',
+      product_id: 5,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+      deleted_at: faker.date.recent(),
+    },
+    {
+      product_id: 6,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+      deleted_at: faker.date.recent(),
+    },
+    {
+      product_id: 7,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+      deleted_at: faker.date.recent(),
+    },
+    {
+      product_id: 8,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+      deleted_at: faker.date.recent(),
+    },
+    {
+      product_id: 9,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+      deleted_at: faker.date.recent(),
+    },
+    {
+      product_id: 10,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
       deleted_at: faker.date.recent(),
@@ -2219,28 +2283,15 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier);
   const product_detailsIDs = await db.select().from(productDetails);
 
-  const statuses = [
-    'Unavailable',
-    'Sold',
-    'Available',
-    'Returned',
-    'Pending Payment',
-    'On Order',
-    'In Service',
-    'Awaiting Service',
-    'Return Requested',
-    'Retired',
-  ] as const;
+  const statuses = ['Unavailable', 'Available'] as const;
 
   const productsRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: true,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
@@ -2248,10 +2299,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: true,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-15'),
     },
@@ -2259,10 +2308,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: false,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2270,10 +2317,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: true,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2281,10 +2326,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: false,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2292,10 +2335,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: true,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2303,10 +2344,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: false,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2314,10 +2353,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: true,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2325,10 +2362,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: false,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2336,10 +2371,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
       product_det_id:
         faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      price: 100,
-      discount: 12,
       is_serialize: true,
-      itemStatus: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
       last_updated: new Date('2023-03-20'),
     },
@@ -2350,13 +2383,10 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
-  const categoryIDs = await db.select().from(category);
-
   const statuses = ['Batch', 'Serialized'] as const;
 
   const productdetailsRecords = [
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Apple iPhone 14 Pro',
       description:
         'Flagship smartphone with A16 Bionic chip and ProMotion display.',
@@ -2367,7 +2397,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2026-10-01'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Samsung Galaxy S23 Ultra',
       description:
         'High-end Android phone with 200MP camera and Snapdragon 8 Gen 2.',
@@ -2378,7 +2407,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2026-09-15'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Dell XPS 15',
       description: 'Premium laptop with Intel Core i9 and 4K OLED display.',
       product_type: faker.helpers.arrayElement(statuses),
@@ -2388,7 +2416,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2027-01-10'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Sony WH-1000XM5',
       description:
         'Wireless noise-canceling headphones with industry-leading ANC.',
@@ -2399,7 +2426,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2025-12-30'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Logitech MX Master 3S',
       description: 'Advanced ergonomic wireless mouse with precise tracking.',
       product_type: faker.helpers.arrayElement(statuses),
@@ -2409,7 +2435,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2025-06-20'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'WD Black NVMe SSD 1TB',
       description: 'High-speed SSD for gaming and content creation.',
       product_type: faker.helpers.arrayElement(statuses),
@@ -2419,7 +2444,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2028-03-05'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Corsair Vengeance RGB Pro 32GB RAM',
       description: 'DDR4 memory with dynamic RGB lighting for gaming rigs.',
       product_type: faker.helpers.arrayElement(statuses),
@@ -2429,7 +2453,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2027-08-15'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Asus ROG Strix RTX 4080 GPU',
       description: 'High-end graphics card for 4K gaming and AI rendering.',
       product_type: faker.helpers.arrayElement(statuses),
@@ -2439,7 +2462,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2027-02-28'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Epson L3210 Ink Tank Printer',
       description:
         'High-efficiency printer with cost-effective ink tank system.',
@@ -2450,7 +2472,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       warranty_date: new Date('2026-05-10'),
     },
     {
-      category_id: faker.helpers.arrayElement(categoryIDs).category_id,
       name: 'Seagate IronWolf 4TB NAS HDD',
       description: 'Durable and high-capacity hard drive for NAS systems.',
       product_type: faker.helpers.arrayElement(statuses),
@@ -2877,14 +2898,15 @@ async function seedOrderItems(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
   const productIDs = await db.select().from(product);
+  const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
 
   const statuses = [
-    'Available',
     'Sold',
-    'Decommissioned',
-    'Reserved',
-    'Pending',
-    'Returned',
+    'Pending Payment',
+    'On Order',
+    'In Service',
+    'Awaiting Service',
+    'Return Requested',
   ] as const;
 
   const serializedproductsRecords = [
@@ -2892,69 +2914,79 @@ async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
-      product__id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
@@ -3447,8 +3479,7 @@ async function seedDiscount(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(discount).values(discountRecords);
   log.info('Discount records seeded successfully');
 }
-//  =======================================================================================
-// =================================== Discount ==========================================
+
 async function main() {
   try {
     await createProfileBucketIfNotExists();

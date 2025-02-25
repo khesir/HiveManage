@@ -6,18 +6,7 @@ export const CreateProduct = z.object({
   price: z.number().min(1),
   discount: z.number().min(1),
   is_serialize: z.boolean(),
-  itemStatus: z.enum([
-    'Unavailable',
-    'Sold',
-    'Available',
-    'Returned',
-    'Pending Payment',
-    'On Order',
-    'In Service',
-    'Awaiting Service',
-    'Return Requested',
-    'Retired',
-  ]),
+  status: z.enum(['Unavailable', 'Available']),
 });
 
 export const UpdateProduct = z.object({
@@ -26,18 +15,7 @@ export const UpdateProduct = z.object({
   price: z.number().min(1),
   discount: z.number().min(1),
   is_serialize: z.boolean(),
-  itemStatus: z.enum([
-    'Unavailable',
-    'Sold',
-    'Available',
-    'Returned',
-    'Pending Payment',
-    'On Order',
-    'In Service',
-    'Awaiting Service',
-    'Return Requested',
-    'Retired',
-  ]),
+  itemStatus: z.enum(['Unavailable', 'Available']),
 });
 
 export type CreateProduct = z.infer<typeof CreateProduct>;
