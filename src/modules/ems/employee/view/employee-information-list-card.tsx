@@ -23,7 +23,7 @@ export function EmployeeInformationListCard() {
 				setLoading(true);
 				const empRoleData = await request<
 					PaginationResponse<EmployeeRolesWithDetails>
-				>('GET', `/api/v1/ems/employee-roles?employee_id=${id}`);
+				>('GET', `/api/v1/ems/employeeRoles?employee_id=${id}`);
 				setSelectedEmployee(empRoleData.data[0]);
 			} catch (error) {
 				console.log(error);

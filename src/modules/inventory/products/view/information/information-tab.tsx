@@ -34,41 +34,29 @@ export function ProductInformationTab() {
 
 	return (
 		<div className="flex flex-col sm:gap-4">
-			<div className="grid flex-1 items-start gap-4 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+			<div className="flex justify-center">
 				{/* Product List */}
-				<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
-					<div className="flex gap-5 h-[200px]">
-						<div className="max-h-full flex-1 ">
-							<InformationCard data={products} />
-						</div>
-						<div className="relative w-[200px] h-full overflow-hidden rounded-md">
-							<img
-								src={
-									typeof products.img_url === 'string'
-										? products.img_url
-										: `/img/placeholder.jpg`
-								}
-								alt="Selected profile"
-								className="object-cover h-full w-full"
-							/>
-						</div>
+				<div className="flex justify-between gap-5 h-[300px]">
+					<div className="relative w-[300px] h-full overflow-hidden rounded-md">
+						<img
+							src={
+								typeof products.img_url === 'string'
+									? products.img_url
+									: `/img/placeholder.jpg`
+							}
+							alt="Selected profile"
+							className="object-cover h-full w-full"
+						/>
 					</div>
-					<ViewRecordTabs searchParams={searchParams} product_id={id} />
-				</div>
-				<div className="flex flex-col gap-4">
-					<div className="flex lg:hidden">
-						<Separator />
+					<div className="max-h-full flex-1 ">
+						<InformationCard data={products} />
 					</div>
-					{/* <ProductOrder /> */}
-					{/* <ProductStockCard product={products} /> */}
-					<Card x-chunk="dashboard-01-chunk-5" className="flex-1">
-						<CardHeader>
-							<CardTitle>Stock Logs</CardTitle>
-						</CardHeader>
-						<StockLogsMini product_id={id} />
-					</Card>
+					<div>
+						test
+					</div>
 				</div>
 			</div>
+			<ViewRecordTabs searchParams={searchParams} product_id={id} />
 		</div>
 	);
 }

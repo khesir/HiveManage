@@ -17,6 +17,7 @@ import {
 type Submenu = {
 	href: string;
 	label: string;
+	icon: LucideIcon;
 	active: boolean;
 };
 
@@ -58,6 +59,13 @@ export function getAdminMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
+					href: '/sales/overview',
+					label: 'Overview',
+					active: pathname === '/sales/overview',
+					icon: LayoutPanelLeft,
+					submenus: [],
+				},
+				{
 					href: '/admin/ems/employees',
 					label: 'Employees & Accounts',
 					active: pathname.includes('/admin/ems'),
@@ -69,20 +77,65 @@ export function getAdminMenuList(pathname: string): Group[] {
 					label: 'Services & Sales',
 					active: pathname.includes('/admin/sales/services'),
 					icon: Tag,
-					submenus: [],
-				},
-				{
-					href: '/admin/sales/customer',
-					label: 'Customer Database',
-					active: pathname.includes('/admin/sales/customer'),
-					icon: Users,
-					submenus: [],
+					submenus: [
+						{
+							href: '/sales/activity/overview',
+							label: 'Sales',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
+						{
+							href: '/sales/activity/overview',
+							label: 'Service',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
+						{
+							href: '/sales/activity/overview',
+							label: 'Payments',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
+					],
 				},
 				{
 					href: '/admin/inventory/products',
 					label: 'Products',
 					active: pathname.includes('/admin/inventory/products'),
 					icon: ShoppingBag,
+					submenus: [
+						{
+							href: '/admin/inventory/products',
+							label: 'Products',
+							icon: LayoutGrid,
+							active: pathname === '/admin/inventory/products',
+						},
+						{
+							href: '/admin/inventory/products/orders',
+							label: 'Orders',
+							icon: LayoutGrid,
+							active: pathname === '/admin/inventory/orders',
+						},
+						{
+							href: '/admin/inventory/products/suppliers',
+							label: 'Supplier',
+							icon: LayoutGrid,
+							active: pathname === '/admin/inventory/suppliers',
+						},
+					],
+				},
+				{
+					href: '/admin/sales/customer',
+					label: 'Customer',
+					active: pathname.includes('/admin/sales/customer'),
+					icon: Users,
+					submenus: [],
+				},
+				{
+					href: '/sales/inquiry',
+					label: 'Inquiries',
+					active: pathname.includes('/sales/inquiry'),
+					icon: PackageOpenIcon,
 					submenus: [],
 				},
 			],
@@ -141,24 +194,62 @@ export function getSalesMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/sales/services',
-					label: 'Service Transactions',
-					active: pathname.includes('/sales/services'),
-					icon: PackageOpenIcon,
-					submenus: [],
-				},
-				{
-					href: '/sales/customer',
-					label: 'Customer Database',
-					active: pathname.includes('/sales/customer'),
-					icon: Users,
-					submenus: [],
+					href: '/admin/sales/services',
+					label: 'Services & Sales',
+					active: pathname.includes('/admin/sales/services'),
+					icon: Tag,
+					submenus: [
+						{
+							href: '/sales/activity/overview',
+							label: 'Sales',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
+						{
+							href: '/sales/activity/overview',
+							label: 'Service',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
+						{
+							href: '/sales/activity/overview',
+							label: 'Payments',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
+					],
 				},
 				{
 					href: '/sales/inventory/products',
-					label: 'Products',
+					label: 'Inventory',
 					active: pathname.includes('/admin/inventory/products'),
 					icon: ShoppingBag,
+					submenus: [
+						{
+							href: '/sales/inventory/products',
+							label: 'Products',
+							icon: LayoutGrid,
+							active: pathname === '/sales/inventory/products',
+						},
+						{
+							href: '/sales/inventory/products/orders',
+							label: 'Orders',
+							icon: LayoutGrid,
+							active: pathname === '/sales/inventory/orders',
+						},
+						{
+							href: '/sales/inventory/products/suppliers',
+							label: 'Supplier',
+							icon: LayoutGrid,
+							active: pathname === '/sales/inventory/suppliers',
+						},
+					],
+				},
+				{
+					href: '/sales/customer',
+					label: 'Customer',
+					active: pathname.includes('/sales/customer'),
+					icon: Users,
 					submenus: [],
 				},
 				{

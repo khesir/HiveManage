@@ -8,6 +8,7 @@ import {useEffect} from 'react';
 export default function AuthenticationPage() {
 	const {user} = useEmployeeRoleDetailsStore();
 	const navigate = useNavigate();
+	console.log(user);
 	useEffect(() => {
 		if (user) {
 			switch (user.employee.position.name) {

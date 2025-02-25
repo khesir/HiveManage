@@ -12,9 +12,9 @@ export function InformationCard({data}: Props) {
 		<Card x-chunk="dashboard-05-chunk-3" className="gap-8 p-4 md:grid h-full">
 			<ScrollArea className="p-3">
 				<ul className="grid gap-3">
+					<li>{data.name} -</li>
 					<li className="flex items-center justify-between">
-						<span className="text-muted-foreground">Product ID</span>
-						<span>{data.product_id}</span>
+						<span className="text-muted-foreground">Product Details</span>
 					</li>
 					<li className="flex items-center justify-between">
 						<span className="text-muted-foreground">Name</span>
