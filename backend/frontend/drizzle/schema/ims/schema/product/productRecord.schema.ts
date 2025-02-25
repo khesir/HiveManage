@@ -14,7 +14,7 @@ export const recordCondition = pgEnum('record_condition', [
   'Broken',
 ]);
 
-export const recordStatus = pgEnum('product_status', [
+export const recordStatus = pgEnum('record_status', [
   'Sold',
   'Pending Payment',
   'On Order',
@@ -23,7 +23,7 @@ export const recordStatus = pgEnum('product_status', [
   'Return Requested',
 ]);
 
-export const productRecord = pgTable('product_records', {
+export const productRecord = pgTable('product_record', {
   product_record_id: serial('product_record_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
   quantity: integer('qty').default(0),

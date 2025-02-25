@@ -1,5 +1,5 @@
 {
-  "id": "bfe8dc85-fc07-4730-8972-302f8ca41a77",
+  "id": "7c09c1d6-24de-4f5b-a746-fd06cdb9b2db",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1346,28 +1346,21 @@
           "primaryKey": true,
           "notNull": true
         },
-        "supplier_id": {
-          "name": "supplier_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "p_details_id": {
           "name": "p_details_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "price": {
-          "name": "price",
-          "type": "real",
+        "name": {
+          "name": "name",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": false,
-          "default": 0
+          "notNull": false
         },
-        "discount": {
-          "name": "discount",
-          "type": "integer",
+        "img_url": {
+          "name": "img_url",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -1408,19 +1401,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "product_supplier_id_supplier_supplier_id_fk": {
-          "name": "product_supplier_id_supplier_supplier_id_fk",
-          "tableFrom": "product",
-          "tableTo": "supplier",
-          "columnsFrom": [
-            "supplier_id"
-          ],
-          "columnsTo": [
-            "supplier_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "product_p_details_id_product_details_p_details_id_fk": {
           "name": "product_p_details_id_product_details_p_details_id_fk",
           "tableFrom": "product",
@@ -1448,33 +1428,20 @@
           "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "description": {
           "name": "description",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "p_det_type": {
-          "name": "p_det_type",
-          "type": "pdet_Status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "p_det_status": {
-          "name": "p_det_status",
+        "color": {
+          "name": "color",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "img_url": {
-          "name": "img_url",
+        "size": {
+          "name": "size",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -1533,12 +1500,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "record_name": {
-          "name": "record_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "qty": {
           "name": "qty",
           "type": "integer",
@@ -1546,18 +1507,26 @@
           "notNull": false,
           "default": 0
         },
-        "record_type": {
-          "name": "record_type",
-          "type": "record_type",
+        "price": {
+          "name": "price",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "type": {
+          "name": "type",
+          "type": "record_condition",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
         "status": {
           "name": "status",
-          "type": "varchar",
+          "type": "record_status",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -1599,12 +1568,12 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.serialized_products": {
-      "name": "serialized_products",
+    "public.serialized_product": {
+      "name": "serialized_product",
       "schema": "",
       "columns": {
-        "batch_item_id": {
-          "name": "batch_item_id",
+        "serial_id": {
+          "name": "serial_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -1621,9 +1590,23 @@
           "primaryKey": false,
           "notNull": true
         },
+        "price": {
+          "name": "price",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "type": {
+          "name": "type",
+          "type": "serial_condition",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
         "status": {
           "name": "status",
-          "type": "serialprod_Status",
+          "type": "serial_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -1651,9 +1634,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "serialized_products_product_id_product_product_id_fk": {
-          "name": "serialized_products_product_id_product_product_id_fk",
-          "tableFrom": "serialized_products",
+        "serialized_product_product_id_product_product_id_fk": {
+          "name": "serialized_product_product_id_product_product_id_fk",
+          "tableFrom": "serialized_product",
           "tableTo": "product",
           "columnsFrom": [
             "product_id"
@@ -1826,8 +1809,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "p_details_id": {
-          "name": "p_details_id",
+        "product_id": {
+          "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1868,15 +1851,165 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "product_category_p_details_id_product_details_p_details_id_fk": {
-          "name": "product_category_p_details_id_product_details_p_details_id_fk",
+        "product_category_product_id_product_product_id_fk": {
+          "name": "product_category_product_id_product_product_id_fk",
           "tableFrom": "product_category",
-          "tableTo": "product_details",
+          "tableTo": "product",
           "columnsFrom": [
-            "p_details_id"
+            "product_id"
           ],
           "columnsTo": [
-            "p_details_id"
+            "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.product_pricing": {
+      "name": "product_pricing",
+      "schema": "",
+      "columns": {
+        "p_pricing_id": {
+          "name": "p_pricing_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "serial_id": {
+          "name": "serial_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "product_pricing_product_id_product_product_id_fk": {
+          "name": "product_pricing_product_id_product_product_id_fk",
+          "tableFrom": "product_pricing",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "product_pricing_serial_id_serialized_product_serial_id_fk": {
+          "name": "product_pricing_serial_id_serialized_product_serial_id_fk",
+          "tableFrom": "product_pricing",
+          "tableTo": "serialized_product",
+          "columnsFrom": [
+            "serial_id"
+          ],
+          "columnsTo": [
+            "serial_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.product_supplier": {
+      "name": "product_supplier",
+      "schema": "",
+      "columns": {
+        "p_supplier_id": {
+          "name": "p_supplier_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "supplier_id": {
+          "name": "supplier_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "product_supplier_supplier_id_supplier_supplier_id_fk": {
+          "name": "product_supplier_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "product_supplier",
+          "tableTo": "supplier",
+          "columnsFrom": [
+            "supplier_id"
+          ],
+          "columnsTo": [
+            "supplier_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "product_supplier_product_id_product_product_id_fk": {
+          "name": "product_supplier_product_id_product_product_id_fk",
+          "tableFrom": "product_supplier",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3241,44 +3374,49 @@
       "schema": "public",
       "values": [
         "Unavailable",
-        "Sold",
-        "Available",
-        "Returned",
-        "Pending Payment",
-        "On Order",
-        "In Service",
-        "Awaiting Service",
-        "Return Requested",
-        "Retired"
+        "Available"
       ]
     },
-    "public.pdet_Status": {
-      "name": "pdet_Status",
+    "public.record_condition": {
+      "name": "record_condition",
       "schema": "public",
       "values": [
-        "Batch",
-        "Serialized"
-      ]
-    },
-    "public.record_type": {
-      "name": "record_type",
-      "schema": "public",
-      "values": [
-        "Firsthand",
+        "New",
         "Secondhand",
         "Broken"
       ]
     },
-    "public.serialprod_Status": {
-      "name": "serialprod_Status",
+    "public.record_status": {
+      "name": "record_status",
       "schema": "public",
       "values": [
-        "Available",
         "Sold",
-        "Decommissioned",
-        "Reserved",
-        "Pending",
-        "Returned"
+        "Pending Payment",
+        "On Order",
+        "In Service",
+        "Awaiting Service",
+        "Return Requested"
+      ]
+    },
+    "public.serial_condition": {
+      "name": "serial_condition",
+      "schema": "public",
+      "values": [
+        "New",
+        "Secondhand",
+        "Broken"
+      ]
+    },
+    "public.serial_status": {
+      "name": "serial_status",
+      "schema": "public",
+      "values": [
+        "Sold",
+        "Pending Payment",
+        "On Order",
+        "In Service",
+        "Awaiting Service",
+        "Return Requested"
       ]
     },
     "public.supplierRelation_Status": {

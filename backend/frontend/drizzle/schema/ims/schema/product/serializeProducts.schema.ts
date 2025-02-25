@@ -9,13 +9,13 @@ import {
 } from 'drizzle-orm/pg-core';
 import { product } from './product.schema';
 
-export const recordCondition = pgEnum('record_condition', [
+export const serialCondition = pgEnum('serial_condition', [
   'New',
   'Secondhand',
   'Broken',
 ]);
 
-export const recordStatus = pgEnum('product_status', [
+export const serialStatus = pgEnum('serial_status', [
   'Sold',
   'Pending Payment',
   'On Order',
@@ -24,13 +24,13 @@ export const recordStatus = pgEnum('product_status', [
   'Return Requested',
 ]);
 
-export const serializeProducts = pgTable('serialized_products', {
+export const serializeProduct = pgTable('serialized_product', {
   serial_id: serial('serial_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
   serial_number: varchar('serial_number').notNull(),
   price: real('price').default(0),
-  condition: recordCondition('type').notNull(),
-  status: recordStatus('status').notNull(),
+  condition: serialCondition('type').notNull(),
+  status: serialStatus('status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

@@ -1,12 +1,12 @@
 import { integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 import { product } from './product.schema';
-import { serializeProducts } from './serializeProducts.schema';
+import { serializeProduct } from './serializeProducts.schema';
 
-export const productCategory = pgTable('product_pricings', {
+export const productPricing = pgTable('product_pricing', {
   product_pricing_id: serial('p_pricing_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
   serialized_id: integer('serial_id').references(
-    () => serializeProducts.serial_id,
+    () => serializeProduct.serial_id,
   ),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

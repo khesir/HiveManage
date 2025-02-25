@@ -31,7 +31,7 @@ import {
   discount,
   discountProducts,
   discountCustomer,
-  serializeProducts,
+  serializeProduct,
 } from './schema/ims';
 import {
   assignedEmployees,
@@ -2390,9 +2390,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       name: 'Apple iPhone 14 Pro',
       description:
         'Flagship smartphone with A16 Bionic chip and ProMotion display.',
-      product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'APL14PRO-987654321',
       warranty_date: new Date('2026-10-01'),
     },
@@ -2401,8 +2398,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       description:
         'High-end Android phone with 200MP camera and Snapdragon 8 Gen 2.',
       product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'SMSG23U-123456789',
       warranty_date: new Date('2026-09-15'),
     },
@@ -2410,8 +2405,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       name: 'Dell XPS 15',
       description: 'Premium laptop with Intel Core i9 and 4K OLED display.',
       product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'DXPS15-876543210',
       warranty_date: new Date('2027-01-10'),
     },
@@ -2420,8 +2413,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       description:
         'Wireless noise-canceling headphones with industry-leading ANC.',
       product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'SONYX5-654321987',
       warranty_date: new Date('2025-12-30'),
     },
@@ -2429,8 +2420,6 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       name: 'Logitech MX Master 3S',
       description: 'Advanced ergonomic wireless mouse with precise tracking.',
       product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'LOGIMX3S-321987654',
       warranty_date: new Date('2025-06-20'),
     },
@@ -2438,26 +2427,18 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       name: 'WD Black NVMe SSD 1TB',
       description: 'High-speed SSD for gaming and content creation.',
       product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'WDB1TB-BATCH2024',
       warranty_date: new Date('2028-03-05'),
     },
     {
       name: 'Corsair Vengeance RGB Pro 32GB RAM',
       description: 'DDR4 memory with dynamic RGB lighting for gaming rigs.',
-      product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'CORV32GB-BATCH2024',
       warranty_date: new Date('2027-08-15'),
     },
     {
       name: 'Asus ROG Strix RTX 4080 GPU',
       description: 'High-end graphics card for 4K gaming and AI rendering.',
-      product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'ASUS4080-987654321',
       warranty_date: new Date('2027-02-28'),
     },
@@ -2465,18 +2446,12 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       name: 'Epson L3210 Ink Tank Printer',
       description:
         'High-efficiency printer with cost-effective ink tank system.',
-      product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'EPSL3210-BATCH2024',
       warranty_date: new Date('2026-05-10'),
     },
     {
       name: 'Seagate IronWolf 4TB NAS HDD',
       description: 'Durable and high-capacity hard drive for NAS systems.',
-      product_type: faker.helpers.arrayElement(statuses),
-      product_status: 'Available',
-      img_url: '',
       external_serial_code: 'SEAG4TB-BATCH2024',
       warranty_date: new Date('2028-09-30'),
     },
@@ -2992,7 +2967,7 @@ async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
     },
   ];
 
-  await db.insert(serializeProducts).values(serializedproductsRecords);
+  await db.insert(serializeProduct).values(serializedproductsRecords);
   log.info('Serialized Products records seeded successfully');
 }
 //  =======================================================================================

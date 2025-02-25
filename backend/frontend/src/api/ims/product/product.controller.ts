@@ -15,17 +15,9 @@ export class ProductController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    const supplier_id = req.query.supplier_id
-      ? String(req.query.supplier_id)
-      : undefined;
 
     try {
-      const data = await this.productService.getAllProduct(
-        supplier_id,
-        sort,
-        limit,
-        offset,
-      );
+      const data = await this.productService.getAllProduct(sort, limit, offset);
 
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -58,22 +50,15 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        supplier_id,
-        product_details_id,
-        price,
-        discount,
-        is_serialize,
-        itemStatus,
-      } = req.body;
+      const { supplier_id, product_details_id, is_serialize, status, name } =
+        req.body;
 
       await this.productService.createProduct({
         supplier_id,
         product_details_id,
-        price,
-        discount,
+        name,
         is_serialize,
-        itemStatus,
+        status,
       });
 
       res
@@ -92,23 +77,16 @@ export class ProductController {
   async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { product_id } = req.params;
-      const {
-        supplier_id,
-        product_details_id,
-        price,
-        discount,
-        is_serialized,
-        itemStatus,
-      } = req.body;
+      const { supplier_id, product_details_id, is_serialize, status, name } =
+        req.body;
 
       await this.productService.updateProduct(
         {
           supplier_id,
           product_details_id,
-          price,
-          discount,
-          is_serialized,
-          itemStatus,
+          name,
+          is_serialize,
+          status,
         },
         Number(product_id),
       );

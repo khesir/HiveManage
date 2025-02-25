@@ -14,14 +14,17 @@ export const productStatus = pgEnum('product_status', [
   'Available',
 ]);
 
-export const product = pgTable('products', {
+export const product = pgTable('product', {
   product_id: serial('product_id').primaryKey(),
   p_details_id: integer('p_details_id').references(
     () => productDetails.p_details_id,
   ),
+
+  name: varchar('name'),
   img_url: varchar('img_url'),
   is_serialize: boolean('is_serialize').default(false),
   status: productStatus('product_status').notNull(),
+
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

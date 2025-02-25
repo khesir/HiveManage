@@ -2,7 +2,7 @@ import { integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 import { category } from './category.schema';
 import { product } from './product.schema';
 
-export const productCategory = pgTable('product_categories', {
+export const productCategory = pgTable('product_category', {
   product_category_id: serial('p_category_id').primaryKey(),
   category_id: integer('category_id').references(() => category.category_id),
   product_id: integer('product_id').references(() => product.product_id),

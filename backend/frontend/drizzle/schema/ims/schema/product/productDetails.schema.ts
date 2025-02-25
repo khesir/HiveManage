@@ -2,7 +2,6 @@ import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const productDetails = pgTable('product_details', {
   p_details_id: serial('p_details_id').primaryKey(),
-  name: varchar('name', { length: 255 }),
   description: varchar('description', { length: 255 }),
   color: varchar('color'),
   size: varchar('size'),
