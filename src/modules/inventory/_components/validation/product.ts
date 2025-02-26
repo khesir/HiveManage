@@ -2,7 +2,37 @@ import {z} from 'zod';
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3;
 const ACCEPTED_FILE_TYPES = ['image/png', 'image/jpeg'];
 
-const itemCategorySchema = z.object({
+export const orderSchema = z.object({
+	order_id: z.number().optional(),
+	supplier_id: z.string().nullable().optional(),
+	ordered_value: z.string().optional(),
+	expected_arrival: z.string().refine(
+		(date) => {
+			if (!date) return false;
+			const expectedDate = new Date(date);
+			const currentDate = new Date();
+			return expectedDate > currentDate;
+		},
+		{
+			message: 'Date should be after today.',
+		},
+	),
+	status: z.enum([
+		'Pending',
+		'Processing',
+		'Delivered',
+		'Cancelled',
+		'Return',
+		'Shipped',
+		'Verification',
+		'Moved to Inventory',
+	]),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().nullable().optional(),
+});
+
+const categorySchema = z.object({
 	category_id: z.number().optional(),
 	name: z.string().min(1),
 	created_at: z.string().optional(),
@@ -32,22 +62,77 @@ const supplierSchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
+const serials = z.object({
+	serial_id: z.number(),
+	product_id: z.number(),
+	serial_number: z.number(),
+	price: z.number().optional(),
+	condition: z.string(),
+	status: z.string(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+const productSupplier = z.object({
+	product_supplier_id: z.number(),
+	supplier_id: z.number().optional(),
+	product_id: z.number().optional(),
+	supplier: supplierSchema.optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+const productCategory = z.object({
+	product_category_id: z.number(),
+	category_id: z.number().optional(),
+	product_id: z.number().optional(),
+	category: categorySchema.optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+const productRecords = z.object({
+	product_record_id: z.number().optional(),
+	product_id: z.number().optional(),
+	quantity: z.number().default(0),
+	price: z.number().default(0),
+	condition: z.string(),
+	status: z.string(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
 
 const productDetailsSchema = z.object({
-	product_details_id: z.number().optional(),
-	name: z.number().min(1),
+	p_details_id: z.number().optional(),
 	description: z.string().optional(),
-	type: z.enum(['Batch', 'Serialized', 'Both']),
-	item_condition: z.enum([
-		'New',
-		'Old',
-		'Damage',
-		'Refurbished',
-		'Used',
-		'Antique',
-		'Repaired',
-	]),
-	status: z.string().min(1),
+
+	external_serial_code: z.string().optional(),
+	created_at: z.date().optional(),
+	last_updated: z.date().optional(),
+	deleted_at: z.date().nullable().optional(),
+});
+
+export const productOrders = z.object({
+	order_product_id: z.number().optional(),
+
+	order_id: z.number().optional(),
+	product_id: z.number().min(1),
+	quantity: z.string().min(1),
+	price: z.string().min(1),
+	status: z.string(),
+	created_at: z.date().optional(),
+	last_updated: z.date().optional(),
+	deleted_at: z.date().nullable().optional(),
+});
+// =================================================================
+// Actual Validation
+
+export const productSchema = z.object({
+	product_id: z.number().optional(),
+	name: z.string().min(1),
 	img_url: z.union([
 		z
 			.instanceof(File)
@@ -60,27 +145,18 @@ const productDetailsSchema = z.object({
 			}, 'File must be a PNG or JPEG'),
 		z.string(),
 	]),
-	external_serial_code: z.string().optional(),
-	created_at: z.date().optional(),
-	last_updated: z.date().optional(),
-	deleted_at: z.date().nullable().optional(),
-
-	item_category: itemCategorySchema.optional(),
-	supplier: supplierSchema.optional(),
-});
-// =================================================================
-// Actual Validation
-
-export const productSchema = z.object({
-	product_id: z.number().optional(),
-	name: z.string().min(1),
-	description: z.string().min(1),
-	stock_limit: z.number().min(1),
-	total_stock: z.number().optional(),
+	is_serialize: z.boolean().optional(),
+	status: z.string().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
-	product_details: z.array(productDetailsSchema).optional(),
+
+	product_detail: productDetailsSchema.optional(),
+	product_records: z.array(productRecords).optional(),
+	product_categories: z.array(productCategory).optional(),
+	product_serials: z.array(serials).optional(),
+	product_suppliers: z.array(productSupplier).optional(),
+	product_orders: z.array(productOrders).optional(),
 });
 
 export type Product = z.infer<typeof productSchema>;

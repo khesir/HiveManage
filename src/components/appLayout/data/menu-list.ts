@@ -100,7 +100,7 @@ export function getAdminMenuList(pathname: string): Group[] {
 				},
 				{
 					href: '/admin/inventory/products',
-					label: 'Products',
+					label: 'Inventory',
 					active: pathname.includes('/admin/inventory/products'),
 					icon: ShoppingBag,
 					submenus: [

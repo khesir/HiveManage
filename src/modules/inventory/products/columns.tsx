@@ -1,6 +1,8 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
 import {Product} from '../_components/validation/product';
+import {dateParser} from '@/lib/util/utils';
+import clsx from 'clsx';
 export const columns: ColumnDef<Product>[] = [
 	{
 		accessorKey: 'img_url',
@@ -42,7 +44,24 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorKey: 'description',
-		header: 'Description',
+		accessorKey: 'is_serialize',
+		header: 'Serialized Item',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={clsx(
+						'text-white hover:none',
+						row.original.is_serialize ? 'bg-green-500' : 'bg-red-500',
+					)}
+				>
+					{row.original.is_serialize ? 'True' : 'False'}
+				</Badge>
+			);
+		},
+	},
+	{
+		accessorKey: 'created_at',
+		header: 'Created At',
+		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
 	},
 ];

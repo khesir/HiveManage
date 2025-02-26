@@ -74,7 +74,7 @@ export function EmployeeInformationListCard() {
 					</div>
 				</div>
 
-				{selectedEmployee.employee.position.name === 'Technician' ? (
+				{/* {selectedEmployee.employee.position.name === 'Technician' ? (
 					<div className="space-y-3">
 						<h1 className="text-xl font-semibold">Joborder History</h1>
 						<Separator />
@@ -96,10 +96,10 @@ export function EmployeeInformationListCard() {
 							isStaff={selectedEmployee.role.name === 'Staff' ? true : false}
 						/>
 					</div>
-				)}
+				)} */}
 			</div>
 			<div className="flex-0 w-full sm:w-[400px]">
-				<EmployeeRecentActivity selectedEmployee={selectedEmployee} />
+				{/* <EmployeeRecentActivity selectedEmployee={selectedEmployee} /> */}
 			</div>
 		</div>
 	);

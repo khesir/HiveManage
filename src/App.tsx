@@ -54,7 +54,7 @@ function App() {
 					<Route element={<RequireAuth allowedRoles={['Admin']} />}>
 						<Route path="dashboard" element={<DashboardPage />} />
 						<Route path="settings" element={<Settings />} />
-						<Route path="terminal" element={<Terminal />} />
+						{/* <Route path="terminal" element={<Terminal />} /> */}
 
 						<Route path="ems">
 							<Route path="employees">

@@ -12,6 +12,8 @@ import {dateParser} from '@/lib/util/utils';
 import {File} from 'lucide-react';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
+import clsx from 'clsx';
+import {AvatarCircles} from '@/components/ui/avatarcircles';
 
 export function ProductProfile() {
 	const navigate = useNavigate();
@@ -26,6 +28,14 @@ export function ProductProfile() {
 			</Card>
 		);
 	}
+	const avatar = (data.product_suppliers ?? []).map((row) => ({
+		name: row.supplier?.name ?? '',
+		link:
+			typeof row.supplier?.profile_link === 'string'
+				? row.supplier.profile_link
+				: '',
+	}));
+
 	return (
 		<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
 			<CardHeader className="relative flex flex-row items-start bg-muted/50">
@@ -78,7 +88,9 @@ export function ProductProfile() {
 							<span className="items-start text-muted-foreground border-white">
 								Description
 							</span>
-							<span className="border p-3 rounded-sm">{data.description}</span>
+							<span className="border p-3 rounded-sm">
+								{data.product_detail?.description || ''}
+							</span>
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Category</span>
@@ -94,32 +106,52 @@ export function ProductProfile() {
 							</span>
 						</li>
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Stock</span>
-							<span>
-								{data.total_stock} / {data.stock_limit}
-							</span>
+							<span className="text-muted-foreground">Serialized Item</span>
+							<Badge
+								className={clsx(
+									'text-white hover:none',
+									data.is_serialize ? 'bg-green-500' : 'bg-red-500',
+								)}
+							>
+								{data.is_serialize ? 'True' : 'False'}
+							</Badge>
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Suppliers</span>
-							{/* <span>{data.barangay}</span> */}
+							{avatar.length === 0 ? (
+								<span>No suppliers</span>
+							) : (
+								<AvatarCircles numPeople={avatar.length} avatar={avatar} />
+							)}
 						</li>
 					</ul>
 				</div>
 				<Separator className="my-4" />
-				<div>
+				<div className="grid gap-3">
+					<div className="font-semibold">Stock records</div>
+
 					<ul className="grid gap-3">
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Reserved Qty</span>
-							<span>{}</span>
+							<span className="text-muted-foreground">Orders</span>
+							<span>0 Items ordered</span>
 						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Ordered Qty</span>
-							<span>Service data...</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Variants</span>
-							<span>dropdown view</span>
-						</li>
+						{data.is_serialize ? (
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Serialize Record</span>
+								<span>{data.product_serials?.length ?? 0} Items recorded</span>
+							</li>
+						) : (
+							<li className="flex items-center justify-between">
+								<span className="text-muted-foreground">Batch Record</span>
+								<span>
+									{data.product_records?.reduce(
+										(sum, record) => sum + record.quantity,
+										0,
+									)}{' '}
+									Qty
+								</span>
+							</li>
+						)}
 					</ul>
 				</div>
 			</CardContent>

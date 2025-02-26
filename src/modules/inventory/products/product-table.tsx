@@ -285,7 +285,7 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 										variant={'secondary'}
 										className="rounded-sm px-1 font-normal"
 									>
-										{sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+										{sortOrder === 'asc' ? 'Asc' : 'Desc'}
 									</Badge>
 								</div>
 							</Button>
@@ -308,7 +308,7 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 					<DropdownMenu>
 						<DropdownMenuTrigger>
 							<Button variant={'outline'} className="border-dashed">
-								Status
+								Category
 								{categories.find(
 									(category) => category.category_id === categoryFilter,
 								) ? (
