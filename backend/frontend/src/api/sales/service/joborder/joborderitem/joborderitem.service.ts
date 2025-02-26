@@ -37,23 +37,10 @@ export class JobOrderItemService {
     const joborderitemDetails = result.map((row) => ({
       job_order_item_id: row.job_order_items.job_order_item_id,
       product: {
-        product_id: row.product?.product_id,
-        supplier_id: row.product?.supplier_id,
-        product_details_id: row.product?.p_details_id,
-        price: row.product?.price,
-        discount: row.product?.discount,
-        is_serialize: row.product?.is_serialize,
-        status: row.product?.itemStatus,
+        ...row.product,
       },
       jobOrder: {
-        job_order_id: row.job_order?.job_order_id,
-        jobordertype_id: row.job_order?.job_order_type_id,
-        uuid: row.job_order?.uuid,
-        description: row.job_order?.description,
-        fee: row.job_order?.fee,
-        customer_id: row.job_order?.customer_id,
-        status: row.job_order?.joborder_status,
-        total_price_cost: row.job_order?.total_cost_price,
+        ...row.job_order,
       },
       status: row.job_order_items.status,
     }));
@@ -83,23 +70,10 @@ export class JobOrderItemService {
     const joborderitemDetails = result.map((row) => ({
       job_order_item_id: row.job_order_items.job_order_item_id,
       product: {
-        product_id: row.product?.product_id,
-        supplier_id: row.product?.supplier_id,
-        product_details_id: row.product?.p_details_id,
-        price: row.product?.price,
-        discount: row.product?.discount,
-        is_serialize: row.product?.is_serialize,
-        status: row.product?.itemStatus,
+        ...row.product,
       },
       jobOrder: {
-        job_order_id: row.job_order?.job_order_id,
-        jobordertype_id: row.job_order?.job_order_type_id,
-        uuid: row.job_order?.uuid,
-        description: row.job_order?.description,
-        fee: row.job_order?.fee,
-        customer_id: row.job_order?.customer_id,
-        status: row.job_order?.joborder_status,
-        total_price_cost: row.job_order?.total_cost_price,
+        ...row.job_order,
       },
       status: row.job_order_items.status,
     }));

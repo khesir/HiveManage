@@ -53,7 +53,7 @@ export class OrderItemService {
       .offset(offset);
 
     const orderitemWithDetails = result.map((row) => ({
-      ...row.orderItem,
+      ...row.order_item,
       order: {
         ...row.order,
       },

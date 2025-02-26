@@ -90,7 +90,7 @@ export class SalesItemService {
     const result = await this.db
       .select()
       .from(salesItems)
-      .leftJoin(product, eq(product.supplier_id, salesItems.product_id))
+      .leftJoin(product, eq(product.product_id, salesItems.product_id))
       .leftJoin(sales, eq(sales.sales_id, salesItems.sales_id))
       .where(eq(salesItems.sales_items_id, Number(sales_item_id)));
 
