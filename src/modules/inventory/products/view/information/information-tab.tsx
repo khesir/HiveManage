@@ -1,4 +1,11 @@
-import {Card} from '@/components/ui/card';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
 
 import {useEffect, useState} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
@@ -7,6 +14,14 @@ import {ApiRequest, request} from '@/api/axios';
 import {Product} from '@/modules/inventory/_components/validation/product';
 import {InformationCard} from './information-card';
 import ItemRecordList from '../tables/itemRecords/item-record-list';
+import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
+import {
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+} from '@/components/ui/chart';
+import {Button} from '@/components/ui/button';
+import {Separator} from '@/components/ui/separator';
 
 export function ProductInformationTab() {
 	const [searchParams] = useSearchParams();
@@ -55,45 +70,146 @@ export function ProductInformationTab() {
 
 					{/* Third section: 30% */}
 					<div className="flex-[1_1_30%] min-w-[250px]">
-						<Card className="gap-8 p-4 md:grid h-full w-full">
-							<div className="grid gap-3">
-								<div className="font-semibold">Stock records</div>
-
-								<ul className="grid gap-3">
-									<li className="flex items-center justify-between">
-										<span className="text-muted-foreground">Orders</span>
-										<span>0 Items ordered</span>
-									</li>
-									{products.is_serialize ? (
-										<li className="flex items-center justify-between">
-											<span className="text-muted-foreground">
-												Serialize Record
-											</span>
-											<span>
-												{products.product_serials?.length ?? 0} Items recorded
-											</span>
-										</li>
-									) : (
-										<li className="flex items-center justify-between">
-											<span className="text-muted-foreground">
-												Batch Record
-											</span>
-											<span>
-												{products.product_records?.reduce(
-													(sum, record) => sum + record.quantity,
-													0,
-												)}{' '}
-												Qty
-											</span>
-										</li>
-									)}
-								</ul>
-							</div>
+						<Card className="flex flex-col lg:max-w-md h-full">
+							{/* <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2 [&>div]:flex-1">
+								<div>
+									<CardDescription>Resting HR</CardDescription>
+									<CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
+										62
+										<span className="text-sm font-normal tracking-normal text-muted-foreground">
+											bpm
+										</span>
+									</CardTitle>
+								</div>
+								<div>
+									<CardDescription>Variability</CardDescription>
+									<CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
+										35
+										<span className="text-sm font-normal tracking-normal text-muted-foreground">
+											ms
+										</span>
+									</CardTitle>
+								</div>
+							</CardHeader> */}
+							<CardContent className="flex flex-1 items-center">
+								<ChartContainer
+									config={{
+										resting: {
+											label: 'Sold',
+											color: 'hsl(var(--chart-1))',
+										},
+									}}
+									className="w-full"
+								>
+									<LineChart
+										accessibilityLayer
+										margin={{
+											left: 14,
+											right: 14,
+											top: 10,
+										}}
+										data={[
+											{
+												date: '2024-01-01',
+												resting: 62,
+											},
+											{
+												date: '2024-01-02',
+												resting: 72,
+											},
+											{
+												date: '2024-01-03',
+												resting: 35,
+											},
+											{
+												date: '2024-01-04',
+												resting: 62,
+											},
+											{
+												date: '2024-01-05',
+												resting: 52,
+											},
+											{
+												date: '2024-01-06',
+												resting: 62,
+											},
+											{
+												date: '2024-01-07',
+												resting: 70,
+											},
+										]}
+									>
+										<CartesianGrid
+											strokeDasharray="4 4"
+											vertical={false}
+											stroke="hsl(var(--muted-foreground))"
+											strokeOpacity={0.5}
+										/>
+										<YAxis hide domain={['dataMin - 10', 'dataMax + 10']} />
+										<XAxis
+											dataKey="date"
+											tickLine={false}
+											axisLine={false}
+											tickMargin={8}
+											tickFormatter={(value) => {
+												return new Date(value).toLocaleDateString('en-US', {
+													weekday: 'short',
+												});
+											}}
+										/>
+										<Line
+											dataKey="resting"
+											type="natural"
+											fill="var(--color-resting)"
+											stroke="var(--color-resting)"
+											strokeWidth={2}
+											dot={false}
+											activeDot={{
+												fill: 'var(--color-resting)',
+												stroke: 'var(--color-resting)',
+												r: 4,
+											}}
+										/>
+										<ChartTooltip
+											content={
+												<ChartTooltipContent
+													indicator="line"
+													labelFormatter={(value) => {
+														return new Date(value).toLocaleDateString('en-US', {
+															day: 'numeric',
+															month: 'long',
+															year: 'numeric',
+														});
+													}}
+												/>
+											}
+											cursor={false}
+										/>
+									</LineChart>
+								</ChartContainer>
+							</CardContent>
+							<CardFooter>
+								<div className="flex justify-between w-full">
+									<Button variant={'ghost'}>1D</Button>
+									<Button variant={'ghost'}>7D</Button>
+									<Button variant={'ghost'}>1M</Button>
+									<Button variant={'ghost'}>3M</Button>
+								</div>
+							</CardFooter>
 						</Card>
 					</div>
 				</div>
 			</div>
-			<ItemRecordList searchParams={searchParams} product_id={id} />
+			<div className="flex flex-col pt-5">
+				<div className='pb-2'>
+					<h3 className="text-lg font-medium">Product Records</h3>
+					<p className="text-sm text-muted-foreground">
+						This is how others will see you on the site.
+					</p>
+				</div>
+				<Separator />
+				<ItemRecordList searchParams={searchParams} product_id={id} />
+			</div>
 		</div>
 	);
 }

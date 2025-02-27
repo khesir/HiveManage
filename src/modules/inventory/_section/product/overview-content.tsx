@@ -2,7 +2,7 @@ import ProductWithDetailsList from '../../products/product-list';
 import {useSearchParams} from 'react-router-dom';
 
 import {Separator} from '@radix-ui/react-dropdown-menu';
-import {ProductProfile} from '../../_components/product/product-profile';
+import {ProductProfile} from '../../products/product-profile';
 import {Heading} from '@/components/ui/heading';
 
 export default function InventorySection() {

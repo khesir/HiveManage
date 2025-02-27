@@ -27,7 +27,7 @@ export default function ItemRecordList({
 		const fetchProducts = async () => {
 			const inventoryResponse = await request<PaginationResponse<ItemRecords>>(
 				'GET',
-				`/api/v1/ims/product/${product_id}/item-record?limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/ims/product/${product_id}/productRecords?limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : '') +
 					(category_id ? `&category_id=${category_id}` : '') +
 					(product_name ? `&product_name=${product_name}` : ''),

@@ -1,5 +1,5 @@
 import {useNavigate} from 'react-router-dom';
-import useProducts from '../hooks/use-products';
+import useProducts from '../_components/hooks/use-products';
 import {
 	Card,
 	CardContent,
@@ -89,7 +89,7 @@ export function ProductProfile() {
 								Description
 							</span>
 							<span className="border p-3 rounded-sm">
-								{data.product_detail?.description || ''}
+								{data.product_details?.description || ''}
 							</span>
 						</li>
 						<li className="flex items-center justify-between">

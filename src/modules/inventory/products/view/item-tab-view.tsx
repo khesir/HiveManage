@@ -16,7 +16,9 @@ export function ViewItemTabDetails() {
 			<TabsContent value="Informations">
 				<ProductInformationTab />
 			</TabsContent>
-			<TabsContent value="Analytics"></TabsContent>
+			<TabsContent value="Analytics">
+				<p>Product Analysis chuchu</p>
+			</TabsContent>
 			<TabsContent value="Settings">
 				<SettingsSidebar />
 			</TabsContent>

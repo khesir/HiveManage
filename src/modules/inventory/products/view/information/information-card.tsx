@@ -1,6 +1,6 @@
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
-import {Card} from '@/components/ui/card';
+import {ScrollArea} from '@/components/ui/scroll-area';
 
 import {Product} from '@/modules/inventory/_components/validation/product';
 import clsx from 'clsx';
@@ -17,53 +17,83 @@ export function InformationCard({data}: Props) {
 				: '',
 	}));
 	return (
-		<Card
-			x-chunk="dashboard-05-chunk-3"
-			className="gap-8 p-4 md:grid h-full w-full"
-		>
-			<div className="grid gap-3">
-				<ul className="grid gap-3">
-					<li className="flex flex-col gap-3">
-						<span className="items-start text-muted-foreground border-white">
-							Description
-						</span>
-						<span className="p-3 rounded-sm">
-							{data.product_details?.description || ''}
-						</span>
-					</li>
-					<li className="flex items-center justify-between">
-						<span className="space-x-1">
-							{(data.product_categories ?? []).slice(0, 1).map((category) => (
-								<Badge key={category.category?.category_id}>
-									{category.category?.name}
-								</Badge>
-							))}
-							{(data.product_categories?.length ?? 0) > 1 && (
-								<Badge>+{(data.product_categories?.length ?? 0) - 1}</Badge>
-							)}
-						</span>
-					</li>
-					<li className="flex items-center justify-between">
-						<span className="text-muted-foreground">Serialized Item</span>
-						<Badge
+		<ScrollArea className="h-full max-h-full grid gap-3">
+			<ul className="grid gap-3">
+				<li className="flex flex-col gap-3">
+					<span className=" rounded-sm text-2xl flex items-center gap-3">
+						{data.name || ''}{' '}
+						<span
 							className={clsx(
-								'text-white hover:none',
-								data.is_serialize ? 'bg-green-500' : 'bg-red-500',
+								'text-white hover:none text-xs py-1 px-2 rounded-xl',
+								data.status === 'Available' ? 'bg-green-500' : 'bg-red-500',
 							)}
 						>
-							{data.is_serialize ? 'True' : 'False'}
-						</Badge>
-					</li>
-					<li className="flex items-center justify-between">
-						<span className="text-muted-foreground">Suppliers</span>
-						{avatar.length === 0 ? (
-							<span>No suppliers</span>
-						) : (
-							<AvatarCircles numPeople={avatar.length} avatar={avatar} />
+							{data.status === 'Available' ? 'Available' : 'Unavailable'}
+						</span>
+					</span>
+				</li>
+				<li className="flex flex-col gap-3">
+					<span className=" rounded-sm font-semibold">Product Details</span>
+				</li>
+				<li className="flex flex-col  text-sm">
+					<span className="items-start text-muted-foreground border-white text-sm">
+						Description
+					</span>
+					<span className=" rounded-sm">
+						{data.product_details?.description || ''}
+					</span>
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="items-start text-muted-foreground border-white text-sm">
+						Category
+					</span>
+					<span className="space-x-1">
+						{(data.product_categories ?? []).slice(0, 1).map((category) => (
+							<Badge key={category.category?.category_id}>
+								{category.category?.name}
+							</Badge>
+						))}
+						{(data.product_categories?.length ?? 0) > 1 && (
+							<Badge>+{(data.product_categories?.length ?? 0) - 1}</Badge>
 						)}
-					</li>
-				</ul>
-			</div>
-		</Card>
+					</span>
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="text-muted-foreground">Serialized</span>
+					<Badge
+						className={clsx(
+							'text-white hover:none',
+							data.is_serialize ? 'bg-green-500' : 'bg-red-500',
+						)}
+					>
+						{data.is_serialize ? 'True' : 'False'}
+					</Badge>
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="text-muted-foreground">Suppliers</span>
+					{avatar.length === 0 ? (
+						<span>No suppliers</span>
+					) : (
+						<AvatarCircles numPeople={avatar.length} avatar={avatar} />
+					)}
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="items-start text-muted-foreground border-white text-sm">
+						Color
+					</span>
+					<span className=" rounded-sm">
+						{data.product_details?.color || ''}
+					</span>
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="items-start text-muted-foreground border-white text-sm">
+						Size
+					</span>
+					<span className=" rounded-sm">
+						{data.product_details?.size || ''}
+					</span>
+				</li>
+			</ul>
+		</ScrollArea>
 	);
 }

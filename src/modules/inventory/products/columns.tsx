@@ -44,6 +44,23 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
+		accessorKey: 'status',
+		header: 'Status',
+		cell: ({row}) => {
+			return (
+				<Badge
+					className={clsx(
+						'text-white hover:none',
+						row.original.status === 'Available' ? 'bg-green-500' : 'bg-red-500',
+					)}
+				>
+					{row.original.status}
+				</Badge>
+			);
+		},
+	},
+
+	{
 		accessorKey: 'is_serialize',
 		header: 'Serialized Item',
 		cell: ({row}) => {

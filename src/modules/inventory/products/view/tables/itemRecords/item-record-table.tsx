@@ -268,20 +268,20 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 								variant={sortOrder === 'asc' ? 'default' : 'ghost'}
 								onClick={() => handleSortOrderChange('asc')}
 							>
-								Ascending
+								Asc
 							</Button>
 							<Button
 								variant={sortOrder === 'desc' ? 'default' : 'ghost'}
 								onClick={() => handleSortOrderChange('desc')}
 							>
-								Descending
+								Desc
 							</Button>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
 				<div className="flex gap-2">
 					<Button onClick={() => navigate('orders/create')}>
-						<CaravanIcon className="mr-2 h-5 w-5" /> Create Purchase Order
+						<CaravanIcon className="mr-2 h-5 w-5" /> Create Order
 					</Button>
 					<Button onClick={() => navigate('create')}>
 						<PaperclipIcon className="mr-2 h-5 w-5" /> Create Record
