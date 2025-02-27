@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/form';
 import {toast} from 'sonner';
 import axios, {AxiosError} from 'axios';
-import {useNavigate} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import {ApiRequest, request} from '@/api/axios';
 import {Card} from '@/components/ui/card';
@@ -25,7 +25,6 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {Checkbox} from '@/components/ui/checkbox';
@@ -35,14 +34,22 @@ import {
 	productSchema,
 } from '@/modules/inventory/_components/validation/product';
 import {Supplier} from '@/modules/inventory/_components/validation/supplier';
-
-export function ProfileForm() {
+import {Switch} from '@/components/ui/switch';
+interface Props {
+	selectedProduct: Product;
+}
+export function ProfileForm({selectedProduct}: Props) {
+	const prevCategories: Category[] =
+		selectedProduct?.product_categories?.map((row) => ({
+			...row.category,
+			name: row.category?.name || '',
+		})) || [];
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
-	const navigate = useNavigate();
+	const {id} = useParams();
 	const [categories, setCategories] = useState<Category[]>([]);
-
-	const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+	const [selectedCategories, setSelectedCategories] =
+		useState<Category[]>(prevCategories);
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
@@ -83,14 +90,14 @@ export function ProfileForm() {
 	}, []);
 
 	const defaultProductFormValues: Product = {
-		name: '',
-		img_url: undefined,
-		is_serialize: false,
-		status: 'Unavailable',
+		name: selectedProduct.name.toString(),
+		img_url: selectedProduct.img_url,
+		is_serialize: selectedProduct.is_serialize,
+		status: selectedProduct.status === 'Available' ? true : false,
 		product_details: {
-			description: '',
-			color: '',
-			size: '',
+			description: selectedProduct.product_details?.description,
+			color: selectedProduct.product_details?.color,
+			size: selectedProduct.product_details?.size,
 		},
 	};
 
@@ -141,11 +148,12 @@ export function ProfileForm() {
 
 	const processForm = async (data: Product) => {
 		try {
+			setLoading(true);
 			const newData = {
-				name: data.name.toString(),
+				name: data.name,
 				img_url: data.img_url,
 				is_serialize: data.is_serialize,
-				status: data.status,
+				status: data.status ? 'Available' : 'Unavailable',
 				product_categories: selectedCategories,
 				product_details: {
 					description: data.product_details?.description,
@@ -155,10 +163,8 @@ export function ProfileForm() {
 			};
 			const formData = new FormData();
 			appendFormData(newData, formData);
-			console.log('FormData contents:', ...formData.entries());
-			await request('POST', `/api/v1/ims/product`, formData);
-			toast.success('Product Added');
-			navigate(-1);
+			await request('PUT', `/api/v1/ims/product/${id}`, formData);
+			toast.success('Product Updated');
 		} catch (error) {
 			console.log(error);
 			let errorMessage = 'An unexpected error occurred';
@@ -170,10 +176,14 @@ export function ProfileForm() {
 			}
 
 			toast.error(errorMessage);
+		} finally {
+			setLoading(false);
 		}
 	};
 
-	const [selectedImage, setSelectedImage] = useState<string | null>(null);
+	const [selectedImage, setSelectedImage] = useState<string | null>(
+		selectedProduct?.img_url?.toString() ?? null,
+	);
 	const handleFileChange = (
 		e: React.ChangeEvent<HTMLInputElement> | undefined,
 	) => {
@@ -229,7 +239,7 @@ export function ProfileForm() {
 				<div className="flex flex-col md:flex-row gap-5 items-center">
 					<div className=" flex flex-col items-center gap-5 md:order-1 md:flex-[1_1_30%] min-w-[200px]">
 						<div className="relative">
-							<div className="overflow-hidden rounded-full w-[35vh] h-[35vh] border-2">
+							<div className="overflow-hidden rounded-full w-[300px] h-[300px] border-2">
 								<img
 									src={
 										selectedImage
@@ -289,6 +299,10 @@ export function ProfileForm() {
 													{...field}
 												/>
 											</FormControl>
+											<FormDescription>
+												Names can&apos;t be all numbers. Use letters, numbers,
+												dashes, or underscores.
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -308,6 +322,10 @@ export function ProfileForm() {
 													value={field.value ?? ''}
 												/>
 											</FormControl>
+											<FormDescription>
+												Only letters, numbers, dashes, and underscores are
+												allowed
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -332,6 +350,30 @@ export function ProfileForm() {
 													serial identification
 												</FormDescription>
 											</div>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="status"
+									render={({field}) => (
+										<FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+											<div className="space-y-0.5">
+												<FormLabel className="text-base">
+													Availability
+												</FormLabel>
+												<FormDescription>
+													This will be visible on the POS System and change
+													availability of the item
+												</FormDescription>
+											</div>
+											<FormControl>
+												<Switch
+													checked={!!field.value}
+													onCheckedChange={field.onChange}
+													aria-readonly
+												/>
+											</FormControl>
 										</FormItem>
 									)}
 								/>

@@ -109,8 +109,18 @@ const productRecords = z.object({
 const productDetailsSchema = z.object({
 	p_details_id: z.number().optional(),
 	description: z.string().optional(),
-	color: z.string().optional(),
-	size: z.string().optional(),
+	color: z
+		.string()
+		.regex(/^[a-zA-Z0-9 ]+$/, {
+			message: 'Only letters, numbers, and spaces are allowed',
+		})
+		.optional(),
+	size: z
+		.string()
+		.regex(/^[a-zA-Z0-9 ]+$/, {
+			message: 'Only letters, numbers, and spaces are allowed',
+		})
+		.optional(),
 	created_at: z.date().optional(),
 	last_updated: z.date().optional(),
 	deleted_at: z.date().nullable().optional(),
@@ -133,7 +143,12 @@ export const productOrders = z.object({
 
 export const productSchema = z.object({
 	product_id: z.number().optional(),
-	name: z.string().min(1),
+	name: z
+		.string()
+		.regex(/^[a-zA-Z0-9_-]+$/, {
+			message: 'Only letters, numbers, dashes, and underscores are allowed',
+		})
+		.min(1),
 	img_url: z.union([
 		z
 			.instanceof(File)
@@ -147,7 +162,7 @@ export const productSchema = z.object({
 		z.string(),
 	]),
 	is_serialize: z.boolean().optional(),
-	status: z.string().optional(),
+	status: z.union([z.string().optional(), z.boolean()]),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
