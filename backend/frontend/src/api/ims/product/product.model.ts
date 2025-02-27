@@ -21,12 +21,23 @@ export const CreateProduct = z.object({
 });
 
 export const UpdateProduct = z.object({
-  supplier_id: z.number().min(1),
-  product_details_id: z.number().min(1),
-  name: z.string(),
-
-  is_serialize: z.boolean(),
-  status: z.enum(['Unavailable', 'Available']),
+  name: z.string().optional(),
+  is_serialize: z.boolean().optional(),
+  status: z.enum(['Unavailable', 'Available']).optional(),
+  product_categories: z
+    .array(
+      z.object({
+        category_id: z.number(),
+      }),
+    )
+    .optional(),
+  product_details: z
+    .object({
+      description: z.string(),
+      color: z.string(),
+      size: z.string(),
+    })
+    .optional(),
 });
 
 export type CreateProduct = z.infer<typeof CreateProduct>;

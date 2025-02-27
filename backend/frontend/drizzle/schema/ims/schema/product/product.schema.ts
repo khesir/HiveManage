@@ -1,13 +1,11 @@
 import {
   boolean,
-  integer,
   pgEnum,
   pgTable,
   serial,
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { productDetails } from './productDetails.schema';
 
 export const productStatus = pgEnum('product_status', [
   'Unavailable',
@@ -16,9 +14,6 @@ export const productStatus = pgEnum('product_status', [
 
 export const product = pgTable('product', {
   product_id: serial('product_id').primaryKey(),
-  p_details_id: integer('p_details_id').references(
-    () => productDetails.p_details_id,
-  ),
 
   name: varchar('name'),
   img_url: varchar('img_url'),

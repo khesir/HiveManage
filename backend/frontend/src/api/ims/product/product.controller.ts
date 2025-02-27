@@ -87,17 +87,16 @@ export class ProductController {
   async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { product_id } = req.params;
-      const { supplier_id, product_details_id, is_serialize, status, name } =
-        req.body;
-
+      const {
+        name,
+        is_serialize,
+        status,
+        product_categories,
+        product_details,
+      } = req.body;
       await this.productService.updateProduct(
-        {
-          supplier_id,
-          product_details_id,
-          name,
-          is_serialize,
-          status,
-        },
+        { name, is_serialize, status, product_categories, product_details },
+        req.file,
         Number(product_id),
       );
       res

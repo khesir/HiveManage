@@ -2,10 +2,17 @@ import { z } from 'zod';
 
 export const CreateProductRecord = z.object({
   product_id: z.number().optional(),
-  record_name: z.string().min(1),
   quantity: z.number().min(1),
-  record_type: z.enum(['Firsthand', 'Secondhand', 'Broken']),
-  status: z.string().min(1),
+  price: z.number(),
+  condition: z.enum(['New', 'Secondhand', 'Broken']),
+  status: z.enum([
+    'Sold',
+    'Pending Payment',
+    'On Order',
+    'In Service',
+    'Awaiting Service',
+    'Return Requested',
+  ]),
 });
 
 export const UpdateProductRecord = z.object({

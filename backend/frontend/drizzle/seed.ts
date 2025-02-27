@@ -2258,7 +2258,6 @@ async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(productRecord).values(productrecordRecords);
   log.info('Product Records seeded successfully!');
 }
-
 async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier);
 
@@ -2267,7 +2266,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const productsRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 1,
       name: 'Apple iPhone 14 Pro',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2276,7 +2274,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 2,
       name: 'Samsung Galaxy S23 Ultra',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2285,7 +2282,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 3,
       name: 'Dell XPS 15',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2294,7 +2290,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 4,
       name: 'Sony WH-1000XM5',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2303,7 +2298,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 5,
       name: 'Logitech MX Master 3S',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2312,7 +2306,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 6,
       name: 'WD Black NVMe SSD 1TB',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2321,7 +2314,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 7,
       name: 'Corsair Vengeance RGB Pro 32GB RAM',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2330,7 +2322,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 8,
       name: 'Asus ROG Strix RTX 4080 GPU',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
@@ -2339,7 +2330,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 9,
       name: 'Epson L3210 Ink Tank Printer',
       is_serialize: true,
       status: faker.helpers.arrayElement(statuses),
@@ -2348,7 +2338,6 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      p_details_id: 10,
       name: 'Seagate IronWolf 4TB NAS HDD',
       is_serialize: true,
       status: faker.helpers.arrayElement(statuses),
@@ -2362,8 +2351,11 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
+  const productIDs = await db.select().from(product);
+
   const productdetailsRecords = [
     {
+      product_id: 1,
       description:
         'Flagship smartphone with A16 Bionic chip and ProMotion display.',
       warranty_date: new Date('2026-10-01'),
@@ -2371,6 +2363,7 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       color: 'Space Black',
     },
     {
+      product_id: 2,
       description:
         'High-end Android phone with 200MP camera and Snapdragon 8 Gen 2.',
       warranty_date: new Date('2026-09-15'),
@@ -2378,12 +2371,14 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       color: 'Phantom Black',
     },
     {
+      product_id: 3,
       description: 'Premium laptop with Intel Core i9 and 4K OLED display.',
       warranty_date: new Date('2027-01-10'),
       size: '15.6 inches',
       color: 'Silver',
     },
     {
+      product_id: 4,
       description:
         'Wireless noise-canceling headphones with industry-leading ANC.',
       warranty_date: new Date('2025-12-30'),
@@ -2391,30 +2386,35 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       color: 'Black',
     },
     {
+      product_id: 5,
       description: 'Advanced ergonomic wireless mouse with precise tracking.',
       warranty_date: new Date('2025-06-20'),
       size: 'Standard',
       color: 'Graphite',
     },
     {
+      product_id: 6,
       description: 'High-speed SSD for gaming and content creation.',
       warranty_date: new Date('2028-03-05'),
       size: '1TB',
       color: 'Black',
     },
     {
+      product_id: 7,
       description: 'DDR4 memory with dynamic RGB lighting for gaming rigs.',
       warranty_date: new Date('2027-08-15'),
       size: '32GB',
       color: 'RGB',
     },
     {
+      product_id: 8,
       description: 'High-end graphics card for 4K gaming and AI rendering.',
       warranty_date: new Date('2027-02-28'),
       size: 'Triple Slot',
       color: 'Black',
     },
     {
+      product_id: 9,
       description:
         'High-efficiency printer with cost-effective ink tank system.',
       warranty_date: new Date('2026-05-10'),
@@ -2422,6 +2422,7 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
       color: 'White',
     },
     {
+      product_id: 10,
       description: 'Durable and high-capacity hard drive for NAS systems.',
       warranty_date: new Date('2028-09-30'),
       size: '4TB',
@@ -3379,8 +3380,8 @@ async function main() {
     // Inventory
     await seedCategory(db);
     await seedSupplier(db);
-    await seedProductDetails(db);
     await seedProduct(db);
+    await seedProductDetails(db);
     await seedProductRecord(db);
     await seedOrder(db);
     await seedOrderItems(db);

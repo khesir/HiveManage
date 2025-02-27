@@ -329,7 +329,6 @@ CREATE TABLE IF NOT EXISTS "order_product" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product" (
 	"product_id" serial PRIMARY KEY NOT NULL,
-	"p_details_id" integer,
 	"name" varchar,
 	"img_url" varchar,
 	"is_serialize" boolean DEFAULT false,
@@ -341,6 +340,7 @@ CREATE TABLE IF NOT EXISTS "product" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product_details" (
 	"p_details_id" serial PRIMARY KEY NOT NULL,
+	"product_id" integer,
 	"description" varchar(255),
 	"color" varchar,
 	"size" varchar,
@@ -705,7 +705,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "product" ADD CONSTRAINT "product_p_details_id_product_details_p_details_id_fk" FOREIGN KEY ("p_details_id") REFERENCES "public"."product_details"("p_details_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "product_details" ADD CONSTRAINT "product_details_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

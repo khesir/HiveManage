@@ -8,11 +8,12 @@ import {
   SQL,
   inArray,
   like,
+  InferSelectModel,
 } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SupabaseService } from '@/supabase/supabase.service';
 import { SchemaType } from '@/drizzle/schema/type';
-import { CreateProduct } from './product.model';
+import { CreateProduct, UpdateProduct } from './product.model';
 import {
   productDetails,
   product,
@@ -40,15 +41,6 @@ export class ProductService {
     file: Express.Multer.File | undefined,
   ) {
     return this.db.transaction(async (tx) => {
-      const [newProductDetails] = await tx
-        .insert(productDetails)
-        .values({
-          description: data.product_details?.description,
-          color: data.product_details?.color,
-          size: data.product_details?.size,
-        })
-        .returning({ p_details_id: productDetails.p_details_id });
-
       let filepath = undefined;
       if (file) {
         filepath = await this.supabaseService.uploadImageToBucket(file);
@@ -58,12 +50,20 @@ export class ProductService {
         .insert(product)
         .values({
           name: String(data.name),
-          p_details_id: newProductDetails.p_details_id,
           is_serialize: data.is_serialize,
           img_url: filepath,
           status: data.status,
         })
         .returning({ product_id: product.product_id });
+      await tx
+        .insert(productDetails)
+        .values({
+          product_id: newProduct.product_id,
+          description: data.product_details?.description,
+          color: data.product_details?.color,
+          size: data.product_details?.size,
+        })
+        .returning({ p_details_id: productDetails.p_details_id });
 
       if (data.product_categories && data.product_categories.length > 0) {
         const categoriesToInsert = data.product_categories.map((category) => ({
@@ -75,11 +75,150 @@ export class ProductService {
       }
     });
   }
-  async updateProduct(data: object, paramsId: number) {
-    await this.db
-      .update(product)
-      .set(data)
-      .where(eq(product.product_id, paramsId));
+  async updateProduct(
+    data: UpdateProduct,
+    file: Express.Multer.File | undefined,
+    paramsId: number,
+  ) {
+    return this.db.transaction(async (tx) => {
+      console.log('Starting updateProduct transaction...');
+
+      try {
+        console.log('Updating product details...');
+        await tx
+          .update(productDetails)
+          .set({ ...data.product_details })
+          .where(eq(productDetails.product_id, paramsId));
+
+        console.log('Fetching existing categories...');
+        const categories = await tx
+          .select()
+          .from(productCategory)
+          .leftJoin(
+            category,
+            eq(category.category_id, productCategory.category_id),
+          )
+          .where(
+            and(
+              isNull(productCategory.deleted_at),
+              eq(productCategory.product_id, paramsId),
+            ),
+          );
+
+        const categoryByProduct = new Map<
+          number,
+          {
+            product_category: InferSelectModel<typeof productCategory>;
+            category: InferSelectModel<typeof category> | null;
+          }[]
+        >();
+
+        categories.forEach(({ product_category, category }) => {
+          const productID = product_category.product_id;
+          if (productID !== null) {
+            if (!categoryByProduct.has(productID)) {
+              categoryByProduct.set(productID, []);
+            }
+            categoryByProduct.get(productID)!.push({
+              product_category,
+              category: category
+                ? {
+                    category_id: category.category_id,
+                    name: category.name ?? null, // Ensure no undefined values
+                    created_at: category.created_at ?? null,
+                    last_updated: category.last_updated ?? new Date(),
+                    deleted_at: category.deleted_at ?? null,
+                  }
+                : null,
+            });
+          }
+        });
+
+        console.log('Existing categories:', categories);
+
+        const existingCategoryIds = new Set(
+          categories?.map(
+            ({ category }: { category: { category_id: number } | null }) =>
+              category?.category_id,
+          ) ?? [],
+        );
+        console.log('Existing Category IDs:', existingCategoryIds);
+
+        const newCategoryIds = new Set<number>(
+          data.product_categories?.map((c) => c.category_id) ?? [],
+        );
+        console.log('New Category IDs:', newCategoryIds);
+
+        const categoriesToDelete: number[] = [...existingCategoryIds]
+          .filter((id): id is number => id !== undefined)
+          .filter((id) => !newCategoryIds.has(id));
+
+        const categoriesToAdd: number[] = [...newCategoryIds]
+          .filter((id): id is number => id !== undefined)
+          .filter((id) => !existingCategoryIds.has(id));
+
+        console.log('Categories to delete:', categoriesToDelete);
+        console.log('Categories to add:', categoriesToAdd);
+
+        // Delete missing categories
+        if (categoriesToDelete.length > 0) {
+          console.log('Deleting categories...');
+          await tx
+            .delete(productCategory)
+            .where(
+              and(
+                eq(productCategory.product_id, paramsId),
+                inArray(productCategory.category_id, categoriesToDelete),
+              ),
+            );
+          console.log('Deleted categories successfully.');
+        }
+
+        // Insert new categories
+        if (categoriesToAdd.length > 0) {
+          console.log('Inserting new categories...');
+          await tx.insert(productCategory).values(
+            categoriesToAdd.map((category_id) => ({
+              product_id: paramsId,
+              category_id,
+            })),
+          );
+          console.log('Inserted new categories successfully.');
+        }
+
+        if (file) {
+          console.log('Uploading new image...');
+          const filepath = await this.supabaseService.uploadImageToBucket(file);
+          console.log('Uploaded image, filepath:', filepath);
+
+          console.log('Updating product with new image...');
+          await tx
+            .update(product)
+            .set({
+              img_url: filepath,
+              name: data.name,
+              is_serialize: data.is_serialize,
+              status: data.status,
+            })
+            .where(eq(product.product_id, paramsId));
+        } else {
+          console.log('Updating product without image...');
+          await tx
+            .update(product)
+            .set({
+              name: data.name,
+              is_serialize: data.is_serialize,
+              status: data.status,
+            })
+            .where(eq(product.product_id, paramsId));
+        }
+
+        console.log('Transaction completed successfully.');
+      } catch (error) {
+        console.error('Error in updateProduct transaction:', error);
+        throw error; // Ensure transaction rollback on failure
+      }
+    });
   }
 
   async deleteProduct(paramsId: number): Promise<void> {
@@ -106,7 +245,7 @@ export class ProductService {
       .from(product)
       .leftJoin(
         productDetails,
-        eq(productDetails.p_details_id, product.p_details_id),
+        eq(productDetails.product_id, product.product_id),
       )
       .where(and(...conditions))
       .orderBy(
@@ -139,7 +278,7 @@ export class ProductService {
       })
       .map((row) => ({
         ...row.product,
-        product_detail: {
+        product_details: {
           ...row.product_details,
         },
         product_records: recordByProduct.get(row.product.product_id) || [],
@@ -158,7 +297,7 @@ export class ProductService {
       .from(product)
       .leftJoin(
         productDetails,
-        eq(productDetails.p_details_id, product.p_details_id),
+        eq(productDetails.product_id, product.product_id),
       )
       .where(eq(product.product_id, Number(product_id)));
     const productIds = result.map((p) => p.product.product_id);
@@ -169,7 +308,7 @@ export class ProductService {
     const orderByProduct = await this.getOrderByProduct();
     const productWithDetails = result.map((row) => ({
       ...row.product,
-      productDetails: {
+      product_details: {
         ...row.product_details,
       },
       product_records: recordByProduct.get(row.product.product_id) || [],
@@ -215,14 +354,35 @@ export class ProductService {
     return supplierByProduct;
   }
 
-  private async getCategoryByProduct(): Promise<Map<number, unknown[]>> {
+  private async getCategoryByProduct(
+    product_id: number | undefined = undefined,
+  ): Promise<
+    Map<
+      number,
+      {
+        product_category: InferSelectModel<typeof productCategory>;
+        category: InferSelectModel<typeof category> | null;
+      }[]
+    >
+  > {
+    const conditions = [isNull(productCategory.deleted_at)];
+
+    if (product_id !== undefined) {
+      conditions.push(eq(productCategory.product_id, product_id));
+    }
     const result = await this.db
       .select()
       .from(productCategory)
       .leftJoin(category, eq(category.category_id, productCategory.category_id))
-      .where(isNull(productCategory.deleted_at));
+      .where(and(...conditions));
 
-    const categoryByProduct = new Map<number, unknown[]>();
+    const categoryByProduct = new Map<
+      number,
+      {
+        product_category: InferSelectModel<typeof productCategory>;
+        category: InferSelectModel<typeof category> | null;
+      }[]
+    >();
 
     result.forEach(({ product_category, category }) => {
       const productID = product_category.product_id;
@@ -230,11 +390,21 @@ export class ProductService {
         if (!categoryByProduct.has(productID)) {
           categoryByProduct.set(productID, []);
         }
-        categoryByProduct
-          .get(productID)!
-          .push({ ...product_category, category: { ...category } });
+        categoryByProduct.get(productID)!.push({
+          product_category,
+          category: category
+            ? {
+                category_id: category.category_id,
+                name: category.name ?? null, // Ensure no undefined values
+                created_at: category.created_at ?? null,
+                last_updated: category.last_updated ?? new Date(),
+                deleted_at: category.deleted_at ?? null,
+              }
+            : null,
+        });
       }
     });
+
     return categoryByProduct;
   }
 

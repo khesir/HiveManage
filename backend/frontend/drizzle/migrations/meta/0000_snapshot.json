@@ -1,5 +1,5 @@
 {
-  "id": "fec24118-8e22-4e2d-bc7e-82fb2495b446",
+  "id": "cf9cfc1d-acc5-494e-9a2c-335eb6e37acc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1346,12 +1346,6 @@
           "primaryKey": true,
           "notNull": true
         },
-        "p_details_id": {
-          "name": "p_details_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "name": {
           "name": "name",
           "type": "varchar",
@@ -1400,21 +1394,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "product_p_details_id_product_details_p_details_id_fk": {
-          "name": "product_p_details_id_product_details_p_details_id_fk",
-          "tableFrom": "product",
-          "tableTo": "product_details",
-          "columnsFrom": [
-            "p_details_id"
-          ],
-          "columnsTo": [
-            "p_details_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -1427,6 +1407,12 @@
           "type": "serial",
           "primaryKey": true,
           "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "description": {
           "name": "description",
@@ -1468,7 +1454,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "product_details_product_id_product_product_id_fk": {
+          "name": "product_details_product_id_product_product_id_fk",
+          "tableFrom": "product_details",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },

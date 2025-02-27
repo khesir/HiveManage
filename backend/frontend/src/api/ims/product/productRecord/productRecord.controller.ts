@@ -56,14 +56,13 @@ export class ProductRecordController {
 
   async createProductRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, record_name, quantity, status, record_type } =
-        req.body;
+      const { product_id, quantity, condition, status, price } = req.body;
       await this.productrecordService.createProductRecord({
         product_id,
-        record_name,
         quantity,
+        condition,
         status,
-        record_type,
+        price,
       });
 
       res.status(HttpStatus.CREATED.code).json({
