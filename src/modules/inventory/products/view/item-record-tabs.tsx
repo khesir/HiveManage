@@ -12,7 +12,7 @@ export function ViewRecordTabs({
 	product_id,
 }: InventoryRecordProps) {
 	return (
-		<Tabs defaultValue="Items" className="p-3">
+		<Tabs defaultValue="Items" className="p-3 w-full">
 			<div className="flex items-center">
 				<TabsList>
 					<TabsTrigger value="Items">Items</TabsTrigger>
