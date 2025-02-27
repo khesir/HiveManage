@@ -1,4 +1,14 @@
-import { and, eq, isNull, sql, asc, SQL, inArray } from 'drizzle-orm';
+import {
+  and,
+  eq,
+  isNull,
+  sql,
+  asc,
+  desc,
+  SQL,
+  inArray,
+  like,
+} from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SupabaseService } from '@/supabase/supabase.service';
 import { SchemaType } from '@/drizzle/schema/type';
@@ -10,7 +20,7 @@ import {
   supplier,
   productRecord,
   serializeProduct,
-  orderItem,
+  orderProduct,
   order,
 } from '@/drizzle/schema/ims';
 import { productCategory } from '@/drizzle/schema/ims/schema/product/productCategory.schema';
@@ -25,8 +35,45 @@ export class ProductService {
     this.supabaseService = SupabaseService.getInstance();
   }
 
-  async createProduct(data: CreateProduct) {
-    await this.db.insert(product).values(data);
+  async createProduct(
+    data: CreateProduct,
+    file: Express.Multer.File | undefined,
+  ) {
+    return this.db.transaction(async (tx) => {
+      const [newProductDetails] = await tx
+        .insert(productDetails)
+        .values({
+          description: data.product_details?.description,
+          color: data.product_details?.color,
+          size: data.product_details?.size,
+        })
+        .returning({ p_details_id: productDetails.p_details_id });
+
+      let filepath = undefined;
+      if (file) {
+        filepath = await this.supabaseService.uploadImageToBucket(file);
+      }
+
+      const [newProduct] = await tx
+        .insert(product)
+        .values({
+          name: String(data.name),
+          p_details_id: newProductDetails.p_details_id,
+          is_serialize: data.is_serialize,
+          img_url: filepath,
+          status: data.status,
+        })
+        .returning({ product_id: product.product_id });
+
+      if (data.product_categories && data.product_categories.length > 0) {
+        const categoriesToInsert = data.product_categories.map((category) => ({
+          product_id: newProduct.product_id,
+          category_id: category.category_id,
+        }));
+
+        await tx.insert(productCategory).values(categoriesToInsert);
+      }
+    });
   }
   async updateProduct(data: object, paramsId: number) {
     await this.db
@@ -42,8 +89,17 @@ export class ProductService {
       .where(eq(product.product_id, paramsId));
   }
 
-  async getAllProduct(sort: string, limit: number, offset: number) {
+  async getAllProduct(
+    sort: string,
+    limit: number,
+    offset: number,
+    product_name: string | undefined,
+    category_id: number | undefined,
+  ) {
     const conditions = [isNull(product.deleted_at)];
+    if (product_name) {
+      conditions.push(like(product.name, product_name));
+    }
 
     const result = await this.db
       .select()
@@ -53,7 +109,9 @@ export class ProductService {
         eq(productDetails.p_details_id, product.p_details_id),
       )
       .where(and(...conditions))
-      .orderBy(sort == 'asc' ? asc(product.created_at) : product.created_at)
+      .orderBy(
+        sort == 'asc' ? asc(product.created_at) : desc(product.created_at),
+      )
       .limit(limit)
       .offset(offset);
 
@@ -63,17 +121,33 @@ export class ProductService {
     const totalData = await this.getTotalDataByCondition(conditions);
     const categoryByProduct = await this.getCategoryByProduct();
     const supplierByProduct = await this.getSupplierbyProduct();
+    const orderByProduct = await this.getOrderByProduct();
 
-    const productWithDetails = result.map((row) => ({
-      ...row.product,
-      productDetails: {
-        ...row.product_details,
-      },
-      productRecords: recordByProduct.get(row.product.product_id) || [],
-      productSerials: serialByProduct.get(row.product.product_id) || [],
-      productCategories: categoryByProduct.get(row.product.product_id) || [],
-      productSuppliers: supplierByProduct.get(row.product.product_id) || [],
-    }));
+    const productWithDetails = result
+      .filter((row) => {
+        // Applied category filter
+        const categories = categoryByProduct.get(row.product.product_id) || [];
+
+        if (category_id) {
+          return categories.some(
+            (category: unknown) =>
+              (category as { category_id: number }).category_id === category_id,
+          );
+        }
+
+        return true;
+      })
+      .map((row) => ({
+        ...row.product,
+        product_detail: {
+          ...row.product_details,
+        },
+        product_records: recordByProduct.get(row.product.product_id) || [],
+        product_serials: serialByProduct.get(row.product.product_id) || [],
+        product_categories: categoryByProduct.get(row.product.product_id) || [],
+        product_suppliers: supplierByProduct.get(row.product.product_id) || [],
+        product_orders: orderByProduct.get(row.product.product_id) || [],
+      }));
 
     return { totalData, productWithDetails };
   }
@@ -87,12 +161,22 @@ export class ProductService {
         eq(productDetails.p_details_id, product.p_details_id),
       )
       .where(eq(product.product_id, Number(product_id)));
-
+    const productIds = result.map((p) => p.product.product_id);
+    const recordByProduct = await this.getRecordByProduct(productIds);
+    const serialByProduct = await this.getSerializedByProduct(productIds);
+    const categoryByProduct = await this.getCategoryByProduct();
+    const supplierByProduct = await this.getSupplierbyProduct();
+    const orderByProduct = await this.getOrderByProduct();
     const productWithDetails = result.map((row) => ({
       ...row.product,
       productDetails: {
         ...row.product_details,
       },
+      product_records: recordByProduct.get(row.product.product_id) || [],
+      product_serials: serialByProduct.get(row.product.product_id) || [],
+      product_categories: categoryByProduct.get(row.product.product_id) || [],
+      product_suppliers: supplierByProduct.get(row.product.product_id) || [],
+      product_orders: orderByProduct.get(row.product.product_id) || [],
     }));
 
     return productWithDetails;
@@ -157,21 +241,21 @@ export class ProductService {
   private async getOrderByProduct(): Promise<Map<number, unknown[]>> {
     const result = await this.db
       .select()
-      .from(orderItem)
-      .leftJoin(order, eq(order.order_id, orderItem.order_id))
-      .where(isNull(orderItem.deleted_at));
+      .from(orderProduct)
+      .leftJoin(order, eq(order.order_id, orderProduct.order_id))
+      .where(isNull(orderProduct.deleted_at));
 
     const orderByProduct = new Map<number, unknown[]>();
 
-    result.forEach(({ order_item, order }) => {
-      const productID = order_item.product_id;
+    result.forEach(({ order_product, order }) => {
+      const productID = order_product.product_id;
       if (productID !== null) {
         if (!orderByProduct.has(productID)) {
           orderByProduct.set(productID, []);
         }
         orderByProduct
           .get(productID)!
-          .push({ ...order_item, order: { ...order } });
+          .push({ ...order_product, order: { ...order } });
       }
     });
 

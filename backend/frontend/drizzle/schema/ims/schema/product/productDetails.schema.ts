@@ -5,8 +5,6 @@ export const productDetails = pgTable('product_details', {
   description: varchar('description', { length: 255 }),
   color: varchar('color'),
   size: varchar('size'),
-  external_serial_code: varchar('external_serial_code', { length: 255 }),
-  warranty_date: timestamp('warranty_date'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

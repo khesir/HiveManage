@@ -27,7 +27,7 @@ import {
   productRecord,
   productDetails,
   order,
-  orderItem,
+  orderProduct,
   discount,
   discountProducts,
   discountCustomer,
@@ -2254,26 +2254,6 @@ async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
       deleted_at: faker.date.recent(),
     },
-    {
-      product_id: 9,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
-    },
-    {
-      product_id: 10,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
-    },
   ];
   await db.insert(productRecord).values(productrecordRecords);
   log.info('Product Records seeded successfully!');
@@ -2281,33 +2261,32 @@ async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier);
-  const product_detailsIDs = await db.select().from(productDetails);
 
   const statuses = ['Unavailable', 'Available'] as const;
 
   const productsRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      is_serialize: true,
+      p_details_id: 1,
+      name: 'Apple iPhone 14 Pro',
+      is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-01-01'),
       last_updated: new Date('2023-01-10'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      is_serialize: true,
+      p_details_id: 2,
+      name: 'Samsung Galaxy S23 Ultra',
+      is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-02-01'),
       last_updated: new Date('2023-02-15'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
+      p_details_id: 3,
+      name: 'Dell XPS 15',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
@@ -2315,8 +2294,53 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
+      p_details_id: 4,
+      name: 'Sony WH-1000XM5',
+      is_serialize: false,
+      status: faker.helpers.arrayElement(statuses),
+      created_at: new Date('2023-03-01'),
+      last_updated: new Date('2023-03-20'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      p_details_id: 5,
+      name: 'Logitech MX Master 3S',
+      is_serialize: false,
+      status: faker.helpers.arrayElement(statuses),
+      created_at: new Date('2023-03-01'),
+      last_updated: new Date('2023-03-20'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      p_details_id: 6,
+      name: 'WD Black NVMe SSD 1TB',
+      is_serialize: false,
+      status: faker.helpers.arrayElement(statuses),
+      created_at: new Date('2023-03-01'),
+      last_updated: new Date('2023-03-20'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      p_details_id: 7,
+      name: 'Corsair Vengeance RGB Pro 32GB RAM',
+      is_serialize: false,
+      status: faker.helpers.arrayElement(statuses),
+      created_at: new Date('2023-03-01'),
+      last_updated: new Date('2023-03-20'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      p_details_id: 8,
+      name: 'Asus ROG Strix RTX 4080 GPU',
+      is_serialize: false,
+      status: faker.helpers.arrayElement(statuses),
+      created_at: new Date('2023-03-01'),
+      last_updated: new Date('2023-03-20'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      p_details_id: 9,
+      name: 'Epson L3210 Ink Tank Printer',
       is_serialize: true,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
@@ -2324,53 +2348,8 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      is_serialize: true,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      is_serialize: true,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      product_det_id:
-        faker.helpers.arrayElement(product_detailsIDs).p_details_id,
+      p_details_id: 10,
+      name: 'Seagate IronWolf 4TB NAS HDD',
       is_serialize: true,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
@@ -2383,77 +2362,70 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
-  const statuses = ['Batch', 'Serialized'] as const;
-
   const productdetailsRecords = [
     {
-      name: 'Apple iPhone 14 Pro',
       description:
         'Flagship smartphone with A16 Bionic chip and ProMotion display.',
-      external_serial_code: 'APL14PRO-987654321',
       warranty_date: new Date('2026-10-01'),
+      size: '6.1 inches',
+      color: 'Space Black',
     },
     {
-      name: 'Samsung Galaxy S23 Ultra',
       description:
         'High-end Android phone with 200MP camera and Snapdragon 8 Gen 2.',
-      product_type: faker.helpers.arrayElement(statuses),
-      external_serial_code: 'SMSG23U-123456789',
       warranty_date: new Date('2026-09-15'),
+      size: '6.8 inches',
+      color: 'Phantom Black',
     },
     {
-      name: 'Dell XPS 15',
       description: 'Premium laptop with Intel Core i9 and 4K OLED display.',
-      product_type: faker.helpers.arrayElement(statuses),
-      external_serial_code: 'DXPS15-876543210',
       warranty_date: new Date('2027-01-10'),
+      size: '15.6 inches',
+      color: 'Silver',
     },
     {
-      name: 'Sony WH-1000XM5',
       description:
         'Wireless noise-canceling headphones with industry-leading ANC.',
-      product_type: faker.helpers.arrayElement(statuses),
-      external_serial_code: 'SONYX5-654321987',
       warranty_date: new Date('2025-12-30'),
+      size: 'Over-Ear',
+      color: 'Black',
     },
     {
-      name: 'Logitech MX Master 3S',
       description: 'Advanced ergonomic wireless mouse with precise tracking.',
-      product_type: faker.helpers.arrayElement(statuses),
-      external_serial_code: 'LOGIMX3S-321987654',
       warranty_date: new Date('2025-06-20'),
+      size: 'Standard',
+      color: 'Graphite',
     },
     {
-      name: 'WD Black NVMe SSD 1TB',
       description: 'High-speed SSD for gaming and content creation.',
-      product_type: faker.helpers.arrayElement(statuses),
-      external_serial_code: 'WDB1TB-BATCH2024',
       warranty_date: new Date('2028-03-05'),
+      size: '1TB',
+      color: 'Black',
     },
     {
-      name: 'Corsair Vengeance RGB Pro 32GB RAM',
       description: 'DDR4 memory with dynamic RGB lighting for gaming rigs.',
-      external_serial_code: 'CORV32GB-BATCH2024',
       warranty_date: new Date('2027-08-15'),
+      size: '32GB',
+      color: 'RGB',
     },
     {
-      name: 'Asus ROG Strix RTX 4080 GPU',
       description: 'High-end graphics card for 4K gaming and AI rendering.',
-      external_serial_code: 'ASUS4080-987654321',
       warranty_date: new Date('2027-02-28'),
+      size: 'Triple Slot',
+      color: 'Black',
     },
     {
-      name: 'Epson L3210 Ink Tank Printer',
       description:
         'High-efficiency printer with cost-effective ink tank system.',
-      external_serial_code: 'EPSL3210-BATCH2024',
       warranty_date: new Date('2026-05-10'),
+      size: 'Standard',
+      color: 'White',
     },
     {
-      name: 'Seagate IronWolf 4TB NAS HDD',
       description: 'Durable and high-capacity hard drive for NAS systems.',
-      external_serial_code: 'SEAG4TB-BATCH2024',
       warranty_date: new Date('2028-09-30'),
+      size: '4TB',
+      color: 'Red',
     },
   ];
   await db.insert(productDetails).values(productdetailsRecords);
@@ -2867,7 +2839,7 @@ async function seedOrderItems(db: PostgresJsDatabase<SchemaType>) {
     },
   ];
 
-  await db.insert(orderItem).values(orderitemsRecords);
+  await db.insert(orderProduct).values(orderitemsRecords);
   log.info('Order Items records seeded successfully');
 }
 
@@ -2886,7 +2858,7 @@ async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
 
   const serializedproductsRecords = [
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: 9,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
       condition: faker.helpers.arrayElement(recordCondition),
@@ -2894,71 +2866,7 @@ async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
       last_updated: new Date('2023-01-10'),
     },
     {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: 10,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
       condition: faker.helpers.arrayElement(recordCondition),

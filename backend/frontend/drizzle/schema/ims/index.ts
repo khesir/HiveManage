@@ -9,7 +9,7 @@ export { supplier } from './schema/product/supplier.schema';
 
 // Orders
 export { order } from './schema/order/order.schema';
-export { orderItem } from './schema/order/orderItem.schema';
+export { orderProduct } from './schema/order/orderItem.schema';
 
 // Discounts
 export { discount } from './schema/discount/discount.schema';

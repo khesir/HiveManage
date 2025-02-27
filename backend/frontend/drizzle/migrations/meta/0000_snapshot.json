@@ -1,5 +1,5 @@
 {
-  "id": "7c09c1d6-24de-4f5b-a746-fd06cdb9b2db",
+  "id": "fec24118-8e22-4e2d-bc7e-82fb2495b446",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1242,12 +1242,12 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.orderItem": {
-      "name": "orderItem",
+    "public.order_product": {
+      "name": "order_product",
       "schema": "",
       "columns": {
-        "orderItem_id": {
-          "name": "orderItem_id",
+        "order_product_id": {
+          "name": "order_product_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -1306,9 +1306,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "orderItem_order_id_order_order_id_fk": {
-          "name": "orderItem_order_id_order_order_id_fk",
-          "tableFrom": "orderItem",
+        "order_product_order_id_order_order_id_fk": {
+          "name": "order_product_order_id_order_order_id_fk",
+          "tableFrom": "order_product",
           "tableTo": "order",
           "columnsFrom": [
             "order_id"
@@ -1319,9 +1319,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "orderItem_product_id_product_product_id_fk": {
-          "name": "orderItem_product_id_product_product_id_fk",
-          "tableFrom": "orderItem",
+        "order_product_product_id_product_product_id_fk": {
+          "name": "order_product_product_id_product_product_id_fk",
+          "tableFrom": "order_product",
           "tableTo": "product",
           "columnsFrom": [
             "product_id"
@@ -1443,18 +1443,6 @@
         "size": {
           "name": "size",
           "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "external_serial_code": {
-          "name": "external_serial_code",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "warranty_date": {
-          "name": "warranty_date",
-          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
@@ -1589,6 +1577,24 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "warranty_date": {
+          "name": "warranty_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "external_serial_code": {
+          "name": "external_serial_code",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "external_warranty_date": {
+          "name": "external_warranty_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         },
         "price": {
           "name": "price",

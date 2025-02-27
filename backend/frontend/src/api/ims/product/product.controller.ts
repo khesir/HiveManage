@@ -15,9 +15,17 @@ export class ProductController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const product_name = (req.query.product_name as string) || undefined;
+    const category_id = parseInt(req.query.category_id as string) || undefined;
     try {
-      const data = await this.productService.getAllProduct(sort, limit, offset);
+      console.log(req.query);
+      const data = await this.productService.getAllProduct(
+        sort,
+        limit,
+        offset,
+        product_name,
+        category_id,
+      );
 
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -50,16 +58,18 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const { supplier_id, product_details_id, is_serialize, status, name } =
-        req.body;
-
-      await this.productService.createProduct({
-        supplier_id,
-        product_details_id,
+      const {
         name,
         is_serialize,
         status,
-      });
+        product_categories,
+        product_details,
+      } = req.body;
+
+      await this.productService.createProduct(
+        { name, is_serialize, status, product_categories, product_details },
+        req.file,
+      );
 
       res
         .status(HttpStatus.CREATED.code)

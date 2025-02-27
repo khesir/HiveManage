@@ -315,8 +315,8 @@ CREATE TABLE IF NOT EXISTS "order" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "orderItem" (
-	"orderItem_id" serial PRIMARY KEY NOT NULL,
+CREATE TABLE IF NOT EXISTS "order_product" (
+	"order_product_id" serial PRIMARY KEY NOT NULL,
 	"order_id" integer,
 	"product_id" integer,
 	"quantity" integer DEFAULT 1,
@@ -344,8 +344,6 @@ CREATE TABLE IF NOT EXISTS "product_details" (
 	"description" varchar(255),
 	"color" varchar,
 	"size" varchar,
-	"external_serial_code" varchar(255),
-	"warranty_date" timestamp,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -367,6 +365,9 @@ CREATE TABLE IF NOT EXISTS "serialized_product" (
 	"serial_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
 	"serial_number" varchar NOT NULL,
+	"warranty_date" timestamp,
+	"external_serial_code" varchar(255),
+	"external_warranty_date" timestamp,
 	"price" real DEFAULT 0,
 	"type" "serial_condition" NOT NULL,
 	"status" "serial_status" NOT NULL,
@@ -692,13 +693,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_order_id_order_order_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."order"("order_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "order_product" ADD CONSTRAINT "order_product_order_id_order_order_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."order"("order_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "orderItem" ADD CONSTRAINT "orderItem_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "order_product" ADD CONSTRAINT "order_product_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

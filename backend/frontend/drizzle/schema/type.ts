@@ -12,7 +12,7 @@ import {
   category,
   supplier,
   order,
-  orderItem,
+  orderProduct,
   discount,
   discountCustomer,
   discountProducts,
@@ -67,7 +67,7 @@ export const schema: SchemaType = {
   category,
   supplier,
   order,
-  orderItem,
+  orderProduct,
 
   discount,
   discountCustomer,
