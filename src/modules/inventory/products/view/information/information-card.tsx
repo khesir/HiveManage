@@ -28,7 +28,7 @@ export function InformationCard({data}: Props) {
 							Description
 						</span>
 						<span className="p-3 rounded-sm">
-							{data.product_detail?.description || ''}
+							{data.product_details?.description || ''}
 						</span>
 					</li>
 					<li className="flex items-center justify-between">

@@ -66,6 +66,7 @@ const serials = z.object({
 	serial_id: z.number(),
 	product_id: z.number(),
 	serial_number: z.number(),
+	external_serial_code: z.string().optional(),
 	price: z.number().optional(),
 	condition: z.string(),
 	status: z.string(),
@@ -108,8 +109,8 @@ const productRecords = z.object({
 const productDetailsSchema = z.object({
 	p_details_id: z.number().optional(),
 	description: z.string().optional(),
-
-	external_serial_code: z.string().optional(),
+	color: z.string().optional(),
+	size: z.string().optional(),
 	created_at: z.date().optional(),
 	last_updated: z.date().optional(),
 	deleted_at: z.date().nullable().optional(),
@@ -151,7 +152,7 @@ export const productSchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 
-	product_detail: productDetailsSchema.optional(),
+	product_details: productDetailsSchema.optional(),
 	product_records: z.array(productRecords).optional(),
 	product_categories: z.array(productCategory).optional(),
 	product_serials: z.array(serials).optional(),

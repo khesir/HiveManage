@@ -23,6 +23,7 @@ export default function ProductWithDetailsList({
 
 	const category_id = Number(searchParams.get('category_id')) || undefined;
 	const product_name = searchParams.get('product_name') || undefined;
+
 	useEffect(() => {
 		const fetchProducts = async () => {
 			const [categoryResponse, productResponse] = await Promise.all([
@@ -44,7 +45,7 @@ export default function ProductWithDetailsList({
 		};
 		fetchProducts();
 	}, [offset, pageLimit, sort, category_id, product_name]);
-	console.log(products);
+
 	return (
 		<ProductWithDetailsTable
 			columns={columns}

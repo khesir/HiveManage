@@ -1,6 +1,5 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
-import {Product, productSchema} from '../../../_components/validation/product';
 import {appendFormData} from '@/lib/util/utils';
 import {
 	Form,
@@ -15,7 +14,6 @@ import {toast} from 'sonner';
 import axios, {AxiosError} from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {useEffect, useState} from 'react';
-import {Category} from '../../../_components/validation/category';
 import {ApiRequest, request} from '@/api/axios';
 import {Card} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
@@ -27,14 +25,18 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import {Supplier} from '../../../_components/validation/supplier';
 import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {Checkbox} from '@/components/ui/checkbox';
+import {Category} from '@/modules/inventory/_components/validation/category';
+import {
+	Product,
+	productSchema,
+} from '@/modules/inventory/_components/validation/product';
+import {Supplier} from '@/modules/inventory/_components/validation/supplier';
 
-export function CreateProductForm() {
+export function ProfileForm() {
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
 	const navigate = useNavigate();
@@ -199,10 +201,15 @@ export function CreateProductForm() {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(processForm)}
-				className="w-full space-y-3 h-full"
+				className="w-full space-y-6 h-full"
 			>
 				<div className="flex items-center">
-					<Heading title={`Create Product`} description="" />
+					<div>
+						<h3 className="text-lg font-medium">Profile</h3>
+						<p className="text-sm text-muted-foreground">
+							This is how others will see you on the site.
+						</p>
+					</div>
 					<div className="flex gap-3 justify-end ml-auto">
 						{/* <Button
 							type="button"
@@ -220,9 +227,9 @@ export function CreateProductForm() {
 				</div>
 				<Separator />
 				<div className="flex flex-col md:flex-row gap-5 items-center">
-					<div className=" flex flex-col items-center gap-5 md:order-1 md:flex-[1_1_30%] min-w-[250px]">
+					<div className=" flex flex-col items-center gap-5 md:order-1 md:flex-[1_1_30%] min-w-[200px]">
 						<div className="relative">
-							<div className="overflow-hidden rounded-full w-[40vh] h-[40vh] border-2">
+							<div className="overflow-hidden rounded-full w-[35vh] h-[35vh] border-2">
 								<img
 									src={
 										selectedImage
@@ -265,7 +272,7 @@ export function CreateProductForm() {
 							</div>
 						</div>
 					</div>
-					<Card className="flex flex-col gap-5 p-5 md:flex-[1_1_70%] min-w-[300px]">
+					<Card className="flex flex-col gap-5 p-5 md:flex-[1_1_50%] min-w-[300px]">
 						<p className="text-lg font-semibold">Base Information</p>
 						<div className="flex flex-col gap-5">
 							<div className="flex-1 gap-3 flex flex-col h-full">

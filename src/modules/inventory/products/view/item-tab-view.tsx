@@ -1,5 +1,6 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {ProductInformationTab} from './information/information-tab';
+import SettingsSidebar from './settings/settings-sidebar';
 
 export function ViewItemTabDetails() {
 	return (
@@ -16,7 +17,9 @@ export function ViewItemTabDetails() {
 				<ProductInformationTab />
 			</TabsContent>
 			<TabsContent value="Analytics"></TabsContent>
-			<TabsContent value="Settings"></TabsContent>
+			<TabsContent value="Settings">
+				<SettingsSidebar />
+			</TabsContent>
 		</Tabs>
 	);
 }

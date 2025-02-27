@@ -92,7 +92,7 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 		[searchParams],
 	);
 
-	// Handle server-side pagination
+	// State for table pagination
 	const [{pageIndex, pageSize}, setPagination] = useState({
 		pageIndex: fallbackPage - 1,
 		pageSize: fallBackPerPage,
@@ -103,18 +103,10 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 			`${location.pathname}?${createQueryString({
 				page: pageIndex + 1,
 				limit: pageSize,
-				// categories: Array.from(selectedValues).join('.'),
 			})}`,
 			{replace: true},
 		);
-	}, [
-		pageIndex,
-		pageSize,
-		// selectedValues,
-		navigate,
-		location.pathname,
-		createQueryString,
-	]);
+	}, [pageIndex, pageSize, navigate, location.pathname, createQueryString]);
 
 	// Initialize the table
 	const table = useReactTable({
@@ -133,49 +125,6 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 	});
 	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
 
-	// ====================================================================================
-	// Search Funtion
-	// Debounced search value to avoid triggering requests too frequently
-	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-	useEffect(() => {
-		const handler = setTimeout(() => {
-			setDebouncedSearchValue(searchValue);
-		}, 500); // Adjust debounce delay as needed
-		return () => clearTimeout(handler);
-	}, [searchValue]);
-
-	// // Update the URL with the search query when the searchValue changes
-	useEffect(() => {
-		if (debouncedSearchValue?.length > 0) {
-			navigate(
-				`${location.pathname}?${createQueryString({
-					page: null, // Reset page when searching
-					limit: pageSize,
-					product_name: debouncedSearchValue, // Add search param to URL
-				})}`,
-				{replace: true},
-			);
-		} else {
-			navigate(
-				`${location.pathname}?${createQueryString({
-					page: null,
-					limit: pageSize,
-					product_name: null, // Remove search param from URL if empty
-				})}`,
-				{replace: true},
-			);
-		}
-
-		// Reset pagination to first page on search change
-		setPagination((prev) => ({...prev, pageIndex: 0}));
-	}, [
-		debouncedSearchValue,
-		pageSize,
-		navigate,
-		location.pathname,
-		createQueryString,
-	]);
-
 	// Set the first employee data to Zustand on initial render
 	useEffect(() => {
 		if (data.length > 0) {
@@ -192,6 +141,41 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 		// Do something with the row data
 		useProducts.getState().setProduct(rowData);
 	};
+
+	// ====================================================================================
+	// Search Funtion
+	// Debounced search value to avoid triggering requests too frequently
+	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			setDebouncedSearchValue(searchValue);
+		}, 500); // Adjust debounce delay as needed
+		return () => clearTimeout(handler);
+	}, [searchValue]);
+
+	// // Update the URL with the search query when the searchValue changes
+	useEffect(() => {
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1, // Preserve current page instead of resetting
+				limit: pageSize,
+				product_name: debouncedSearchValue || null, // Remove if empty
+			})}`,
+			{replace: true},
+		);
+
+		// Reset pagination to first page on search change
+		if (debouncedSearchValue) {
+			setPagination((prev) => ({...prev, pageIndex: 0}));
+		}
+	}, [
+		debouncedSearchValue,
+		pageSize,
+		pageIndex, // Add pageIndex here
+		navigate,
+		location.pathname,
+		createQueryString,
+	]);
 
 	// Filter
 
