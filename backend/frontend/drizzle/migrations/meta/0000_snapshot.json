@@ -1,5 +1,5 @@
 {
-  "id": "cf9cfc1d-acc5-494e-9a2c-335eb6e37acc",
+  "id": "18352a1d-b88b-43f6-b335-5560b3440062",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1488,6 +1488,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "supplier_id": {
+          "name": "supplier_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "qty": {
           "name": "qty",
           "type": "integer",
@@ -1551,6 +1557,19 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "product_record_supplier_id_supplier_supplier_id_fk": {
+          "name": "product_record_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "product_record",
+          "tableTo": "supplier",
+          "columnsFrom": [
+            "supplier_id"
+          ],
+          "columnsTo": [
+            "supplier_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1568,6 +1587,12 @@
         },
         "product_id": {
           "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "supplier_id": {
+          "name": "supplier_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1649,6 +1674,19 @@
           ],
           "columnsTo": [
             "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serialized_product_supplier_id_supplier_supplier_id_fk": {
+          "name": "serialized_product_supplier_id_supplier_supplier_id_fk",
+          "tableFrom": "serialized_product",
+          "tableTo": "supplier",
+          "columnsFrom": [
+            "supplier_id"
+          ],
+          "columnsTo": [
+            "supplier_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

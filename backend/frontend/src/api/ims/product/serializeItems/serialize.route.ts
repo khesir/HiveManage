@@ -15,7 +15,7 @@ serialproductRoute.get(
   ),
 );
 serialproductRoute.get(
-  '/:serialized_item_id',
+  '/:serial_id',
   validateSerializedProductID,
   serializedproductController.getSerializedProductById.bind(
     serializedproductController,
@@ -29,14 +29,14 @@ serialproductRoute.post(
   ),
 );
 serialproductRoute.put(
-  '/:serialized_item_id',
+  '/:serial_id',
   [validateRequest({ body: CreateSerialize })],
   serializedproductController.updateSerializeItem.bind(
     serializedproductController,
   ),
 );
 serialproductRoute.delete(
-  '/:serialized_item_id',
+  '/:serial_id',
   validateSerializedProductID,
   serializedproductController.deleteSerializeItem.bind(
     serializedproductController,

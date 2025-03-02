@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { serializeProducts } from '@/drizzle/schema/ims';
+import { serializeProduct } from '@/drizzle/schema/ims';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -18,11 +18,11 @@ export async function validateSerializedProductID(
   try {
     const data = await db
       .select()
-      .from(serializeProducts)
+      .from(serializeProduct)
       .where(
         and(
-          eq(serializeProducts.serialized_item_id, Number(serialized_item_id)),
-          isNull(serializeProducts.deleted_at),
+          eq(serializeProduct.serial_id, Number(serialized_item_id)),
+          isNull(serializeProduct.deleted_at),
         ),
       );
 

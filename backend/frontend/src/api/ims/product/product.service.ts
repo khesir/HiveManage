@@ -85,12 +85,22 @@ export class ProductService {
 
       try {
         console.log('Updating product details...');
-        await tx
-          .update(productDetails)
-          .set({ ...data.product_details })
+        const exisiting_data_product = await tx
+          .select()
+          .from(productDetails)
           .where(eq(productDetails.product_id, paramsId));
+        console.log(exisiting_data_product);
+        if (exisiting_data_product.length > 0) {
+          await tx
+            .update(productDetails)
+            .set({ ...data.product_details })
+            .where(eq(productDetails.product_id, paramsId));
+        } else {
+          await tx
+            .insert(productDetails)
+            .values({ product_id: paramsId, ...data.product_details });
+        }
 
-        console.log('Fetching existing categories...');
         const categories = await tx
           .select()
           .from(productCategory)

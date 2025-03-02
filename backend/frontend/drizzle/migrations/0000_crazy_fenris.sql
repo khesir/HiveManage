@@ -352,6 +352,7 @@ CREATE TABLE IF NOT EXISTS "product_details" (
 CREATE TABLE IF NOT EXISTS "product_record" (
 	"product_record_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
+	"supplier_id" integer,
 	"qty" integer DEFAULT 0,
 	"price" real DEFAULT 0,
 	"type" "record_condition" NOT NULL,
@@ -364,6 +365,7 @@ CREATE TABLE IF NOT EXISTS "product_record" (
 CREATE TABLE IF NOT EXISTS "serialized_product" (
 	"serial_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
+	"supplier_id" integer,
 	"serial_number" varchar NOT NULL,
 	"warranty_date" timestamp,
 	"external_serial_code" varchar(255),
@@ -717,7 +719,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "product_record" ADD CONSTRAINT "product_record_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "serialized_product" ADD CONSTRAINT "serialized_product_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "serialized_product" ADD CONSTRAINT "serialized_product_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
