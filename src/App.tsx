@@ -38,7 +38,6 @@ import OrderPage from './pages/inventory/product/orders/orders-page';
 import SupplierPage from './pages/inventory/product/suppliers/supplier-page';
 import CreateOrderPage from './pages/inventory/product/orders/create-order-page';
 import InventoryRecordCreatePage from './pages/inventory/product/inventoryView/inventory-record-create';
-import RecordViewPage from './pages/inventory/product/record/record-view-page';
 import CustomerDatabasePage from './pages/customer/customer-page';
 
 function App() {
@@ -94,10 +93,7 @@ function App() {
 										path="create"
 										element={<InventoryRecordCreatePage />}
 									/>
-									<Route
-										path="record/:item_record_id"
-										element={<RecordViewPage />}
-									/>
+
 									<Route path="orders">
 										<Route index element={<OrderPage />} />
 										<Route path="create" element={<CreateOrderPage />} />
@@ -166,10 +162,6 @@ function App() {
 										path="create"
 										element={<InventoryRecordCreatePage />}
 									/>
-									<Route
-										path="record/:item_record_id"
-										element={<RecordViewPage />}
-									/>
 
 									<Route path="orders">
 										<Route index element={<OrderPage />} />
@@ -234,11 +226,6 @@ function App() {
 										path="create"
 										element={<InventoryRecordCreatePage />}
 									/>
-									<Route
-										path="record/:item_record_id"
-										element={<RecordViewPage />}
-									/>
-
 									<Route path="orders">
 										<Route index element={<OrderPage />} />
 										<Route path="create" element={<CreateOrderPage />} />

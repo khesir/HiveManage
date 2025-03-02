@@ -163,6 +163,8 @@ export function ProfileForm({selectedProduct}: Props) {
 			};
 			const formData = new FormData();
 			appendFormData(newData, formData);
+			console.log(newData);
+			console.log(formData);
 			await request('PUT', `/api/v1/ims/product/${id}`, formData);
 			toast.success('Product Updated');
 		} catch (error) {

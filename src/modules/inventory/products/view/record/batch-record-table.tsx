@@ -25,13 +25,9 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {
-	CaravanIcon,
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	PaperclipIcon,
-} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
+import {Input} from '@/components/ui/input';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -39,26 +35,26 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import {Input} from '@/components/ui/input';
-import {ItemRecords} from '@/modules/inventory/_components/validation/item-record';
+import {BatchItem} from '@/modules/inventory/_components/validation/batch-items';
+import {CreateRecordDialogueForm} from '../_components/dialogue/create-record-dialogue';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	pageSizetags?: number[];
-	pageCount: number;
+	pageSizecategorys?: number[];
 	searchKey: string;
+	pageCount: number;
+	searchParams?: {
+		[key: string]: string | string[] | undefined;
+	};
 }
-// type SelectedValue = {
-// 	id: number; // Selected ID
-// 	name: string; // Selected name
-// };
-export function InventoryRecordTable<TData extends ItemRecords, TValue>({
+
+export function BatchRecordTable<TData extends BatchItem, TValue>({
 	columns,
 	data,
-	searchKey,
 	pageCount,
-	pageSizetags = [10, 20, 30, 40, 50],
+	searchKey,
+	pageSizecategorys = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -89,7 +85,7 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 		[searchParams],
 	);
 
-	// Handle server-side pagination
+	// State for table pagination
 	const [{pageIndex, pageSize}, setPagination] = useState({
 		pageIndex: fallbackPage - 1,
 		pageSize: fallBackPerPage,
@@ -100,18 +96,10 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 			`${location.pathname}?${createQueryString({
 				page: pageIndex + 1,
 				limit: pageSize,
-				// categories: Array.from(selectedValues).join('.'),
 			})}`,
 			{replace: true},
 		);
-	}, [
-		pageIndex,
-		pageSize,
-		// selectedValues,
-		navigate,
-		location.pathname,
-		createQueryString,
-	]);
+	}, [pageIndex, pageSize, navigate, location.pathname, createQueryString]);
 
 	// Initialize the table
 	const table = useReactTable({
@@ -129,66 +117,40 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 		manualFiltering: true,
 	});
 	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
-
 	// ====================================================================================
 	// Search Funtion
 	// Debounced search value to avoid triggering requests too frequently
-	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-	// useEffect(() => {
-	// 	const handler = setTimeout(() => {
-	// 		setDebouncedSearchValue(searchValue);
-	// 	}, 500); // Adjust debounce delay as needed
-	// 	return () => clearTimeout(handler);
-	// }, [searchValue]);
+	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			setDebouncedSearchValue(searchValue);
+		}, 500); // Adjust debounce delay as needed
+		return () => clearTimeout(handler);
+	}, [searchValue]);
 
-	// // // Update the URL with the search query when the searchValue changes
-	// useEffect(() => {
-	// 	if (debouncedSearchValue?.length > 0) {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null, // Reset page when searching
-	// 				limit: pageSize,
-	// 				product_name: debouncedSearchValue, // Add search param to URL
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	} else {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null,
-	// 				limit: pageSize,
-	// 				product_name: null, // Remove search param from URL if empty
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	}
+	// // Update the URL with the search query when the searchValue changes
+	useEffect(() => {
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1, // Preserve current page instead of resetting
+				limit: pageSize,
+				product_name: debouncedSearchValue || null, // Remove if empty
+			})}`,
+			{replace: true},
+		);
 
-	// 	// Reset pagination to first page on search change
-	// 	setPagination((prev) => ({...prev, pageIndex: 0}));
-	// }, [
-	// 	debouncedSearchValue,
-	// 	pageSize,
-	// 	navigate,
-	// 	location.pathname,
-	// 	createQueryString,
-	// ]);
-
-	// Set the first employee data to Zustand on initial render
-	// useEffect(() => {
-	// 	if (data.length > 0) {
-	// 		const rdata: ProductWithRelatedTables = data[0];
-	// 		useProducts.getState().setProduct(rdata);
-	// 	}
-	// }, [data]);
-
-	// // This handles the employee viewing by click
-	// const handleRowClick = (row: Row<TData>) => {
-	// 	// Access the data of the clicked row
-	// 	const rowData: ProductWithRelatedTables = row.original;
-
-	// 	// Do something with the row data
-	// 	useProducts.getState().setProduct(rowData);
-	// };
+		// Reset pagination to first page on search change
+		if (debouncedSearchValue) {
+			setPagination((prev) => ({...prev, pageIndex: 0}));
+		}
+	}, [
+		debouncedSearchValue,
+		pageSize,
+		pageIndex, // Add pageIndex here
+		navigate,
+		location.pathname,
+		createQueryString,
+	]);
 
 	// Filter
 
@@ -219,6 +181,7 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 	// const resetFilter = () => {
 	// 	setSelectedValues(new Set());
 	// };
+
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
 		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
 	);
@@ -237,8 +200,8 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 	};
 
 	return (
-		<div className="space-y-3">
-			<div className="flex justify-between gap-3 md:gap-0 py-3">
+		<>
+			<div className="flex justify-between gap-3 md:gap-0">
 				<div className="flex gap-2">
 					<Input
 						placeholder={`Find Supplier...`}
@@ -246,7 +209,7 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)
 						} // Update filter value}
-						className="w-full md:max-w-lg"
+						className="w-[40vh]"
 					/>
 					<DropdownMenu>
 						<DropdownMenuTrigger>
@@ -258,7 +221,7 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 										variant={'secondary'}
 										className="rounded-sm px-1 font-normal"
 									>
-										{sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+										{sortOrder === 'asc' ? 'Asc' : 'Desc'}
 									</Badge>
 								</div>
 							</Button>
@@ -268,27 +231,20 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 								variant={sortOrder === 'asc' ? 'default' : 'ghost'}
 								onClick={() => handleSortOrderChange('asc')}
 							>
-								Asc
+								Ascending
 							</Button>
 							<Button
 								variant={sortOrder === 'desc' ? 'default' : 'ghost'}
 								onClick={() => handleSortOrderChange('desc')}
 							>
-								Desc
+								Descending
 							</Button>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				<div className="flex gap-2">
-					<Button onClick={() => navigate('orders/create')}>
-						<CaravanIcon className="mr-2 h-5 w-5" /> Create Order
-					</Button>
-					<Button onClick={() => navigate('create')}>
-						<PaperclipIcon className="mr-2 h-5 w-5" /> Create Record
-					</Button>
-				</div>
+				<CreateRecordDialogueForm />
 			</div>
-			<ScrollArea className="h-[calc(100vh-230px)] rounded-md border">
+			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -313,6 +269,7 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
+									// onClick={() => handleRowClick(row)}
 									style={{cursor: 'pointer'}}
 									data-state={row.getIsSelected() && 'selected'}
 								>
@@ -363,7 +320,7 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 									/>
 								</SelectTrigger>
 								<SelectContent side="top">
-									{pageSizetags.map((pageSize) => (
+									{pageSizecategorys.map((pageSize) => (
 										<SelectItem key={pageSize} value={`${pageSize}`}>
 											{pageSize}
 										</SelectItem>
@@ -418,6 +375,6 @@ export function InventoryRecordTable<TData extends ItemRecords, TValue>({
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

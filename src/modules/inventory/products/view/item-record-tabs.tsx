@@ -1,34 +1,67 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import ItemRecordList from './tables/itemRecords/item-record-list';
-import VariantList from './tables/variants/variant-list';
-import ItemList from './tables/items/item-list';
+import SerializeItemRecord from './record/serialize-item-list';
+import {Separator} from '@/components/ui/separator';
+import BatchRecordList from './record/batch-record-list';
+import {OrderList} from '../../order/order-list';
 
 interface InventoryRecordProps {
 	searchParams: URLSearchParams;
 	product_id: string;
+	is_serialize: boolean;
 }
 export function ViewRecordTabs({
-	searchParams,
 	product_id,
+	searchParams,
+	is_serialize = false,
 }: InventoryRecordProps) {
 	return (
-		<Tabs defaultValue="Items" className="p-3 w-full">
+		<Tabs defaultValue="Records" className="p-3 w-full">
 			<div className="flex items-center">
 				<TabsList>
-					<TabsTrigger value="Items">Items</TabsTrigger>
 					<TabsTrigger value="Records">Records</TabsTrigger>
-					<TabsTrigger value="Variants">Variants</TabsTrigger>
+					<TabsTrigger value="Orders">Orders</TabsTrigger>
 				</TabsList>
 				{/* Possibly add a marquee here for announcements or something */}
 			</div>
-			<TabsContent value="Items">
-				<ItemList searchParams={searchParams} product_id={product_id} />
-			</TabsContent>
 			<TabsContent value="Records">
-				<ItemRecordList searchParams={searchParams} product_id={product_id} />
+				{is_serialize ? (
+					<div className="flex flex-col pt-5 gap-3">
+						<div className="pb-2">
+							<h3 className="text-xl font-medium">Product Records</h3>
+							<p className="text-sm text-muted-foreground">
+								This is how others will see you on the site.
+							</p>
+						</div>
+						<Separator />
+						<SerializeItemRecord
+							searchParams={searchParams}
+							product_id={product_id}
+						/>
+					</div>
+				) : (
+					<div className="flex flex-col pt-5 gap-3">
+						<div className="pb-2">
+							<h3 className="text-xl font-medium">Product Records</h3>
+						</div>
+						<Separator />
+						<BatchRecordList
+							searchParams={searchParams}
+							product_id={product_id}
+						/>
+					</div>
+				)}
 			</TabsContent>
-			<TabsContent value="Variants">
-				<VariantList searchParams={searchParams} product_id={product_id} />
+			<TabsContent value="Orders">
+				<div className="flex flex-col pt-5 gap-3">
+					<div className="pb-2">
+						<h3 className="text-xl font-medium">Orders</h3>
+						<p className="text-sm text-muted-foreground">
+							This is how others will see you on the site.
+						</p>
+					</div>
+					<Separator />
+					<OrderList searchParams={searchParams} product_id={product_id} />
+				</div>
 			</TabsContent>
 		</Tabs>
 	);

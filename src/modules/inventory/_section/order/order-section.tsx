@@ -3,8 +3,10 @@ import useOrderStore from '../../_components/hooks/use-orders';
 import {useEffect} from 'react';
 import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
+import {useSearchParams} from 'react-router-dom';
 
 export default function OrderSection() {
+	const [searchParams] = useSearchParams();
 	const {resetOrder} = useOrderStore();
 	useEffect(() => {
 		resetOrder();
@@ -16,7 +18,7 @@ export default function OrderSection() {
 				description={'Summary of all current and past orders'}
 			/>
 			<Separator />
-			<OrderList />
+			<OrderList searchParams={searchParams} product_id={undefined} />
 		</div>
 	);
 }

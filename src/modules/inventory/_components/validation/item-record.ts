@@ -85,6 +85,7 @@ const serializeItem = z.object({
 	selling_price: z.number().min(1),
 	warranty_expiry_date: z.string().optional(),
 });
+
 const itemSchema = z.object({
 	item_record_id: z.number().optional(),
 	variant_id: z.number().min(1),

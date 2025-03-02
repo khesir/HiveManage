@@ -145,10 +145,12 @@ export const productSchema = z.object({
 	product_id: z.number().optional(),
 	name: z
 		.string()
-		.regex(/^[a-zA-Z0-9_-]+$/, {
-			message: 'Only letters, numbers, dashes, and underscores are allowed',
+		.regex(/^[a-zA-Z0-9 _-]+$/, {
+			message:
+				'Only letters, numbers, spaces, dashes, and underscores are allowed',
 		})
 		.min(1),
+
 	img_url: z.union([
 		z
 			.instanceof(File)

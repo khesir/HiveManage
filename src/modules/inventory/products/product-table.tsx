@@ -252,7 +252,7 @@ export function ProductWithDetailsTable<TData extends Product, TValue>({
 			<div className="flex justify-between gap-3 md:gap-0">
 				<div className="flex gap-2">
 					<Input
-						placeholder={`Find product...`}
+						placeholder={`Find Supplier...`}
 						value={searchValue ?? ''} // Bind the input value to the current filter value
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)

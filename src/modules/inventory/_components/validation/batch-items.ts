@@ -1,25 +1,53 @@
 import {z} from 'zod';
 
-export const batchItemSchema = z.object({
-	batch_item_id: z.number().optional(),
-	item_id: z.number().min(1),
-	batch_number: z.string().min(1),
-	item_condition: z.enum([
-		'New',
-		'Old',
-		'Damage',
-		'Refurbished',
-		'Used',
-		'Antique',
-		'Repaired',
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 3;
+const ACCEPTED_FILE_TYPES = ['image/png', 'image/jpeg'];
+
+const supplierSchema = z.object({
+	supplier_id: z.number().optional(),
+	name: z.string().min(1),
+	contact_number: z.string().min(1),
+	remarks: z.string().min(1),
+	profile_link: z.union([
+		z
+			.instanceof(File)
+			.optional()
+			.refine((file) => {
+				return !file || file.size <= MAX_UPLOAD_SIZE;
+			}, 'File size must be less than 3MB')
+			.refine((file) => {
+				return !file || ACCEPTED_FILE_TYPES.includes(file.type);
+			}, 'File must be a PNG or JPEG'),
+		z.string(),
 	]),
-	item_status: z.enum(['Active', 'Reserve', 'Depleted']),
-	quantity: z.number().min(1),
-	reserved_quantity: z.number().optional(),
-	pending_quantity: z.number().optional(),
-	unit_price: z.number().min(1),
-	selling_price: z.number().min(1),
-	production_date: z.string().optional(),
-	expiration_date: z.string().optional(),
+	relationship: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
 });
-export type BatchItem = z.infer<typeof batchItemSchema>;
+
+export const batchRecordSchema = z.object({
+	product_record_id: z.number().optional(),
+	product_id: z.number().min(1),
+	supplier_id: z.number().min(1),
+
+	qty: z.number().min(1),
+	price: z.number().min(1),
+	condition: z.enum(['New', 'Secondhand', 'Broken']),
+	status: z.enum([
+		'Sold',
+		'Pending Payment',
+		'On Order',
+		'In Service',
+		'Awaiting Service',
+		'Return Requested',
+	]),
+
+	created_at: z.date().optional(),
+	last_updated: z.date().optional(),
+	deleted_at: z.date().nullable().optional(),
+
+	supplier: supplierSchema.optional(),
+});
+
+export type BatchItem = z.infer<typeof batchRecordSchema>;

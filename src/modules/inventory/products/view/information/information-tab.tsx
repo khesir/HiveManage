@@ -1,11 +1,4 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
+import {Card, CardContent, CardFooter} from '@/components/ui/card';
 
 import {useEffect, useState} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
@@ -13,7 +6,6 @@ import {useParams, useSearchParams} from 'react-router-dom';
 import {ApiRequest, request} from '@/api/axios';
 import {Product} from '@/modules/inventory/_components/validation/product';
 import {InformationCard} from './information-card';
-import ItemRecordList from '../tables/itemRecords/item-record-list';
 import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
 import {
 	ChartContainer,
@@ -22,6 +14,7 @@ import {
 } from '@/components/ui/chart';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
+import {ViewRecordTabs} from '../item-record-tabs';
 
 export function ProductInformationTab() {
 	const [searchParams] = useSearchParams();
@@ -200,16 +193,11 @@ export function ProductInformationTab() {
 					</div>
 				</div>
 			</div>
-			<div className="flex flex-col pt-5">
-				<div className='pb-2'>
-					<h3 className="text-lg font-medium">Product Records</h3>
-					<p className="text-sm text-muted-foreground">
-						This is how others will see you on the site.
-					</p>
-				</div>
-				<Separator />
-				<ItemRecordList searchParams={searchParams} product_id={id} />
-			</div>
+			<ViewRecordTabs
+				product_id={id}
+				searchParams={searchParams}
+				is_serialize={products.is_serialize ?? false}
+			/>
 		</div>
 	);
 }
