@@ -16,7 +16,7 @@ export function EmploymentDialogform({selectedEmployee}: Props) {
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
-				<Button variant="">Add Personal Information</Button>
+				<Button variant="outline">Add Personal Information</Button>
 			</DialogTrigger>
 			<DialogContent className="w-[2000px]">
 				<EmploymentForm

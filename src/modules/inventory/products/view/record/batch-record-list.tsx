@@ -45,6 +45,7 @@ export const columns: ColumnDef<BatchItem>[] = [
 	{
 		accessorKey: 'created_at',
 		header: 'Created At',
+		cell: ({row}) => dateParser(row?.original.created_at ?? ''),
 	},
 ];
 
@@ -87,6 +88,7 @@ export default function BatchRecordList({
 			data={batch}
 			searchKey={'supplier'}
 			pageCount={pageCount}
+			searchParams={searchParams}
 		/>
 	);
 }

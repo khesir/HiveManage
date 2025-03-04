@@ -43,9 +43,9 @@ export const batchRecordSchema = z.object({
 		'Return Requested',
 	]),
 
-	created_at: z.date().optional(),
-	last_updated: z.date().optional(),
-	deleted_at: z.date().nullable().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().nullable().optional(),
 
 	supplier: supplierSchema.optional(),
 });

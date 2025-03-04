@@ -200,7 +200,7 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 	};
 
 	return (
-		<>
+		<div className="flex flex-col gap-5">
 			<div className="flex justify-between gap-3 md:gap-0">
 				<div className="flex gap-2">
 					<Input
@@ -375,6 +375,6 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

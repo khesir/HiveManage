@@ -7,7 +7,7 @@ import {
 	getPaginationRowModel,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -44,9 +44,7 @@ interface DataTableProps<TData, TValue> {
 	pageSizecategorys?: number[];
 	searchKey: string;
 	pageCount: number;
-	searchParams?: {
-		[key: string]: string | string[] | undefined;
-	};
+	searchParams: URLSearchParams;
 }
 
 export function BatchRecordTable<TData extends BatchItem, TValue>({
@@ -55,10 +53,10 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 	pageCount,
 	searchKey,
 	pageSizecategorys = [10, 20, 30, 40, 50],
+	searchParams,
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [searchParams] = useSearchParams();
 	// Search Params
 	const page = searchParams.get('page') || '1';
 	const pageAsNumber = Number(page);
@@ -200,7 +198,7 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 	};
 
 	return (
-		<>
+		<div className="flex flex-col gap-5">
 			<div className="flex justify-between gap-3 md:gap-0">
 				<div className="flex gap-2">
 					<Input
@@ -242,7 +240,7 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				<CreateRecordDialogueForm />
+				<CreateRecordDialogueForm/>
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
@@ -375,6 +373,6 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

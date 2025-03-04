@@ -1,6 +1,6 @@
 import {Card, CardContent, CardFooter} from '@/components/ui/card';
 
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
 
 import {ApiRequest, request} from '@/api/axios';
@@ -13,28 +13,30 @@ import {
 	ChartTooltipContent,
 } from '@/components/ui/chart';
 import {Button} from '@/components/ui/button';
-import {Separator} from '@/components/ui/separator';
 import {ViewRecordTabs} from '../item-record-tabs';
+import useProducts from '@/modules/inventory/_components/hooks/use-products';
 
 export function ProductInformationTab() {
 	const [searchParams] = useSearchParams();
 	const {id} = useParams();
-	const [products, setProducts] = useState<Product | undefined>(undefined);
+	const {data, setProduct} = useProducts();
 	useEffect(() => {
 		const fetchData = async () => {
-			const res = await request<ApiRequest<Product>>(
-				'GET',
-				`/api/v1/ims/product/${id}`,
-			);
-			if (!Array.isArray(res.data)) {
-				setProducts(res.data);
-			} else {
-				setProducts(res.data[0]);
+			if (data === null) {
+				const newProductData = await request<ApiRequest<Product>>(
+					'GET',
+					`/api/v1/ims/product/${id}`,
+				);
+				if (!Array.isArray(newProductData.data)) {
+					setProduct(newProductData.data);
+				} else {
+					setProduct(newProductData.data[0]);
+				}
 			}
 		};
 		fetchData();
 	}, []);
-	if (!products || !id) {
+	if (!data || !id) {
 		return <Card>No products found</Card>;
 	}
 
@@ -47,8 +49,8 @@ export function ProductInformationTab() {
 					<div className="relative h-full overflow-hidden rounded-md flex-[1_1_30%] min-w-[250px]">
 						<img
 							src={
-								typeof products.img_url === 'string'
-									? products.img_url
+								typeof data.img_url === 'string'
+									? data.img_url
 									: `/img/placeholder.jpg`
 							}
 							alt="Selected profile"
@@ -58,7 +60,7 @@ export function ProductInformationTab() {
 
 					{/* Middle section: 40% */}
 					<div className="flex-[1_1_40%] min-w-[300px]">
-						<InformationCard data={products} />
+						<InformationCard data={data} />
 					</div>
 
 					{/* Third section: 30% */}
@@ -196,7 +198,7 @@ export function ProductInformationTab() {
 			<ViewRecordTabs
 				product_id={id}
 				searchParams={searchParams}
-				is_serialize={products.is_serialize ?? false}
+				is_serialize={data.is_serialize ?? false}
 			/>
 		</div>
 	);

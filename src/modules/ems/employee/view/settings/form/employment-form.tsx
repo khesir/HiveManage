@@ -51,7 +51,7 @@ export function EmploymentForm({selectedEmployee, onSubmit}: Props) {
 					ApiRequest<EmploymentInformationWithDetails[]>
 				>(
 					'GET',
-					`api/v1/ems/employees/${selectedEmployee.employee.employee_id}/employmentInformation`,
+					`api/v1/ems/employee/${selectedEmployee.employee.employee_id}/employmentInformation`,
 				);
 				const data = response.data as EmploymentInformationWithDetails[];
 				setEmploymentData(data.length > 0 ? data[0] : undefined);

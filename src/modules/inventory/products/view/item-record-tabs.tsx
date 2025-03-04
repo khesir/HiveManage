@@ -25,30 +25,15 @@ export function ViewRecordTabs({
 			</div>
 			<TabsContent value="Records">
 				{is_serialize ? (
-					<div className="flex flex-col pt-5 gap-3">
-						<div className="pb-2">
-							<h3 className="text-xl font-medium">Product Records</h3>
-							<p className="text-sm text-muted-foreground">
-								This is how others will see you on the site.
-							</p>
-						</div>
-						<Separator />
-						<SerializeItemRecord
-							searchParams={searchParams}
-							product_id={product_id}
-						/>
-					</div>
+					<SerializeItemRecord
+						searchParams={searchParams}
+						product_id={product_id}
+					/>
 				) : (
-					<div className="flex flex-col pt-5 gap-3">
-						<div className="pb-2">
-							<h3 className="text-xl font-medium">Product Records</h3>
-						</div>
-						<Separator />
-						<BatchRecordList
-							searchParams={searchParams}
-							product_id={product_id}
-						/>
-					</div>
+					<BatchRecordList
+						searchParams={searchParams}
+						product_id={product_id}
+					/>
 				)}
 			</TabsContent>
 			<TabsContent value="Orders">

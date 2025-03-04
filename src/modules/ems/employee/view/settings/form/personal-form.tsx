@@ -50,7 +50,7 @@ export function PersonalForm({selectedEmployee, onSubmit}: Props) {
 			try {
 				const response = await request<ApiRequest<PersonalInformation[]>>(
 					'GET',
-					`api/v1/ems/employees/${selectedEmployee.employee.employee_id}/personalInformation`,
+					`api/v1/ems/employee/${selectedEmployee.employee.employee_id}/personalInformation`,
 				);
 				const data = response.data as PersonalInformation[];
 				setPersonalInfo(data.length > 0 ? data[0] : undefined);
