@@ -2176,83 +2176,83 @@ async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
   const productrecordRecords = [
     {
       product_id: 1,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
     {
       product_id: 2,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
     {
       product_id: 3,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
     {
       product_id: 4,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
     {
       product_id: 5,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
     {
       product_id: 6,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
     {
       product_id: 7,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
     {
       product_id: 8,
+      supplier_id: 1,
       quantity: faker.number.int({ min: 10, max: 100 }),
       price: faker.number.int({ min: 100, max: 1000 }),
       condition: faker.helpers.arrayElement(recordCondition),
       status: faker.helpers.arrayElement(status),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
-      deleted_at: faker.date.recent(),
     },
   ];
   await db.insert(productRecord).values(productrecordRecords);
@@ -2860,6 +2860,7 @@ async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
   const serializedproductsRecords = [
     {
       product_id: 9,
+      supplier_id: 1,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
       condition: faker.helpers.arrayElement(recordCondition),
@@ -2868,6 +2869,7 @@ async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       product_id: 10,
+      supplier_id: 1,
       serial_number: faker.string.uuid(),
       status: faker.helpers.arrayElement(statuses),
       condition: faker.helpers.arrayElement(recordCondition),
@@ -3381,8 +3383,8 @@ async function main() {
     await seedCategory(db);
     await seedSupplier(db);
     await seedProduct(db);
-    // await seedProductDetails(db);
-    // await seedProductRecord(db);
+    await seedProductDetails(db);
+    await seedProductRecord(db);
     await seedOrder(db);
     await seedOrderItems(db);
     await seedSerializedItems(db);

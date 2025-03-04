@@ -56,7 +56,7 @@ productRoute.use(
 );
 
 productRoute.use(
-  '/:product_id/serializeItems',
+  '/:product_id/serializeRecord',
   validateProductID,
   serialproductRoute,
 );

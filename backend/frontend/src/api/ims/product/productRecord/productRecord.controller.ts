@@ -16,7 +16,7 @@ export class ProductRecordController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    console.log(product_id);
     try {
       const data = await this.productrecordService.getAllItemRecord(
         product_id,

@@ -14,7 +14,7 @@ emsRoute.use('/department', departmentRoute);
 
 emsRoute.use('/designation', designationRoute);
 
-emsRoute.use('/employee', employeeRoute);
+emsRoute.use('/employees', employeeRoute);
 
 emsRoute.use('/roles', employeeroleRoute);
 

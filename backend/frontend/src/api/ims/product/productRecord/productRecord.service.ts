@@ -1,6 +1,6 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { product, productRecord } from '@/drizzle/schema/ims';
+import { product, productRecord, supplier } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateProductRecord } from './productRecord.model';
 
@@ -39,6 +39,7 @@ export class ProductRecordService {
       .select()
       .from(productRecord)
       .leftJoin(product, eq(product.product_id, productRecord.product_id))
+      .leftJoin(supplier, eq(supplier.supplier_id, productRecord.supplier_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -53,7 +54,11 @@ export class ProductRecordService {
       product: {
         ...row.product,
       },
+      supplier: {
+        ...row.supplier,
+      },
     }));
+    console.log(itemrecordWithDetails);
     return { totalData, itemrecordWithDetails };
   }
 
@@ -62,12 +67,17 @@ export class ProductRecordService {
       .select()
       .from(productRecord)
       .leftJoin(product, eq(product.product_id, productRecord.product_id))
+      .leftJoin(supplier, eq(supplier.supplier_id, productRecord.supplier_id))
       .where(eq(productRecord.product_record_id, Number(product_record_id)));
 
     const itemrecordWithDetails = result.map((row) => ({
       ...row.product_record,
       product: {
         ...row.product,
+      },
+
+      supplier: {
+        ...row.supplier,
       },
     }));
 
