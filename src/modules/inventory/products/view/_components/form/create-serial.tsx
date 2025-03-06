@@ -18,10 +18,6 @@ import {Skeleton} from '@/components/ui/skeleton';
 
 import {Supplier} from '@/modules/inventory/_components/validation/supplier';
 import {
-	ItemRecords,
-	itemRecordSchema,
-} from '@/modules/inventory/_components/validation/item-record';
-import {
 	Select,
 	SelectContent,
 	SelectItem,
@@ -30,12 +26,17 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
+import {
+	SerializeItem,
+	serializeItemSchema,
+} from '@/modules/inventory/_components/validation/serialize-items';
+import {generateCustomUUID} from '@/lib/util/utils';
 
 interface Props {
 	onSubmit?: () => void;
 }
 
-export function CreateInventoryRecord({onSubmit}: Props) {
+export function CreateInventorySerialRecord({onSubmit}: Props) {
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
 	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -72,18 +73,19 @@ export function CreateInventoryRecord({onSubmit}: Props) {
 		};
 		fetchData();
 	}, []);
-
-	const form = useForm<ItemRecords>({
-		resolver: zodResolver(itemRecordSchema),
+	const uuid = generateCustomUUID();
+	const form = useForm<SerializeItem>({
+		resolver: zodResolver(serializeItemSchema),
 		defaultValues: {
 			product_id: Number(id),
+			serial_number: uuid,
 		},
 		mode: 'onChange',
 	});
-	const processForm = async (data: ItemRecords) => {
+	const processForm = async (data: SerializeItem) => {
 		try {
 			console.log(data);
-			await request('POST', `/api/v1/ims/product/${id}/productRecord`, data);
+			await request('POST', `/api/v1/ims/product/${id}/serializeRecord`, data);
 			toast.success('Record Added');
 			if (onSubmit) {
 				onSubmit();
@@ -123,7 +125,7 @@ export function CreateInventoryRecord({onSubmit}: Props) {
 				onSubmit={form.handleSubmit(processForm)}
 				className="w-full space-y-3"
 			>
-				{/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
+				<pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
 				<FormField
 					control={form.control}
 					name="supplier_id"
@@ -161,21 +163,35 @@ export function CreateInventoryRecord({onSubmit}: Props) {
 				/>
 				<FormField
 					control={form.control}
-					name="quantity"
+					name="external_serial_code"
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Quantity</FormLabel>
+							<FormLabel>External Serial Code</FormLabel>
 							<FormControl>
 								<Input
-									type="number"
-									{...field}
 									disabled={loading}
-									placeholder="1000"
-									onChange={(e) => {
-										const value = e.target.value;
-										// Ensure the value is converted to a number
-										field.onChange(value ? parseFloat(value) : 0);
-									}}
+									placeholder="external_warranty_code"
+									{...field}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="external_warranty_date"
+					render={({field}) => (
+						<FormItem>
+							<FormLabel>External Warranty Date</FormLabel>
+							<FormControl>
+								<Input
+									type="date"
+									disabled={loading}
+									{...field}
+									value={
+										field.value ? field.value.toISOString().split('T')[0] : ''
+									}
 								/>
 							</FormControl>
 							<FormMessage />

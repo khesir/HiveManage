@@ -240,7 +240,7 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				<CreateRecordDialogueForm/>
+				<CreateRecordDialogueForm />
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">

@@ -27,7 +27,7 @@ export const columns: ColumnDef<BatchItem>[] = [
 		},
 	},
 	{
-		accessorKey: 'qty',
+		accessorKey: 'quantity',
 		header: 'Quantity',
 	},
 	{

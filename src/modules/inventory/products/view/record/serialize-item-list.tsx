@@ -77,7 +77,7 @@ export default function SerializeItemRecord({
 		const fetchProducts = async () => {
 			const serialItems = await request<PaginationResponse<SerializeItem>>(
 				'GET',
-				`/api/v1/ims/product/${product_id}/serializeItems?limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/ims/product/${product_id}/serializeRecord?limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : '') +
 					(supplier_name ? `&supplier_name=${supplier_name}` : ''),
 			);
