@@ -1,5 +1,5 @@
 {
-  "id": "18352a1d-b88b-43f6-b335-5560b3440062",
+  "id": "bfebd6f6-52aa-4206-893b-e879f243b23b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1617,7 +1617,7 @@
         },
         "external_warranty_date": {
           "name": "external_warranty_date",
-          "type": "timestamp",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },

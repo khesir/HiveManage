@@ -12,7 +12,9 @@ export class SerializeItemService {
   }
 
   async createSerializeItem(data: CreateSerialize) {
-    await this.db.insert(serializeProduct).values(data);
+    await this.db
+      .insert(serializeProduct)
+      .values({ ...data, warranty_date: new Date(Date.now()) });
   }
 
   async getAllSerializedProducts(

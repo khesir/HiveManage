@@ -7,7 +7,7 @@ export const CreateSerialize = z.object({
   serial_number: z.string().min(1),
   warranty_date: z.date().optional(),
   external_serial_code: z.string().optional(),
-  external_warranty_date: z.date().optional(),
+  external_warranty_date: z.string().optional(),
   price: z.number().min(1),
   condition: z.enum(['New', 'Secondhand', 'Broken']),
   status: z.enum([

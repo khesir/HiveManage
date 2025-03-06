@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CreateProductRecord = z.object({
-  product_id: z.number().optional(),
+  product_id: z.number().min(1),
   quantity: z.number().min(1),
   price: z.number(),
   condition: z.enum(['New', 'Secondhand', 'Broken']),

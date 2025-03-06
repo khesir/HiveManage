@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS "serialized_product" (
 	"serial_number" varchar NOT NULL,
 	"warranty_date" timestamp,
 	"external_serial_code" varchar(255),
-	"external_warranty_date" timestamp,
+	"external_warranty_date" varchar,
 	"price" real DEFAULT 0,
 	"type" "serial_condition" NOT NULL,
 	"status" "serial_status" NOT NULL,

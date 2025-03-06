@@ -32,7 +32,7 @@ export const serializeProduct = pgTable('serialized_product', {
   serial_number: varchar('serial_number').notNull(),
   warranty_date: timestamp('warranty_date'),
   external_serial_code: varchar('external_serial_code', { length: 255 }),
-  external_warranty_date: timestamp('external_warranty_date'),
+  external_warranty_date: varchar('external_warranty_date'),
   price: real('price').default(0),
   condition: serialCondition('type').notNull(),
   status: serialStatus('status').notNull(),
