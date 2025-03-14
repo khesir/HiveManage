@@ -2,12 +2,11 @@ import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
 import {columns} from './columns';
 import {StockLogsTable} from './stockts-table';
-import {StockLogsWithDetails} from '@/modules/inventory/_components/validation/product';
 import {useSearchParams} from 'react-router-dom';
 
 export default function StockLogsList() {
 	const [searchParams] = useSearchParams();
-	const [stockLogs, setStockLogs] = useState<StockLogsWithDetails[]>([]);
+	const [stockLogs, setStockLogs] = useState<unknown[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 
 	const page = Number(searchParams.get('page')) || 1;
@@ -17,7 +16,7 @@ export default function StockLogsList() {
 
 	useEffect(() => {
 		const fetchEmployees = async () => {
-			const res = await request<PaginationResponse<StockLogsWithDetails>>(
+			const res = await request<PaginationResponse<unknown>>(
 				'GET',
 				`/api/v1/ims/stock-logs?limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : ''),

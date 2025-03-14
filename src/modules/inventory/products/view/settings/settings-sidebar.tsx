@@ -6,14 +6,15 @@ import {ProfileForm} from './form/profile-form';
 import {Card} from '@/components/ui/card';
 import {Product} from '@/modules/inventory/_components/validation/product';
 import {ApiRequest, request} from '@/api/axios';
+import {SupplierForm} from './form/supplier-form';
 
 const sidebarNavItems = [
 	{
 		title: 'Profile',
 	},
-	// {
-	// 	title: 'Personal Information',
-	// },
+	{
+		title: 'Suppliers',
+	},
 	// {
 	// 	title: 'Employment Information',
 	// },
@@ -62,10 +63,8 @@ export default function SettingsSidebar() {
 			</aside>
 			<div className="flex-1">
 				{settings === 'Profile' && <ProfileForm selectedProduct={products} />}
-				{/*{settings === 'Personal Information' && (
-					<PersonalForm selectedEmployee={selectedEmployee} />
-				)}
-				{settings === 'Employment Information' && (
+				{settings === 'Suppliers' && <SupplierForm />}
+				{/* {settings === 'Employment Information' && (
 					<EmploymentForm selectedEmployee={selectedEmployee} />
 				)}
 				{settings === 'Others' && <OtherForm />} */}

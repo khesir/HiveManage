@@ -5,7 +5,7 @@ import {Supplier} from '../_components/validation/supplier';
 export const columns: ColumnDef<Supplier>[] = [
 	{
 		accessorKey: 'profile_link',
-		header: 'IMAGE',
+		header: 'Img',
 		cell: ({row}) => {
 			return (
 				<div className="aspect-square relative w-[80px]">
@@ -26,11 +26,11 @@ export const columns: ColumnDef<Supplier>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'NAME',
+		header: 'Name',
 	},
 	{
 		id: 'category',
-		header: 'CATEGORY',
+		header: 'Category',
 		cell: ({row}) => {
 			return (
 				<div className="flex flex-wrap gap-2">
