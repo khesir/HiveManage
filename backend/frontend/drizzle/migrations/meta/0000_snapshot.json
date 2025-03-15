@@ -1,5 +1,5 @@
 {
-  "id": "bfebd6f6-52aa-4206-893b-e879f243b23b",
+  "id": "4fca5b62-a9f1-4f41-b942-ef9794c94ed2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1730,8 +1730,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "remark": {
-          "name": "remark",
+        "profile_link": {
+          "name": "profile_link",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false

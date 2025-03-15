@@ -29,7 +29,7 @@ export const supplier = pgTable('supplier', {
   contact_number: varchar('contact_number', { length: 255 }),
   remarks: varchar('remarks', { length: 255 }),
   relationship: supplierRelation('relationship'),
-  profile_link: varchar('remark'),
+  profile_link: varchar('profile_link'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

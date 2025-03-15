@@ -384,7 +384,7 @@ CREATE TABLE IF NOT EXISTS "supplier" (
 	"contact_number" varchar(255),
 	"remarks" varchar(255),
 	"relationship" "supplierRelation_Status",
-	"remark" varchar,
+	"profile_link" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
