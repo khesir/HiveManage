@@ -59,13 +59,6 @@ export function getAdminMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
-					href: '/sales/overview',
-					label: 'Overview',
-					active: pathname === '/sales/overview',
-					icon: LayoutPanelLeft,
-					submenus: [],
-				},
-				{
 					href: '/admin/ems/employees',
 					label: 'Employees & Accounts',
 					active: pathname.includes('/admin/ems'),
@@ -73,19 +66,19 @@ export function getAdminMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/admin/sales/services',
+					href: '/admin/sales/overview',
 					label: 'Services & Sales',
-					active: pathname.includes('/admin/sales/services'),
+					active: pathname.includes('/admin/sales/overview'),
 					icon: Tag,
 					submenus: [
 						{
-							href: '/sales/activity/overview',
+							href: '/admin/sales/overview',
 							label: 'Sales',
 							icon: LayoutGrid,
-							active: pathname === '/admin/activity/overview',
+							active: pathname === '/admin/sales/overview',
 						},
 						{
-							href: '/sales/activity/overview',
+							href: '/admin/sales/services',
 							label: 'Service',
 							icon: LayoutGrid,
 							active: pathname === '/admin/activity/overview',

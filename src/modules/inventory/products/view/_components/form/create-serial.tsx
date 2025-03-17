@@ -47,7 +47,7 @@ export function CreateInventorySerialRecord({onSubmit}: Props) {
 			try {
 				const supplierData = await request<ApiRequest<Supplier>>(
 					'GET',
-					`/api/v1/ims/supplier?no_pagination=true`,
+					`/api/v1/ims/product/${id}/productSupplier?no_pagination=true`,
 				);
 				setSuppliers(
 					Array.isArray(supplierData.data)
@@ -91,7 +91,6 @@ export function CreateInventorySerialRecord({onSubmit}: Props) {
 				onSubmit();
 			}
 		} catch (error) {
-			console.log(error);
 			let errorMessage = 'An unexpected error occurred';
 			if (axios.isAxiosError(error)) {
 				errorMessage =
@@ -125,7 +124,7 @@ export function CreateInventorySerialRecord({onSubmit}: Props) {
 				onSubmit={form.handleSubmit(processForm)}
 				className="w-full space-y-3"
 			>
-				<pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
+				{/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
 				<FormField
 					control={form.control}
 					name="supplier_id"

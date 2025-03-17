@@ -36,7 +36,7 @@ import {
 import {Supplier} from '@/modules/inventory/_components/validation/supplier';
 import {Switch} from '@/components/ui/switch';
 interface Props {
-	selectedProduct: Product;
+	selectedProduct: Product | undefined;
 }
 export function ProfileForm({selectedProduct}: Props) {
 	const prevCategories: Category[] =
@@ -89,17 +89,29 @@ export function ProfileForm({selectedProduct}: Props) {
 		fetchData();
 	}, []);
 
-	const defaultProductFormValues: Product = {
-		name: selectedProduct.name.toString(),
-		img_url: selectedProduct.img_url,
-		is_serialize: selectedProduct.is_serialize,
-		status: selectedProduct.status === 'Available' ? true : false,
-		product_details: {
-			description: selectedProduct.product_details?.description,
-			color: selectedProduct.product_details?.color,
-			size: selectedProduct.product_details?.size,
-		},
-	};
+	const defaultProductFormValues: Product = selectedProduct
+		? {
+				name: selectedProduct.name.toString(),
+				img_url: selectedProduct.img_url,
+				is_serialize: selectedProduct.is_serialize,
+				status: selectedProduct.status === 'Available' ? true : false,
+				product_details: {
+					description: selectedProduct.product_details?.description,
+					color: selectedProduct.product_details?.color,
+					size: selectedProduct.product_details?.size,
+				},
+			}
+		: {
+				name: '',
+				img_url: '',
+				is_serialize: false,
+				status: false,
+				product_details: {
+					description: '',
+					color: '',
+					size: '',
+				},
+			};
 
 	const form = useForm<Product>({
 		resolver: zodResolver(productSchema),
