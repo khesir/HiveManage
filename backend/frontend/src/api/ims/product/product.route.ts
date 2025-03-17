@@ -10,6 +10,7 @@ import {
 import { CreateProduct, UpdateProduct } from './product.model';
 import productRecordRoute from './productRecord/productRecord.route';
 import serialproductRoute from './serializeItems/serialize.route';
+import productSuppplierRoute from './productSupplier/productSupplier.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
@@ -61,4 +62,9 @@ productRoute.use(
   serialproductRoute,
 );
 
+productRoute.use(
+  '/:product_id/productSupplier',
+  validateProductID,
+  productSuppplierRoute,
+);
 export default productRoute;

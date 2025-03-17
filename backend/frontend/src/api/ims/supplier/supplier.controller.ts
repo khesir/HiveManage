@@ -14,9 +14,8 @@ export class SupplierController {
   async getAllSupplier(req: Request, res: Response, next: NextFunction) {
     const relationship = (req.query.relationship as string) || undefined;
     try {
-      const departments =
-        await this.supplierService.getAllSupplier(relationship);
-      res.status(HttpStatus.OK.code).json({ data: departments });
+      const suppliers = await this.supplierService.getAllSupplier(relationship);
+      res.status(HttpStatus.OK.code).json({ data: suppliers });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         message: 'Internal Server Error',
