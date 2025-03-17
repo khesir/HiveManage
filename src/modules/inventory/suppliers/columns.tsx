@@ -1,11 +1,11 @@
 import {ColumnDef} from '@tanstack/react-table';
-import {Badge} from '@/components/ui/badge';
 import {Supplier} from '../_components/validation/supplier';
+import {dateParser} from '@/lib/util/utils';
 
 export const columns: ColumnDef<Supplier>[] = [
 	{
 		accessorKey: 'profile_link',
-		header: 'IMAGE',
+		header: 'Img',
 		cell: ({row}) => {
 			return (
 				<div className="aspect-square relative w-[80px]">
@@ -26,27 +26,7 @@ export const columns: ColumnDef<Supplier>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'NAME',
-	},
-	{
-		id: 'category',
-		header: 'CATEGORY',
-		cell: ({row}) => {
-			return (
-				<div className="flex flex-wrap gap-2">
-					{row.original.categories &&
-						row.original.categories.map((category, index) => (
-							<Badge
-								key={index}
-								variant={'secondary'}
-								className="rounded-sm px-1 font-normal"
-							>
-								{category.category?.name}
-							</Badge>
-						))}
-				</div>
-			);
-		},
+		header: 'Name',
 	},
 	{
 		accessorKey: 'relationship',
@@ -64,6 +44,11 @@ export const columns: ColumnDef<Supplier>[] = [
 	},
 	{
 		accessorKey: 'remarks',
-		header: 'REMARK',
+		header: 'Remarks',
+	},
+	{
+		accessorKey: 'created_at',
+		header: 'Created At',
+		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
 	},
 ];

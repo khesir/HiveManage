@@ -24,6 +24,7 @@ export function SalesCreateService() {
 	const {progressList, resetProgress, setProgress} = useProgressStore();
 	const [messages, setMessages] = useState<string[]>([]);
 	const {user} = useEmployeeRoleDetailsStore();
+
 	const processCreate = async (data: Customer | undefined) => {
 		try {
 			const existingJoborders = salesHookData['sales_product'] || [];

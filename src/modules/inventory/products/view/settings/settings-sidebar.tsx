@@ -3,17 +3,18 @@ import {useParams} from 'react-router-dom';
 import {SidebarNav} from './_components/sidebar-nav';
 import useSettingsFormSelection from './hooks/settings-form-selection';
 import {ProfileForm} from './form/profile-form';
-import {Card} from '@/components/ui/card';
 import {Product} from '@/modules/inventory/_components/validation/product';
 import {ApiRequest, request} from '@/api/axios';
+import {SupplierForm} from './form/supplier-form';
+import {Skeleton} from '@/components/ui/skeleton';
 
 const sidebarNavItems = [
 	{
 		title: 'Profile',
 	},
-	// {
-	// 	title: 'Personal Information',
-	// },
+	{
+		title: 'Suppliers',
+	},
 	// {
 	// 	title: 'Employment Information',
 	// },
@@ -48,12 +49,17 @@ export default function SettingsSidebar() {
 		};
 		fetchData();
 	}, [id]);
-
 	if (loading) {
-		return <Card>Fetching data</Card>;
-	}
-	if (!products) {
-		return <Card>Something went wrong, trying again</Card>;
+		return (
+			<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0 px-5 w-full">
+				<aside className="-mx-4 lg:w-1/5">
+					<SidebarNav items={sidebarNavItems} />
+				</aside>
+				<div className="flex-1">
+					<Skeleton />
+				</div>
+			</div>
+		);
 	}
 	return (
 		<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0 px-5 w-full">
@@ -62,10 +68,8 @@ export default function SettingsSidebar() {
 			</aside>
 			<div className="flex-1">
 				{settings === 'Profile' && <ProfileForm selectedProduct={products} />}
-				{/*{settings === 'Personal Information' && (
-					<PersonalForm selectedEmployee={selectedEmployee} />
-				)}
-				{settings === 'Employment Information' && (
+				{settings === 'Suppliers' && <SupplierForm />}
+				{/* {settings === 'Employment Information' && (
 					<EmploymentForm selectedEmployee={selectedEmployee} />
 				)}
 				{settings === 'Others' && <OtherForm />} */}

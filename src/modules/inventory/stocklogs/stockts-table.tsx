@@ -28,7 +28,6 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {StockLogsWithDetails} from '@/modules/inventory/_components/validation/product';
 import useStockLogsWithDetailsFormStore from './hooks/use-stock-logs';
 
 interface DataTableProps<TData, TValue> {
@@ -41,7 +40,7 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function StockLogsTable<TData extends StockLogsWithDetails, TValue>({
+export function StockLogsTable<TData, TValue>({
 	columns,
 	data,
 	pageCount,
@@ -153,7 +152,7 @@ export function StockLogsTable<TData extends StockLogsWithDetails, TValue>({
 	// Set the first employee data to Zustand on initial render
 	useEffect(() => {
 		if (data.length > 0) {
-			const customer: StockLogsWithDetails = data[0];
+			const customer = data[0];
 			useStockLogsWithDetailsFormStore.getState().setStockLogs(customer);
 		}
 	}, [data]);
@@ -161,7 +160,7 @@ export function StockLogsTable<TData extends StockLogsWithDetails, TValue>({
 	// This handles the employee viewing by click
 	const handleRowClick = (row: Row<TData>) => {
 		// Access the data of the clicked row
-		const rowData: StockLogsWithDetails = row.original;
+		const rowData = row.original;
 
 		// Do something with the row data
 		useStockLogsWithDetailsFormStore.getState().setStockLogs(rowData);

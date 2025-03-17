@@ -7,7 +7,12 @@ import {
 	getPaginationRowModel,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {Link, useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import {
+	Link,
+	useLocation,
+	useNavigate,
+	useSearchParams,
+} from 'react-router-dom';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -34,7 +39,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Input} from '@/components/ui/input';
-import { cn } from '@/lib/util/utils';
+import {cn} from '@/lib/util/utils';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -244,7 +249,7 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 					<Link
 						to={'create'}
 						className={cn(buttonVariants({variant: 'default'}))}
-						>
+					>
 						<Plus className="mr-2 h-4 w-4" /> Add Services
 					</Link>
 				</div>

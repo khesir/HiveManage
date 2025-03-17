@@ -16,6 +16,8 @@ export function InformationCard({data}: Props) {
 				? row.supplier.profile_link
 				: '',
 	}));
+	const totalAvatar = avatar.length;
+	const numPeople = totalAvatar > 5 ? totalAvatar - 5 : 0;
 	return (
 		<ScrollArea className="h-full max-h-full grid gap-3">
 			<ul className="grid gap-3">
@@ -74,7 +76,7 @@ export function InformationCard({data}: Props) {
 					{avatar.length === 0 ? (
 						<span>No suppliers</span>
 					) : (
-						<AvatarCircles numPeople={avatar.length} avatar={avatar} />
+						<AvatarCircles numPeople={numPeople} avatar={avatar} />
 					)}
 				</li>
 				<li className="flex gap-5 text-sm">

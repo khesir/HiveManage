@@ -35,7 +35,8 @@ export function ProductProfile() {
 				? row.supplier.profile_link
 				: '',
 	}));
-
+	const totalAvatar = avatar.length;
+	const numPeople = totalAvatar > 5 ? totalAvatar - 5 : 0;
 	return (
 		<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
 			<CardHeader className="relative flex flex-row items-start bg-muted/50">
@@ -121,7 +122,7 @@ export function ProductProfile() {
 							{avatar.length === 0 ? (
 								<span>No suppliers</span>
 							) : (
-								<AvatarCircles numPeople={avatar.length} avatar={avatar} />
+								<AvatarCircles numPeople={numPeople} avatar={avatar} />
 							)}
 						</li>
 					</ul>

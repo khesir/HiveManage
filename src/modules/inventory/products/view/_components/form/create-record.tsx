@@ -16,7 +16,6 @@ import {useEffect, useState} from 'react';
 import {ApiRequest, request} from '@/api/axios';
 import {Skeleton} from '@/components/ui/skeleton';
 
-import {Supplier} from '@/modules/inventory/_components/validation/supplier';
 import {
 	ItemRecords,
 	itemRecordSchema,
@@ -30,6 +29,7 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
+import {ProductSupplier} from '@/modules/inventory/_components/validation/product-supplier';
 
 interface Props {
 	onSubmit?: () => void;
@@ -38,15 +38,15 @@ interface Props {
 export function CreateInventoryRecord({onSubmit}: Props) {
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
-	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+	const [suppliers, setSuppliers] = useState<ProductSupplier[]>([]);
 	const {id} = useParams();
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
 			try {
-				const supplierData = await request<ApiRequest<Supplier>>(
+				const supplierData = await request<ApiRequest<ProductSupplier>>(
 					'GET',
-					`/api/v1/ims/supplier?no_pagination=true`,
+					`/api/v1/ims/product/${id}/productSupplier?no_pagination=true`,
 				);
 				setSuppliers(
 					Array.isArray(supplierData.data)
@@ -150,7 +150,7 @@ export function CreateInventoryRecord({onSubmit}: Props) {
 											key={key}
 											value={supplier.supplier_id?.toString() ?? ''}
 										>
-											{supplier.name}
+											{supplier.supplier!.name}
 										</SelectItem>
 									))}
 								</SelectContent>
