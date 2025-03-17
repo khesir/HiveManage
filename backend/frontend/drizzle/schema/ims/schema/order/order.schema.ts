@@ -16,15 +16,28 @@ export const orderStatus = pgEnum('order_status', [
   'Pending Payment',
   'Cancelled',
 ]);
+export const paymentStatus = pgEnum('payment_status', [
+  'Unpaid',
+  'Partially Paid',
+  'Paid',
+]);
+export const paymentMethod = pgEnum('payment_method', [
+  'Cash',
+  'Credit Card',
+  'Bank Transfer',
+  'Check',
+  'Digital Wallet',
+]);
 
 export const order = pgTable('order', {
   order_id: serial('order_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
-  ordered_value: integer('ordered_value'),
   expected_arrival: varchar('expected_arrival'),
-  message: varchar('message'),
-  status: orderStatus('status'),
-  order_total: integer('order_total'),
+  order_status: orderStatus('order_status'),
+  payment_status: paymentStatus('payment_status'),
+  payment_method: paymentMethod('payment_method'),
+  notes: varchar('notes'),
+  receive_at: timestamp('receive_at'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

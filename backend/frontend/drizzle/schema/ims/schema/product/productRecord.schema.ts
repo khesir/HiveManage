@@ -17,6 +17,7 @@ export const recordCondition = pgEnum('record_condition', [
 
 export const recordStatus = pgEnum('record_status', [
   'Sold',
+  'Available',
   'Pending Payment',
   'On Order',
   'In Service',

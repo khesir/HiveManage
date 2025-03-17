@@ -1,5 +1,5 @@
 {
-  "id": "4fca5b62-a9f1-4f41-b942-ef9794c94ed2",
+  "id": "c0b4aa7c-96c3-45a2-9934-872adac12d67",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1171,34 +1171,42 @@
           "primaryKey": false,
           "notNull": false
         },
-        "ordered_value": {
-          "name": "ordered_value",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "expected_arrival": {
           "name": "expected_arrival",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "message": {
-          "name": "message",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
+        "order_status": {
+          "name": "order_status",
           "type": "order_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
         },
-        "order_total": {
-          "name": "order_total",
-          "type": "integer",
+        "payment_status": {
+          "name": "payment_status",
+          "type": "payment_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "payment_method",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receive_at": {
+          "name": "receive_at",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
@@ -3413,6 +3421,31 @@
         "Cancelled"
       ]
     },
+    "public.payment_method": {
+      "name": "payment_method",
+      "schema": "public",
+      "values": [
+        "Cash",
+        "Card",
+        "Online Payment"
+      ]
+    },
+    "public.payment_status": {
+      "name": "payment_status",
+      "schema": "public",
+      "values": [
+        "Pending",
+        "Completed",
+        "Failed",
+        "Cancelled",
+        "Refunded",
+        "Partially Refunded",
+        "Overdue",
+        "Processing",
+        "Declined",
+        "Authorized"
+      ]
+    },
     "public.product_status": {
       "name": "product_status",
       "schema": "public",
@@ -3435,6 +3468,7 @@
       "schema": "public",
       "values": [
         "Sold",
+        "Available",
         "Pending Payment",
         "On Order",
         "In Service",
@@ -3456,6 +3490,7 @@
       "schema": "public",
       "values": [
         "Sold",
+        "Available",
         "Pending Payment",
         "On Order",
         "In Service",
@@ -3481,31 +3516,6 @@
         "value-added reseller",
         "accessories supplier",
         "logistics partner"
-      ]
-    },
-    "public.payment_method": {
-      "name": "payment_method",
-      "schema": "public",
-      "values": [
-        "Cash",
-        "Card",
-        "Online Payment"
-      ]
-    },
-    "public.payment_status": {
-      "name": "payment_status",
-      "schema": "public",
-      "values": [
-        "Pending",
-        "Completed",
-        "Failed",
-        "Cancelled",
-        "Refunded",
-        "Partially Refunded",
-        "Overdue",
-        "Processing",
-        "Declined",
-        "Authorized"
       ]
     },
     "public.service_type": {

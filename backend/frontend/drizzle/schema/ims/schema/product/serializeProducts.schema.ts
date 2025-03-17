@@ -18,6 +18,7 @@ export const serialCondition = pgEnum('serial_condition', [
 
 export const serialStatus = pgEnum('serial_status', [
   'Sold',
+  'Available',
   'Pending Payment',
   'On Order',
   'In Service',

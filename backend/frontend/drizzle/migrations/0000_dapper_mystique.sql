@@ -35,6 +35,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."payment_method" AS ENUM('Cash', 'Card', 'Online Payment');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."payment_status" AS ENUM('Pending', 'Completed', 'Failed', 'Cancelled', 'Refunded', 'Partially Refunded', 'Overdue', 'Processing', 'Declined', 'Authorized');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."product_status" AS ENUM('Unavailable', 'Available');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -47,7 +59,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."record_status" AS ENUM('Sold', 'Pending Payment', 'On Order', 'In Service', 'Awaiting Service', 'Return Requested');
+ CREATE TYPE "public"."record_status" AS ENUM('Sold', 'Available', 'Pending Payment', 'On Order', 'In Service', 'Awaiting Service', 'Return Requested');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -59,25 +71,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."serial_status" AS ENUM('Sold', 'Pending Payment', 'On Order', 'In Service', 'Awaiting Service', 'Return Requested');
+ CREATE TYPE "public"."serial_status" AS ENUM('Sold', 'Available', 'Pending Payment', 'On Order', 'In Service', 'Awaiting Service', 'Return Requested');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."supplierRelation_Status" AS ENUM('manufacturer', 'distributor', 'wholesaler', 'vendor', 'authorized dealer', 'OEM (Original Equipment Manufacturer)', 'peripheral supplier', 'component reseller', 'refurbished parts supplier', 'specialized parts supplier', 'network hardware supplier', 'value-added reseller', 'accessories supplier', 'logistics partner');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."payment_method" AS ENUM('Cash', 'Card', 'Online Payment');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."payment_status" AS ENUM('Pending', 'Completed', 'Failed', 'Cancelled', 'Refunded', 'Partially Refunded', 'Overdue', 'Processing', 'Declined', 'Authorized');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -305,11 +305,12 @@ CREATE TABLE IF NOT EXISTS "discount_p" (
 CREATE TABLE IF NOT EXISTS "order" (
 	"order_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
-	"ordered_value" integer,
 	"expected_arrival" varchar,
-	"message" varchar,
-	"status" "order_status",
-	"order_total" integer,
+	"order_status" "order_status",
+	"payment_status" "payment_status",
+	"payment_method" "payment_method",
+	"notes" varchar,
+	"receive_at" timestamp,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp

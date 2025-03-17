@@ -3384,10 +3384,10 @@ async function main() {
     await seedSupplier(db);
     await seedProduct(db);
     await seedProductDetails(db);
-    await seedProductRecord(db);
+    // await seedProductRecord(db);
     await seedOrder(db);
     await seedOrderItems(db);
-    await seedSerializedItems(db);
+    // await seedSerializedItems(db);
 
     // Participants
     await seedCustomerGroup(db);

@@ -7,6 +7,7 @@ export const CreateProductRecord = z.object({
   condition: z.enum(['New', 'Secondhand', 'Broken']),
   status: z.enum([
     'Sold',
+    'Available',
     'Pending Payment',
     'On Order',
     'In Service',
