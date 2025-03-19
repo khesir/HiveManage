@@ -15,7 +15,7 @@ export class OrderController {
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
     const supplier_id = req.query.supplier_id
       ? String(req.query.order_id)
-      : undefined;
+      : undefined; // This is search based on customer
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const sort = (req.query.sort as string) || 'asc';
@@ -61,22 +61,28 @@ export class OrderController {
     try {
       const {
         supplier_id,
-        ordered_value,
+        notes,
         expected_arrival,
-        status,
+        ordered_value,
         order_items,
+        order_status,
+        order_payment_status,
+        order_payment_method,
       } = req.body;
 
       await this.orderService.createOrder({
         supplier_id,
-        ordered_value,
+        notes,
         expected_arrival,
-        status,
+        ordered_value,
         order_items,
+        order_status,
+        order_payment_status,
+        order_payment_method,
       });
       res
         .status(HttpStatus.CREATED.code)
-        .json({ status: 'Success', message: 'Successfully Created Supplier' });
+        .json({ status: 'Success', message: 'Successfully Created Order' });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         status: 'Error',
@@ -113,7 +119,7 @@ export class OrderController {
       await this.orderService.deleteOrder(Number(order_id));
       res.status(200).json({
         status: 'Success',
-        message: `Supplier ID:${order_id} is deleted Successfully`,
+        message: `Order ID:${order_id} is deleted Successfully`,
       });
     } catch (error) {
       res

@@ -35,13 +35,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."payment_method" AS ENUM('Cash', 'Card', 'Online Payment');
+ CREATE TYPE "public"."order_payment_method" AS ENUM('Cash', 'Credit Card', 'Bank Transfer', 'Check', 'Digital Wallet');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."payment_status" AS ENUM('Pending', 'Completed', 'Failed', 'Cancelled', 'Refunded', 'Partially Refunded', 'Overdue', 'Processing', 'Declined', 'Authorized');
+ CREATE TYPE "public"."order_payment_status" AS ENUM('Pending', 'Partially Paid', 'Paid');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -78,6 +78,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."supplierRelation_Status" AS ENUM('manufacturer', 'distributor', 'wholesaler', 'vendor', 'authorized dealer', 'OEM (Original Equipment Manufacturer)', 'peripheral supplier', 'component reseller', 'refurbished parts supplier', 'specialized parts supplier', 'network hardware supplier', 'value-added reseller', 'accessories supplier', 'logistics partner');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."payment_method" AS ENUM('Cash', 'Card', 'Online Payment');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."payment_status" AS ENUM('Pending', 'Completed', 'Failed', 'Cancelled', 'Refunded', 'Partially Refunded', 'Overdue', 'Processing', 'Declined', 'Authorized');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -306,9 +318,10 @@ CREATE TABLE IF NOT EXISTS "order" (
 	"order_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
 	"expected_arrival" varchar,
+	"order_value" numeric(10, 2),
 	"order_status" "order_status",
-	"payment_status" "payment_status",
-	"payment_method" "payment_method",
+	"order_payment_status" "order_payment_status",
+	"order_payment_method" "order_payment_method",
 	"notes" varchar,
 	"receive_at" timestamp,
 	"created_at" timestamp DEFAULT now(),
@@ -321,8 +334,8 @@ CREATE TABLE IF NOT EXISTS "order_product" (
 	"order_id" integer,
 	"product_id" integer,
 	"quantity" integer DEFAULT 1,
-	"price" numeric(50, 2),
-	"status" varchar,
+	"unit_price" numeric(50, 2),
+	"discount_amount" numeric(50, 2),
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp

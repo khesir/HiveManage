@@ -2637,117 +2637,114 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     'Pending Payment',
     'Cancelled',
   ] as const;
-
+  const paymentStatus = ['Pending', 'Partially Paid', 'Paid'] as const;
+  const paymentMethod = [
+    'Cash',
+    'Credit Card',
+    'Bank Transfer',
+    'Check',
+    'Digital Wallet',
+  ] as const;
   const orderRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 50,
-      message: 'Urgent order for motherboard components.',
       expected_arrival: '2024-02-15',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 150000,
-      created_at: new Date('2024-02-01'),
-      last_updated: new Date('2024-02-01'),
-      deleted_at: null,
+      order_value: '50000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Urgent order for motherboard components.',
+      receive_at: new Date('2024-02-16'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 30,
-      message: 'Bulk purchase of SSDs.',
       expected_arrival: '2024-02-20',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 90000,
-      created_at: new Date('2024-02-03'),
-      last_updated: new Date('2024-02-05'),
-      deleted_at: null,
+      order_value: '90000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Bulk purchase of SSDs.',
+      receive_at: new Date('2024-02-21'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 100,
-      message: 'Order for gaming keyboards and mice.',
       expected_arrival: '2024-03-05',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 250000,
-      created_at: new Date('2024-02-10'),
-      last_updated: new Date('2024-02-15'),
-      deleted_at: null,
+      order_value: '250000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Order for gaming keyboards and mice.',
+      receive_at: new Date('2024-03-06'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 20,
-      message: 'Replacement parts for damaged inventory.',
       expected_arrival: '2024-02-18',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 70000,
-      created_at: new Date('2024-02-07'),
-      last_updated: new Date('2024-02-17'),
-      deleted_at: null,
+      order_value: '70000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Replacement parts for damaged inventory.',
+      receive_at: new Date('2024-02-19'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 60,
-      message: 'Order for networking cables and routers.',
       expected_arrival: '2024-02-25',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 180000,
-      created_at: new Date('2024-02-05'),
-      last_updated: new Date('2024-02-10'),
-      deleted_at: new Date('2024-02-11'),
+      order_value: '180000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Order for networking cables and routers.',
+      receive_at: new Date('2024-02-26'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 40,
-      message: 'High-end GPUs for gaming PC builds.',
       expected_arrival: '2024-03-01',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 400000,
-      created_at: new Date('2024-02-09'),
-      last_updated: new Date('2024-02-09'),
-      deleted_at: null,
+      order_value: '400000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'High-end GPUs for gaming PC builds.',
+      receive_at: new Date('2024-03-02'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 25,
-      message: 'Urgent CPU stock replenishment.',
       expected_arrival: '2024-02-22',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 125000,
-      created_at: new Date('2024-02-12'),
-      last_updated: new Date('2024-02-14'),
-      deleted_at: null,
+      order_value: '125000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Urgent CPU stock replenishment.',
+      receive_at: new Date('2024-02-23'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 75,
-      message: 'Bulk order for office workstation components.',
       expected_arrival: '2024-03-10',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 225000,
-      created_at: new Date('2024-02-14'),
-      last_updated: new Date('2024-02-18'),
-      deleted_at: null,
+      order_value: '225000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Bulk order for office workstation components.',
+      receive_at: new Date('2024-03-11'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 35,
-      message: 'Order for high-capacity external hard drives.',
       expected_arrival: '2024-02-28',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 140000,
-      created_at: new Date('2024-02-15'),
-      last_updated: new Date('2024-02-25'),
-      deleted_at: null,
+      order_value: '140000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Order for high-capacity external hard drives.',
+      receive_at: new Date('2024-02-29'),
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      ordered_value: 80,
-      message: 'Stocking up on premium power supplies.',
       expected_arrival: '2024-03-05',
-      status: faker.helpers.arrayElement(orderStatus),
-      order_total: 320000,
-      created_at: new Date('2024-02-20'),
-      last_updated: new Date('2024-02-27'),
-      deleted_at: new Date('2024-02-28'),
+      order_value: '320000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Stocking up on premium power supplies.',
+      receive_at: new Date('2024-03-06'),
     },
   ];
 
@@ -2756,87 +2753,76 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
 }
 async function seedOrderItems(db: PostgresJsDatabase<SchemaType>) {
   const orderIDs = await db.select().from(order);
-
   const orderitemsRecords = [
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 2,
-      price: '59999.99',
-      status: 'Shipped',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '59999.99',
+      discount_amount: '0.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 1,
-      price: '12999.5',
-      status: 'Processing',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '12999.50',
+      discount_amount: '500.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 3,
-      price: '1499.75',
-      status: 'Delivered',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '1499.75',
+      discount_amount: '100.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 5,
-      price: '249.99',
-      status: 'Cancelled',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '249.99',
+      discount_amount: '50.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 1,
-      price: '7999.99',
-      status: 'Pending',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '7999.99',
+      discount_amount: '0.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 2,
-      price: '999.99',
-      status: 'Processing',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '999.99',
+      discount_amount: '20.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 4,
-      price: '3499.0',
-      status: 'Delivered',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '3499.00',
+      discount_amount: '200.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 1,
-      price: '55999.99',
-      status: 'Shipped',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '55999.99',
+      discount_amount: '1000.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 3,
-      price: '1199.5',
-      status: 'Pending',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '1199.50',
+      discount_amount: '50.00',
     },
     {
       order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
       quantity: 2,
-      price: '2099.99',
-      status: 'Delivered',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      unit_price: '2099.99',
+      discount_amount: '100.00',
     },
   ];
 
@@ -2844,43 +2830,43 @@ async function seedOrderItems(db: PostgresJsDatabase<SchemaType>) {
   log.info('Order Items records seeded successfully');
 }
 
-async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
-  const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
+// async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
+//   const productIDs = await db.select().from(product);
+//   const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
 
-  const statuses = [
-    'Sold',
-    'Pending Payment',
-    'On Order',
-    'In Service',
-    'Awaiting Service',
-    'Return Requested',
-  ] as const;
+//   const statuses = [
+//     'Sold',
+//     'Pending Payment',
+//     'On Order',
+//     'In Service',
+//     'Awaiting Service',
+//     'Return Requested',
+//   ] as const;
 
-  const serializedproductsRecords = [
-    {
-      product_id: 9,
-      supplier_id: 1,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: 10,
-      supplier_id: 1,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-  ];
+//   const serializedproductsRecords = [
+//     {
+//       product_id: 9,
+//       supplier_id: 1,
+//       serial_number: faker.string.uuid(),
+//       status: faker.helpers.arrayElement(statuses),
+//       condition: faker.helpers.arrayElement(recordCondition),
+//       created_at: new Date('2023-01-01'),
+//       last_updated: new Date('2023-01-10'),
+//     },
+//     {
+//       product_id: 10,
+//       supplier_id: 1,
+//       serial_number: faker.string.uuid(),
+//       status: faker.helpers.arrayElement(statuses),
+//       condition: faker.helpers.arrayElement(recordCondition),
+//       created_at: new Date('2023-01-01'),
+//       last_updated: new Date('2023-01-10'),
+//     },
+//   ];
 
-  await db.insert(serializeProduct).values(serializedproductsRecords);
-  log.info('Serialized Products records seeded successfully');
-}
+//   await db.insert(serializeProduct).values(serializedproductsRecords);
+//   log.info('Serialized Products records seeded successfully');
+// }
 //  =======================================================================================
 // =================================== PARTORDER ==========================================
 
@@ -3384,7 +3370,7 @@ async function main() {
     await seedSupplier(db);
     await seedProduct(db);
     await seedProductDetails(db);
-    // await seedProductRecord(db);
+    await seedProductRecord(db);
     await seedOrder(db);
     await seedOrderItems(db);
     // await seedSerializedItems(db);

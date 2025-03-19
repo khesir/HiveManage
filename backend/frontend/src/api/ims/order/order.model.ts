@@ -8,51 +8,45 @@ const orderStatusEnum = z.enum([
   'Pending Payment',
   'Cancelled',
 ]);
-const orderItemEnum = z.enum([
-  'Pending',
-  'Partially Delivered',
-  'Delivered',
-  'Damaged',
-  'Returned',
-  'Cancelled',
+const orderPaymentStatus = z.enum(['Pending', 'Partially Paid', 'Paid']);
+const orderPaymentMethod = z.enum([
+  'Cash',
+  'Credit Card',
+  'Bank Transfer',
+  'Check',
+  'Digital Wallet',
 ]);
+
+const orderItem = z.object({
+  product_id: z.number().min(1),
+  quantity: z.number().min(1),
+  price: z.string().min(1),
+});
 
 export const CreateOrder = z.object({
   supplier_id: z.number(),
-  ordered_value: z.number(),
+
+  notes: z.string().optional(),
+  receive_at: z.date().optional(),
   expected_arrival: z.string().optional(),
-  status: orderStatusEnum,
-  created_at: z.date().optional(),
-  last_updated: z.date().optional(),
-  deleted_at: z.date().nullable().optional(),
-  order_items: z
-    .array(
-      z.object({
-        variant_id: z.number().min(1),
-        product_id: z.number().min(1),
-        item_type: z.string().min(1),
-        quantity: z.string().min(1),
-        price: z.string().min(1),
-        status: orderItemEnum,
-      }),
-    )
-    .optional(),
+
+  ordered_value: z.number(),
+  order_status: orderStatusEnum,
+  order_payment_status: orderPaymentStatus.optional(),
+  order_payment_method: orderPaymentMethod.optional(),
+
+  order_items: z.array(orderItem).optional(),
 });
 
 export const UpdateOrder = z.object({
-  item_id: z.number().min(1),
-  items_ordered: z.number().min(1),
-  expected_arrival: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: 'Invalid date format',
-  }),
-  status: z.enum([
-    'Pending',
-    'Processing',
-    'Delivered',
-    'Cancelled',
-    'Return',
-    'Shipped',
-  ]),
+  notes: z.string().optional(),
+  receive_at: z.date().optional(),
+  expected_arrival: z.string().optional(),
+
+  ordered_value: z.number(),
+  order_status: orderStatusEnum,
+  order_payment_status: orderPaymentStatus.optional(),
+  order_payment_method: orderPaymentMethod.optional(),
 });
 
 export type CreateOrder = z.infer<typeof CreateOrder>;

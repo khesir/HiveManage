@@ -1,4 +1,5 @@
 import {
+  decimal,
   integer,
   pgEnum,
   pgTable,
@@ -16,12 +17,12 @@ export const orderStatus = pgEnum('order_status', [
   'Pending Payment',
   'Cancelled',
 ]);
-export const paymentStatus = pgEnum('payment_status', [
-  'Unpaid',
+export const paymentStatus = pgEnum('order_payment_status', [
+  'Pending',
   'Partially Paid',
   'Paid',
 ]);
-export const paymentMethod = pgEnum('payment_method', [
+export const paymentMethod = pgEnum('order_payment_method', [
   'Cash',
   'Credit Card',
   'Bank Transfer',
@@ -32,12 +33,16 @@ export const paymentMethod = pgEnum('payment_method', [
 export const order = pgTable('order', {
   order_id: serial('order_id').primaryKey(),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
-  expected_arrival: varchar('expected_arrival'),
-  order_status: orderStatus('order_status'),
-  payment_status: paymentStatus('payment_status'),
-  payment_method: paymentMethod('payment_method'),
+
   notes: varchar('notes'),
   receive_at: timestamp('receive_at'),
+  expected_arrival: varchar('expected_arrival'),
+
+  order_value: decimal('order_value', { precision: 10, scale: 2 }),
+  order_status: orderStatus('order_status'),
+  order_payment_status: paymentStatus('order_payment_status'),
+  order_payment_method: paymentMethod('order_payment_method'),
+
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

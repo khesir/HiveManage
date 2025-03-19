@@ -1,11 +1,7 @@
 import { asc, desc, eq, isNull, sql, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import {
-  CreateOrderItem,
-  UpdateOrderItem,
-  UpdateStatus,
-} from './orderitem.model';
-import { order, orderItem, product } from '@/drizzle/schema/ims';
+import { CreateOrderItem, UpdateOrderItem } from './orderitem.model';
+import { order, orderProduct, product } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 
 export class OrderItemService {
@@ -16,7 +12,7 @@ export class OrderItemService {
   }
 
   async createOrderItem(data: CreateOrderItem) {
-    await this.db.insert(orderItem).values(data);
+    await this.db.insert(orderProduct).values(data);
   }
 
   async getAllOrderItem(
@@ -25,35 +21,37 @@ export class OrderItemService {
     limit: number,
     offset: number,
   ) {
-    const conditions = [isNull(orderItem.deleted_at)];
+    const conditions = [isNull(orderProduct.deleted_at)];
 
     if (order_id) {
-      conditions.push(eq(orderItem.order_id, Number(order_id)));
+      conditions.push(eq(orderProduct.order_id, Number(order_id)));
     }
 
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
       })
-      .from(orderItem)
+      .from(orderProduct)
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
 
     const result = await this.db
       .select()
-      .from(orderItem)
-      .leftJoin(order, eq(order.order_id, orderItem.order_id))
-      .leftJoin(product, eq(product.product_id, orderItem.product_id))
+      .from(orderProduct)
+      .leftJoin(order, eq(order.order_id, orderProduct.order_id))
+      .leftJoin(product, eq(product.product_id, orderProduct.product_id))
       .where(and(...conditions))
       .orderBy(
-        sort === 'asc' ? asc(orderItem.created_at) : desc(orderItem.created_at),
+        sort === 'asc'
+          ? asc(orderProduct.created_at)
+          : desc(orderProduct.created_at),
       )
       .limit(limit)
       .offset(offset);
 
     const orderitemWithDetails = result.map((row) => ({
-      ...row.order_item,
+      ...row.order_product,
       order: {
         ...row.order,
       },
@@ -67,26 +65,21 @@ export class OrderItemService {
   async getOrderItemById(paramsId: number) {
     const result = await this.db
       .select()
-      .from(orderItem)
-      .where(eq(orderItem.orderItem_id, paramsId));
+      .from(orderProduct)
+      .where(eq(orderProduct.order_product_id, paramsId));
     return result[0];
   }
 
   async updateOrderItem(data: UpdateOrderItem, orderItem_id: string) {
     await this.db
-      .update(orderItem)
+      .update(orderProduct)
       .set({ ...data, quantity: Number(data.quantity) })
-      .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
+      .where(eq(orderProduct.order_product_id, Number(orderItem_id)));
   }
 
   async deleteOrderItem(paramsId: number): Promise<void> {
-    await this.db.delete(orderItem).where(eq(orderItem.orderItem_id, paramsId));
-  }
-
-  async updateStatus(data: UpdateStatus, orderItem_id: string) {
     await this.db
-      .update(orderItem)
-      .set({ status: data.status })
-      .where(eq(orderItem.orderItem_id, Number(orderItem_id)));
+      .delete(orderProduct)
+      .where(eq(orderProduct.order_product_id, paramsId));
   }
 }

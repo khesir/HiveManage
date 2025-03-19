@@ -1,5 +1,5 @@
 {
-  "id": "c0b4aa7c-96c3-45a2-9934-872adac12d67",
+  "id": "71273649-efb9-4f0b-9391-930b2039045b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1177,6 +1177,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "order_value": {
+          "name": "order_value",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "order_status": {
           "name": "order_status",
           "type": "order_status",
@@ -1184,16 +1190,16 @@
           "primaryKey": false,
           "notNull": false
         },
-        "payment_status": {
-          "name": "payment_status",
-          "type": "payment_status",
+        "order_payment_status": {
+          "name": "order_payment_status",
+          "type": "order_payment_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
         },
-        "payment_method": {
-          "name": "payment_method",
-          "type": "payment_method",
+        "order_payment_method": {
+          "name": "order_payment_method",
+          "type": "order_payment_method",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
@@ -1279,15 +1285,15 @@
           "notNull": false,
           "default": 1
         },
-        "price": {
-          "name": "price",
+        "unit_price": {
+          "name": "unit_price",
           "type": "numeric(50, 2)",
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "varchar",
+        "discount_amount": {
+          "name": "discount_amount",
+          "type": "numeric(50, 2)",
           "primaryKey": false,
           "notNull": false
         },
@@ -3421,29 +3427,24 @@
         "Cancelled"
       ]
     },
-    "public.payment_method": {
-      "name": "payment_method",
+    "public.order_payment_method": {
+      "name": "order_payment_method",
       "schema": "public",
       "values": [
         "Cash",
-        "Card",
-        "Online Payment"
+        "Credit Card",
+        "Bank Transfer",
+        "Check",
+        "Digital Wallet"
       ]
     },
-    "public.payment_status": {
-      "name": "payment_status",
+    "public.order_payment_status": {
+      "name": "order_payment_status",
       "schema": "public",
       "values": [
         "Pending",
-        "Completed",
-        "Failed",
-        "Cancelled",
-        "Refunded",
-        "Partially Refunded",
-        "Overdue",
-        "Processing",
-        "Declined",
-        "Authorized"
+        "Partially Paid",
+        "Paid"
       ]
     },
     "public.product_status": {
@@ -3516,6 +3517,31 @@
         "value-added reseller",
         "accessories supplier",
         "logistics partner"
+      ]
+    },
+    "public.payment_method": {
+      "name": "payment_method",
+      "schema": "public",
+      "values": [
+        "Cash",
+        "Card",
+        "Online Payment"
+      ]
+    },
+    "public.payment_status": {
+      "name": "payment_status",
+      "schema": "public",
+      "values": [
+        "Pending",
+        "Completed",
+        "Failed",
+        "Cancelled",
+        "Refunded",
+        "Partially Refunded",
+        "Overdue",
+        "Processing",
+        "Declined",
+        "Authorized"
       ]
     },
     "public.service_type": {

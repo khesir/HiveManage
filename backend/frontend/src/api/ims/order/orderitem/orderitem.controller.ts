@@ -59,14 +59,13 @@ export class OrderItemsController {
 
   async createOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { order_id, product_id, quantity, price, status } = req.body;
+      const { order_id, product_id, quantity, price } = req.body;
 
       await this.orderitemService.createOrderItem({
         order_id,
         product_id,
         quantity,
         price,
-        status,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -86,10 +85,10 @@ export class OrderItemsController {
   async updateOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { orderItem_id } = req.params;
-      const { order_id, product_id, quantity, price, status } = req.body;
+      const { order_id, product_id, quantity, price } = req.body;
 
       await this.orderitemService.updateOrderItem(
-        { order_id, product_id, quantity, price, status },
+        { order_id, product_id, quantity, price },
         orderItem_id,
       );
       res.status(HttpStatus.OK.code).json({
@@ -116,24 +115,6 @@ export class OrderItemsController {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
         .json({ status: 'Error', message: 'Internal Server Error' });
-      next(error);
-    }
-  }
-
-  async updateStatus(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { orderItem_id } = req.params;
-      const { status } = req.body;
-
-      await this.orderitemService.updateStatus({ status }, orderItem_id);
-      res.status(HttpStatus.OK.code).json({
-        status: 'Success',
-        message: 'Order Item Updated Successfully ',
-      });
-    } catch (error) {
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
-        .json({ status: 'Error', message: 'Internal Server Error ' });
       next(error);
     }
   }

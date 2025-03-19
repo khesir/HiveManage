@@ -1,7 +1,7 @@
 import { eq, isNull, sql, asc, desc, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateOrder } from './order.model';
-import { order, orderItem, supplier } from '@/drizzle/schema/ims';
+import { order, supplier, orderProduct } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 
 export class OrderService {
@@ -62,19 +62,13 @@ export class OrderService {
       const [insertedOrder] = await tx
         .insert(order)
         .values({
-          supplier_id: data.supplier_id,
-          ordered_value: Number(data.ordered_value),
-          expected_arrival: data.expected_arrival,
-          status: data.status,
+          ...data,
         })
         .returning({ order_id: order.order_id });
-      for (const i of data.order_items!) {
-        // Insert into orderItem
-        await tx.insert(orderItem).values({
+      for (const item of data.order_items!) {
+        await tx.insert(orderProduct).values({
           order_id: insertedOrder.order_id,
-          status: i.status,
-          quantity: Number(i.quantity),
-          price: i.price.toString(),
+          ...item,
         });
       }
     });

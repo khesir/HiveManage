@@ -3,10 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { orderItem } from '@/drizzle/schema/ims/schema/order/orderItem.schema';
-
-// There's a globally used
-// middleware like error handling and schema validation
+import { orderProduct } from '@/drizzle/schema/ims';
 
 export async function validateOrderItemID(
   req: Request,
@@ -18,8 +15,8 @@ export async function validateOrderItemID(
   try {
     const OrderItem = await db
       .select()
-      .from(orderItem)
-      .where(and(eq(orderItem.orderItem_id, Number(orderItem_id))));
+      .from(orderProduct)
+      .where(and(eq(orderProduct.order_product_id, Number(orderItem_id))));
 
     if (!OrderItem[0]) {
       return res.status(404).json({ message: 'Order Item not found' });

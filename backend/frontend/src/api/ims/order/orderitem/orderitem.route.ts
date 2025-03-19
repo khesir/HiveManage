@@ -3,11 +3,7 @@ import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
 import { OrderItemsController } from './orderitem.controller';
 import { validateOrderItemID } from './orderitem.middleware';
-import {
-  CreateOrderItem,
-  UpdateOrderItem,
-  UpdateStatus,
-} from './orderitem.model';
+import { CreateOrderItem, UpdateOrderItem } from './orderitem.model';
 
 const orderitemsRoute = Router({ mergeParams: true });
 const orderitemsController = new OrderItemsController(db);
@@ -39,12 +35,6 @@ orderitemsRoute.delete(
   '/:orderItem_id',
   validateOrderItemID,
   orderitemsController.deleteOrderItem.bind(orderitemsController),
-);
-
-orderitemsRoute.post(
-  '/:orderItem_id/update_status',
-  [validateOrderItemID, validateRequest({ body: UpdateStatus })],
-  orderitemsController.updateStatus.bind(orderitemsController),
 );
 
 export default orderitemsRoute;
