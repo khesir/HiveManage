@@ -1,4 +1,4 @@
-import {ProductWithRelatedTables} from '@/modules/inventory/_components/validation/product';
+import {ProductWithRelatedTables} from '@/components/validation/inventory/product';
 import {create} from 'zustand';
 
 interface ProductWithRelatedDataStore {

@@ -16,8 +16,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import {ProductSupplier} from '@/modules/inventory/_components/validation/product-supplier';
-import {Supplier} from '@/modules/inventory/_components/validation/supplier';
+import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
+import {Supplier} from '@/components/validation/inventory/supplier';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';

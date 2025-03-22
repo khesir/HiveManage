@@ -4,7 +4,7 @@ import {useEffect} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
 
 import {ApiRequest, request} from '@/api/axios';
-import {Product} from '@/modules/inventory/_components/validation/product';
+import {Product} from '@/components/validation/inventory/product';
 import {InformationCard} from './information-card';
 import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
 import {

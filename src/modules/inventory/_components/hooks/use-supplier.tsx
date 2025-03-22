@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {SupplierWithRelatedData} from '../validation/supplier';
+import {SupplierWithRelatedData} from '../../../../components/validation/inventory/supplier';
 
 type PropsProps = {
 	data: SupplierWithRelatedData | null;

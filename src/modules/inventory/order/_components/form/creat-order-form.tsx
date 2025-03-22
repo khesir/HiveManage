@@ -1,5 +1,5 @@
 import {toast} from 'sonner';
-import {Order, orderSchema} from '../../../_components/validation/order';
+import {Order, orderSchema} from '../../../../../components/validation/inventory/order';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import axios, {AxiosError} from 'axios';
@@ -20,7 +20,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {useState, useEffect} from 'react';
-import {Supplier} from '../../../_components/validation/supplier';
+import {Supplier} from '../../../../../components/validation/inventory/supplier';
 import {Heading} from '@/components/ui/heading';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
@@ -50,8 +50,8 @@ import {
 } from '@/components/ui/command';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
-import {ProductCategory} from '@/modules/inventory/_components/validation/category';
-import {ProductVariant} from '@/modules/inventory/_components/validation/variants';
+import {ProductCategory} from '@/components/validation/inventory/category';
+import {ProductVariant} from '@/components/validation/inventory/variants';
 import {useNavigate} from 'react-router-dom';
 
 export function CreateOrderForm() {

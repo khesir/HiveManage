@@ -12,6 +12,8 @@ import {
 	Package,
 	UserSquareIcon,
 	ShoppingBag,
+	BoxesIcon,
+	BoxIcon,
 } from 'lucide-react';
 
 type Submenu = {
@@ -53,6 +55,13 @@ export function getAdminMenuList(pathname: string): Group[] {
 					icon: MessageSquare,
 					submenus: [],
 				},
+				{
+					href: '/admin/settings',
+					label: 'Settings',
+					active: pathname.includes('/admin/settings'),
+					icon: Settings,
+					submenus: [],
+				},
 			],
 		},
 		{
@@ -63,6 +72,13 @@ export function getAdminMenuList(pathname: string): Group[] {
 					label: 'Employees & Accounts',
 					active: pathname.includes('/admin/ems'),
 					icon: UserSquareIcon,
+					submenus: [],
+				},
+				{
+					href: '/admin/sales/customer',
+					label: 'Customer',
+					active: pathname.includes('/admin/sales/customer'),
+					icon: Users,
 					submenus: [],
 				},
 				{
@@ -89,6 +105,18 @@ export function getAdminMenuList(pathname: string): Group[] {
 							icon: LayoutGrid,
 							active: pathname === '/admin/activity/overview',
 						},
+						{
+							href: '/admin/sales/services',
+							label: 'Borrow',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
+						{
+							href: '/admin/sales/services',
+							label: 'Reservation',
+							icon: LayoutGrid,
+							active: pathname === '/admin/activity/overview',
+						},
 					],
 				},
 				{
@@ -100,55 +128,22 @@ export function getAdminMenuList(pathname: string): Group[] {
 						{
 							href: '/admin/inventory/products',
 							label: 'Products',
-							icon: LayoutGrid,
+							icon: BoxIcon,
 							active: pathname === '/admin/inventory/products',
 						},
 						{
-							href: '/admin/inventory/products/orders',
+							href: '/admin/inventory/orders',
 							label: 'Orders',
-							icon: LayoutGrid,
+							icon: BoxesIcon,
 							active: pathname === '/admin/inventory/orders',
 						},
 						{
-							href: '/admin/inventory/products/suppliers',
+							href: '/admin/inventory/suppliers',
 							label: 'Supplier',
-							icon: LayoutGrid,
+							icon: Users,
 							active: pathname === '/admin/inventory/suppliers',
 						},
 					],
-				},
-				{
-					href: '/admin/sales/customer',
-					label: 'Customer',
-					active: pathname.includes('/admin/sales/customer'),
-					icon: Users,
-					submenus: [],
-				},
-				{
-					href: '/sales/inquiry',
-					label: 'Inquiries',
-					active: pathname.includes('/sales/inquiry'),
-					icon: PackageOpenIcon,
-					submenus: [],
-				},
-			],
-		},
-		{
-			groupLabel: 'Settings',
-			menus: [
-				// {
-				// 	href: '/admin/terminal',
-				// 	label: 'Terminal',
-				// 	active: pathname.includes('/admin/terminal'),
-				// 	icon: Terminal,
-				// 	submenus: [],
-				// },
-				{
-					href: '/admin/settings',
-					label: 'Settings',
-					active: pathname.includes('/admin/settings'),
-					icon: Settings,
-					submenus: [],
 				},
 			],
 		},

@@ -10,7 +10,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/components/ui/chart';
-import {ProductWithRelatedTables} from '@/modules/inventory/_components/validation/product';
+import {ProductWithRelatedTables} from '@/components/validation/inventory/product';
 import {CartesianGrid, YAxis, XAxis, Line, LineChart} from 'recharts';
 
 interface ProductPriceCardProps {

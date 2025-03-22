@@ -8,7 +8,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import {OrderItemWithDetails} from '../../../_components/validation/order';
+import {OrderItemWithDetails} from '../../../../../components/validation/inventory/order';
 import {toast} from 'sonner';
 import axios from 'axios';
 import useOrderItemStore from '../../../_components/hooks/use-order-items';

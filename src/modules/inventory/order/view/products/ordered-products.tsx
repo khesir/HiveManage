@@ -8,7 +8,6 @@ import {ColumnDef} from '@tanstack/react-table';
 import {AxiosError} from 'axios';
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-import {CreateProductSupplierDialogue} from '../_components/create-product-supplier-dialogue';
 import {X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 
@@ -123,9 +122,6 @@ export function SupplierForm() {
 						Available product supplier
 					</p>
 				</div>
-				{!loading && (
-					<CreateProductSupplierDialogue productSuppliers={productSupplier} />
-				)}
 			</div>
 			<Separator />
 			{loading ? (

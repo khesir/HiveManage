@@ -57,9 +57,9 @@ import {
 } from '@/components/ui/command';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Badge} from '@/components/ui/badge';
-import {Order} from '@/modules/inventory/_components/validation/order';
-import {Product} from '@/modules/inventory/_components/validation/product';
-import { OrderItem } from '@/modules/inventory/_components/validation/order-item';
+import {Order} from '@/components/validation/inventory/order';
+import {Product} from '@/components/validation/inventory/product';
+import { OrderItem } from '@/components/validation/inventory/order-item';
 interface OrderTrackingProps {
 	data: Order;
 }

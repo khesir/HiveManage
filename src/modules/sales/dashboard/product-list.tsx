@@ -24,7 +24,7 @@ import {
 	SheetTrigger,
 } from '@/components/ui/sheet';
 import {Item} from '@/modules/inventory/_components/validation/item';
-import {Product} from '@/modules/inventory/_components/validation/product';
+import {Product} from '@/components/validation/inventory/product';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ColumnDef} from '@tanstack/react-table';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';

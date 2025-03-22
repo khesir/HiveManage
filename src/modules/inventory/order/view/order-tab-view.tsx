@@ -1,8 +1,7 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {ProductInformationTab} from './information/information-tab';
-import SettingsSidebar from './settings/settings-sidebar';
+import {InformationSection} from './information/information-section';
 
-export function ViewItemTabDetails() {
+export function OrderViewTab() {
 	return (
 		<Tabs defaultValue="Informations" className="p-3">
 			<div className="flex items-center">
@@ -14,13 +13,10 @@ export function ViewItemTabDetails() {
 				{/* Possibly add a marquee here for announcements or something */}
 			</div>
 			<TabsContent value="Informations">
-				<ProductInformationTab />
+				<InformationSection />
 			</TabsContent>
-			{/* <TabsContent value="Analytics">
-				<p>Product Analysis chuchu</p>
-			</TabsContent> */}
 			<TabsContent value="Settings">
-				<SettingsSidebar />
+				<div>For updating information for order or product</div>
 			</TabsContent>
 		</Tabs>
 	);

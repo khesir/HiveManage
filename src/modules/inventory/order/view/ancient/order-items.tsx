@@ -6,22 +6,22 @@ import {
 	CardContent,
 } from '@/components/ui/card';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import useOrderItemStore from '../../_components/hooks/use-order-items';
+import useOrderItemStore from '../../../_components/hooks/use-order-items';
 import {Badge} from '@/components/ui/badge';
-import {AddProductForm} from '../_components/modal/add-order-products';
+import {AddProductForm} from '../../_components/modal/add-order-products';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {OrderTrackingView} from '../order-tracking-view';
+import {OrderTrackingView} from './order-tracking-view';
 
 import {useEffect, useState} from 'react';
-import {ProductCard} from '../../products/_components/card/product-card';
+import {ProductCard} from '../../../products/_components/card/product-card';
 import {Checkbox} from '@/components/ui/checkbox';
-import {Order} from '../../_components/validation/order';
-import {OrderItem} from '../../_components/validation/order-item';
+import {Order} from '../../../../../components/validation/inventory/order';
+import {OrderItem} from '../../../../../components/validation/inventory/order-item';
 import {ApiRequest, request} from '@/api/axios';
 
 interface ProfileProps {

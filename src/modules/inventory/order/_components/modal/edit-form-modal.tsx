@@ -34,7 +34,7 @@ import useTrackReferesh from '../../../_components/hooks/uset-track-refresh';
 import {
 	OrderTrackItem,
 	orderTrackItemSchema,
-} from '@/modules/inventory/_components/validation/order-tracking';
+} from '@/components/validation/inventory/order-tracking';
 
 interface OrderTrackingProps {
 	data: OrderTrackItem;

@@ -13,7 +13,7 @@ import axios from 'axios';
 import {request} from '@/api/axios';
 import {useState} from 'react';
 import useTrackReferesh from '../../../_components/hooks/uset-track-refresh';
-import {OrderTrackItem} from '@/modules/inventory/_components/validation/order-tracking';
+import {OrderTrackItem} from '@/components/validation/inventory/order-tracking';
 
 interface OrderTrackingProps {
 	data: OrderTrackItem;

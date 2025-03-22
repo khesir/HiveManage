@@ -43,8 +43,8 @@ import {request} from '@/api/axios';
 import {
 	OrderTrackItemArray,
 	orderTrackItemArraySchema,
-} from '@/modules/inventory/_components/validation/order-tracking';
-import {OrderItem} from '@/modules/inventory/_components/validation/order-item';
+} from '@/components/validation/inventory/order-tracking';
+import {OrderItem} from '@/components/validation/inventory/order-item';
 
 interface Formprops {
 	isModalOpen?: boolean;

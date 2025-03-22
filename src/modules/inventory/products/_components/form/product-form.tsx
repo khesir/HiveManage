@@ -1,6 +1,6 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
-import {Product, productSchema} from '../../../_components/validation/product';
+import {Product, productSchema} from '../../../../../components/validation/inventory/product';
 import {appendFormData} from '@/lib/util/utils';
 import {
 	Form,
@@ -15,7 +15,7 @@ import {toast} from 'sonner';
 import axios, {AxiosError} from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {useEffect, useState} from 'react';
-import {Category} from '../../../_components/validation/category';
+import {Category} from '../../../../../components/validation/inventory/category';
 import {ApiRequest, request} from '@/api/axios';
 import {Card} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
@@ -28,7 +28,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import {Supplier} from '../../../_components/validation/supplier';
+import {Supplier} from '../../../../../components/validation/inventory/supplier';
 import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';

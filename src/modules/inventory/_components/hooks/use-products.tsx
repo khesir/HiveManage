@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {Product} from '../validation/product';
+import {Product} from '../../../../components/validation/inventory/product';
 
 type PropsProps = {
 	data: Product | null;
