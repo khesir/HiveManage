@@ -19,12 +19,18 @@ export class OrderController {
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const sort = (req.query.sort as string) || 'asc';
+    const includes =
+      typeof req.query.includes === 'string'
+        ? req.query.includes.split(',')
+        : [];
+    console.log(sort);
     try {
       const data = await this.orderService.getAllOrder(
         supplier_id,
         sort,
         limit,
         offset,
+        includes,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -63,8 +69,8 @@ export class OrderController {
         supplier_id,
         notes,
         expected_arrival,
-        ordered_value,
-        order_items,
+        order_value,
+        order_products,
         order_status,
         order_payment_status,
         order_payment_method,
@@ -74,8 +80,8 @@ export class OrderController {
         supplier_id,
         notes,
         expected_arrival,
-        ordered_value,
-        order_items,
+        order_value,
+        order_products,
         order_status,
         order_payment_status,
         order_payment_method,

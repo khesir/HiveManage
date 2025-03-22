@@ -2648,7 +2648,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
   const orderRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-02-15',
+      expected_arrival: new Date('2024-02-15'),
       order_value: '50000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2658,7 +2658,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-02-20',
+      expected_arrival: new Date('2024-02-20'),
       order_value: '90000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2668,7 +2668,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-03-05',
+      expected_arrival: new Date('2024-03-05'),
       order_value: '250000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2678,7 +2678,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-02-18',
+      expected_arrival: new Date('2024-02-18'),
       order_value: '70000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2688,7 +2688,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-02-25',
+      expected_arrival: new Date('2024-02-25'),
       order_value: '180000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2698,7 +2698,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-03-01',
+      expected_arrival: new Date('2024-03-01'),
       order_value: '400000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2708,7 +2708,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-02-22',
+      expected_arrival: new Date('2024-02-22'),
       order_value: '125000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2718,7 +2718,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-03-10',
+      expected_arrival: new Date('2024-03-10'),
       order_value: '225000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2728,7 +2728,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-02-28',
+      expected_arrival: new Date('2024-02-28'),
       order_value: '140000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),
@@ -2738,7 +2738,7 @@ async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: '2024-03-05',
+      expected_arrival: new Date('2024-03-05'),
       order_value: '320000.0',
       order_status: faker.helpers.arrayElement(orderStatus),
       order_payment_status: faker.helpers.arrayElement(paymentStatus),

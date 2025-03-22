@@ -1,7 +1,13 @@
-import { eq, isNull, sql, asc, desc, and } from 'drizzle-orm';
+import { eq, isNull, sql, asc, desc, and, inArray } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateOrder } from './order.model';
-import { order, supplier, orderProduct } from '@/drizzle/schema/ims';
+import {
+  order,
+  supplier,
+  orderProduct,
+  product,
+  productDetails,
+} from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 
 export class OrderService {
@@ -15,37 +21,127 @@ export class OrderService {
     sort: string,
     limit: number,
     offset: number,
+    includes: string[],
   ) {
     const conditions = [isNull(order.deleted_at)];
 
-    if (supplier_id) {
+    if (supplier_id && !isNaN(Number(supplier_id))) {
       conditions.push(eq(order.supplier_id, Number(supplier_id)));
     }
-
+    // Get total count of unique orders
     const totalCountQuery = await this.db
-      .select({
-        count: sql<number>`COUNT(*)`,
-      })
+      .select({ count: sql<number>`COUNT(DISTINCT ${order.order_id})` })
       .from(order)
       .where(and(...conditions));
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
-      .select()
+    // Get unique order IDs with pagination
+    const orderIdQuery = await this.db
+      .selectDistinct({
+        order_id: order.order_id,
+        expected_arrival: order.expected_arrival,
+      })
       .from(order)
-      .leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id))
       .where(and(...conditions))
-      .orderBy(sort === 'asc' ? asc(order.created_at) : desc(order.created_at))
+      .groupBy(order.order_id)
+      .orderBy(
+        sort === 'asc'
+          ? asc(order.expected_arrival)
+          : desc(order.expected_arrival),
+      )
       .limit(limit)
       .offset(offset);
 
-    const orderWithDetails = result.map((row) => ({
-      ...row.order,
-      supplier: {
-        ...row.supplier,
-      },
-    }));
+    const orderIds = orderIdQuery.map((row) => row.order_id);
+
+    if (orderIds.length === 0) {
+      return { totalData, orderWithDetails: [] }; // No data, return empty
+    }
+    // Fetch full order data using selected order IDs
+    const query = this.db
+      .select({
+        order: order,
+        ...(includes.includes('supplier') ? { supplier } : {}),
+        ...(includes.includes('order_products')
+          ? { order_product: orderProduct }
+          : {}),
+        ...(includes.includes('product') ? { product } : {}),
+        ...(includes.includes('product_details')
+          ? { product_details: productDetails }
+          : {}),
+      })
+      .from(order)
+      .where(inArray(order.order_id, orderIds));
+
+    if (includes.includes('supplier')) {
+      query.leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id));
+    }
+    if (includes.includes('order_products')) {
+      query.leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id));
+
+      if (includes.includes('product')) {
+        query.leftJoin(
+          product,
+          eq(product.product_id, orderProduct.product_id),
+        );
+
+        if (includes.includes('product_details')) {
+          query.leftJoin(
+            productDetails,
+            eq(productDetails.product_id, product.product_id),
+          );
+        }
+      }
+    }
+
+    const result = await query;
+    // This shit is annoying, will complain for missing data, which is its intended to  be null
+    // Since its customer data and suppose not all are filled.
+    const orderWithDetails: CreateOrder[] = Object.values(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      result.reduce((acc: Record<number, any>, row) => {
+        const orderId = Number(row.order?.order_id); // Ensure orderId is a number
+
+        if (orderId == null || isNaN(orderId)) {
+          console.warn('Skipping row with invalid orderId:', row);
+          return acc; // Skip invalid rows
+        }
+
+        // Initialize order in acc if not already present
+        if (!acc[orderId]) {
+          acc[orderId] = {
+            ...row.order,
+            supplier: includes.includes('supplier')
+              ? (row.supplier ?? undefined)
+              : undefined,
+            order_products: [],
+          };
+        }
+
+        // Add order products if they exist
+        if (includes.includes('order_products') && row.order_product) {
+          acc[orderId].order_products.push({
+            ...(row.order_product
+              ? (row.order_product as Record<string, unknown>)
+              : {}),
+            product:
+              includes.includes('product') && row.product
+                ? {
+                    ...(row.product
+                      ? (row.product as Record<string, unknown>)
+                      : {}),
+                    product_details: includes.includes('product_details')
+                      ? (row.product_details as Partial<typeof row.product>)
+                      : undefined,
+                  }
+                : undefined,
+          });
+        }
+
+        return acc;
+      }, {}), // Grouping orders by ID
+    );
     return { totalData, orderWithDetails };
   }
 
@@ -63,9 +159,10 @@ export class OrderService {
         .insert(order)
         .values({
           ...data,
+          order_value: data.order_value?.toString(),
         })
         .returning({ order_id: order.order_id });
-      for (const item of data.order_items!) {
+      for (const item of data.order_products!) {
         await tx.insert(orderProduct).values({
           order_id: insertedOrder.order_id,
           ...item,

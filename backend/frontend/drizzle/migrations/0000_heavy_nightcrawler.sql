@@ -317,13 +317,13 @@ CREATE TABLE IF NOT EXISTS "discount_p" (
 CREATE TABLE IF NOT EXISTS "order" (
 	"order_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
-	"expected_arrival" varchar,
+	"notes" varchar,
+	"receive_at" timestamp,
+	"expected_arrival" timestamp,
 	"order_value" numeric(10, 2),
 	"order_status" "order_status",
 	"order_payment_status" "order_payment_status",
 	"order_payment_method" "order_payment_method",
-	"notes" varchar,
-	"receive_at" timestamp,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp

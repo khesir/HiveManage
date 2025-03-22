@@ -264,6 +264,8 @@ export class ProductService {
       .limit(limit)
       .offset(offset);
 
+    // TODO: Turn the product endpoint to a hybrid, that allows data aggregation
+    // Currently this is aggregated, if payload is too heavy, we can add conditions to the endpoint
     const productIds = result.map((p) => p.product.product_id);
     const recordByProduct = await this.getRecordByProduct(productIds);
     const serialByProduct = await this.getSerializedByProduct(productIds);

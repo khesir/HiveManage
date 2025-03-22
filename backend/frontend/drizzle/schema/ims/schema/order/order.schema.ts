@@ -36,7 +36,7 @@ export const order = pgTable('order', {
 
   notes: varchar('notes'),
   receive_at: timestamp('receive_at'),
-  expected_arrival: varchar('expected_arrival'),
+  expected_arrival: timestamp('expected_arrival'),
 
   order_value: decimal('order_value', { precision: 10, scale: 2 }),
   order_status: orderStatus('order_status'),

@@ -1,5 +1,5 @@
 {
-  "id": "71273649-efb9-4f0b-9391-930b2039045b",
+  "id": "a4d3a442-a2fe-4af8-9738-158f20e5721f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1171,9 +1171,21 @@
           "primaryKey": false,
           "notNull": false
         },
+        "notes": {
+          "name": "notes",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receive_at": {
+          "name": "receive_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
         "expected_arrival": {
           "name": "expected_arrival",
-          "type": "varchar",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
@@ -1201,18 +1213,6 @@
           "name": "order_payment_method",
           "type": "order_payment_method",
           "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "notes": {
-          "name": "notes",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "receive_at": {
-          "name": "receive_at",
-          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
