@@ -69,9 +69,12 @@ const productSchema = z.object({
 });
 
 const orderItemSchema = z.object({
+	order_id: z.number().optional(),
 	product_id: z.number().min(1),
+
 	quantity: z.number().min(1),
-	price: z.string().min(1),
+	unit_price: z.string().min(1),
+	is_serialize: z.boolean().optional(),
 
 	product: productSchema.optional(),
 });
@@ -97,17 +100,20 @@ export const orderSchema = z.object({
 
 	notes: z.string().optional(),
 	receive_at: z.date().optional(),
-	expected_arrival: z.string().refine(
-		(date) => {
-			if (!date) return false;
-			const expectedDate = new Date(date);
-			const currentDate = new Date();
-			return expectedDate > currentDate;
-		},
-		{
-			message: 'Date should be after today.',
-		},
-	),
+	expected_arrival: z
+		.string()
+		.refine(
+			(date) => {
+				if (!date) return false;
+				const expectedDate = new Date(date);
+				const currentDate = new Date();
+				return expectedDate > currentDate;
+			},
+			{
+				message: 'Date should be after today.',
+			},
+		)
+		.optional(),
 	order_value: z.number(),
 	order_status: orderStatusEnum,
 	order_payment_status: orderPaymentStatus.optional(),
