@@ -7,6 +7,8 @@ import {
   orderProduct,
   product,
   productDetails,
+  serializeProduct,
+  productRecord,
 } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 
@@ -160,6 +162,8 @@ export class OrderService {
         .values({
           ...data,
           order_value: data.order_value?.toString(),
+          order_payment_status: 'Pending',
+          order_payment_method: 'Cash',
         })
         .returning({ order_id: order.order_id });
       for (const item of data.order_products!) {
@@ -167,6 +171,27 @@ export class OrderService {
           order_id: insertedOrder.order_id,
           ...item,
         });
+        if (item.is_serialize) {
+          for (let i = 0; i < item.quantity; i++) {
+            await tx.insert(serializeProduct).values({
+              product_id: Number(item.product_id),
+              supplier_id: Number(data.supplier_id),
+              price: Number(item.unit_price),
+              condition: 'New',
+              status: 'On Order',
+              serial_number: `SN-${item.product_id}-${Date.now()}-${crypto.randomUUID().slice(0, 4)}`,
+            });
+          }
+        } else {
+          await tx.insert(productRecord).values({
+            product_id: Number(item.product_id),
+            supplier_id: Number(data.supplier_id),
+            quantity: Number(item.quantity),
+            price: Number(item.unit_price),
+            condition: 'New',
+            status: 'On Order',
+          });
+        }
       }
     });
   }

@@ -3,7 +3,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateProductSupplier } from './productSupplier.model';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { productSupplier } from '@/drizzle/schema/ims/schema/product/productSupplier.schema';
-import { supplier } from '@/drizzle/schema/ims';
+import { product, supplier } from '@/drizzle/schema/ims';
 
 export class ProductSupplierService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -14,6 +14,7 @@ export class ProductSupplierService {
 
   async getAllProductSupplier(
     product_id: string | undefined,
+    supplier_id: string | undefined,
     sort: string,
     limit: number,
     offset: number,
@@ -23,6 +24,9 @@ export class ProductSupplierService {
 
     if (product_id) {
       conditions.push(eq(productSupplier.product_id, Number(product_id)));
+    }
+    if (supplier_id) {
+      conditions.push(eq(productSupplier.supplier_id, Number(supplier_id)));
     }
 
     const totalCountQuery = await this.db
@@ -38,6 +42,7 @@ export class ProductSupplierService {
       .select()
       .from(productSupplier)
       .leftJoin(supplier, eq(supplier.supplier_id, productSupplier.supplier_id))
+      .leftJoin(product, eq(product.product_id, productSupplier.product_id))
       .where(and(...conditions))
       .orderBy(
         sort == 'asc'
@@ -52,6 +57,9 @@ export class ProductSupplierService {
       ...row.product_supplier,
       supplier: {
         ...row.supplier,
+      },
+      product: {
+        ...row.product,
       },
     }));
 

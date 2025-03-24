@@ -70,7 +70,8 @@ const productSchema = z.object({
 const orderItem = z.object({
   product_id: z.number().min(1),
   quantity: z.number().min(1),
-  price: z.string().min(1),
+  unit_price: z.string().min(1),
+  is_serialize: z.boolean().optional(),
   product: productSchema.optional(),
 });
 const supplierSchema = z.object({
@@ -93,8 +94,8 @@ export const CreateOrder = z.object({
   receive_at: z.date().optional(),
   expected_arrival: z.date().optional(),
 
-  order_value: z.number().optional(),
-  order_status: orderStatusEnum.optional(),
+  order_value: z.number(),
+  order_status: orderStatusEnum,
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
 

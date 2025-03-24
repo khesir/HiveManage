@@ -335,7 +335,7 @@ CREATE TABLE IF NOT EXISTS "order_product" (
 	"product_id" integer,
 	"quantity" integer DEFAULT 1,
 	"unit_price" numeric(50, 2),
-	"discount_amount" numeric(50, 2),
+	"is_serialize" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp

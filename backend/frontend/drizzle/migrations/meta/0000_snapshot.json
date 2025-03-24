@@ -1,5 +1,5 @@
 {
-  "id": "a4d3a442-a2fe-4af8-9738-158f20e5721f",
+  "id": "28993f50-4026-448c-959b-a31feb9ae883",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1291,11 +1291,12 @@
           "primaryKey": false,
           "notNull": false
         },
-        "discount_amount": {
-          "name": "discount_amount",
-          "type": "numeric(50, 2)",
+        "is_serialize": {
+          "name": "is_serialize",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": false
         },
         "created_at": {
           "name": "created_at",

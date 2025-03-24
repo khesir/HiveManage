@@ -13,6 +13,7 @@ export class ProductSupplierController {
 
   async getAllProductSupplier(req: Request, res: Response, next: NextFunction) {
     const product_id = req.params.product_id as string;
+    const supplier_id = (req.query.supplier_id as string) || undefined;
     const no_pagination = req.query.no_pagination == 'true';
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -21,6 +22,7 @@ export class ProductSupplierController {
     try {
       const data = await this.productSupplierService.getAllProductSupplier(
         product_id,
+        supplier_id,
         sort,
         limit,
         offset,

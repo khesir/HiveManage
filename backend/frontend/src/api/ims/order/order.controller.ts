@@ -23,7 +23,6 @@ export class OrderController {
       typeof req.query.includes === 'string'
         ? req.query.includes.split(',')
         : [];
-    console.log(sort);
     try {
       const data = await this.orderService.getAllOrder(
         supplier_id,

@@ -1,4 +1,5 @@
 import {
+  boolean,
   decimal,
   integer,
   pgTable,
@@ -15,8 +16,7 @@ export const orderProduct = pgTable('order_product', {
 
   quantity: integer('quantity').default(1),
   unit_price: decimal('unit_price', { precision: 50, scale: 2 }),
-  discount_amount: decimal('discount_amount', { precision: 50, scale: 2 }),
-
+  is_serialize: boolean('is_serialize').default(false),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
