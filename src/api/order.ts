@@ -58,6 +58,7 @@ const useOrderStore = create<OrderState>((set, get) => ({
 				orderData = response.data[0];
 			}
 			set((state) => ({orders: [...state.orders, orderData as Order]}));
+			return orderData;
 		} catch (e) {
 			if (e instanceof Error) {
 				console.log(e.toString());
