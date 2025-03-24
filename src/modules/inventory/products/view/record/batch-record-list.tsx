@@ -47,6 +47,10 @@ export const columns: ColumnDef<BatchItem>[] = [
 		header: 'Created At',
 		cell: ({row}) => dateParser(row?.original.created_at ?? ''),
 	},
+	{
+		header: 'Actions',
+		// TODO: Add action button here
+	},
 ];
 
 interface ProductWithDetails {

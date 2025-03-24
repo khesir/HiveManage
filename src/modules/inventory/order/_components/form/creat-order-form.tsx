@@ -1,5 +1,4 @@
 import {toast} from 'sonner';
-import {Order, orderSchema} from '../../../../../components/validation/inventory/order';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import axios, {AxiosError} from 'axios';
@@ -51,18 +50,20 @@ import {
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
 import {ProductCategory} from '@/components/validation/inventory/category';
-import {ProductVariant} from '@/components/validation/inventory/variants';
 import {useNavigate} from 'react-router-dom';
+import {Order, orderSchema} from '@/components/validation/inventory/order';
+import {Product} from '@/components/validation/inventory/product';
+import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
 
 export function CreateOrderForm() {
 	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-	const [items, setItems] = useState<ProductVariant[]>([]);
+	const [items, setItems] = useState<ProductSupplier[]>([]);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const [res, setRes] = useState<string | null>(null);
 	const [formState, setFormState] = useState<{
 		search: {[key: number]: string};
-		selectedProduct: {[key: number]: ProductVariant};
+		selectedProduct: {[key: number]: Product};
 	}>({
 		search: {}, // To store search state for each product (keyed by product index or ID)
 		selectedProduct: {}, // To store selected product state for each product
@@ -98,9 +99,9 @@ export function CreateOrderForm() {
 		resolver: zodResolver(orderSchema),
 		defaultValues: {
 			supplier_id: '',
-			status: 'Pending',
+			order_status: 'Pending',
 			expected_arrival: '',
-			ordered_value: '',
+			order_value: 0,
 		},
 		mode: 'onChange',
 	});
@@ -113,34 +114,34 @@ export function CreateOrderForm() {
 	} = form;
 	const {fields, append, remove} = useFieldArray({
 		control: control,
-		name: 'order_items',
+		name: 'order_products',
 	});
 
 	// Watcher to calculate order value
 	const orderValueTracker = watch();
 	const supplierId = watch('supplier_id');
-	const orderItems = watch('order_items');
+	const orderItems = watch('order_products');
 	// Calculate order value when order items change
 	// anything that is serialize will be change to 1 and be disabled
 	useEffect(() => {
 		const total =
-			orderValueTracker.order_items?.reduce(
+			orderValueTracker.order_products?.reduce(
 				(acc, curr) =>
 					acc + (parseInt(curr.quantity) * parseInt(curr.price) || 0),
 				0,
 			) || 0;
-		setValue('ordered_value', String(total));
+		setValue('order_value', total);
 	}, [orderValueTracker]);
 
 	// Fetch product variants when supplier ID changes
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await request<ApiRequest<ProductVariant>>(
+				const res = await request<ApiRequest<ProductSupplier>>(
 					'GET',
-					`/api/v1/ims/variants?no_pagination=true&supplier_id=${supplierId}`,
+					`/api/v1/ims/productSupplier?no_pagination=true&supplier_id=${supplierId}`,
 				);
-				setValue('order_items', []);
+				setValue('order_products', []);
 				setItems(Array.isArray(res.data) ? res.data : [res.data]);
 			} catch (error) {
 				console.error('Error fetching product variants:', error);
@@ -149,26 +150,17 @@ export function CreateOrderForm() {
 		if (supplierId) fetchData();
 	}, [supplierId]);
 
-	const orderStatus = [
-		'Pending',
-		'Processing',
-		'Delivered',
-		'Cancelled',
-		'Return',
-		'Shipped',
-		'Verification',
-		'Moved to Inventory',
+	const orderStatus = ['Pending', 'On Delivery', 'Returned', 'Cancelled'];
+
+	const orderPaymentStatus = ['Pending', 'Paid'];
+	const orderPaymentMethod = [
+		'Cash',
+		'Credit Card',
+		'Bank Transfer',
+		'Check',
+		'Digital Wallet',
 	];
 
-	const orderItemStatus = [
-		'Pending',
-		'Partially Delivered',
-		'Delivered',
-		'Damaged',
-		'Returned',
-		'Cancelled',
-	];
-	const itemType = ['Batch', 'Serialized', 'Both'];
 	// Update search state for a specific field dynamically
 	const handleSearchChange = (index: number, value: string) => {
 		setFormState((prevState) => ({
@@ -180,7 +172,7 @@ export function CreateOrderForm() {
 		}));
 	};
 	// Update selected product state for a specific field dynamically
-	const handleProductSelect = (index: number, product: ProductVariant) => {
+	const handleProductSelect = (index: number, product: Product) => {
 		setFormState((prevState) => ({
 			...prevState,
 			selectedProduct: {
@@ -192,14 +184,13 @@ export function CreateOrderForm() {
 
 	const processForm = async (formData: Order) => {
 		try {
-			if (formData.order_items?.length == 0) {
+			if (formData.order_products?.length == 0) {
 				toast.error('No order Items added');
 				return;
 			}
 			await request('POST', `api/v1/ims/order/`, {
 				...formData,
 				supplier_id: Number(formData.supplier_id),
-				ordered_value: Number(formData.ordered_value),
 			});
 			toast.success('Order Added');
 			navigate(-1);
@@ -240,11 +231,9 @@ export function CreateOrderForm() {
 							onClick={() =>
 								append({
 									product_id: -1,
-									variant_id: -1,
-									quantity: '1',
-									item_type: 'Batch',
+									quantity: 0,
 									price: '',
-									status: 'Pending',
+									order_status: 'Pending',
 								})
 							}
 						>
