@@ -197,7 +197,7 @@ export function CreateOrderForm() {
 				supplier_id: Number(formData.supplier_id),
 			});
 			toast.success('Order Added');
-			// navigate(-1);
+			navigate(-1);
 		} catch (error) {
 			console.log(error);
 			let errorMessage = 'An unexpected error occurred';

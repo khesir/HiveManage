@@ -21,7 +21,7 @@ import {useEffect, useState} from 'react';
 import {ProductCard} from '../../../products/_components/card/product-card';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Order} from '../../../../../components/validation/inventory/order';
-import {OrderItem} from '../../../../../components/validation/inventory/order-item';
+import {OrderItem} from '../../../../../components/validation/inventory/order-product';
 import {ApiRequest, request} from '@/api/axios';
 
 interface ProfileProps {

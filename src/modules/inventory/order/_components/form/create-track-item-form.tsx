@@ -44,7 +44,7 @@ import {
 	OrderTrackItemArray,
 	orderTrackItemArraySchema,
 } from '@/components/validation/inventory/order-tracking';
-import {OrderItem} from '@/components/validation/inventory/order-item';
+import {OrderItem} from '@/components/validation/inventory/order-product';
 
 interface Formprops {
 	isModalOpen?: boolean;

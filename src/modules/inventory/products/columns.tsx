@@ -59,10 +59,9 @@ export const columns: ColumnDef<Product>[] = [
 			);
 		},
 	},
-
 	{
 		accessorKey: 'is_serialize',
-		header: 'Serialized Item',
+		header: 'Serialized',
 		cell: ({row}) => {
 			return (
 				<Badge

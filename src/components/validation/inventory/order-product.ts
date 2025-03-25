@@ -1,5 +1,4 @@
 import {z} from 'zod';
-
 const orderStatusEnum = z.enum([
 	'Pending',
 	'On Delivery',
@@ -58,6 +57,7 @@ const productSchema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
 	img_url: z.string(),
+	is_serialize: z.boolean().optional(),
 	stock_limit: z.number().min(1),
 	total_stock: z.number().optional(),
 	created_at: z.string().optional(),
@@ -67,19 +67,6 @@ const productSchema = z.object({
 	product_categories: z.array(productCategorySchema).optional(),
 	product_details: productDetailsSchema.optional(),
 });
-
-const orderItemSchema = z.object({
-	order_product_id: z.number().optional(),
-	order_id: z.number().optional(),
-	product_id: z.number().min(1),
-
-	quantity: z.number().min(1),
-	unit_price: z.string().min(1),
-	is_serialize: z.boolean().optional(),
-
-	product: productSchema.optional(),
-});
-
 const supplierSchema = z.object({
 	supplier_id: z.number().optional(),
 	name: z.string().min(1),
@@ -92,10 +79,7 @@ const supplierSchema = z.object({
 	deleted_at: z.string().optional(),
 	categories: z.array(productCategorySchema).optional(),
 });
-
-// =================================================================
-// Actual Validation
-export const orderSchema = z.object({
+const orderSchema = z.object({
 	order_id: z.number().optional(),
 	supplier_id: z.string().nullable().optional(),
 
@@ -119,9 +103,19 @@ export const orderSchema = z.object({
 	order_status: orderStatusEnum,
 	order_payment_status: orderPaymentStatus.optional(),
 	order_payment_method: orderPaymentMethod.optional(),
-
-	order_products: z.array(orderItemSchema).optional(),
 	supplier: supplierSchema.optional(),
 });
 
-export type Order = z.infer<typeof orderSchema>;
+export const orderProductSchema = z.object({
+	order_product_id: z.number().optional(),
+	order_id: z.number().optional(),
+	product_id: z.number().min(1),
+
+	quantity: z.number().min(1),
+	unit_price: z.string().min(1),
+	is_serialize: z.boolean().optional(),
+
+	order: orderSchema.optional(),
+	product: productSchema.optional(),
+});
+export type OrderProduct = z.infer<typeof orderProductSchema>;
