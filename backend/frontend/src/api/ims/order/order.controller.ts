@@ -50,7 +50,14 @@ export class OrderController {
   async getOrderById(req: Request, res: Response, next: NextFunction) {
     try {
       const { order_id } = req.params;
-      const data = await this.orderService.getOrderById(Number(order_id));
+      const includes =
+        typeof req.query.includes === 'string'
+          ? req.query.includes.split(',')
+          : [];
+      const data = await this.orderService.getOrderById(
+        Number(order_id),
+        includes,
+      );
       res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -101,10 +108,26 @@ export class OrderController {
   async updateOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { order_id } = req.params;
-      const { product_id, items_ordered, expected_arrival, status } = req.body;
+      const {
+        supplier_id,
+        notes,
+        expected_arrival,
+        order_value,
+        order_status,
+        order_payment_status,
+        order_payment_method,
+      } = req.body;
 
       await this.orderService.updateOrder(
-        { product_id, items_ordered, expected_arrival, status },
+        {
+          supplier_id,
+          notes,
+          expected_arrival,
+          order_value,
+          order_status,
+          order_payment_status,
+          order_payment_method,
+        },
         Number(order_id),
       );
       res
@@ -130,6 +153,40 @@ export class OrderController {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
         .json({ status: 'Error', message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
+
+  async finalize(req: Request, res: Response, next: NextFunction) {
+    const { order_id } = req.params;
+    const {
+      supplier_id,
+      notes,
+      expected_arrival,
+      order_value,
+      order_products,
+      order_status,
+      order_payment_status,
+      order_payment_method,
+    } = req.body;
+    try {
+      await this.orderService.finalize(
+        {
+          supplier_id,
+          notes,
+          expected_arrival,
+          order_value,
+          order_products,
+          order_status,
+          order_payment_status,
+          order_payment_method,
+        },
+        Number(order_id),
+      );
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error' });
       next(error);
     }
   }

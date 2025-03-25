@@ -24,6 +24,12 @@ orderRoute.post(
 );
 
 orderRoute.put(
+  '/:order_id/finalize',
+  [validateRequest({ body: CreateOrder })],
+  orderController.finalize.bind(orderController),
+);
+
+orderRoute.put(
   '/:order_id',
   [validateRequest({ body: UpdateOrder }), validateOrderId],
   orderController.updateOrder.bind(orderController),
@@ -35,6 +41,6 @@ orderRoute.delete(
   orderController.deleteOrderById.bind(orderController),
 );
 
-orderRoute.use('/:order_id/orderitem', validateOrderId, orderitemsRoute);
+orderRoute.use('/:order_id/orderProduct', validateOrderId, orderitemsRoute);
 
 export default orderRoute;

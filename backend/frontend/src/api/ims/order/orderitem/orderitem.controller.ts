@@ -59,13 +59,13 @@ export class OrderItemsController {
 
   async createOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { order_id, product_id, quantity, price } = req.body;
+      const { order_id, product_id, quantity, unit_price } = req.body;
 
       await this.orderitemService.createOrderItem({
         order_id,
         product_id,
         quantity,
-        price,
+        unit_price,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -85,10 +85,10 @@ export class OrderItemsController {
   async updateOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { orderItem_id } = req.params;
-      const { order_id, product_id, quantity, price } = req.body;
+      const { order_id, product_id, quantity, unit_price } = req.body;
 
       await this.orderitemService.updateOrderItem(
-        { order_id, product_id, quantity, price },
+        { order_id, product_id, quantity, unit_price },
         orderItem_id,
       );
       res.status(HttpStatus.OK.code).json({

@@ -1,14 +1,14 @@
 import { eq, isNull, sql, asc, desc, and, inArray } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { CreateOrder } from './order.model';
+import { CreateOrder, UpdateOrder } from './order.model';
 import {
   order,
   supplier,
   orderProduct,
   product,
   productDetails,
-  serializeProduct,
   productRecord,
+  serializeProduct,
 } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 
@@ -98,7 +98,8 @@ export class OrderService {
     }
 
     const result = await query;
-    // This shit is annoying, will complain for missing data, which is its intended to  be null
+    // This shit is annoying, will complain for missing data,
+    // even if its intended to be undentified
     // Since its customer data and suppose not all are filled.
     const orderWithDetails: CreateOrder[] = Object.values(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,11 +107,9 @@ export class OrderService {
         const orderId = Number(row.order?.order_id); // Ensure orderId is a number
 
         if (orderId == null || isNaN(orderId)) {
-          console.warn('Skipping row with invalid orderId:', row);
-          return acc; // Skip invalid rows
+          return acc;
         }
 
-        // Initialize order in acc if not already present
         if (!acc[orderId]) {
           acc[orderId] = {
             ...row.order,
@@ -121,7 +120,6 @@ export class OrderService {
           };
         }
 
-        // Add order products if they exist
         if (includes.includes('order_products') && row.order_product) {
           acc[orderId].order_products.push({
             ...(row.order_product
@@ -147,12 +145,75 @@ export class OrderService {
     return { totalData, orderWithDetails };
   }
 
-  async getOrderById(paramsId: number) {
-    const result = await this.db
-      .select()
+  async getOrderById(order_id: number, includes: string[]) {
+    const conditions = [isNull(order.deleted_at)];
+
+    if (order_id && !isNaN(Number(order_id))) {
+      conditions.push(eq(order.order_id, Number(order_id)));
+    } else {
+      throw new Error('Invalid Order ID');
+    }
+
+    // Get order details
+    const query = this.db
+      .select({
+        order: order,
+        ...(includes.includes('supplier') ? { supplier } : {}),
+        ...(includes.includes('order_products')
+          ? { order_product: orderProduct }
+          : {}),
+        ...(includes.includes('product') ? { product } : {}),
+        ...(includes.includes('product_details') ? { productDetails } : {}),
+      })
       .from(order)
-      .where(eq(order.order_id, paramsId));
-    return result[0];
+      .where(and(...conditions));
+
+    if (includes.includes('supplier')) {
+      query.leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id));
+    }
+    if (includes.includes('order_products')) {
+      query.leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id));
+
+      if (includes.includes('product')) {
+        query.leftJoin(
+          product,
+          eq(product.product_id, orderProduct.product_id),
+        );
+
+        if (includes.includes('product_details')) {
+          query.leftJoin(
+            productDetails,
+            eq(productDetails.product_id, product.product_id),
+          );
+        }
+      }
+    }
+
+    const result = await query;
+
+    if (result.length === 0) {
+      return null; // No order found
+    }
+
+    const orderWithDetails = {
+      ...result[0].order,
+      supplier: includes.includes('supplier')
+        ? (result[0].supplier ?? undefined)
+        : undefined,
+      order_products: includes.includes('order_products')
+        ? result.map((row) => ({
+            ...(row.order_product ?? {}),
+            product: includes.includes('product')
+              ? (row.product ?? undefined)
+              : undefined,
+            product_details: includes.includes('product_details')
+              ? (row.productDetails ?? undefined)
+              : undefined,
+          }))
+        : undefined,
+    };
+
+    return orderWithDetails;
   }
 
   async createOrder(data: CreateOrder): Promise<void> {
@@ -171,6 +232,26 @@ export class OrderService {
           order_id: insertedOrder.order_id,
           ...item,
         });
+      }
+    });
+  }
+  async finalize(data: UpdateOrder, paramsId: number) {
+    await this.db.transaction(async (tx) => {
+      await tx
+        .update(order)
+        .set({
+          ...data,
+          order_value: data.order_value?.toString(),
+        })
+        .where(eq(order.order_id, paramsId));
+
+      for (const item of data.order_products) {
+        await tx
+          .update(orderProduct)
+          .set(item)
+          .where(
+            eq(orderProduct.order_product_id, Number(item.order_product_id)),
+          );
         if (item.is_serialize) {
           for (let i = 0; i < item.quantity; i++) {
             await tx.insert(serializeProduct).values({

@@ -68,12 +68,15 @@ const productSchema = z.object({
 });
 
 const orderItem = z.object({
+  order_product_id: z.number().optional(),
+  order_id: z.number().optional(),
   product_id: z.number().min(1),
   quantity: z.number().min(1),
   unit_price: z.string().min(1),
   is_serialize: z.boolean().optional(),
   product: productSchema.optional(),
 });
+
 const supplierSchema = z.object({
   supplier_id: z.number().optional(),
   name: z.string().min(1),
@@ -99,19 +102,25 @@ export const CreateOrder = z.object({
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
 
-  order_products: z.array(orderItem).optional(),
+  order_products: z.array(orderItem).min(1),
   supplier: supplierSchema.optional(),
 });
 
 export const UpdateOrder = z.object({
+  order_id: z.number().optional(),
+  supplier_id: z.number().optional(),
+
   notes: z.string().optional(),
   receive_at: z.date().optional(),
-  expected_arrival: z.string().optional(),
+  expected_arrival: z.date().optional(),
 
-  ordered_value: z.number(),
+  order_value: z.number(),
   order_status: orderStatusEnum,
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
+
+  order_products: z.array(orderItem).min(1),
+  supplier: supplierSchema.optional(),
 });
 
 export type CreateOrder = z.infer<typeof CreateOrder>;
