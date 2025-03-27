@@ -29,7 +29,9 @@ export default function OrderInformationProfile() {
 							{selectedOrder && (
 								<CardDescription>
 									Expected Arrival:{' '}
-									{dateParser(selectedOrder.expected_arrival ?? '')}
+									{selectedOrder.expected_arrival
+										? dateParser(selectedOrder.expected_arrival)
+										: 'Invalid date'}
 								</CardDescription>
 							)}
 						</div>

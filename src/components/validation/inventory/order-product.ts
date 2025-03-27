@@ -1,9 +1,13 @@
 import {z} from 'zod';
 const orderStatusEnum = z.enum([
-	'Pending',
-	'On Delivery',
-	'Returned',
+	'Draft',
+	'Finalized',
+	'Awaiting Arrival',
+	'Partially Delivered',
+	'Delivered',
 	'Cancelled',
+	'Returned',
+	'Stocked',
 ]);
 const orderPaymentStatus = z.enum(['Pending', 'Partially Paid', 'Paid']);
 const orderPaymentMethod = z.enum([
@@ -111,9 +115,11 @@ export const orderProductSchema = z.object({
 	order_id: z.number().optional(),
 	product_id: z.number().min(1),
 
-	quantity: z.number().min(1),
+	ordered_quantity: z.number().min(1),
+	delivered_quantity: z.number().optional(),
 	unit_price: z.string().min(1),
 	is_serialize: z.boolean().optional(),
+	status: z.string().optional(),
 
 	order: orderSchema.optional(),
 	product: productSchema.optional(),

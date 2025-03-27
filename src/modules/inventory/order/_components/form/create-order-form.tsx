@@ -56,6 +56,7 @@ import {Order, orderSchema} from '@/components/validation/inventory/order';
 import {Product} from '@/components/validation/inventory/product';
 import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
 import {Textarea} from '@/components/ui/textarea';
+import useOrderStore from '@/api/order';
 
 export function CreateOrderForm() {
 	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -70,6 +71,7 @@ export function CreateOrderForm() {
 		search: {}, // To store search state for each product (keyed by product index or ID)
 		selectedProduct: {}, // To store selected product state for each product
 	});
+	const {addOrder} = useOrderStore();
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
@@ -101,7 +103,7 @@ export function CreateOrderForm() {
 		resolver: zodResolver(orderSchema),
 		defaultValues: {
 			supplier_id: '',
-			order_status: 'Pending',
+			order_status: 'Draft',
 			order_value: 0,
 		},
 		mode: 'onChange',
@@ -127,7 +129,8 @@ export function CreateOrderForm() {
 	useEffect(() => {
 		const total =
 			orderValueTracker.order_products?.reduce(
-				(acc, curr) => acc + (curr.quantity * parseInt(curr.unit_price) || 0),
+				(acc, curr) =>
+					acc + (curr.ordered_quantity * parseInt(curr.unit_price) || 0),
 				0,
 			) || 0;
 		setValue('order_value', total);
@@ -150,7 +153,14 @@ export function CreateOrderForm() {
 		if (supplierId) fetchData();
 	}, [supplierId]);
 
-	const orderStatus = ['Pending', 'On Delivery', 'Returned', 'Cancelled'];
+	const orderStatus = [
+		'Draft',
+		'Finalized',
+		'Awaiting Arrival',
+		'Partially Fulfiled',
+		'Fulfilled',
+		'Cancelled',
+	];
 
 	// Update search state for a specific field dynamically
 	const handleSearchChange = (index: number, value: string) => {
@@ -192,11 +202,7 @@ export function CreateOrderForm() {
 				toast.error('No order Items added');
 				return;
 			}
-			await request('POST', `api/v1/ims/order/`, {
-				...formData,
-				supplier_id: Number(formData.supplier_id),
-			});
-			toast.success('Order Added');
+			await addOrder(formData);
 			navigate(-1);
 		} catch (error) {
 			console.log(error);
@@ -235,8 +241,9 @@ export function CreateOrderForm() {
 							onClick={() =>
 								append({
 									product_id: -1,
-									quantity: 0,
+									ordered_quantity: 0,
 									unit_price: '',
+									status: 'Draft',
 								})
 							}
 							disabled={fields.length >= items.length}
@@ -439,7 +446,7 @@ export function CreateOrderForm() {
 												</Card>
 												<FormField
 													control={form.control}
-													name={`order_products.${index}.quantity`}
+													name={`order_products.${index}.ordered_quantity`}
 													render={({field}) => (
 														<FormItem>
 															<FormLabel>Quantity</FormLabel>
