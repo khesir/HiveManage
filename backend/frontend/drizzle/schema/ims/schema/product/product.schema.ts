@@ -10,6 +10,7 @@ import {
 export const productStatus = pgEnum('product_status', [
   'Unavailable',
   'Available',
+  'Discontinued',
 ]);
 
 export const product = pgTable('product', {

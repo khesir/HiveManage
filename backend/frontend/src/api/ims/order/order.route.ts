@@ -23,9 +23,9 @@ orderRoute.post(
   orderController.createOrder.bind(orderController),
 );
 
-orderRoute.put(
+orderRoute.post(
   '/:order_id/finalize',
-  [validateRequest({ body: CreateOrder })],
+  [validateRequest({ body: UpdateOrder })],
   orderController.finalize.bind(orderController),
 );
 

@@ -1,5 +1,5 @@
 {
-  "id": "28993f50-4026-448c-959b-a31feb9ae883",
+  "id": "b64b1751-b3e9-4301-9789-54ecae0af840",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1278,18 +1278,32 @@
           "primaryKey": false,
           "notNull": false
         },
-        "quantity": {
-          "name": "quantity",
+        "ordered_quantity": {
+          "name": "ordered_quantity",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "default": 1
+        },
+        "delivered_quantity": {
+          "name": "delivered_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
         },
         "unit_price": {
           "name": "unit_price",
           "type": "numeric(50, 2)",
           "primaryKey": false,
           "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
         },
         "is_serialize": {
           "name": "is_serialize",
@@ -3420,11 +3434,11 @@
       "name": "order_status",
       "schema": "public",
       "values": [
-        "Waiting for Arrival",
-        "Pending",
-        "Delivered",
-        "Returned",
-        "Pending Payment",
+        "Draft",
+        "Finalized",
+        "Awaiting Arrival",
+        "Partially Fulfiled",
+        "Fulfilled",
         "Cancelled"
       ]
     },
@@ -3448,12 +3462,27 @@
         "Paid"
       ]
     },
+    "public.status": {
+      "name": "status",
+      "schema": "public",
+      "values": [
+        "Draft",
+        "Finalized",
+        "Awaiting Arrival",
+        "Partially Delivered",
+        "Delivered",
+        "Cancelled",
+        "Returned",
+        "Stocked"
+      ]
+    },
     "public.product_status": {
       "name": "product_status",
       "schema": "public",
       "values": [
         "Unavailable",
-        "Available"
+        "Available",
+        "Discontinued"
       ]
     },
     "public.record_condition": {
@@ -3471,11 +3500,9 @@
       "values": [
         "Sold",
         "Available",
-        "Pending Payment",
-        "On Order",
         "In Service",
-        "Awaiting Service",
-        "Return Requested"
+        "On Order",
+        "Sold out"
       ]
     },
     "public.serial_condition": {
@@ -3493,11 +3520,11 @@
       "values": [
         "Sold",
         "Available",
-        "Pending Payment",
-        "On Order",
         "In Service",
-        "Awaiting Service",
-        "Return Requested"
+        "On Order",
+        "Returned",
+        "Damage",
+        "Retired"
       ]
     },
     "public.supplierRelation_Status": {

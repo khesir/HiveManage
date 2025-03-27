@@ -5,15 +5,7 @@ export const CreateProductRecord = z.object({
   quantity: z.number().min(1),
   price: z.number(),
   condition: z.enum(['New', 'Secondhand', 'Broken']),
-  status: z.enum([
-    'Sold',
-    'Available',
-    'Pending Payment',
-    'On Order',
-    'In Service',
-    'Awaiting Service',
-    'Return Requested',
-  ]),
+  status: z.enum(['Sold', 'Available', 'In Service', 'On Order', 'Sold out']),
 });
 
 export const UpdateProductRecord = z.object({

@@ -18,11 +18,9 @@ export const recordCondition = pgEnum('record_condition', [
 export const recordStatus = pgEnum('record_status', [
   'Sold',
   'Available',
-  'Pending Payment',
-  'On Order',
   'In Service',
-  'Awaiting Service',
-  'Return Requested',
+  'On Order',
+  'Sold out',
 ]);
 
 export const productRecord = pgTable('product_record', {

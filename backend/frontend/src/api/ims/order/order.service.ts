@@ -222,6 +222,9 @@ export class OrderService {
         .insert(order)
         .values({
           ...data,
+          expected_arrival: data.expected_arrival
+            ? new Date(data.expected_arrival)
+            : null,
           order_value: data.order_value?.toString(),
           order_payment_status: 'Pending',
           order_payment_method: 'Cash',
@@ -230,6 +233,7 @@ export class OrderService {
       for (const item of data.order_products!) {
         await tx.insert(orderProduct).values({
           order_id: insertedOrder.order_id,
+          status: 'Draft',
           ...item,
         });
       }
@@ -241,14 +245,18 @@ export class OrderService {
         .update(order)
         .set({
           ...data,
+          expected_arrival: data.expected_arrival
+            ? new Date(data.expected_arrival)
+            : null,
           order_value: data.order_value?.toString(),
+          order_status: 'Awaiting Arrival',
         })
         .where(eq(order.order_id, paramsId));
 
       for (const item of data.order_products) {
         await tx
           .update(orderProduct)
-          .set(item)
+          .set({ ...item, status: 'Awaiting Arrival' })
           .where(
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );

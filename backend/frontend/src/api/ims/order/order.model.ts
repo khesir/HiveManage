@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 const orderStatusEnum = z.enum([
-  'Waiting for Arrival',
-  'Pending',
-  'Delivered',
-  'Returned',
-  'Pending Payment',
+  'Draft',
+  'Finalized',
+  'Awaiting Arrival',
+  'Partially Fulfiled',
+  'Fulfilled',
   'Cancelled',
 ]);
 const orderPaymentStatus = z.enum(['Pending', 'Partially Paid', 'Paid']);
@@ -95,9 +95,9 @@ export const CreateOrder = z.object({
 
   notes: z.string().optional(),
   receive_at: z.date().optional(),
-  expected_arrival: z.date().optional(),
+  expected_arrival: z.string().optional(),
 
-  order_value: z.number(),
+  order_value: z.string(),
   order_status: orderStatusEnum,
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
@@ -110,17 +110,27 @@ export const UpdateOrder = z.object({
   order_id: z.number().optional(),
   supplier_id: z.number().optional(),
 
-  notes: z.string().optional(),
-  receive_at: z.date().optional(),
-  expected_arrival: z.date().optional(),
+  notes: z.string().nullable().optional(),
+  receive_at: z.date().nullable().optional(),
+  expected_arrival: z.string().optional(),
 
-  order_value: z.number(),
+  order_value: z.string(),
   order_status: orderStatusEnum,
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
 
-  order_products: z.array(orderItem).min(1),
-  supplier: supplierSchema.optional(),
+  order_products: z
+    .array(
+      z.object({
+        order_product_id: z.number().optional(),
+        order_id: z.number().optional(),
+        product_id: z.number().min(1),
+        quantity: z.number().min(1),
+        unit_price: z.string().min(1),
+        is_serialize: z.boolean().optional(),
+      }),
+    )
+    .min(1),
 });
 
 export type CreateOrder = z.infer<typeof CreateOrder>;

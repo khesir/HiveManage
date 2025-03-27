@@ -19,11 +19,11 @@ export const serialCondition = pgEnum('serial_condition', [
 export const serialStatus = pgEnum('serial_status', [
   'Sold',
   'Available',
-  'Pending Payment',
-  'On Order',
   'In Service',
-  'Awaiting Service',
-  'Return Requested',
+  'On Order',
+  'Returned',
+  'Damage',
+  'Retired',
 ]);
 
 export const serializeProduct = pgTable('serialized_product', {

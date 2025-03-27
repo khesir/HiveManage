@@ -13,11 +13,11 @@ export const CreateSerialize = z.object({
   status: z.enum([
     'Sold',
     'Available',
-    'Pending Payment',
-    'On Order',
     'In Service',
-    'Awaiting Service',
-    'Return Requested',
+    'On Order',
+    'Returned',
+    'Damage',
+    'Retired',
   ]),
 });
 export const UpdateSerialize = z.object({

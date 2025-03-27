@@ -12,7 +12,7 @@ export class OrderItemService {
   }
 
   async createOrderItem(data: CreateOrderItem) {
-    await this.db.insert(orderProduct).values(data);
+    await this.db.insert(orderProduct).values({ ...data, status: 'Draft' });
   }
 
   async getAllOrderItem(
@@ -73,7 +73,7 @@ export class OrderItemService {
   async updateOrderItem(data: UpdateOrderItem, orderItem_id: string) {
     await this.db
       .update(orderProduct)
-      .set({ ...data, quantity: Number(data.quantity) })
+      .set({ ...data })
       .where(eq(orderProduct.order_product_id, Number(orderItem_id)));
   }
 
@@ -81,5 +81,12 @@ export class OrderItemService {
     await this.db
       .delete(orderProduct)
       .where(eq(orderProduct.order_product_id, paramsId));
+  }
+
+  async finalize(data: UpdateOrderItem, orderItem_id: string) {
+    await this.db
+      .update(orderProduct)
+      .set({ ...data, status: 'Finalized' })
+      .where(eq(orderProduct.order_product_id, Number(orderItem_id)));
   }
 }

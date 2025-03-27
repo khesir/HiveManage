@@ -10,11 +10,11 @@ import {
 import { supplier } from '../product/supplier.schema';
 
 export const orderStatus = pgEnum('order_status', [
-  'Waiting for Arrival',
-  'Pending',
-  'Delivered',
-  'Returned',
-  'Pending Payment',
+  'Draft',
+  'Finalized',
+  'Awaiting Arrival',
+  'Partially Fulfiled',
+  'Fulfilled',
   'Cancelled',
 ]);
 export const paymentStatus = pgEnum('order_payment_status', [

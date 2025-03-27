@@ -29,7 +29,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."order_status" AS ENUM('Waiting for Arrival', 'Pending', 'Delivered', 'Returned', 'Pending Payment', 'Cancelled');
+ CREATE TYPE "public"."order_status" AS ENUM('Draft', 'Finalized', 'Awaiting Arrival', 'Partially Fulfiled', 'Fulfilled', 'Cancelled');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -47,7 +47,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."product_status" AS ENUM('Unavailable', 'Available');
+ CREATE TYPE "public"."status" AS ENUM('Draft', 'Finalized', 'Awaiting Arrival', 'Partially Delivered', 'Delivered', 'Cancelled', 'Returned', 'Stocked');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."product_status" AS ENUM('Unavailable', 'Available', 'Discontinued');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -59,7 +65,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."record_status" AS ENUM('Sold', 'Available', 'Pending Payment', 'On Order', 'In Service', 'Awaiting Service', 'Return Requested');
+ CREATE TYPE "public"."record_status" AS ENUM('Sold', 'Available', 'In Service', 'On Order', 'Sold out');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -71,7 +77,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."serial_status" AS ENUM('Sold', 'Available', 'Pending Payment', 'On Order', 'In Service', 'Awaiting Service', 'Return Requested');
+ CREATE TYPE "public"."serial_status" AS ENUM('Sold', 'Available', 'In Service', 'On Order', 'Returned', 'Damage', 'Retired');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -333,8 +339,10 @@ CREATE TABLE IF NOT EXISTS "order_product" (
 	"order_product_id" serial PRIMARY KEY NOT NULL,
 	"order_id" integer,
 	"product_id" integer,
-	"quantity" integer DEFAULT 1,
+	"ordered_quantity" integer DEFAULT 1,
+	"delivered_quantity" integer DEFAULT 0,
 	"unit_price" numeric(50, 2),
+	"status" "status" NOT NULL,
 	"is_serialize" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
