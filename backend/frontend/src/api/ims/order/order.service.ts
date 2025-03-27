@@ -261,7 +261,7 @@ export class OrderService {
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );
         if (item.is_serialize) {
-          for (let i = 0; i < item.quantity; i++) {
+          for (let i = 0; i < item.ordered_quantity; i++) {
             await tx.insert(serializeProduct).values({
               product_id: Number(item.product_id),
               supplier_id: Number(data.supplier_id),
@@ -275,7 +275,7 @@ export class OrderService {
           await tx.insert(productRecord).values({
             product_id: Number(item.product_id),
             supplier_id: Number(data.supplier_id),
-            quantity: Number(item.quantity),
+            quantity: Number(item.ordered_quantity),
             price: Number(item.unit_price),
             condition: 'New',
             status: 'On Order',
@@ -294,5 +294,10 @@ export class OrderService {
       .update(order)
       .set({ deleted_at: new Date(Date.now()) })
       .where(eq(order.order_id, paramsId));
+
+    await this.db
+      .update(orderProduct)
+      .set({ deleted_at: new Date(Date.now()) })
+      .where(eq(orderProduct.order_id, paramsId));
   }
 }
