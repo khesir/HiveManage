@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {Product} from '@/modules/inventory/_components/validation/product';
+import {Product} from '@/components/validation/inventory/product';
 import {PackageOpen} from 'lucide-react';
 import {useEffect, useState} from 'react';
 

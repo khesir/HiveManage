@@ -10,8 +10,8 @@ import {Badge} from '@/components/ui/badge';
 import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {File} from 'lucide-react';
-import {Supplier} from '../_components/validation/supplier';
-import {ProductCategory} from '../_components/validation/category';
+import {Supplier} from '../../../components/validation/inventory/supplier';
+import {ProductCategory} from '../../../components/validation/inventory/category';
 
 interface ProfileProps {
 	data: Supplier | undefined;

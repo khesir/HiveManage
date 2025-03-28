@@ -1,15 +1,15 @@
 import {create} from 'zustand';
-import {OrderWithDetails} from '../validation/order';
+import {Order} from '../../../../components/validation/inventory/order';
 
 type PropsProps = {
-	data: OrderWithDetails | null;
-	setOrder: (newData: OrderWithDetails) => void;
+	data: Order | null;
+	setOrder: (newData: Order) => void;
 	resetOrder: () => void;
 };
 
-const useOrderStore = create<PropsProps>((set) => ({
+const useLoalOrderStore = create<PropsProps>((set) => ({
 	data: null,
-	setOrder: (newData: OrderWithDetails) =>
+	setOrder: (newData: Order) =>
 		set(() => ({
 			data: newData,
 		})),
@@ -19,4 +19,4 @@ const useOrderStore = create<PropsProps>((set) => ({
 		})),
 }));
 
-export default useOrderStore;
+export default useLoalOrderStore;

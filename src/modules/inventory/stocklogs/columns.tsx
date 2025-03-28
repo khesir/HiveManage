@@ -1,6 +1,6 @@
 import {dateParser} from '@/lib/util/utils';
 import {ColumnDef} from '@tanstack/react-table';
-import {StockLogs} from '../_components/validation/stock-logs';
+import {StockLogs} from '../../../components/validation/inventory/stock-logs';
 
 export const columns: ColumnDef<StockLogs>[] = [
 	{

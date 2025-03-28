@@ -3,7 +3,7 @@ import {DataTable} from '@/components/table/data-table';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Separator} from '@/components/ui/separator';
 import {dateParser} from '@/lib/util/utils';
-import {ProductSupplier} from '@/modules/inventory/_components/validation/product-supplier';
+import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
 import {ColumnDef} from '@tanstack/react-table';
 import {AxiosError} from 'axios';
 import {useEffect, useState} from 'react';

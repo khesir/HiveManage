@@ -2,7 +2,7 @@ import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
 import {ScrollArea} from '@/components/ui/scroll-area';
 
-import {Product} from '@/modules/inventory/_components/validation/product';
+import {Product} from '@/components/validation/inventory/product';
 import clsx from 'clsx';
 
 interface Props {

@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
-import {Supplier} from '../_components/validation/supplier';
+import {Supplier} from '../../../components/validation/inventory/supplier';
 import {columns} from './columns';
 import {SupplierTable} from './supplier-table';
 

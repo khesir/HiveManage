@@ -1,6 +1,6 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
-import {Product} from '../_components/validation/product';
+import {Product} from '../../../components/validation/inventory/product';
 import {dateParser} from '@/lib/util/utils';
 import clsx from 'clsx';
 export const columns: ColumnDef<Product>[] = [
@@ -59,10 +59,9 @@ export const columns: ColumnDef<Product>[] = [
 			);
 		},
 	},
-
 	{
 		accessorKey: 'is_serialize',
-		header: 'Serialized Item',
+		header: 'Serialized',
 		cell: ({row}) => {
 			return (
 				<Badge

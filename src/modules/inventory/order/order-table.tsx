@@ -28,39 +28,28 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Product} from '@/modules/inventory/_components/validation/product';
-import {Input} from '@/components/ui/input';
-import useProducts from '../_components/hooks/use-products';
-import {Category} from '../_components/validation/category';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import {Order} from '../../../components/validation/inventory/order';
+import useOrderStore from '../_components/hooks/use-orders';
+import {DropdownMenu, DropdownMenuContent} from '@/components/ui/dropdown-menu';
+import {DropdownMenuTrigger} from '@radix-ui/react-dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import { Order } from '../_components/validation/order';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	pageSizecategorys?: number[];
-	searchKey: string;
 	pageCount: number;
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
 }
-// type SelectedValue = {
-// 	id: number; // Selected ID
-// 	name: string; // Selected name
-// };
+
 export function OrderDataTable<TData extends Order, TValue>({
 	columns,
 	data,
 	pageCount,
-	searchKey,
-	pageSizecategorys = [10, 20, 30, 40, 50],
+	pageSizecategorys = [5, 10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -102,18 +91,10 @@ export function OrderDataTable<TData extends Order, TValue>({
 			`${location.pathname}?${createQueryString({
 				page: pageIndex + 1,
 				limit: pageSize,
-				// categories: Array.from(selectedValues).join('.'),
 			})}`,
 			{replace: true},
 		);
-	}, [
-		pageIndex,
-		pageSize,
-		// selectedValues,
-		navigate,
-		location.pathname,
-		createQueryString,
-	]);
+	}, [pageIndex, pageSize, navigate, location.pathname, createQueryString]);
 
 	// Initialize the table
 	const table = useReactTable({
@@ -130,97 +111,20 @@ export function OrderDataTable<TData extends Order, TValue>({
 		manualPagination: true,
 		manualFiltering: true,
 	});
-	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
 
-	// ====================================================================================
-	// Search Funtion
-	// Debounced search value to avoid triggering requests too frequently
-	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
 	useEffect(() => {
-		const handler = setTimeout(() => {
-			setDebouncedSearchValue(searchValue);
-		}, 500); // Adjust debounce delay as needed
-		return () => clearTimeout(handler);
-	}, [searchValue]);
-
-	// // Update the URL with the search query when the searchValue changes
-	useEffect(() => {
-		if (debouncedSearchValue?.length > 0) {
-			navigate(
-				`${location.pathname}?${createQueryString({
-					page: null, // Reset page when searching
-					limit: pageSize,
-					product_name: debouncedSearchValue, // Add search param to URL
-				})}`,
-				{replace: true},
-			);
-		} else {
-			navigate(
-				`${location.pathname}?${createQueryString({
-					page: null,
-					limit: pageSize,
-					product_name: null, // Remove search param from URL if empty
-				})}`,
-				{replace: true},
-			);
+		if (data.length > 0) {
+			const rdata: Order = data[0];
+			useOrderStore.getState().setOrder(rdata);
 		}
+	}, [data]);
 
-		// Reset pagination to first page on search change
-		setPagination((prev) => ({...prev, pageIndex: 0}));
-	}, [
-		debouncedSearchValue,
-		pageSize,
-		navigate,
-		location.pathname,
-		createQueryString,
-	]);
+	const handleRowClick = (row: Row<TData>) => {
+		const rowData: Order = row.original;
 
-	// Set the first employee data to Zustand on initial render
-	// useEffect(() => {
-	// 	if (data.length > 0) {
-	// 		const rdata: Product = data[0];
-	// 		useProducts.getState().setProduct(rdata);
-	// 	}
-	// }, [data]);
+		useOrderStore.getState().setOrder(rowData);
+	};
 
-	// // This handles the employee viewing by click
-	// const handleRowClick = (row: Row<TData>) => {
-	// 	// Access the data of the clicked row
-	// 	const rowData: Product = row.original;
-
-	// 	// Do something with the row data
-	// 	useProducts.getState().setProduct(rowData);
-	// };
-
-	// Filter
-
-	// TODO: Command Dynamic Filter
-	// const [selectedValues, setSelectedValues] = useState<Set<SelectedValue>>(
-	// 	new Set(),
-	// );
-	// const handleSelect = (id: number, name: string) => {
-	// 	setSelectedValues((prevSet) => {
-	// 		const newSet = new Set(prevSet);
-	// 		const isSelected = Array.from(newSet).some((item) => item.id === id);
-
-	// 		if (isSelected) {
-	// 			// Remove item if it exists
-	// 			newSet.forEach((item) => {
-	// 				if (item.id === id) newSet.delete(item);
-	// 			});
-	// 		} else {
-	// 			// Add new item
-	// 			newSet.add({id, name});
-	// 		}
-
-	// 		return newSet;
-	// 	});
-	// };
-	// const selectedValuesArray = Array.from(selectedValues);
-
-	// const resetFilter = () => {
-	// 	setSelectedValues(new Set());
-	// };
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
 		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
 	);
@@ -232,45 +136,53 @@ export function OrderDataTable<TData extends Order, TValue>({
 			`${location.pathname}?${createQueryString({
 				page: pageIndex + 1,
 				limit: pageSize,
-				status: categoryFilter,
 				sort: order,
 			})}`,
 			{replace: true},
 		);
 	};
 
-	// Category Filter
-	const [categoryFilter, setCategoryFilter] = useState<number | null>(
-		Number(searchParams.get('category_id')),
-	);
-	const handleCategoryFilterChange = (category_id: number | null) => {
-		if (category_id === categoryFilter) return;
-
-		const newCategory = category_id === null ? null : category_id;
-		setCategoryFilter(newCategory);
-
-		// Reset to the first page on filter change and update the URL
-		navigate(
-			`${location.pathname}?${createQueryString({
-				page: 1,
-				limit: pageSize,
-				sort: sortOrder,
-				category_id: newCategory,
-			})}`,
-			{replace: true},
-		);
-
-		setPagination((prev) => ({...prev, pageIndex: 0}));
-	};
 	return (
 		<>
 			<div className="flex justify-between gap-3 md:gap-0">
+				<div className="flex gap-2">
+					<DropdownMenu>
+						<DropdownMenuTrigger>
+							<Button variant={'outline'}>
+								Sort:{' '}
+								<div className="flex items-center">
+									<Separator orientation="vertical" className="mx-2 h-4" />
+									<Badge
+										variant={'secondary'}
+										className="rounded-sm px-1 font-normal"
+									>
+										{sortOrder === 'asc' ? 'Asc' : 'Desc'}
+									</Badge>
+								</div>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className="flex flex-col">
+							<Button
+								variant={sortOrder === 'asc' ? 'default' : 'ghost'}
+								onClick={() => handleSortOrderChange('asc')}
+							>
+								Ascending
+							</Button>
+							<Button
+								variant={sortOrder === 'desc' ? 'default' : 'ghost'}
+								onClick={() => handleSortOrderChange('desc')}
+							>
+								Descending
+							</Button>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
 				<Button onClick={() => navigate('create')}>
 					<Plus className="mr-2 h-4 w-4" />
 					Create Order
 				</Button>
 			</div>
-			<ScrollArea className="h-[calc(100vh-200px)] rounded-md border">
+			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (

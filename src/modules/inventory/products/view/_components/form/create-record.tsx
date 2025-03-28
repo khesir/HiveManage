@@ -19,7 +19,7 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {
 	ItemRecords,
 	itemRecordSchema,
-} from '@/modules/inventory/_components/validation/item-record';
+} from '@/components/validation/inventory/item-record';
 import {
 	Select,
 	SelectContent,
@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {ProductSupplier} from '@/modules/inventory/_components/validation/product-supplier';
+import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
 
 interface Props {
 	onSubmit?: () => void;
@@ -104,6 +104,7 @@ export function CreateInventoryRecord({onSubmit}: Props) {
 
 	const status = [
 		'Sold',
+		'Available',
 		'Pending Payment',
 		'On Order',
 		'In Service',

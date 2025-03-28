@@ -8,7 +8,7 @@ export function ViewItemTabDetails() {
 			<div className="flex items-center">
 				<TabsList>
 					<TabsTrigger value="Informations">Informations</TabsTrigger>
-					<TabsTrigger value="Analytics">Analytics</TabsTrigger>
+					{/* <TabsTrigger value="Analytics">Analytics</TabsTrigger> */}
 					<TabsTrigger value="Settings">Settings</TabsTrigger>
 				</TabsList>
 				{/* Possibly add a marquee here for announcements or something */}
@@ -16,9 +16,9 @@ export function ViewItemTabDetails() {
 			<TabsContent value="Informations">
 				<ProductInformationTab />
 			</TabsContent>
-			<TabsContent value="Analytics">
+			{/* <TabsContent value="Analytics">
 				<p>Product Analysis chuchu</p>
-			</TabsContent>
+			</TabsContent> */}
 			<TabsContent value="Settings">
 				<SettingsSidebar />
 			</TabsContent>

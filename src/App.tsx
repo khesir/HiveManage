@@ -34,11 +34,12 @@ import EmployeePage from './pages/admin/systems/ems/employee-page';
 import ProductPage from './pages/inventory/product/prouct-page';
 import InventoryViewPage from './pages/inventory/product/inventory-view-page';
 import CreateProductPage from './pages/inventory/product/product-create-page';
-import OrderPage from './pages/inventory/product/orders/orders-page';
-import SupplierPage from './pages/inventory/product/suppliers/supplier-page';
-import CreateOrderPage from './pages/inventory/product/orders/create-order-page';
+import OrderPage from './pages/inventory/order/orders-page';
+import SupplierPage from './pages/inventory/suppliers/supplier-page';
+import CreateOrderPage from './pages/inventory/order/create-order-page';
 import InventoryRecordCreatePage from './pages/inventory/product/inventoryView/inventory-record-create';
 import CustomerDatabasePage from './pages/customer/customer-page';
+import ViewOrderPage from './pages/inventory/order/order-view-page';
 
 function App() {
 	return (
@@ -100,20 +101,19 @@ function App() {
 										<Route path="view/:id" />
 									</Route>
 								</Route>
-
-								<Route path="orders">
-									<Route index element={<OrderPage />} />
-									<Route path="create" element={<CreateOrderPage />} />
-									<Route path="view/:id" />
-									<Route
-										path="view/product/:id"
-										element={<InventoryViewPage />}
-									/>
-								</Route>
-								<Route path="suppliers">
-									<Route index element={<SupplierPage />} />
-									<Route path="view/:id" />
-								</Route>
+							</Route>
+							<Route path="orders">
+								<Route index element={<OrderPage />} />
+								<Route path="create" element={<CreateOrderPage />} />
+								<Route path="view/:id" element={<ViewOrderPage />} />
+								<Route
+									path="view/product/:id"
+									element={<InventoryViewPage />}
+								/>
+							</Route>
+							<Route path="suppliers">
+								<Route index element={<SupplierPage />} />
+								<Route path="view/:id" />
 							</Route>
 						</Route>
 					</Route>

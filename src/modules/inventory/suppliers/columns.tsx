@@ -1,5 +1,5 @@
 import {ColumnDef} from '@tanstack/react-table';
-import {Supplier} from '../_components/validation/supplier';
+import {Supplier} from '../../../components/validation/inventory/supplier';
 import {dateParser} from '@/lib/util/utils';
 
 export const columns: ColumnDef<Supplier>[] = [

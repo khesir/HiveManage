@@ -1,8 +1,8 @@
-import {BatchItem} from '@/modules/inventory/_components/validation/batch-items';
+import {BatchItem} from '@/components/validation/inventory/batch-items';
 import useItemStore from '../_components/hooks/use-custom-item';
 import {BatchRecords} from './batch-records';
 import {SerializeRecord} from './serialize-records';
-import {SerializeItem} from '@/modules/inventory/_components/validation/serialize-items';
+import {SerializeItem} from '@/components/validation/inventory/serialize-items';
 
 export function CombinedRecord() {
 	const {selectedItem} = useItemStore();

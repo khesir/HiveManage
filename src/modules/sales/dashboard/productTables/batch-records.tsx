@@ -8,7 +8,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
-import {BatchItem} from '@/modules/inventory/_components/validation/batch-items';
+import {BatchItem} from '@/components/validation/inventory/batch-items';
 import {ColumnDef} from '@tanstack/react-table';
 import {useState} from 'react';
 import {toast} from 'sonner';

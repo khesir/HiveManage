@@ -16,7 +16,7 @@ import {useEffect, useState} from 'react';
 import {ApiRequest, request} from '@/api/axios';
 import {Skeleton} from '@/components/ui/skeleton';
 
-import {Supplier} from '@/modules/inventory/_components/validation/supplier';
+import {Supplier} from '@/components/validation/inventory/supplier';
 import {
 	Select,
 	SelectContent,
@@ -29,7 +29,7 @@ import {Button} from '@/components/ui/button';
 import {
 	SerializeItem,
 	serializeItemSchema,
-} from '@/modules/inventory/_components/validation/serialize-items';
+} from '@/components/validation/inventory/serialize-items';
 import {generateCustomUUID} from '@/lib/util/utils';
 
 interface Props {
@@ -105,6 +105,7 @@ export function CreateInventorySerialRecord({onSubmit}: Props) {
 
 	const status = [
 		'Sold',
+		'Available',
 		'Pending Payment',
 		'On Order',
 		'In Service',

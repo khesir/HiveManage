@@ -3,9 +3,9 @@ import {PaginationResponse, request} from '@/api/axios';
 
 import useOrderStore from '../_components/hooks/use-orders';
 import useTrackReferesh from '../_components/hooks/uset-track-refresh';
-import {Order} from '../_components/validation/order';
 import {OrderDataTable} from './order-table';
 import {columns} from './columns';
+import {Order} from '@/components/validation/inventory/order';
 
 interface ProductWithDetails {
 	searchParams: URLSearchParams;
@@ -26,14 +26,14 @@ export function OrderList({
 	// Interactivity
 	const {setOrder} = useOrderStore();
 	const {track} = useTrackReferesh();
-
 	useEffect(() => {
 		const fetchProducts = async () => {
 			if (product_id) {
 				const res = await request<PaginationResponse<Order>>(
 					'GET',
-					`/api/v1/ims/order?limit=${pageLimit}&offeset=${offset}` +
-						(sort ? `&sort=${sort}` : ''),
+					`/api/v1/ims/order?limit=${pageLimit}&offset=${offset}` +
+						(sort ? `&sort=${sort}` : '') +
+						'&includes=order_products,supplier',
 				);
 				setOrders(res.data);
 				setOrder(res.data[0]);
@@ -41,8 +41,9 @@ export function OrderList({
 			} else {
 				const res = await request<PaginationResponse<Order>>(
 					'GET',
-					`/api/v1/ims/order?limit=${pageLimit}&offeset=${offset}` +
-						(sort ? `&sort=${sort}` : ''),
+					`/api/v1/ims/order?limit=${pageLimit}&offset=${offset}` +
+						(sort ? `&sort=${sort}` : '') +
+						'&includes=order_products,supplier',
 				);
 				setOrders(res.data);
 				setOrder(res.data[0]);
@@ -50,14 +51,8 @@ export function OrderList({
 			}
 		};
 		fetchProducts();
-	}, [offset, pageLimit, track]);
-
+	}, [offset, pageLimit, track, sort]);
 	return (
-		<OrderDataTable
-			columns={columns}
-			data={orders}
-			searchKey={''}
-			pageCount={pageCount}
-		/>
+		<OrderDataTable columns={columns} data={orders} pageCount={pageCount} />
 	);
 }

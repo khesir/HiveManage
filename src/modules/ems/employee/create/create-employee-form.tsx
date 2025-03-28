@@ -53,8 +53,8 @@ export function CreateEmployeeForm() {
 					positionResponse,
 					roleResponse,
 				] = await Promise.all([
-					request<ApiRequest<Department>>('GET', '/api/v1/ems/departments'),
-					request<ApiRequest<Designation>>('GET', '/api/v1/ems/designations'),
+					request<ApiRequest<Department>>('GET', '/api/v1/ems/department'),
+					request<ApiRequest<Designation>>('GET', '/api/v1/ems/designation'),
 					request<ApiRequest<Position>>('GET', '/api/v1/ems/position'),
 					request<ApiRequest<Role>>('GET', '/api/v1/ems/roles'),
 				]);

@@ -9,7 +9,7 @@ import {useState, useCallback} from 'react';
 import {Plus} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {CreateProductSupplierForm} from './create-product-supplier-form';
-import {ProductSupplier} from '@/modules/inventory/_components/validation/product-supplier';
+import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
 interface Props {
 	productSuppliers: ProductSupplier[];
 }
