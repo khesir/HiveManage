@@ -1,7 +1,7 @@
 import { asc, desc, eq, isNull, sql, and } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateOrderItem, UpdateOrderItem } from './orderitem.model';
-import { order, orderProduct, product } from '@/drizzle/schema/ims';
+import { order, orderProduct, product, supplier } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 
 export class OrderItemService {
@@ -17,14 +17,20 @@ export class OrderItemService {
 
   async getAllOrderItem(
     order_id: string | undefined,
+    product_id: string | undefined,
     sort: string,
     limit: number,
     offset: number,
+    no_pagination: boolean,
   ) {
     const conditions = [isNull(orderProduct.deleted_at)];
 
     if (order_id) {
       conditions.push(eq(orderProduct.order_id, Number(order_id)));
+    }
+
+    if (product_id) {
+      conditions.push(eq(orderProduct.product_id, Number(product_id)));
     }
 
     const totalCountQuery = await this.db
@@ -36,24 +42,29 @@ export class OrderItemService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(orderProduct)
       .leftJoin(order, eq(order.order_id, orderProduct.order_id))
       .leftJoin(product, eq(product.product_id, orderProduct.product_id))
+      .leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
           ? asc(orderProduct.created_at)
           : desc(orderProduct.created_at),
-      )
-      .limit(limit)
-      .offset(offset);
+      );
+
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+    const result = await query;
 
     const orderitemWithDetails = result.map((row) => ({
       ...row.order_product,
       order: {
         ...row.order,
+        supplier: row.supplier,
       },
       product: {
         ...row.product,

@@ -190,4 +190,37 @@ export class OrderController {
       next(error);
     }
   }
+  async pushToInventory(req: Request, res: Response, next: NextFunction) {
+    const { order_id } = req.params;
+    const {
+      supplier_id,
+      notes,
+      expected_arrival,
+      order_value,
+      order_products,
+      order_status,
+      order_payment_status,
+      order_payment_method,
+    } = req.body;
+    try {
+      await this.orderService.pushToInventory(
+        {
+          supplier_id,
+          notes,
+          expected_arrival,
+          order_value,
+          order_products,
+          order_status,
+          order_payment_status,
+          order_payment_method,
+        },
+        Number(order_id),
+      );
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error' });
+      next(error);
+    }
+  }
 }

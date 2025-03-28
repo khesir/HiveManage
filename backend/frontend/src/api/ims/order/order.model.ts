@@ -71,7 +71,8 @@ const orderItem = z.object({
   order_product_id: z.number().optional(),
   order_id: z.number().optional(),
   product_id: z.number().min(1),
-  ordered_quantity: z.number().min(1),
+  total_quantity: z.number().min(1),
+  ordered_quantity: z.number().optional(),
   delivered_quantity: z.number().optional(),
   unit_price: z.string().min(1),
   is_serialize: z.boolean().optional(),
@@ -95,7 +96,7 @@ export const CreateOrder = z.object({
   supplier_id: z.number().optional(),
 
   notes: z.string().optional(),
-  receive_at: z.date().optional(),
+  receive_at: z.string().optional(),
   expected_arrival: z.string().optional(),
 
   order_value: z.string(),
@@ -112,7 +113,6 @@ export const UpdateOrder = z.object({
   supplier_id: z.number().optional(),
 
   notes: z.string().nullable().optional(),
-  receive_at: z.date().nullable().optional(),
   expected_arrival: z.string().optional(),
 
   order_value: z.string(),
@@ -126,13 +126,14 @@ export const UpdateOrder = z.object({
         order_product_id: z.number().optional(),
         order_id: z.number().optional(),
         product_id: z.number().min(1),
-        ordered_quantity: z.number().min(1),
+        total_quantity: z.number().min(1),
+        ordered_quantity: z.number().optional(),
         delivered_quantity: z.number().optional(),
         unit_price: z.string().min(1),
         is_serialize: z.boolean().optional(),
       }),
     )
-    .min(1),
+    .optional(),
 });
 
 export type CreateOrder = z.infer<typeof CreateOrder>;

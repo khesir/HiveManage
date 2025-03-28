@@ -29,6 +29,12 @@ orderRoute.post(
   orderController.finalize.bind(orderController),
 );
 
+orderRoute.post(
+  '/:order_id/pushToInventory',
+  [validateRequest({ body: UpdateOrder })],
+  orderController.pushToInventory.bind(orderController),
+);
+
 orderRoute.put(
   '/:order_id',
   [validateRequest({ body: UpdateOrder }), validateOrderId],

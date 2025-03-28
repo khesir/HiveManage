@@ -12,19 +12,21 @@ export class OrderItemsController {
   }
 
   async getAllOrderItem(req: Request, res: Response, next: NextFunction) {
-    const order_id = req.query.order_id
-      ? String(req.query.order_id)
-      : undefined;
+    const order_id = (req.params.order_id as string) || undefined;
+    const product_id = (req.query.product_id as string) || undefined;
+    const no_pagination = req.query.no_pagination == 'true';
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    console.log(product_id);
     try {
       const data = await this.orderitemService.getAllOrderItem(
         order_id,
+        product_id,
         sort,
         limit,
         offset,
+        no_pagination,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -59,12 +61,19 @@ export class OrderItemsController {
 
   async createOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { order_id, product_id, ordered_quantity, unit_price, status } =
-        req.body;
+      const {
+        order_id,
+        product_id,
+        total_quantity,
+        ordered_quantity,
+        unit_price,
+        status,
+      } = req.body;
 
       await this.orderitemService.createOrderItem({
         order_id,
         product_id,
+        total_quantity,
         ordered_quantity,
         unit_price,
         status,
@@ -90,6 +99,7 @@ export class OrderItemsController {
       const {
         order_id,
         product_id,
+        total_quantity,
         ordered_quantity,
         delivered_quantity,
         unit_price,
@@ -99,6 +109,7 @@ export class OrderItemsController {
         {
           order_id,
           product_id,
+          total_quantity,
           ordered_quantity,
           delivered_quantity,
           unit_price,

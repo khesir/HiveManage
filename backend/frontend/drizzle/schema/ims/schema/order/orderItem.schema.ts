@@ -24,7 +24,8 @@ export const orderProduct = pgTable('order_product', {
   order_id: integer('order_id').references(() => order.order_id),
   product_id: integer('product_id').references(() => product.product_id),
 
-  ordered_quantity: integer('ordered_quantity').default(1),
+  total_quantity: integer('total_quantity').notNull(),
+  ordered_quantity: integer('ordered_quantity').default(0),
   delivered_quantity: integer('delivered_quantity').default(0),
   unit_price: decimal('unit_price', { precision: 50, scale: 2 }),
   status: orderItemStatus('status').notNull(),

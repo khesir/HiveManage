@@ -1,5 +1,5 @@
 {
-  "id": "b64b1751-b3e9-4301-9789-54ecae0af840",
+  "id": "d904054e-24ad-4d65-99d1-316735473b93",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1278,12 +1278,18 @@
           "primaryKey": false,
           "notNull": false
         },
+        "total_quantity": {
+          "name": "total_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "ordered_quantity": {
           "name": "ordered_quantity",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "default": 1
+          "default": 0
         },
         "delivered_quantity": {
           "name": "delivered_quantity",

@@ -35,7 +35,6 @@ export const order = pgTable('order', {
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
 
   notes: varchar('notes'),
-  receive_at: timestamp('receive_at'),
   expected_arrival: timestamp('expected_arrival'),
 
   order_value: decimal('order_value', { precision: 10, scale: 2 }),

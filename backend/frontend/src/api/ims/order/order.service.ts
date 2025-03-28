@@ -7,8 +7,8 @@ import {
   orderProduct,
   product,
   productDetails,
-  productRecord,
   serializeProduct,
+  productRecord,
 } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 
@@ -239,6 +239,31 @@ export class OrderService {
       }
     });
   }
+
+  async updateOrder(data: UpdateOrder, paramsId: number) {
+    await this.db
+      .update(order)
+      .set({
+        ...data,
+        expected_arrival: data.expected_arrival
+          ? new Date(data.expected_arrival)
+          : null,
+      })
+      .where(eq(order.order_id, paramsId));
+  }
+
+  async deleteOrder(paramsId: number): Promise<void> {
+    await this.db
+      .update(order)
+      .set({ deleted_at: new Date(Date.now()) })
+      .where(eq(order.order_id, paramsId));
+
+    await this.db
+      .update(orderProduct)
+      .set({ deleted_at: new Date(Date.now()) })
+      .where(eq(orderProduct.order_id, paramsId));
+  }
+
   async finalize(data: UpdateOrder, paramsId: number) {
     await this.db.transaction(async (tx) => {
       await tx
@@ -253,21 +278,45 @@ export class OrderService {
         })
         .where(eq(order.order_id, paramsId));
 
-      for (const item of data.order_products) {
+      for (const item of data.order_products!) {
         await tx
           .update(orderProduct)
           .set({ ...item, status: 'Awaiting Arrival' })
           .where(
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );
+      }
+    });
+  }
+  async pushToInventory(data: UpdateOrder, paramsId: number) {
+    await this.db.transaction(async (tx) => {
+      await tx
+        .update(order)
+        .set({
+          ...data,
+          expected_arrival: data.expected_arrival
+            ? new Date(data.expected_arrival)
+            : null,
+          order_value: data.order_value?.toString(),
+          order_status: 'Fulfilled',
+        })
+        .where(eq(order.order_id, paramsId));
+
+      for (const item of data.order_products!) {
+        await tx
+          .update(orderProduct)
+          .set({ ...item, status: 'Stocked' })
+          .where(
+            eq(orderProduct.order_product_id, Number(item.order_product_id)),
+          );
         if (item.is_serialize) {
-          for (let i = 0; i < item.ordered_quantity; i++) {
+          for (let i = 0; i < item.delivered_quantity!; i++) {
             await tx.insert(serializeProduct).values({
               product_id: Number(item.product_id),
               supplier_id: Number(data.supplier_id),
               price: Number(item.unit_price),
               condition: 'New',
-              status: 'On Order',
+              status: 'Available',
               serial_number: `SN-${item.product_id}-${Date.now()}-${crypto.randomUUID().slice(0, 4)}`,
             });
           }
@@ -275,29 +324,13 @@ export class OrderService {
           await tx.insert(productRecord).values({
             product_id: Number(item.product_id),
             supplier_id: Number(data.supplier_id),
-            quantity: Number(item.ordered_quantity),
+            quantity: Number(item.delivered_quantity),
             price: Number(item.unit_price),
             condition: 'New',
-            status: 'On Order',
+            status: 'Available',
           });
         }
       }
     });
-  }
-
-  async updateOrder(data: object, paramsId: number) {
-    await this.db.update(order).set(data).where(eq(order.order_id, paramsId));
-  }
-
-  async deleteOrder(paramsId: number): Promise<void> {
-    await this.db
-      .update(order)
-      .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(order.order_id, paramsId));
-
-    await this.db
-      .update(orderProduct)
-      .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(orderProduct.order_id, paramsId));
   }
 }
