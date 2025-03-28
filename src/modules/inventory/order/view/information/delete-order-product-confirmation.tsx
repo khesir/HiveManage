@@ -10,7 +10,7 @@ import {
 import {X} from 'lucide-react';
 import {useState} from 'react';
 
-import useOrderStore from '@/api/order';
+import useOrderStore from '@/api/order-state';
 
 interface Props {
 	product_order_id: number;

@@ -23,7 +23,7 @@ interface Props {
 	orderProduct: OrderProduct;
 }
 
-export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
+export function AddDeliveredProductForm({onSubmit, orderProduct}: Props) {
 	const {selectedOrder, loading, updateOrderItem, getOrderById} =
 		useOrderStore();
 
@@ -31,15 +31,28 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 		resolver: zodResolver(orderProductSchema),
 		defaultValues: {
 			unit_price: orderProduct.unit_price,
-			ordered_quantity: orderProduct.ordered_quantity,
 			total_quantity: orderProduct.total_quantity,
+			ordered_quantity: orderProduct.ordered_quantity,
 			product_id: orderProduct.product_id,
+			delivered_quantity: orderProduct.delivered_quantity,
+			order_id: orderProduct.order_id,
+			status: orderProduct.status,
 		},
 		mode: 'onChange',
 	});
 
 	const processForm = async (data: OrderProduct) => {
 		try {
+			const deliveredQuantity = data.delivered_quantity || 0;
+			const totalQuantity = data.total_quantity || 0;
+
+			if (deliveredQuantity === totalQuantity) {
+				data.status = 'Delivered';
+			} else if (deliveredQuantity > 0 && deliveredQuantity < totalQuantity) {
+				data.status = 'Partially Delivered';
+			} else if (deliveredQuantity === 0) {
+				data.status = 'Awaiting Arrival';
+			}
 			await updateOrderItem(
 				selectedOrder.order_id!,
 				orderProduct.order_product_id!,
@@ -48,7 +61,6 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 					order_id: selectedOrder.order_id,
 				},
 			);
-			toast.success('Product Added');
 			if (onSubmit) {
 				onSubmit();
 			}
@@ -82,14 +94,12 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 							<FormControl>
 								<Input
 									type="number"
-									disabled={loading}
+									disabled={true}
 									placeholder="Select Value"
 									value={field.value || ''}
-									onChange={(e) => {
-										const orderedQuantity = parseInt(e.target.value) || 0;
-										field.onChange(orderedQuantity);
-										form.setValue('total_quantity', orderedQuantity);
-									}}
+									onChange={(e) =>
+										field.onChange(parseInt(e.target.value) || 0)
+									}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -98,16 +108,36 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 				/>
 				<FormField
 					control={form.control}
-					name={`unit_price`}
+					name={`delivered_quantity`}
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Unit Price</FormLabel>
+							<FormLabel>Delivered quantity</FormLabel>
 							<FormControl>
 								<Input
 									type="number"
-									disabled={loading}
-									placeholder="1000"
-									{...field}
+									placeholder="Enter Delivered Quantity"
+									value={field.value !== undefined ? field.value : ''}
+									onChange={(e) => {
+										let deliveredQty = parseInt(e.target.value) || 0;
+										const totalQty = form.getValues('total_quantity') || 0;
+
+										// Prevent delivered from exceeding total
+										if (deliveredQty > totalQty) {
+											deliveredQty = totalQty;
+										}
+
+										// Ensure delivered is not negative
+										if (deliveredQty < 0) {
+											deliveredQty = 0;
+										}
+
+										// Auto-adjust ordered quantity
+										const orderedQty = totalQty - deliveredQty;
+
+										// Update form values
+										field.onChange(deliveredQty);
+										form.setValue('ordered_quantity', orderedQty);
+									}}
 								/>
 							</FormControl>
 							<FormMessage />

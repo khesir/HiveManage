@@ -12,6 +12,7 @@ type OrderState = {
 	fetchOrders: (params: URLSearchParams) => Promise<void>;
 	getOrderById: (orderId: number) => Promise<Order | undefined>;
 	addOrder: (newOrder: Omit<Order, 'id'>) => Promise<void>;
+	updateOrder: (orderId: number, order: Order) => Promise<void>;
 	deleteOrder: (orderId: number) => Promise<void>;
 	addOrderItem: (orderId: number, newItem: OrderProduct) => void;
 	updateOrderItem: (
@@ -21,6 +22,7 @@ type OrderState = {
 	) => void;
 	removeOrderItem: (orderId: number, itemId: number) => void;
 	finalize: (orderId: number, newItem: Order) => void;
+	pushToInventory: (orderId: number, newItem: Order) => void;
 };
 
 const useOrderStore = create<OrderState>((set) => ({
@@ -69,7 +71,6 @@ const useOrderStore = create<OrderState>((set) => ({
 			} else {
 				orderData = response.data[0];
 			}
-			set((state) => ({orders: [...state.orders, orderData as Order]}));
 			set({selectedOrder: orderData});
 			return orderData;
 		} catch (e) {
@@ -94,6 +95,27 @@ const useOrderStore = create<OrderState>((set) => ({
 				supplier_id: Number(newOrder.supplier_id),
 			});
 			toast.success('Order Added');
+		} catch (e) {
+			if (e instanceof Error) {
+				toast.error(e.toString());
+			} else if (e instanceof AxiosError) {
+				toast.error(e.response?.data as string);
+			} else {
+				toast.error('An unknown error occured');
+			}
+			console.log(e);
+		} finally {
+			set({loading: false});
+		}
+	},
+	updateOrder: async (orderId: number, order: Order) => {
+		set({loading: true});
+		try {
+			await request('PUT', `api/v1/ims/order/${orderId}`, {
+				...order,
+				order_value: order.order_value.toString(),
+			});
+			toast.success('Order Updated');
 		} catch (e) {
 			if (e instanceof Error) {
 				toast.error(e.toString());
@@ -199,6 +221,31 @@ const useOrderStore = create<OrderState>((set) => ({
 			// Just a temporary solution, For some reason after fetching data that is undefined
 			// Is replaced as null
 			await request('POST', `/api/v1/ims/order/${orderId}/finalize`, orderData);
+			toast.success('Order products has been updated');
+		} catch (e) {
+			if (e instanceof Error) {
+				toast.error(e.toString());
+			} else if (e instanceof AxiosError) {
+				toast.error(e.response?.data as string);
+			} else {
+				toast.error('An unknown error occured');
+			}
+			console.log(e);
+		} finally {
+			set({loading: false});
+		}
+	},
+
+	pushToInventory: async (orderId: number, orderData: Order) => {
+		set({loading: true});
+		try {
+			// Just a temporary solution, For some reason after fetching data that is undefined
+			// Is replaced as null
+			await request(
+				'POST',
+				`/api/v1/ims/order/${orderId}/pushToInventory`,
+				orderData,
+			);
 			toast.success('Order products has been added to records');
 		} catch (e) {
 			if (e instanceof Error) {

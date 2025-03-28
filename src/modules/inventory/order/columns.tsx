@@ -25,17 +25,17 @@ export const columns: ColumnDef<Order>[] = [
 		},
 	},
 	{
-		accessorKey: 'order_payment_status',
-		header: 'Payment Status',
+		id: 'order_status',
+		header: 'Status',
+		cell: ({row}) => <Badge>{row.original.order_status}</Badge>,
 	},
 	{
 		accessorKey: 'supplier.contact_number',
 		header: 'Contact',
 	},
 	{
-		id: 'order_status',
-		header: 'Status',
-		cell: ({row}) => <Badge>{row.original.order_status}</Badge>,
+		accessorKey: 'order_payment_status',
+		header: 'Payment Status',
 	},
 	{
 		id: 'quantity',

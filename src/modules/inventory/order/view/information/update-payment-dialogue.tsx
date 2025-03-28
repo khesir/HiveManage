@@ -6,15 +6,10 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import {OrderProduct} from '@/components/validation/inventory/order-product';
-import {PenBox} from 'lucide-react';
 import {useCallback, useState} from 'react';
-import {UpdateOrderProductForm} from './update-order-product-form';
+import {UpdatePaymentForm} from './update-payment-form';
 
-interface Props {
-	orderProduct: OrderProduct;
-}
-export function UpdateOrderProductDialogue({orderProduct}: Props) {
+export function UpdatePaymentDialogue() {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const handleFormSubmit = useCallback(() => {
 		setFormModal(false);
@@ -22,17 +17,12 @@ export function UpdateOrderProductDialogue({orderProduct}: Props) {
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
-				<Button className="flex items-center gap-1">
-					<PenBox className="w-4 h-4" />
-				</Button>
+				<Button size={'sm'}>Update Payment</Button>
 			</DialogTrigger>
 			<DialogContent>
-				<DialogTitle>Update Order Item</DialogTitle>
+				<DialogTitle>Update Payment</DialogTitle>
 				<DialogDescription></DialogDescription>
-				<UpdateOrderProductForm
-					orderProduct={orderProduct}
-					onSubmit={handleFormSubmit}
-				/>
+				<UpdatePaymentForm onSubmit={handleFormSubmit} />
 			</DialogContent>
 		</Dialog>
 	);

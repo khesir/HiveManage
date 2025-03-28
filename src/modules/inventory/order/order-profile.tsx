@@ -120,9 +120,7 @@ export function OrderProfile() {
 							<span>
 								{data.order_products?.length === 0
 									? 'No item'
-									: data.order_products?.length === 1
-										? '1 item'
-										: `${data.order_products?.length} items`}
+									: `${data.order_products?.reduce((sum, product) => sum + (product.total_quantity || 0), 0)} items`}
 							</span>
 						</li>
 						<li className="flex items-start flex-col gap-1">

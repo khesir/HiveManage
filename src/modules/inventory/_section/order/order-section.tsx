@@ -4,7 +4,7 @@ import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
 import {useSearchParams} from 'react-router-dom';
 import {OrderProfile} from '../../order/order-profile';
-import useOrderStore from '@/api/order';
+import useOrderStore from '@/api/order-state';
 
 export default function OrderSection() {
 	const {fetchOrders} = useOrderStore();

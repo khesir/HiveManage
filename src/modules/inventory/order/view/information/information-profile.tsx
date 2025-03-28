@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card';
 import {dateParser} from '@/lib/util/utils';
 import {Badge} from '@/components/ui/badge';
-import useOrderStore from '@/api/order';
+import useOrderStore from '@/api/order-state';
 
 export default function OrderInformationProfile() {
 	const {selectedOrder, loading} = useOrderStore();

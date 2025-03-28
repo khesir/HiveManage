@@ -10,34 +10,36 @@ import {
 import {useState} from 'react';
 
 import useOrderStore from '@/api/order-state';
-import {useNavigate} from 'react-router-dom';
 
-export function DeleteOrder() {
+export function MarkComplete() {
 	const [formModal, setFormModal] = useState<boolean>(false);
-	const {selectedOrder, deleteOrder, getOrderById} = useOrderStore();
-	const navigate = useNavigate();
+	const {selectedOrder, pushToInventory} = useOrderStore();
+
 	const handleDelete = async () => {
-		await deleteOrder(selectedOrder.order_id!);
-		await getOrderById(selectedOrder.order_id!);
+		await pushToInventory(selectedOrder.order_id!, selectedOrder);
 		setFormModal(false);
-		navigate(-1);
 	};
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
-				<Button variant={'destructive'}>Delete Order</Button>
+				<Button className="bg-green-400 hover:bg-green-600">
+					Push to Inventory
+				</Button>
 			</DialogTrigger>
 
 			<DialogContent>
-				<DialogTitle>Delete Order</DialogTitle>
+				<DialogTitle>Confirm Order</DialogTitle>
 				<DialogDescription>
-					Are you sure you want to delete this draft order?
+					You cannot further edit this record after finalizing.
 				</DialogDescription>
 				<DialogFooter>
 					<Button variant="outline" onClick={() => setFormModal(false)}>
 						Cancel
 					</Button>
-					<Button variant={'destructive'} onClick={handleDelete}>
+					<Button
+						className="bg-green-400 hover:bg-green-600"
+						onClick={handleDelete}
+					>
 						Confirm
 					</Button>
 				</DialogFooter>

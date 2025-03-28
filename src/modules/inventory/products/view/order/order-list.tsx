@@ -1,13 +1,4 @@
-import {useState} from 'react';
-import {
-	ColumnDef,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	Row,
-	useReactTable,
-} from '@tanstack/react-table'; // Adjust the import path based on your project setup
+import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -20,71 +11,22 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import useOrderStore from '@/api/order-state';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {OrderProduct} from '@/components/validation/inventory/order-product';
-import {AddOrderProductDialogue} from './add-order-product-dialogue';
-import {DeleteOrderProductConfirmation} from './delete-order-product-confirmation';
-import {UpdateOrderProductDialogue} from './update-order-product';
-import {FinalizeOrder} from './finalize-order';
-import {DeleteOrder} from './delete-order';
-import {AddDeliveredProductDialogue} from './add-delivered-product-dialogue';
-import {UpdatePaymentDialogue} from './update-payment-dialogue';
-import {MarkComplete} from './mark-complete';
+import {
+	ColumnDef,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	useReactTable,
+} from '@tanstack/react-table';
+import {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {getAllOrderItems} from '@/api/order-items-api';
 
-const ActionCell = (data: OrderProduct) => {
-	return (
-		<div className="flex gap-2">
-			<TooltipProvider>
-				<Tooltip>
-					<TooltipTrigger>
-						<UpdateOrderProductDialogue orderProduct={data} />
-					</TooltipTrigger>
-					<TooltipContent>
-						<p>Update</p>
-					</TooltipContent>
-				</Tooltip>
-			</TooltipProvider>
-			<TooltipProvider>
-				<Tooltip>
-					<TooltipTrigger>
-						<DeleteOrderProductConfirmation
-							product_order_id={data.order_product_id!}
-						/>
-					</TooltipTrigger>
-					<TooltipContent>
-						<p>Delete</p>
-					</TooltipContent>
-				</Tooltip>
-			</TooltipProvider>
-		</div>
-	);
-};
-const UpdateActionCell = (data: OrderProduct) => {
-	return (
-		<div className="flex gap-2">
-			<TooltipProvider>
-				<Tooltip>
-					<TooltipTrigger>
-						<AddDeliveredProductDialogue orderProduct={data} />
-					</TooltipTrigger>
-					<TooltipContent>
-						<p>Update</p>
-					</TooltipContent>
-				</Tooltip>
-			</TooltipProvider>
-		</div>
-	);
-};
-export const getcolumns = (status: string): ColumnDef<OrderProduct>[] => [
+const columns: ColumnDef<OrderProduct>[] = [
 	{
-		accessorKey: 'product.img_url',
+		accessorKey: 'order.supplier.profile_link',
 		header: 'Img',
 		cell: ({row}) => {
 			return (
@@ -92,10 +34,10 @@ export const getcolumns = (status: string): ColumnDef<OrderProduct>[] => [
 					avatar={[
 						{
 							link:
-								typeof row.original?.product?.img_url === 'string'
-									? row.original.product?.img_url
+								typeof row.original?.order?.supplier?.profile_link === 'string'
+									? row.original.order?.supplier?.profile_link
 									: '',
-							name: row.original.product?.name ?? '',
+							name: row.original.order?.supplier?.name ?? '',
 						},
 					]}
 				/>
@@ -103,14 +45,10 @@ export const getcolumns = (status: string): ColumnDef<OrderProduct>[] => [
 		},
 	},
 	{
-		accessorKey: 'product.name',
-		header: 'Name',
-	},
-	{
 		header: 'Total Value',
 		cell: ({row}) => {
 			const totalValue =
-				Number(row.original.ordered_quantity) * Number(row.original.unit_price);
+				Number(row.original.total_quantity) * Number(row.original.unit_price);
 			return <span>{totalValue.toFixed(2)}</span>;
 		},
 	},
@@ -130,45 +68,29 @@ export const getcolumns = (status: string): ColumnDef<OrderProduct>[] => [
 		accessorKey: 'status',
 		header: 'Status',
 	},
-	...(status === 'Draft'
-		? [
-				{
-					header: 'Action',
-					cell: ({row}: {row: Row<OrderProduct>}) => (
-						<ActionCell {...row.original} />
-					),
-				},
-			]
-		: status === 'Awaiting Arrival'
-			? [
-					{
-						header: 'Action',
-						cell: ({row}: {row: Row<OrderProduct>}) => {
-							return (
-								<>
-									<UpdateActionCell {...row.original} />
-									{/* {row.original.status === 'Delivered' && <div>Delivered</div>} */}
-								</>
-							);
-						},
-					},
-				]
-			: []),
 ];
+export function OrderList() {
+	const [loading, setLoading] = useState<boolean>(false);
+	const [orderItems, setOrderItems] = useState<OrderProduct[]>([]);
+	const {id} = useParams();
 
-export function InformationProductTable() {
-	const {selectedOrder, loading} = useOrderStore();
+	useEffect(() => {
+		const fetchData = async () => {
+			setLoading(true);
+			const res = await getAllOrderItems(Number(id));
+			setOrderItems(res);
+			setLoading(false);
+		};
+		fetchData();
+	}, [id]);
 	const [{pageIndex, pageSize}, setPagination] = useState({
 		pageIndex: 0,
 		pageSize: 10,
 	});
-	const totalPages = Math.ceil(
-		(selectedOrder?.order_products?.length ?? 0) / pageSize,
-	);
-	const columns = getcolumns(selectedOrder.order_status);
+	const totalPages = Math.ceil(orderItems.length / pageSize);
 	// Initialize the table
 	const table = useReactTable({
-		data: selectedOrder.order_products || [],
+		data: orderItems,
 		columns: columns,
 		pageCount: totalPages,
 		getCoreRowModel: getCoreRowModel(),
@@ -185,24 +107,6 @@ export function InformationProductTable() {
 	}
 	return (
 		<>
-			<div className="flex justify-end gap-3 md:gap-0">
-				{/* Pending orders -- Controls*/}
-				{!loading && selectedOrder.order_status === 'Draft' && (
-					<div className="flex gap-3">
-						<DeleteOrder />
-						<FinalizeOrder />
-						<UpdatePaymentDialogue />
-						<AddOrderProductDialogue />
-					</div>
-				)}
-				{/* Payment */}
-				{!loading && selectedOrder.order_status !== 'Draft' && (
-					<div className="flex gap-3">
-						<UpdatePaymentDialogue />
-						<MarkComplete />
-					</div>
-				)}
-			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
@@ -244,7 +148,7 @@ export function InformationProductTable() {
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={getcolumns(selectedOrder.order_status).length}
+									colSpan={columns.length}
 									className="h-24 text-center"
 								>
 									No results.

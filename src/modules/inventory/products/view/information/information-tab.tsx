@@ -1,4 +1,4 @@
-import {Card, CardContent, CardFooter} from '@/components/ui/card';
+import {Card} from '@/components/ui/card';
 
 import {useEffect} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
@@ -6,13 +6,7 @@ import {useParams, useSearchParams} from 'react-router-dom';
 import {ApiRequest, request} from '@/api/axios';
 import {Product} from '@/components/validation/inventory/product';
 import {InformationCard} from './information-card';
-import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from '@/components/ui/chart';
-import {Button} from '@/components/ui/button';
+
 import {ViewRecordTabs} from '../item-record-tabs';
 import useProducts from '@/modules/inventory/_components/hooks/use-products';
 
@@ -65,8 +59,8 @@ export function ProductInformationTab() {
 
 					{/* Third section: 30% */}
 					<div className="flex-[1_1_30%] min-w-[250px]">
-						<Card className="flex flex-col lg:max-w-md h-full">
-							{/* <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2 [&>div]:flex-1">
+						{/* <Card className="flex flex-col lg:max-w-md h-full">
+							<CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2 [&>div]:flex-1">
 								<div>
 									<CardDescription>Resting HR</CardDescription>
 									<CardTitle className="flex items-baseline gap-1 text-4xl tabular-nums">
@@ -85,7 +79,7 @@ export function ProductInformationTab() {
 										</span>
 									</CardTitle>
 								</div>
-							</CardHeader> */}
+							</CardHeader>
 							<CardContent className="flex flex-1 items-center">
 								<ChartContainer
 									config={{
@@ -191,7 +185,7 @@ export function ProductInformationTab() {
 									<Button variant={'ghost'}>3M</Button>
 								</div>
 							</CardFooter>
-						</Card>
+						</Card> */}
 					</div>
 				</div>
 			</div>

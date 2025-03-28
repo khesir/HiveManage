@@ -9,15 +9,14 @@ import {
 } from '@/components/ui/dialog';
 import {useState} from 'react';
 
-import useOrderStore from '@/api/order';
+import useOrderStore from '@/api/order-state';
 
 export function FinalizeOrder() {
 	const [formModal, setFormModal] = useState<boolean>(false);
-	const {selectedOrder, finalize, getOrderById} = useOrderStore();
+	const {selectedOrder, finalize} = useOrderStore();
 
 	const handleDelete = async () => {
 		await finalize(selectedOrder.order_id!, selectedOrder);
-		await getOrderById(selectedOrder.order_id!);
 		setFormModal(false);
 	};
 	return (

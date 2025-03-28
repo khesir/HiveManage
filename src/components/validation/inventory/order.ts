@@ -74,8 +74,8 @@ const orderItemSchema = z.object({
 	order_product_id: z.number().optional(),
 	order_id: z.number().optional(),
 	product_id: z.number().min(1),
-
-	ordered_quantity: z.number().min(1),
+	total_quantity: z.number().min(1),
+	ordered_quantity: z.number().optional(),
 	delivered_quantity: z.number().optional(),
 	unit_price: z.string().min(1),
 	is_serialize: z.boolean().optional(),
@@ -104,7 +104,6 @@ export const orderSchema = z.object({
 	supplier_id: z.string().nullable().optional(),
 
 	notes: z.string().optional(),
-	receive_at: z.date().optional(),
 	expected_arrival: z
 		.string()
 		.refine(

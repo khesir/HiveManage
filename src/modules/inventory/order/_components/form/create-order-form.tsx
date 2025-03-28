@@ -56,7 +56,7 @@ import {Order, orderSchema} from '@/components/validation/inventory/order';
 import {Product} from '@/components/validation/inventory/product';
 import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
 import {Textarea} from '@/components/ui/textarea';
-import useOrderStore from '@/api/order';
+import useOrderStore from '@/api/order-state';
 
 export function CreateOrderForm() {
 	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -130,7 +130,7 @@ export function CreateOrderForm() {
 		const total =
 			orderValueTracker.order_products?.reduce(
 				(acc, curr) =>
-					acc + (curr.ordered_quantity * parseInt(curr.unit_price) || 0),
+					acc + (curr.total_quantity * parseInt(curr.unit_price) || 0),
 				0,
 			) || 0;
 		setValue('order_value', total);
@@ -197,7 +197,6 @@ export function CreateOrderForm() {
 
 	const processForm = async (formData: Order) => {
 		try {
-			console.log(formData);
 			if (formData.order_products?.length == 0) {
 				toast.error('No order Items added');
 				return;
@@ -242,6 +241,7 @@ export function CreateOrderForm() {
 								append({
 									product_id: -1,
 									ordered_quantity: 0,
+									total_quantity: 0,
 									unit_price: '',
 									status: 'Draft',
 								})
@@ -409,7 +409,7 @@ export function CreateOrderForm() {
 																backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8)), url(${
 																	formState.selectedProduct[index]?.img_url
 																		? formState.selectedProduct[index]?.img_url
-																		: '/img/placeholder.jpg'
+																		: ''
 																})`,
 															}}
 														></div>
@@ -456,11 +456,15 @@ export function CreateOrderForm() {
 																	disabled={loading}
 																	placeholder="Select Value"
 																	value={field.value || ''}
-																	onChange={(e) =>
-																		field.onChange(
-																			parseInt(e.target.value) || 0,
-																		)
-																	}
+																	onChange={(e) => {
+																		const value = parseInt(e.target.value) || 0;
+																		field.onChange(value);
+																		// Update total_quantity relatively
+																		form.setValue(
+																			`order_products.${index}.total_quantity`,
+																			value,
+																		);
+																	}}
 																/>
 															</FormControl>
 															<FormMessage />
