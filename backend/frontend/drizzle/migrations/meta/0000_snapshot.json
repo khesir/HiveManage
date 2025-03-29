@@ -1,5 +1,5 @@
 {
-  "id": "d904054e-24ad-4d65-99d1-316735473b93",
+  "id": "761be5ba-0328-4111-a2dd-98007abb60f1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1177,12 +1177,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "receive_at": {
-          "name": "receive_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
         "expected_arrival": {
           "name": "expected_arrival",
           "type": "timestamp",
@@ -2089,6 +2083,237 @@
           ],
           "columnsTo": [
             "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.OrderTransLog": {
+      "name": "OrderTransLog",
+      "schema": "",
+      "columns": {
+        "order_transaction_id": {
+          "name": "order_transaction_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_item_id": {
+          "name": "order_item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "OrderTransLog_order_id_order_order_id_fk": {
+          "name": "OrderTransLog_order_id_order_order_id_fk",
+          "tableFrom": "OrderTransLog",
+          "tableTo": "order",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "OrderTransLog_order_item_id_order_product_order_product_id_fk": {
+          "name": "OrderTransLog_order_item_id_order_product_order_product_id_fk",
+          "tableFrom": "OrderTransLog",
+          "tableTo": "order_product",
+          "columnsFrom": [
+            "order_item_id"
+          ],
+          "columnsTo": [
+            "order_product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "OrderTransLog_performed_by_employee_employee_id_fk": {
+          "name": "OrderTransLog_performed_by_employee_employee_id_fk",
+          "tableFrom": "OrderTransLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.ProductTransLog": {
+      "name": "ProductTransLog",
+      "schema": "",
+      "columns": {
+        "product_transaction_id": {
+          "name": "product_transaction_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_record_id": {
+          "name": "product_record_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "serial_id": {
+          "name": "serial_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "ProductTransLog_product_id_product_product_id_fk": {
+          "name": "ProductTransLog_product_id_product_product_id_fk",
+          "tableFrom": "ProductTransLog",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ProductTransLog_product_record_id_product_record_product_record_id_fk": {
+          "name": "ProductTransLog_product_record_id_product_record_product_record_id_fk",
+          "tableFrom": "ProductTransLog",
+          "tableTo": "product_record",
+          "columnsFrom": [
+            "product_record_id"
+          ],
+          "columnsTo": [
+            "product_record_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ProductTransLog_serial_id_serialized_product_serial_id_fk": {
+          "name": "ProductTransLog_serial_id_serialized_product_serial_id_fk",
+          "tableFrom": "ProductTransLog",
+          "tableTo": "serialized_product",
+          "columnsFrom": [
+            "serial_id"
+          ],
+          "columnsTo": [
+            "serial_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ProductTransLog_performed_by_employee_employee_id_fk": {
+          "name": "ProductTransLog_performed_by_employee_employee_id_fk",
+          "tableFrom": "ProductTransLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
