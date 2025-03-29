@@ -54,7 +54,7 @@ export function SelectedSaleItems() {
 			);
 			const data = {
 				service: {
-					service_title: `Service #${res.service_id + 1}`,
+					service_title: `Service #${res.service_title + 1}`,
 					service_description: `Is handled by ${user?.employee.firstname} ${user?.employee.middlename} ${user?.employee.lastname}`,
 					employee_id: user?.employee.employee_id,
 					service_status: 'Active',
@@ -82,7 +82,7 @@ export function SelectedSaleItems() {
 		<>
 			<div className="flex items-center justify-between gap-3">
 				<Button className="flex flex-auto" onClick={createServiceAction}>
-					Create Service
+					Create Service's
 				</Button>
 
 				<div className="space-x-2">
