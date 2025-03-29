@@ -7,9 +7,9 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {useState} from 'react';
-import {ReservationForm} from './serviceForm/reservation-form';
-import {JoborderForm} from './serviceForm/joborder-form';
-import {BorrowForm} from './serviceForm/borrow-form';
+import {ReservationForm} from '../service/serviceForm/reservation-form';
+import {JoborderForm} from '../service/serviceForm/joborder-form';
+import {BorrowForm} from '../service/serviceForm/borrow-form';
 
 export const Services = [
 	// {

@@ -10,7 +10,9 @@ type ProductState = {
 	products: Product[];
 	selectedProduct: Product;
 	loading: boolean;
-	fetchProducts: (params: URLSearchParams) => Promise<void>;
+	totalData: number;
+
+	fetchProducts: (params: URLSearchParams) => Promise<number | undefined>;
 	getProductById: (productId: number) => Promise<Product | undefined>;
 	addProduct: (newProduct: Omit<Product, 'id'>) => Promise<void>;
 	updateProduct: (
@@ -41,6 +43,7 @@ const useProductStore = create<ProductState>((set) => ({
 	products: [],
 	selectedProduct: {} as Product,
 	loading: false,
+	totalData: 0,
 
 	fetchProducts: async (params: URLSearchParams) => {
 		set({loading: true});
@@ -50,13 +53,18 @@ const useProductStore = create<ProductState>((set) => ({
 			const sort = params.get('sort') || null;
 			const offset = (page - 1) * pageLimit;
 
+			const category_id = Number(params.get('category_id')) || undefined;
+			const product_name = params.get('product_name') || undefined;
+
 			const response = await request<PaginationResponse<Product>>(
 				'GET',
 				`/api/v1/ims/product?limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : '') +
-					'&includes=item_records,suppliers',
+					(category_id ? `&category_id=${category_id}` : '') +
+					(product_name ? `&product_name=${product_name}` : ''),
 			);
-			set({products: response.data});
+			set({products: response.data, totalData: response.total_data});
+			return response.total_data;
 		} catch (e) {
 			if (e instanceof Error) {
 				toast.error(e.toString());

@@ -32,11 +32,11 @@ export function SelectedSaleItems() {
 	const navigate = useNavigate();
 	const {user} = useEmployeeRoleDetailsStore();
 	const handleNavigate = () => {
-		const salesData = salesHookData['sales_product'] || [];
-		if (salesData.length <= 0) {
-			toast.error('Cart must have some items to proceed');
-			return;
-		}
+		// const salesData = salesHookData['sales_product'] || [];
+		// if (salesData.length <= 0) {
+		// 	toast.error('Cart must have some items to proceed');
+		// 	return;
+		// }
 		navigate('/sales/create-service');
 	};
 	const {salesHookData, setSaleHookData} = useSalesHook();
@@ -81,10 +81,9 @@ export function SelectedSaleItems() {
 	return (
 		<>
 			<div className="flex items-center justify-between gap-3">
-				<Button className="flex flex-auto" onClick={createServiceAction}>
-					Create Service's
+				<Button className="flex flex-auto" onClick={handleNavigate}>
+					Confirm
 				</Button>
-
 				<div className="space-x-2">
 					<TooltipProvider>
 						<Tooltip>
@@ -254,9 +253,6 @@ export function SelectedSaleItems() {
 					<p className="text-md font-semibold">View more </p>
 				</Card> */}
 			</ScrollArea>
-			<Button className="w-full" onClick={handleNavigate}>
-				Confirm
-			</Button>
 		</>
 	);
 }

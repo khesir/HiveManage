@@ -71,7 +71,7 @@ export function SalesCreateService() {
 				<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
 					<div className="flex flex-col gap-4">
 						<Heading
-							title={`Create Service`}
+							title={`Create Sales`}
 							description="Fill up the form and complete all the steps, After this we'll be moved to dedicated page for this service"
 						/>
 					</div>

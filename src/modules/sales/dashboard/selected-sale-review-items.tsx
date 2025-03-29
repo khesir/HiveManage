@@ -24,7 +24,7 @@ export function SelectedSaleReviewItems() {
 			<CardHeader className="flex flex-row items-start bg-muted/50">
 				<div className="grid gap-0.5">
 					<CardTitle className="group flex items-center gap-2 text-lg">
-						Service #123
+						Sales #123
 					</CardTitle>
 					<CardDescription>Date: November 23, 2023</CardDescription>
 				</div>
