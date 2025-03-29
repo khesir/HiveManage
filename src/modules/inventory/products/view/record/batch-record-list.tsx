@@ -1,10 +1,52 @@
 import {PaginationResponse, request} from '@/api/axios';
 import {useEffect, useState} from 'react';
-import {ColumnDef} from '@tanstack/react-table';
+import {ColumnDef, Row} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {BatchItem} from '@/components/validation/inventory/batch-items';
 import {BatchRecordTable} from './batch-record-table';
+import {Button} from '@/components/ui/button';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {Logs} from 'lucide-react';
+import {useLocation} from 'react-router-dom';
+import {AddBatchQuantityForm} from './add-batch-qty-form';
+
+const ActionCell = (data: BatchItem) => {
+	const location = useLocation();
+	return (
+		<div className="flex gap-2">
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger>
+						<Button>
+							<Logs className="w-4 h-4" />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>Logs</p>
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
+			{location.pathname.includes('/sales/overview') && (
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger>
+							<AddBatchQuantityForm data={data} />
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>Add Item</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
+			)}
+		</div>
+	);
+};
 
 export const columns: ColumnDef<BatchItem>[] = [
 	{
@@ -49,18 +91,20 @@ export const columns: ColumnDef<BatchItem>[] = [
 	},
 	{
 		header: 'Actions',
-		// TODO: Add action button here
+		cell: ({row}: {row: Row<BatchItem>}) => <ActionCell {...row.original} />,
 	},
 ];
 
 interface ProductWithDetails {
 	searchParams: URLSearchParams;
+	showControls?: boolean;
 	product_id: string;
 }
 
 export default function BatchRecordList({
 	searchParams,
 	product_id,
+	showControls = true,
 }: ProductWithDetails) {
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [batch, setBatch] = useState<BatchItem[]>([]);
@@ -93,6 +137,7 @@ export default function BatchRecordList({
 			searchKey={'supplier'}
 			pageCount={pageCount}
 			searchParams={searchParams}
+			showControls={showControls}
 		/>
 	);
 }

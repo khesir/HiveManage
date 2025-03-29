@@ -25,6 +25,59 @@ const supplierSchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
+const categorySchema = z.object({
+	category_id: z.number().optional(),
+	name: z.string().min(1),
+	content: z.string().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
+const productCategorySchema = z.object({
+	product_category_id: z.number().min(1),
+	product_id: z.number().min(1),
+	category_id: z.number().min(1),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+	category: categorySchema.optional(),
+});
+
+const productDetailsSchema = z.object({
+	p_details_id: z.number().optional(),
+	description: z.string().optional(),
+	color: z
+		.string()
+		.regex(/^[a-zA-Z0-9 ]+$/, {
+			message: 'Only letters, numbers, and spaces are allowed',
+		})
+		.optional(),
+	size: z
+		.string()
+		.regex(/^[a-zA-Z0-9 ]+$/, {
+			message: 'Only letters, numbers, and spaces are allowed',
+		})
+		.optional(),
+	created_at: z.date().optional(),
+	last_updated: z.date().optional(),
+	deleted_at: z.date().nullable().optional(),
+});
+
+const productSchema = z.object({
+	product_id: z.number().optional(),
+	name: z.string().min(1),
+	description: z.string().min(1),
+	img_url: z.string(),
+	stock_limit: z.number().min(1),
+	total_stock: z.number().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+
+	product_categories: z.array(productCategorySchema).optional(),
+	product_details: productDetailsSchema.optional(),
+});
 
 export const batchRecordSchema = z.object({
 	product_record_id: z.number().optional(),
@@ -48,6 +101,7 @@ export const batchRecordSchema = z.object({
 	deleted_at: z.string().nullable().optional(),
 
 	supplier: supplierSchema.optional(),
+	product: productSchema.optional(),
 });
 
 export type BatchItem = z.infer<typeof batchRecordSchema>;

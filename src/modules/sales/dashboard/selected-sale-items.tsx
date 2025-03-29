@@ -1,4 +1,3 @@
-import {PaginationResponse, request} from '@/api/axios';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {
 	Accordion,
@@ -6,7 +5,6 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '@/components/ui/accordion';
-import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {
 	Card,
@@ -20,68 +18,22 @@ import {
 	TooltipContent,
 	TooltipProvider,
 } from '@/components/ui/tooltip';
-import {ServiceWithDetails} from '@/lib/sales-zod-schema';
-import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+// import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {TooltipTrigger} from '@radix-ui/react-tooltip';
 import {Bell, Trash2, Users} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
-import {toast} from 'sonner';
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export function SelectedSaleItems() {
 	const navigate = useNavigate();
-	const {user} = useEmployeeRoleDetailsStore();
-	const handleNavigate = () => {
-		// const salesData = salesHookData['sales_product'] || [];
-		// if (salesData.length <= 0) {
-		// 	toast.error('Cart must have some items to proceed');
-		// 	return;
-		// }
-		navigate('/sales/create-service');
-	};
-	const {salesHookData, setSaleHookData} = useSalesHook();
-	const createServiceAction = async () => {
-		try {
-			// Reset the whole cache data
-			setSaleHookData('', [], 'reset');
-			const res = await request<PaginationResponse<ServiceWithDetails>>(
-				'GET',
-				'/api/v1/sms/service?sort=desc&limit=1',
-			).then((data) =>
-				data.data.length >= 1
-					? data.data[0]
-					: ({service_id: 0} as unknown as ServiceWithDetails),
-			);
-			const data = {
-				service: {
-					service_title: `Service #${res.service_title + 1}`,
-					service_description: `Is handled by ${user?.employee.firstname} ${user?.employee.middlename} ${user?.employee.lastname}`,
-					employee_id: user?.employee.employee_id,
-					service_status: 'Active',
-					has_sales_item: false,
-					has_borrow: false,
-					has_job_order: false,
-					has_reservation: false,
-				},
-			};
-			setSaleHookData('service', [data]);
-			toast(`Service Created ${Number(res.service_id) + 1}`);
-		} catch (error) {
-			console.log(error);
-			if (error instanceof Error) {
-				console.log(error.message);
-			} else {
-				console.log('An unknown error occurred');
-			}
-		}
-	};
-	const handleDelete = (data: any) => {
-		setSaleHookData('sales_product', [data], 'remove');
-	};
+	// const {user} = useEmployeeRoleDetailsStore();
+	const {salesHookData, removeProduct} = useSalesHook();
 	return (
 		<>
 			<div className="flex items-center justify-between gap-3">
-				<Button className="flex flex-auto" onClick={handleNavigate}>
+				<Button
+					className="flex flex-auto"
+					onClick={() => navigate('/sales/create-service')}
+				>
 					Confirm
 				</Button>
 				<div className="space-x-2">
@@ -129,15 +81,13 @@ export function SelectedSaleItems() {
 							>
 								<p>
 									Item Listed(
-									{salesHookData['sales_product']?.length
-										? salesHookData['sales_product'].length
-										: '0'}
+									{salesHookData.length ? salesHookData.length : '0'}
 									)- ₱
-									{salesHookData['sales_product']?.length
+									{salesHookData.length
 										? ' ' +
 											Math.round(
-												salesHookData['sales_product'].reduce(
-													(total, item) => total + item.record.total_price,
+												salesHookData.reduce(
+													(total, item) => total + (item.record.price || 0),
 													0,
 												),
 											)
@@ -148,11 +98,11 @@ export function SelectedSaleItems() {
 								<ul className="grid gap-3 grid-cols-3">
 									<span className="text-muted-foreground col-span-2">Fees</span>
 									<span>
-										{salesHookData['sales_product']
+										{salesHookData
 											? '₱ ' +
 												Math.round(
-													salesHookData['sales_product']?.reduce(
-														(total, item) => total + item.record.total_price,
+													salesHookData?.reduce(
+														(total, item) => total + (item.record.price || 0),
 														0,
 													),
 												)
@@ -164,11 +114,11 @@ export function SelectedSaleItems() {
 										Total
 									</span>
 									<span>
-										{salesHookData['sales_product']
+										{salesHookData
 											? '₱ ' +
 												Math.round(
-													salesHookData['sales_product']?.reduce(
-														(total, item) => total + item.record.total_price,
+													salesHookData?.reduce(
+														(total, item) => total + (item.record.price || 0),
 														0,
 													),
 												)
@@ -180,64 +130,29 @@ export function SelectedSaleItems() {
 					</Accordion>
 				</Card>
 				<div className="relative flex flex-col gap-3 z-10 mt-20 mx-3">
-					{salesHookData['sales_product'] &&
-					salesHookData['sales_product'].length > 0 ? (
-						salesHookData['sales_product'].map((item, index) => (
+					{salesHookData && salesHookData.length > 0 ? (
+						salesHookData.map((item, index) => (
 							<Card
 								className="relative w-full h-[150px] flex items-center justify-start overflow-hidden"
 								key={index}
 							>
-								{item.record.type !== 'Joborder' ? (
-									<CardHeader className="flex-grow">
-										<CardTitle className="hover:underline">
-											<span className="text-xs">
-												{item.record.type !== 'Sales'
-													? `( ${item.record.type} )`
-													: ''}
-											</span>{' '}
-											<span className="font-semibold text-sm">
-												{' '}
-												{item.record.record_number} -{' '}
-												{item.variantRecord.product.name} |{' '}
-												{item.variantRecord.variant_name}
-											</span>
-											{/* Adjust this to display the actual item name if available */}
-										</CardTitle>
-										<CardDescription className="font-semibold text-sm">
-											<div className="flex gap-1">
-												Price: {item.record.price}
-											</div>
-											<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
-												Qty: {item.record.quantity}
-											</p>
-										</CardDescription>
-									</CardHeader>
-								) : (
-									// Handles Job order card
-									<CardHeader className="flex-grow">
-										<CardTitle className="hover:underline flex items-center gap-3">
-											<span className="font-semibold text-sm">
-												{item.record.type} Service No.{' '}
-												{' ' + item.record.record_number}{' '}
-											</span>
-											<Badge>{item.record.joborder_status}</Badge>
-											{/* Adjust this to display the actual item name if available */}
-										</CardTitle>
-										<CardDescription>
-											ID: {' ' + item.record.uuid}
-										</CardDescription>
-										<CardDescription>
-											<Badge>
-												{item.record.record_number} {item.record.joborder_type}
-											</Badge>
-										</CardDescription>
-									</CardHeader>
-								)}
+								<CardHeader className="flex-grow">
+									<CardTitle className="hover:underline">
+										<span className="font-semibold text-sm">{`#${item.product_id}-${item.record.product?.name}`}</span>
+										{/* Adjust this to display the actual item name if available */}
+									</CardTitle>
+									<CardDescription className="font-semibold text-sm">
+										<div className="flex gap-1">Price: {item.record.price}</div>
+										<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
+											Qty: {item.quantity}
+										</p>
+									</CardDescription>
+								</CardHeader>
 								<Button
 									className="absolute bottom-0 right-0 hover:bg-red-600"
 									size={'icon'}
 									variant={'ghost'}
-									onClick={() => handleDelete(item)}
+									onClick={() => removeProduct(item.product_id)}
 								>
 									<Trash2 className="w-5 h-5  cursor-pointer" />
 								</Button>

@@ -44,6 +44,7 @@ interface DataTableProps<TData, TValue> {
 	pageSizecategorys?: number[];
 	searchKey: string;
 	pageCount: number;
+	showControls?: boolean;
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
@@ -54,6 +55,7 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 	data,
 	pageCount,
 	searchKey,
+	showControls = true,
 	pageSizecategorys = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
@@ -242,7 +244,7 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				<CreateSerialDialogueForm />
+				{showControls && <CreateSerialDialogueForm />}
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">

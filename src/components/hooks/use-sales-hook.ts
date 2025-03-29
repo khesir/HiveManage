@@ -1,59 +1,66 @@
 import {create} from 'zustand';
+import {toast} from 'sonner';
+import {BatchItem} from '../validation/inventory/batch-items';
+import {SerializeItem} from '../validation/inventory/serialize-items';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-interface SalesHook {
-	salesHookData: {
-		[key: string]: any[]; // Allows for dynamic keys and arrays as values
-	};
-	setSaleHookData: (
-		type: string,
-		data?: any[],
-		action?: 'append' | 'remove' | 'clear' | 'reset',
-	) => void;
+type Product = BatchItem | SerializeItem;
+
+interface SalesItem {
+	product_id: number;
+	quantity: number;
+	record: Product;
 }
-export const useSalesHook = create<SalesHook>((set) => ({
-	salesHookData: {}, // Initialize as an empty object
-	setSaleHookData: (type, data = [], action = 'append') =>
-		set((state) => {
-			const existingData = state.salesHookData[type] || [];
+interface SalesHook {
+	salesHookData: SalesItem[];
+	trigger: boolean;
+	addProduct: (product: Product, quantity: number) => void;
+	removeProduct: (id: number) => void;
+	resetProducts: () => void;
+}
 
-			let updatedData;
-			switch (action) {
-				case 'append':
-					// Append new data
-					updatedData = {
-						...state.salesHookData,
-						[type]: [...(existingData || []), ...data],
-					};
-					break;
-				case 'remove':
-					updatedData = {
-						...state.salesHookData,
-						[type]: existingData.filter(
-							(item) =>
-								!data.some(
-									(d) =>
-										d.record.record_number === item.record.record_number &&
-										d.record.type === item.record.type,
-								),
-						),
-					};
-					break;
-				case 'clear':
-					// Clear all items for the specified type and set new data if provided
-					updatedData = {
-						...state.salesHookData,
-						[type]: data.length > 0 ? data : [], // Use new data if provided, else clear
-					};
-					break;
-				case 'reset':
-					// Reset all data in salesHookData
-					updatedData = {};
-					break;
-				default:
-					updatedData = state.salesHookData;
+export const useSalesHook = create<SalesHook>((set) => ({
+	salesHookData: [],
+	trigger: false,
+
+	addProduct: (product, quantity) =>
+		set((state) => {
+			const exists = state.salesHookData.some(
+				(p) => p.product_id === product.product_id, // Assuming `Product` has an `id` field
+			);
+			if (exists) {
+				toast.error(`Product with id ${product.product_id} already exists.`);
+				return state;
 			}
 
-			return {salesHookData: updatedData};
+			const salesItem: SalesItem = {
+				product_id: product.product_id,
+				quantity: quantity,
+				record: product,
+			};
+
+			return {
+				salesHookData: [...state.salesHookData, salesItem],
+				trigger: !state.trigger,
+			};
 		}),
+
+	removeProduct: (id) =>
+		set((state) => {
+			const exists = state.salesHookData.some((p) => p.product_id === id);
+			if (!exists) {
+				toast.error(`Product with id ${id} does not exist.`);
+				return state;
+			}
+
+			return {
+				salesHookData: state.salesHookData.filter((p) => p.product_id !== id),
+				trigger: !state.trigger,
+			};
+		}),
+
+	resetProducts: () =>
+		set((state) => ({
+			salesHookData: [],
+			trigger: !state.trigger,
+		})),
 }));

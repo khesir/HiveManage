@@ -44,6 +44,7 @@ interface DataTableProps<TData, TValue> {
 	pageSizecategorys?: number[];
 	searchKey: string;
 	pageCount: number;
+	showControls?: boolean;
 	searchParams: URLSearchParams;
 }
 
@@ -52,6 +53,7 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 	data,
 	pageCount,
 	searchKey,
+	showControls = true,
 	pageSizecategorys = [10, 20, 30, 40, 50],
 	searchParams,
 }: DataTableProps<TData, TValue>) {
@@ -202,7 +204,7 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 			<div className="flex justify-between gap-3 md:gap-0">
 				<div className="flex gap-2">
 					<Input
-						placeholder={`Find Supplier...`}
+						placeholder={`Find record...`}
 						value={searchValue ?? ''} // Bind the input value to the current filter value
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)
@@ -240,7 +242,7 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				<CreateRecordDialogueForm />
+				{showControls && <CreateRecordDialogueForm />}
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
