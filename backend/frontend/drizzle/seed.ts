@@ -49,6 +49,7 @@ import { jobOrderType } from './schema/services/schema/joborder/jobOrderType.sch
 import { payment, receipt } from './schema/payment';
 import { sales, salesItems } from './schema/sales';
 import { couponredemptions } from './schema/ims/schema/discount/couponredeem';
+import { OrderTransLog, ProductTransLog } from './schema/logs';
 
 const supabase = new SupabaseService();
 
@@ -1264,7 +1265,13 @@ async function seedBorrow(db: PostgresJsDatabase<SchemaType>) {
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
       fee: 10,
-      status: faker.helpers.arrayElement(statuses),
+      status: faker.helpers.arrayElement([
+        'Borrowed' as const,
+        'Confirmed' as const,
+        'Cancelled' as const,
+        'Pending' as const,
+        'Completed' as const,
+      ]),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
@@ -1443,7 +1450,7 @@ async function seedBorrowItem(db: PostgresJsDatabase<SchemaType>) {
       last_updated: faker.date.recent(),
     },
     {
-      cproduct_id: faker.helpers.arrayElement(productIDs).product_id,
+      product_id: faker.helpers.arrayElement(productIDs).product_id,
       borrow_id: faker.helpers.arrayElement(borrowIDs).borrow_id,
       borrow_date: faker.date.past().toISOString(),
       return_date: faker.date.future().toISOString(),
@@ -2162,102 +2169,101 @@ async function seedJobOrderItems(db: PostgresJsDatabase<SchemaType>) {
 //  =======================================================================================
 // =================================== INVENTORY ==========================================
 
-// async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
-//   const productIDs = await db.select().from(product);
-//   const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
-//   const status = [
-//     'Sold',
-//     'Pending Payment',
-//     'On Order',
-//     'In Service',
-//     'Awaiting Service',
-//     'Return Requested',
-//   ] as const;
-//   const productrecordRecords = [
-//     {
-//       product_id: 1,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//     {
-//       product_id: 2,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//     {
-//       product_id: 3,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//     {
-//       product_id: 4,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//     {
-//       product_id: 5,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//     {
-//       product_id: 6,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//     {
-//       product_id: 7,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//     {
-//       product_id: 8,
-//       supplier_id: 1,
-//       quantity: faker.number.int({ min: 10, max: 100 }),
-//       price: faker.number.int({ min: 100, max: 1000 }),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       status: faker.helpers.arrayElement(status),
-//       created_at: faker.date.recent(),
-//       last_updated: faker.date.recent(),
-//     },
-//   ];
-//   await db.insert(productRecord).values(productrecordRecords);
-//   log.info('Product Records seeded successfully!');
-// }
+async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
+  const productIDs = await db.select().from(product);
+  const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
+  const status = [
+    'Available',
+    'Sold',
+    'On Order',
+    'In Service',
+    'Sold out',
+  ] as const;
+  const productrecordRecords = [
+    {
+      product_id: 1,
+      supplier_id: 1,
+      quantity: Number(faker.number.int({ min: 10, max: 100 })),
+      price: Number(faker.number.int({ min: 100, max: 1000 })),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      product_id: 2,
+      supplier_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      product_id: 3,
+      supplier_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      product_id: 4,
+      supplier_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      product_id: 5,
+      supplier_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      product_id: 6,
+      supplier_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      product_id: 7,
+      supplier_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      product_id: 8,
+      supplier_id: 1,
+      quantity: faker.number.int({ min: 10, max: 100 }),
+      price: faker.number.int({ min: 100, max: 1000 }),
+      condition: faker.helpers.arrayElement(recordCondition),
+      status: faker.helpers.arrayElement(status),
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+  ];
+  await db.insert(productRecord).values(productrecordRecords);
+  log.info('Product Records seeded successfully!');
+}
 async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const supplierIDs = await db.select().from(supplier);
 
@@ -2266,7 +2272,7 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
   const productsRecords = [
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Apple iPhone 14 Pro',
+      name: 'Lenovo ThinkPad X1 Carbon',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-01-01'),
@@ -2274,7 +2280,7 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Samsung Galaxy S23 Ultra',
+      name: 'Razer Blackshark V3 Pro',
       is_serialize: false,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-02-01'),
@@ -2330,7 +2336,7 @@ async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
     },
     {
       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Epson L3210 Ink Tank Printer',
+      name: 'Samsung SSD 970 EVO Plus 1TB',
       is_serialize: true,
       status: faker.helpers.arrayElement(statuses),
       created_at: new Date('2023-03-01'),
@@ -2436,61 +2442,37 @@ async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
 async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
   const categoryRecords = [
     {
-      name: faker.commerce.productName(),
+      name: 'Accessories',
       content: faker.lorem.sentence(),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
-      name: faker.commerce.productName(),
+      name: 'Components',
       content: faker.lorem.sentence(),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
-      name: faker.commerce.productName(),
+      name: 'Networking',
       content: faker.lorem.sentence(),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
-      name: faker.commerce.productName(),
+      name: 'Peripherals',
       content: faker.lorem.sentence(),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
-      name: faker.commerce.productName(),
+      name: 'Storage',
       content: faker.lorem.sentence(),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
     },
     {
-      name: faker.commerce.productName(),
-      content: faker.lorem.sentence(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.commerce.productName(),
-      content: faker.lorem.sentence(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.commerce.productName(),
-      content: faker.lorem.sentence(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.commerce.productName(),
-      content: faker.lorem.sentence(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.commerce.productName(),
+      name: 'Electronics',
       content: faker.lorem.sentence(),
       created_at: faker.date.recent(),
       last_updated: faker.date.recent(),
@@ -2626,247 +2608,270 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
   log.info('Supplier records seeded successfully');
 }
 
-// async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
-//   const supplierIDs = await db.select().from(supplier);
+async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
+  const supplierIDs = await db.select().from(supplier);
 
-//   const orderStatus = [
-//     'Waiting for Arrival',
-//     'Pending',
-//     'Delivered',
-//     'Returned',
-//     'Pending Payment',
-//     'Cancelled',
-//   ] as const;
-//   const paymentStatus = ['Pending', 'Partially Paid', 'Paid'] as const;
-//   const paymentMethod = [
-//     'Cash',
-//     'Credit Card',
-//     'Bank Transfer',
-//     'Check',
-//     'Digital Wallet',
-//   ] as const;
-//   const orderRecords = [
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-02-15'),
-//       order_value: '50000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Urgent order for motherboard components.',
-//       receive_at: new Date('2024-02-16'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-02-20'),
-//       order_value: '90000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Bulk purchase of SSDs.',
-//       receive_at: new Date('2024-02-21'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-03-05'),
-//       order_value: '250000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Order for gaming keyboards and mice.',
-//       receive_at: new Date('2024-03-06'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-02-18'),
-//       order_value: '70000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Replacement parts for damaged inventory.',
-//       receive_at: new Date('2024-02-19'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-02-25'),
-//       order_value: '180000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Order for networking cables and routers.',
-//       receive_at: new Date('2024-02-26'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-03-01'),
-//       order_value: '400000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'High-end GPUs for gaming PC builds.',
-//       receive_at: new Date('2024-03-02'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-02-22'),
-//       order_value: '125000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Urgent CPU stock replenishment.',
-//       receive_at: new Date('2024-02-23'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-03-10'),
-//       order_value: '225000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Bulk order for office workstation components.',
-//       receive_at: new Date('2024-03-11'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-02-28'),
-//       order_value: '140000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Order for high-capacity external hard drives.',
-//       receive_at: new Date('2024-02-29'),
-//     },
-//     {
-//       supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-//       expected_arrival: new Date('2024-03-05'),
-//       order_value: '320000.0',
-//       order_status: faker.helpers.arrayElement(orderStatus),
-//       order_payment_status: faker.helpers.arrayElement(paymentStatus),
-//       order_payment_method: faker.helpers.arrayElement(paymentMethod),
-//       notes: 'Stocking up on premium power supplies.',
-//       receive_at: new Date('2024-03-06'),
-//     },
-//   ];
+  const orderStatus = [
+    'Draft',
+    'Finalized',
+    'Awaiting Arrival',
+    'Partially Fulfiled',
+    'Fulfilled',
+    'Cancelled',
+  ] as const;
+  const paymentStatus = ['Pending', 'Partially Paid', 'Paid'] as const;
+  const paymentMethod = [
+    'Cash',
+    'Credit Card',
+    'Bank Transfer',
+    'Check',
+    'Digital Wallet',
+  ] as const;
+  const orderRecords = [
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-02-15'),
+      order_value: '50000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Urgent order for motherboard components.',
+      receive_at: new Date('2024-02-16'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-02-20'),
+      order_value: '90000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Bulk purchase of SSDs.',
+      receive_at: new Date('2024-02-21'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-03-05'),
+      order_value: '250000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Order for gaming keyboards and mice.',
+      receive_at: new Date('2024-03-06'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-02-18'),
+      order_value: '70000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Replacement parts for damaged inventory.',
+      receive_at: new Date('2024-02-19'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-02-25'),
+      order_value: '180000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Order for networking cables and routers.',
+      receive_at: new Date('2024-02-26'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-03-01'),
+      order_value: '400000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'High-end GPUs for gaming PC builds.',
+      receive_at: new Date('2024-03-02'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-02-22'),
+      order_value: '125000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Urgent CPU stock replenishment.',
+      receive_at: new Date('2024-02-23'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-03-10'),
+      order_value: '225000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Bulk order for office workstation components.',
+      receive_at: new Date('2024-03-11'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-02-28'),
+      order_value: '140000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Order for high-capacity external hard drives.',
+      receive_at: new Date('2024-02-29'),
+    },
+    {
+      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
+      expected_arrival: new Date('2024-03-05'),
+      order_value: '320000.0',
+      order_status: faker.helpers.arrayElement(orderStatus),
+      order_payment_status: faker.helpers.arrayElement(paymentStatus),
+      order_payment_method: faker.helpers.arrayElement(paymentMethod),
+      notes: 'Stocking up on premium power supplies.',
+      receive_at: new Date('2024-03-06'),
+    },
+  ];
 
-//   await db.insert(order).values(orderRecords);
-//   log.info('Order records seeded successfully');
-// }
-// async function seedOrderItems(db: PostgresJsDatabase<SchemaType>) {
-//   const orderIDs = await db.select().from(order);
-//   const orderitemsRecords = [
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 2,
-//       unit_price: '59999.99',
-//       discount_amount: '0.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 1,
-//       unit_price: '12999.50',
-//       discount_amount: '500.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 3,
-//       unit_price: '1499.75',
-//       discount_amount: '100.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 5,
-//       unit_price: '249.99',
-//       discount_amount: '50.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 1,
-//       unit_price: '7999.99',
-//       discount_amount: '0.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 2,
-//       unit_price: '999.99',
-//       discount_amount: '20.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 4,
-//       unit_price: '3499.00',
-//       discount_amount: '200.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 1,
-//       unit_price: '55999.99',
-//       discount_amount: '1000.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 3,
-//       unit_price: '1199.50',
-//       discount_amount: '50.00',
-//     },
-//     {
-//       order_id: faker.helpers.arrayElement(orderIDs).order_id,
-//       product_id: faker.number.int({ min: 1, max: 10 }),
-//       quantity: 2,
-//       unit_price: '2099.99',
-//       discount_amount: '100.00',
-//     },
-//   ];
+  await db.insert(order).values(orderRecords);
+  log.info('Order records seeded successfully');
+}
 
-//   await db.insert(orderProduct).values(orderitemsRecords);
-//   log.info('Order Items records seeded successfully');
-// }
+async function seedOrderItems(db: PostgresJsDatabase<SchemaType>) {
+  const orderIDs = await db.select().from(order);
 
-// async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
-//   const productIDs = await db.select().from(product);
-//   const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
+  const orderitemsRecords = [
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 2,
+      total_quantity: 2,
+      unit_price: '59999.99',
+      discount_amount: '0.00',
+      status: 'Awaiting Arrival' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 1,
+      total_quantity: 1,
+      unit_price: '12999.50',
+      discount_amount: '500.00',
+      status: 'Draft' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 3,
+      total_quantity: 3,
+      unit_price: '1499.75',
+      discount_amount: '100.00',
+      status: 'Delivered' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 5,
+      total_quantity: 5,
+      unit_price: '249.99',
+      discount_amount: '50.00',
+      status: 'Partially Delivered' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 1,
+      total_quantity: 1,
+      unit_price: '7999.99',
+      discount_amount: '0.00',
+      status: 'Cancelled' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 2,
+      total_quantity: 2,
+      unit_price: '999.99',
+      discount_amount: '20.00',
+      status: 'Stocked' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 4,
+      total_quantity: 4,
+      unit_price: '3499.00',
+      discount_amount: '200.00',
+      status: 'Finalized' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 1,
+      total_quantity: 1,
+      unit_price: '55999.99',
+      discount_amount: '1000.00',
+      status: 'Awaiting Arrival' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 3,
+      total_quantity: 3,
+      unit_price: '1199.50',
+      discount_amount: '50.00',
+      status: 'Delivered' as const, // Correct enum value
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderIDs).order_id,
+      product_id: faker.number.int({ min: 1, max: 10 }),
+      quantity: 2,
+      total_quantity: 2,
+      unit_price: '2099.99',
+      discount_amount: '100.00',
+      status: 'Stocked' as const, // Correct enum value
+    },
+  ];
 
-//   const statuses = [
-//     'Sold',
-//     'Pending Payment',
-//     'On Order',
-//     'In Service',
-//     'Awaiting Service',
-//     'Return Requested',
-//   ] as const;
+  // Insert the records into the database (example)
+  await db.insert(orderProduct).values(orderitemsRecords);
+}
 
-//   const serializedproductsRecords = [
-//     {
-//       product_id: 9,
-//       supplier_id: 1,
-//       serial_number: faker.string.uuid(),
-//       status: faker.helpers.arrayElement(statuses),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       created_at: new Date('2023-01-01'),
-//       last_updated: new Date('2023-01-10'),
-//     },
-//     {
-//       product_id: 10,
-//       supplier_id: 1,
-//       serial_number: faker.string.uuid(),
-//       status: faker.helpers.arrayElement(statuses),
-//       condition: faker.helpers.arrayElement(recordCondition),
-//       created_at: new Date('2023-01-01'),
-//       last_updated: new Date('2023-01-10'),
-//     },
-//   ];
+async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
+  const productIDs = await db.select().from(product);
+  const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
 
-//   await db.insert(serializeProduct).values(serializedproductsRecords);
-//   log.info('Serialized Products records seeded successfully');
-// }
+  const statuses = [
+    'Available',
+    'Returned',
+    'Sold',
+    'On Order',
+    'In Service',
+    'Damage',
+    'Retired',
+  ] as const;
+
+  const serializedproductsRecords = [
+    {
+      product_id: 9,
+      supplier_id: 1,
+      serial_number: faker.string.uuid(),
+      status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
+      created_at: new Date('2023-01-01'),
+      last_updated: new Date('2023-01-10'),
+    },
+    {
+      product_id: 10,
+      supplier_id: 1,
+      serial_number: faker.string.uuid(),
+      status: faker.helpers.arrayElement(statuses),
+      condition: faker.helpers.arrayElement(recordCondition),
+      created_at: new Date('2023-01-01'),
+      last_updated: new Date('2023-01-10'),
+    },
+  ];
+
+  await db.insert(serializeProduct).values(serializedproductsRecords);
+  log.info('Serialized Products records seeded successfully');
+}
 //  =======================================================================================
 // =================================== PARTORDER ==========================================
 
@@ -3351,6 +3356,251 @@ async function seedDiscount(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(discount).values(discountRecords);
   log.info('Discount records seeded successfully');
 }
+// Logs
+async function seedOrderTransactionLogs(db: PostgresJsDatabase<SchemaType>) {
+  const orderID = await db.select().from(order);
+  const orderItemID = await db.select().from(orderProduct);
+  const employeeIDs = await db.select().from(employee);
+
+  const ordertranslogRecords = [
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 10,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 20,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 30,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 40,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 15,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 255,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 35,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 50,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 45,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 60,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      order_id: faker.helpers.arrayElement(orderID).order_id,
+      order_item_id: faker.helpers.arrayElement(orderItemID).order_product_id,
+      action: faker.lorem.sentence(),
+      quantity: 65,
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+  ];
+
+  await db.insert(OrderTransLog).values(ordertranslogRecords);
+  log.info('Order Transaction Logs records seeded successfully');
+}
+
+async function seedProductTransactionLogs(db: PostgresJsDatabase<SchemaType>) {
+  const productID = await db.select().from(product);
+  const productrecordID = await db.select().from(productRecord);
+  const serialIDs = await db.select().from(serializeProduct);
+  const employeeIDs = await db.select().from(employee);
+
+  const producttransLogRecords = [
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+    {
+      product_id: faker.helpers.arrayElement(productID).product_id,
+      product_record_id:
+        faker.helpers.arrayElement(productrecordID).product_record_id,
+      serial_id: faker.helpers.arrayElement(serialIDs).serial_id,
+      action: faker.lorem.sentence(),
+      quantity: faker.number.int({ min: 1, max: 10 }),
+      performed_by: faker.helpers.arrayElement(employeeIDs).employee_id,
+      created_at: new Date('2024-01-15T10:30:00Z'),
+      last_updated: new Date('2024-01-15T10:30:00Z'),
+    },
+  ];
+
+  await db.insert(ProductTransLog).values(producttransLogRecords);
+  log.info('Order Transaction Logs records seeded successfully');
+}
 
 async function main() {
   try {
@@ -3370,10 +3620,10 @@ async function main() {
     await seedSupplier(db);
     await seedProduct(db);
     await seedProductDetails(db);
-    // await seedProductRecord(db);
-    // await seedOrder(db);
-    // await seedOrderItems(db);
-    // await seedSerializedItems(db);
+    await seedProductRecord(db);
+    await seedOrder(db);
+    await seedOrderItems(db);
+    await seedSerializedItems(db);
 
     // Participants
     await seedCustomerGroup(db);
@@ -3404,6 +3654,10 @@ async function main() {
     await seedRemarkTickets(db);
     await seedReports(db);
     await seedAssignedEmployees(db);
+
+    // logs
+    await seedOrderTransactionLogs(db);
+    await seedProductTransactionLogs(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

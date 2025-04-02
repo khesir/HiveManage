@@ -9,6 +9,7 @@ import log from '@/lib/logger';
 import cmsRoute from './cms/cms.route';
 import pmsRoute from './payment/proof.route';
 import smsRoute from './sales/sales.route';
+import logs from './logs/logs.route';
 
 const baseRoute = express.Router({ mergeParams: true });
 
@@ -30,6 +31,10 @@ log.info('Payment Management System endpoints ready');
 // // Customer Management System API
 baseRoute.use('/cms', cmsRoute);
 log.info('Customer Managment System endpoints ready');
+
+// // Log Management System API
+baseRoute.use('/logs', logs);
+log.info('Log Management System endpoints ready');
 
 log.info('Loggings Ready');
 
