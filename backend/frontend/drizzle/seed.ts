@@ -49,7 +49,7 @@ import { jobOrderType } from './schema/services/schema/joborder/jobOrderType.sch
 import { payment, receipt } from './schema/payment';
 import { sales, salesItems } from './schema/sales';
 import { couponredemptions } from './schema/ims/schema/discount/couponredeem';
-import { OrderTransLog, ProductTransLog } from './schema/logs';
+import { OrderTransLog, ProductTransLog } from './schema/records';
 
 const supabase = new SupabaseService();
 
