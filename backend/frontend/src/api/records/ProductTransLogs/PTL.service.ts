@@ -2,7 +2,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
 import { product, productRecord, serializeProduct } from '@/drizzle/schema/ims';
-import { ProductTransLog } from '@/drizzle/schema/logs';
+import { ProductTransLog } from '@/drizzle/schema/records';
 
 export class ProductTransactionLogService {
   private db: PostgresJsDatabase<SchemaType>;

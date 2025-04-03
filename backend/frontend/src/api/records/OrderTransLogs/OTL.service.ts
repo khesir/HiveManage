@@ -3,7 +3,7 @@ import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
 import { order, orderProduct } from '@/drizzle/schema/ims';
-import { OrderTransLog } from '@/drizzle/schema/logs';
+import { OrderTransLog } from '@/drizzle/schema/records';
 
 export class OrderTransactionLogService {
   private db: PostgresJsDatabase<SchemaType>;
