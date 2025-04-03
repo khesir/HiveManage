@@ -31,7 +31,6 @@ const batchFormSchema = z.object({
 	quantity: z.number().min(1, 'Quantity must be at least 1'),
 });
 export function AddBatchQuantityForm({data}: Props) {
-	console.log('pass');
 	const {addProduct} = useSalesHook();
 	const form = useForm<z.infer<typeof batchFormSchema>>({
 		resolver: zodResolver(batchFormSchema),
@@ -73,7 +72,10 @@ export function AddBatchQuantityForm({data}: Props) {
 											placeholder="Select Value"
 											value={field.value || ''}
 											onChange={(e) => {
-												const orderedQuantity = parseInt(e.target.value) || 0;
+												let orderedQuantity = parseInt(e.target.value) || 0;
+												if (orderedQuantity > data.quantity) {
+													orderedQuantity = data.quantity;
+												}
 												field.onChange(orderedQuantity);
 											}}
 										/>

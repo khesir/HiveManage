@@ -1,5 +1,4 @@
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
-import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {
 	Card,
@@ -43,67 +42,34 @@ export function SelectedSaleReviewItems() {
 				</div>
 			</CardHeader>
 			<CardContent className="m-0 p-0 border-y-2">
-				<ScrollArea className="relative h-[calc(90vh-220px)]">
+				<ScrollArea className="relative h-[calc(75vh-220px)]">
 					<div className="relative flex flex-col gap-3 z-10 m-3">
-						{salesHookData['sales_product'] &&
-						salesHookData['sales_product'].length > 0 ? (
-							salesHookData['sales_product'].map((item, index) => (
+						{salesHookData && salesHookData.length > 0 ? (
+							salesHookData.map((item, index) => (
 								<Card
 									className="relative w-full h-[150px] flex items-center justify-start overflow-hidden"
 									key={index}
 								>
-									{item.record.type !== 'Joborder' ? (
-										<CardHeader className="flex-grow">
-											<CardTitle className="hover:underline">
-												<span className="text-xs">
-													{item.record.type !== 'Sales'
-														? `( ${item.record.type} )`
-														: ''}
-												</span>{' '}
-												<span className="font-semibold text-sm">
-													{' '}
-													{item.record.record_number} -{' '}
-													{item.variantRecord.product.name} |{' '}
-													{item.variantRecord.variant_name}
-												</span>
-												{/* Adjust this to display the actual item name if available */}
-											</CardTitle>
-											<CardDescription className="font-semibold text-sm">
-												<div className="flex gap-1">
-													Price: {item.record.price}
-												</div>
-												<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
-													Qty: {item.record.quantity}
-												</p>
-											</CardDescription>
-										</CardHeader>
-									) : (
-										// Handles Job order card
-										<CardHeader className="flex-grow">
-											<CardTitle className="hover:underline flex items-center gap-3">
-												<span className="font-semibold text-sm">
-													{item.record.type} Service No.{' '}
-													{' ' + item.record.record_number}{' '}
-												</span>
-												<Badge>{item.record.joborder_status}</Badge>
-												{/* Adjust this to display the actual item name if available */}
-											</CardTitle>
-											<CardDescription>
-												ID: {' ' + item.record.uuid}
-											</CardDescription>
-											<CardDescription>
-												<Badge>
-													{item.record.record_number}{' '}
-													{item.record.joborder_type}
-												</Badge>
-											</CardDescription>
-										</CardHeader>
-									)}
+									<CardHeader className="flex-grow">
+										<CardTitle className="hover:underline">
+											<span className="font-semibold text-sm">{`#${item.product_id}-${item.record.product?.name}`}</span>
+
+											{/* Adjust this to display the actual item name if available */}
+										</CardTitle>
+										<CardDescription className="font-semibold text-sm">
+											<div className="flex gap-1">
+												Price: {item.record.price}
+											</div>
+											<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
+												Qty: {item.quantity}
+											</p>
+										</CardDescription>
+									</CardHeader>
 								</Card>
 							))
 						) : (
 							<p className="flex justify-center font-semibold text-sm">
-								Select an Item or a service
+								Select an Item
 							</p> // Optional: Display a message if there are no items
 						)}
 					</div>
@@ -115,15 +81,14 @@ export function SelectedSaleReviewItems() {
 			<CardFooter className=" bg-muted/50 flex flex-col items-start w-full">
 				<p>
 					Item Listed(
-					{salesHookData['sales_product']?.length
-						? salesHookData['sales_product'].length
-						: '0'}
+					{salesHookData.length ? salesHookData.length : '0'}
 					)- ₱
-					{salesHookData['sales_product']?.length
+					{salesHookData.length
 						? ' ' +
 							Math.round(
-								salesHookData['sales_product'].reduce(
-									(total, item) => total + item.record.total_price,
+								salesHookData.reduce(
+									(total, item) =>
+										total + (item.record.price || 0) * (item.quantity || 0),
 									0,
 								),
 							)
@@ -133,27 +98,30 @@ export function SelectedSaleReviewItems() {
 				<ul className="grid gap-3 grid-cols-3">
 					<span className="text-muted-foreground col-span-2">Fees</span>
 					<span>
-						{salesHookData['sales_product']
+						{salesHookData
 							? '₱ ' +
 								Math.round(
-									salesHookData['sales_product']?.reduce(
-										(total, item) => total + item.record.total_price,
+									salesHookData?.reduce(
+										(total, item) =>
+											total + (item.record.price || 0) * (item.quantity || 0),
 										0,
 									),
 								)
 							: ' 0'}
 					</span>
+
 					<span className="text-muted-foreground col-span-2">VAT</span>
 					<span>0 %</span>
 					<span className="text-muted-foreground col-span-2 flex justify-end mr-5">
 						Total
 					</span>
 					<span>
-						{salesHookData['sales_product']
+						{salesHookData
 							? '₱ ' +
 								Math.round(
-									salesHookData['sales_product']?.reduce(
-										(total, item) => total + item.record.total_price,
+									salesHookData?.reduce(
+										(total, item) =>
+											total + (item.record.price || 0) * item.quantity,
 										0,
 									),
 								)

@@ -12,6 +12,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {
 	Tooltip,
@@ -20,19 +21,26 @@ import {
 } from '@/components/ui/tooltip';
 // import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {TooltipTrigger} from '@radix-ui/react-tooltip';
-import {Bell, Trash2, Users} from 'lucide-react';
+import {
+	Bell,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	Trash2,
+	Users,
+} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 
 export function SelectedSaleItems() {
 	const navigate = useNavigate();
 	// const {user} = useEmployeeRoleDetailsStore();
-	const {salesHookData, removeProduct} = useSalesHook();
+	const {salesHookData, updateQuantity, removeProduct} = useSalesHook();
 	return (
 		<>
 			<div className="flex items-center justify-between gap-3">
 				<Button
 					className="flex flex-auto"
-					onClick={() => navigate('/sales/create-service')}
+					disabled={salesHookData.length <= 0}
+					onClick={() => navigate('/sales/system/create')}
 				>
 					Confirm
 				</Button>
@@ -87,7 +95,9 @@ export function SelectedSaleItems() {
 										? ' ' +
 											Math.round(
 												salesHookData.reduce(
-													(total, item) => total + (item.record.price || 0),
+													(total, item) =>
+														total +
+														(item.record.price || 0) * (item.quantity || 0),
 													0,
 												),
 											)
@@ -102,7 +112,9 @@ export function SelectedSaleItems() {
 											? '₱ ' +
 												Math.round(
 													salesHookData?.reduce(
-														(total, item) => total + (item.record.price || 0),
+														(total, item) =>
+															total +
+															(item.record.price || 0) * (item.quantity || 0),
 														0,
 													),
 												)
@@ -118,7 +130,9 @@ export function SelectedSaleItems() {
 											? '₱ ' +
 												Math.round(
 													salesHookData?.reduce(
-														(total, item) => total + (item.record.price || 0),
+														(total, item) =>
+															total +
+															(item.record.price || 0) * (item.quantity || 0),
 														0,
 													),
 												)
@@ -138,14 +152,60 @@ export function SelectedSaleItems() {
 							>
 								<CardHeader className="flex-grow">
 									<CardTitle className="hover:underline">
-										<span className="font-semibold text-sm">{`#${item.product_id}-${item.record.product?.name}`}</span>
-										{/* Adjust this to display the actual item name if available */}
+										<span className="font-semibold text-sm">{`#${item.product_id} - ${item.record.product?.name}`}</span>
 									</CardTitle>
-									<CardDescription className="font-semibold text-sm">
+									<CardDescription className="font-semibold text-sm space-y-2">
 										<div className="flex gap-1">Price: {item.record.price}</div>
-										<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
-											Qty: {item.quantity}
-										</p>
+										<div className="flex items-center gap-1">
+											{!item.data.product?.is_serialize ? (
+												<>
+													<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
+														Qty:
+													</p>
+													<Button
+														aria-label="Decrease quantity"
+														variant="outline"
+														className="w-[20px] h-[30px] p-0"
+														onClick={() => {
+															updateQuantity(index, item.quantity - 1);
+														}}
+													>
+														<ChevronLeftIcon
+															className="h-4 w-4"
+															aria-hidden="true"
+														/>
+													</Button>
+													<Input
+														type="number"
+														value={item.quantity}
+														className="w-[60px] h-[30px] [&::-webkit-inner-spin-button]:appearance-none"
+														onChange={(e) => {
+															const newValue = parseInt(e.target.value, 10);
+															if (!isNaN(newValue) && newValue >= 0) {
+																updateQuantity(index, newValue);
+															}
+														}}
+													/>
+													<Button
+														aria-label="Increase quantity"
+														variant="outline"
+														className="w-[20px] h-[30px] p-0"
+														onClick={() => {
+															updateQuantity(index, item.quantity + 1);
+														}}
+													>
+														<ChevronRightIcon
+															className="h-4 w-4"
+															aria-hidden="true"
+														/>
+													</Button>
+												</>
+											) : (
+												<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
+													Qty: {item.quantity}
+												</p>
+											)}
+										</div>
 									</CardDescription>
 								</CardHeader>
 								<Button
@@ -160,7 +220,7 @@ export function SelectedSaleItems() {
 						))
 					) : (
 						<p className="flex justify-center font-semibold text-sm">
-							Select an Item or a service
+							Select an Item
 						</p> // Optional: Display a message if there are no items
 					)}
 				</div>

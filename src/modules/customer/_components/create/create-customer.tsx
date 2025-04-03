@@ -148,7 +148,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 			// Overview main transaction process
 			// Don't touch
 			if (typeof processCreate === 'function') {
-				processCreate([data]);
+				processCreate(data);
 				return true;
 			}
 

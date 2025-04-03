@@ -1,19 +1,19 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import SalesOveriewSection from '@/modules/sales/_sections/sales-overview-section';
+import SalesPosSection from '@/modules/sales/_sections/sales-pos-section';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: '/sales/dashboard'},
 	{title: 'Systems', link: '/sales/overview'},
-	{title: 'Overview', link: '/sales/overview'},
+	{title: 'POS', link: '/sales/overview'},
 ];
 
-export default function OverviewPage() {
+export default function SalesPosPage() {
 	return (
 		<ContentLayout title="PC BEE Management Systems">
 			<Breadcrumbs items={breadcrubItems} />
-			<SalesOveriewSection />
+			<SalesPosSection />
 		</ContentLayout>
 	);
 }

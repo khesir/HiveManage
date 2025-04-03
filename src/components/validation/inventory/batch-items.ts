@@ -69,6 +69,7 @@ const productSchema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
 	img_url: z.string(),
+	is_serialize: z.boolean().optional(),
 	stock_limit: z.number().min(1),
 	total_stock: z.number().optional(),
 	created_at: z.string().optional(),
@@ -84,7 +85,7 @@ export const batchRecordSchema = z.object({
 	product_id: z.number().min(1),
 	supplier_id: z.number().min(1),
 
-	qty: z.number().min(1),
+	quantity: z.number().min(1),
 	price: z.number().min(1),
 	condition: z.enum(['New', 'Secondhand', 'Broken']),
 	status: z.enum([

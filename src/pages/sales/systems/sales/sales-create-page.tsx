@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import {SalesCreateService} from '@/modules/sales/_sections/sales-create-service';
+import {CreateSalesSection} from '@/modules/sales/_sections/sales-create-section';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'sales/dashboard'},
@@ -9,11 +9,11 @@ const breadcrubItems = [
 	{title: 'Create Service', link: '#'},
 ];
 
-export function CreateServicePage() {
+export function CreateSalesPage() {
 	return (
 		<ContentLayout title="PC BEE Management Systems">
 			<Breadcrumbs items={breadcrubItems} />
-			<SalesCreateService />
+			<CreateSalesSection />
 		</ContentLayout>
 	);
 }

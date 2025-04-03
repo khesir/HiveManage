@@ -32,37 +32,39 @@ export function RecordSheetList({product}: Props) {
 				</Button>
 			</SheetTrigger>
 			<SheetContent className="max-w-none w-[900px]">
-				<ScrollArea className="h-full px-5">
-					<SheetHeader className="pb-5">
-						<div className="flex gap-5">
-							<div className="relative h-[300px] overflow-hidden rounded-md w-[300px]">
-								<img
-									src={
-										typeof product.img_url === 'string'
-											? product.img_url
-											: `/img/placeholder.jpg`
-									}
-									alt="Selected profile"
-									className="object-cover h-full w-full"
-								/>
+				<ScrollArea className="h-full">
+					<div className="px-5">
+						<SheetHeader className="pb-5">
+							<div className="flex gap-5">
+								<div className="relative h-[300px] overflow-hidden rounded-md w-[300px]">
+									<img
+										src={
+											typeof product.img_url === 'string'
+												? product.img_url
+												: `/img/placeholder.jpg`
+										}
+										alt="Selected profile"
+										className="object-cover h-full w-full"
+									/>
+								</div>
+								<InformationCard data={product} />
 							</div>
-							<InformationCard data={product} />
+						</SheetHeader>
+						<div>
+							{product.is_serialize ? (
+								<SerializeItemRecord
+									searchParams={searchParams}
+									product_id={product.product_id!.toString()}
+									showControls={false}
+								/>
+							) : (
+								<BatchRecordList
+									searchParams={searchParams}
+									product_id={product.product_id!.toString()}
+									showControls={false}
+								/>
+							)}
 						</div>
-					</SheetHeader>
-					<div>
-						{product.is_serialize ? (
-							<SerializeItemRecord
-								searchParams={searchParams}
-								product_id={product.product_id!.toString()}
-								showControls={false}
-							/>
-						) : (
-							<BatchRecordList
-								searchParams={searchParams}
-								product_id={product.product_id!.toString()}
-								showControls={false}
-							/>
-						)}
 					</div>
 				</ScrollArea>
 			</SheetContent>

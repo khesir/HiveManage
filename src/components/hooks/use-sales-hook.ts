@@ -9,11 +9,13 @@ interface SalesItem {
 	product_id: number;
 	quantity: number;
 	record: Product;
+	data: Product;
 }
 interface SalesHook {
 	salesHookData: SalesItem[];
 	trigger: boolean;
 	addProduct: (product: Product, quantity: number) => void;
+	updateQuantity: (index: number, quantity: number) => void;
 	removeProduct: (id: number) => void;
 	resetProducts: () => void;
 }
@@ -36,10 +38,39 @@ export const useSalesHook = create<SalesHook>((set) => ({
 				product_id: product.product_id,
 				quantity: quantity,
 				record: product,
+				data: product,
 			};
 
 			return {
 				salesHookData: [...state.salesHookData, salesItem],
+				trigger: !state.trigger,
+			};
+		}),
+
+	updateQuantity: (index, quantity) =>
+		set((state) => {
+			if (index < 0 || index >= state.salesHookData.length) {
+				toast.error(`Invalid index ${index}.`);
+				return state;
+			}
+
+			if (isNaN(quantity) || quantity < 1) {
+				return state;
+			}
+
+			const currentItem = state.salesHookData[index];
+			if (quantity > (currentItem.data.quantity || 0)) {
+				return state;
+			}
+
+			const updatedSalesHookData = [...state.salesHookData];
+			updatedSalesHookData[index] = {
+				...updatedSalesHookData[index],
+				quantity: quantity,
+			};
+
+			return {
+				salesHookData: updatedSalesHookData,
 				trigger: !state.trigger,
 			};
 		}),

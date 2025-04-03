@@ -12,10 +12,15 @@ import {
 	EmployeeViewPage,
 } from './pages/admin';
 
-import {OverviewPage, SalesDashboardPage, ServicePages} from './pages/sales';
+import {
+	SalesPosPage,
+	SalesDashboardPage,
+	ServicePages,
+	SalesListPage,
+} from './pages/sales';
 
 // TODO: Sort this to each index found in root of page file index.ts
-import {CreateServicePage} from './pages/sales/systems/overview/create-service-page';
+import {CreateSalesPage} from './pages/sales/systems/sales/sales-create-page';
 import ViewServicePage from './pages/sales/systems/service/view-service-page';
 import CustomerCreatePage from './pages/customer/customer-create-page';
 import CustomerViewPage from './pages/customer/customer-view-page';
@@ -64,24 +69,19 @@ function App() {
 								<Route path="view/:id" element={<EmployeeViewPage />} />
 							</Route>
 						</Route>
-						<Route path="sales">
-							<Route path="dashboard" element={<DashboardPage />} />
+
+						{/* Customer */}
+						<Route path="customer" element={<CustomerDatabasePage />} />
+						<Route path="customer/view/:id" element={<CustomerViewPage />} />
+						<Route path="customer/create" element={<CustomerCreatePage />} />
+
+						<Route path="sales/system">
+							<Route path="create" element={<CreateSalesPage />} />
+							<Route path="list" element={<SalesListPage />} />
 							<Route path="services" element={<ServicePages />} />
 							<Route path="services/view/:id" element={<ViewServicePage />} />
-							<Route path="services/create" element={<CreateServicePage />} />
-							<Route
-								path="services/joborders/view/:id"
-								element={<JoborderViewPage />}
-							/>
-							<Route
-								path="services/joborders/view/:id/task/:task_id"
-								element={<ReadTask />}
-							/>
-							<Route path="services/joborders/view/:id/report" />
-							<Route path="customer" element={<CustomerDatabasePage />} />
-							<Route path="customer/view/:id" element={<CustomerViewPage />} />
-							<Route path="customer/create" element={<CustomerCreatePage />} />
-							<Route path="inquiry" element={<InquiryPage />} />
+							<Route path="services/create" />
+							<Route path="payment" />
 						</Route>
 
 						<Route path="inventory">
@@ -196,26 +196,25 @@ function App() {
 						<Route path="dashboard" element={<SalesDashboardPage />} />
 						<Route path="settings" element={<Settings />} />
 						<Route path="terminal" element={<Terminal />} />
+
 						{/* Systems */}
-						<Route path="overview" element={<OverviewPage />} />
-						<Route path="create-service" element={<CreateServicePage />} />
+						{/* Sales list */}
+						<Route path="overview" element={<SalesPosPage />} />
+						<Route path="system">
+							<Route path="create" element={<CreateSalesPage />} />
+							<Route path="list" element={<SalesListPage />} />
+							<Route path="services" element={<ServicePages />} />
+							<Route path="services/view/:id" element={<ViewServicePage />} />
+							<Route path="services/create" />
+							<Route path="payment" />
+						</Route>
 
-						<Route path="services" element={<ServicePages />} />
-						<Route path="services/view/:id" element={<ViewServicePage />} />
-						<Route path="services/create" element={<CreateServicePage />} />
-						<Route
-							path="services/joborders/view/:id"
-							element={<JoborderViewPage />}
-						/>
-						<Route
-							path="services/joborders/view/:id/task/:task_id"
-							element={<ReadTask />}
-						/>
-						<Route path="services/joborders/view/:id/report" />
-
+						{/* Customer */}
 						<Route path="customer" element={<CustomerDatabasePage />} />
 						<Route path="customer/view/:id" element={<CustomerViewPage />} />
 						<Route path="customer/create" element={<CustomerCreatePage />} />
+
+						{/* Inventory */}
 						<Route path="inventory">
 							<Route path="products">
 								<Route index element={<ProductPage />} />
