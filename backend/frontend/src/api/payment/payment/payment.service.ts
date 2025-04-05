@@ -3,8 +3,8 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreatePayment } from './payment.model';
 import { payment } from '@/drizzle/schema/payment/schema/payment.schema';
 import { SchemaType } from '@/drizzle/schema/type';
-import { borrow, jobOrder } from '@/drizzle/schema/services';
 import { sales } from '@/drizzle/schema/sales';
+import { service } from '@/drizzle/schema/services';
 
 export class PaymentService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -80,8 +80,7 @@ export class PaymentService {
     const result = await this.db
       .select()
       .from(payment)
-      .leftJoin(jobOrder, eq(jobOrder.job_order_id, payment.payment_id))
-      .leftJoin(borrow, eq(borrow.borrow_id, payment.borrow_id))
+      .leftJoin(service, eq(service.service_id, payment.service_id))
       .leftJoin(sales, eq(sales.sales_id, payment.sales_id))
       .where(and(...conditions))
       .orderBy(
@@ -92,11 +91,8 @@ export class PaymentService {
 
     const paymentWithDetails = result.map((row) => ({
       ...row.payment,
-      jobOrder: {
-        ...row.job_order,
-      },
-      borrow: {
-        ...row.borrow,
+      service: {
+        ...row.service,
       },
       sales: {
         ...row.sales,
@@ -110,18 +106,14 @@ export class PaymentService {
     const result = await this.db
       .select()
       .from(payment)
-      .leftJoin(jobOrder, eq(jobOrder.job_order_id, payment.payment_id))
-      .leftJoin(borrow, eq(borrow.borrow_id, payment.borrow_id))
+      .leftJoin(service, eq(service.service_id, payment.service_id))
       .leftJoin(sales, eq(sales.sales_id, payment.sales_id))
       .where(eq(payment.payment_id, Number(payment_id)));
 
     const paymentWithDetails = result.map((row) => ({
       ...row.payment,
-      jobOrder: {
-        ...row.job_order,
-      },
-      borrow: {
-        ...row.borrow,
+      service: {
+        ...row.service,
       },
       sales: {
         ...row.sales,

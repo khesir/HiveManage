@@ -18,13 +18,13 @@ import {
   discountProducts,
 } from './ims';
 import {
-  jobOrder,
   reports,
-  jobOrderType,
-  reserve,
-  borrow,
-  borrowItems,
-  reserveItems,
+  tickets,
+  ticketType,
+  service,
+  serviceItems,
+  service_Type,
+  assignedEmployees,
 } from './services';
 import { sales, salesItems } from './sales';
 import { payment, receipt } from './payment';
@@ -45,16 +45,13 @@ export const schema: SchemaType = {
   department,
   designation,
   // Job Order
-  jobOrder,
+  service,
+  serviceItems,
+  service_Type,
+  tickets,
+  ticketType,
+  assignedEmployees,
   reports,
-  jobOrderType,
-
-  //Services
-  reserve,
-  reserveItems,
-
-  borrow,
-  borrowItems,
 
   sales,
   salesItems,

@@ -7,7 +7,7 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { borrow, jobOrder } from '../../services';
+import { service } from '../../services';
 import { sales } from '../../sales';
 import { discount } from '../../ims';
 
@@ -37,8 +37,7 @@ export const serviceType = pgEnum('service_type', [
 
 export const payment = pgTable('payment', {
   payment_id: serial('payment_id').primaryKey(),
-  job_order_id: integer('job_order_id').references(() => jobOrder.job_order_id),
-  borrow_id: integer('borrow_id').references(() => borrow.borrow_id),
+  service_id: integer('service_id').references(() => service.service_id),
   sales_id: integer('sales_id').references(() => sales.sales_id),
   service_type: serviceType('service_type').notNull(),
   amount: real('total_price'),

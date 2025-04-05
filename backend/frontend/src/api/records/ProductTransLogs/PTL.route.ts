@@ -4,17 +4,17 @@ import { db } from '@/drizzle/pool';
 import { ProductTransactionLogController } from './PTL.controller';
 import { CreateProductTransactionLog } from './PTL.model';
 
-const producttranslogRoute = Router({ mergeParams: true });
+const productlogRoute = Router({ mergeParams: true });
 const prodcuttranslogController = new ProductTransactionLogController(db);
 
-producttranslogRoute.get(
+productlogRoute.get(
   '/',
   prodcuttranslogController.getAllOrderTransactionLog.bind(
     prodcuttranslogController,
   ),
 );
 
-producttranslogRoute.post(
+productlogRoute.post(
   '/',
   [validateRequest({ body: CreateProductTransactionLog })],
   prodcuttranslogController.createProductTransactionLog.bind(
@@ -22,4 +22,4 @@ producttranslogRoute.post(
   ),
 );
 
-export default producttranslogRoute;
+export default productlogRoute;

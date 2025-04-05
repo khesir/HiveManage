@@ -1,2 +1,2 @@
-export { ProductTransLog } from './schema/productTransactionLog';
-export { OrderTransLog } from './schema/orderTransactionLog';
+export { ProductLog } from './schema/productLog';
+export { OrderLog } from './schema/orderLog';
