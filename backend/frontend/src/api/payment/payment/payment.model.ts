@@ -6,7 +6,7 @@ export const CreatePayment = z.object({
   service_type: z.enum(['Borrow', 'Reservation', 'Sales', 'Joborder']),
   amount: z.number().min(1),
   vat_rate: z.number().min(1),
-  discount_id: z.number().min(1),
+  discount_amount: z.number().min(1),
   payment_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
@@ -31,7 +31,7 @@ export const UpdatePayment = z.object({
   service_type: z.enum(['Borrow', 'Reservation', 'Sales', 'Joborder']),
   amount: z.number().min(1),
   vat_rate: z.number().min(1),
-  discount_id: z.number().min(1),
+  discount_amount: z.number().min(1),
   payment_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   }),
