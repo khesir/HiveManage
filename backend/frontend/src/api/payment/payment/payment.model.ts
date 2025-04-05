@@ -1,8 +1,7 @@
 import { z } from 'zod';
 
 export const CreatePayment = z.object({
-  job_order_id: z.number().min(1),
-  borrow_id: z.number().min(1),
+  service_id: z.number().min(1),
   sales_id: z.number().min(1),
   service_type: z.enum(['Borrow', 'Reservation', 'Sales', 'Joborder']),
   amount: z.number().min(1),
@@ -27,8 +26,7 @@ export const CreatePayment = z.object({
 });
 
 export const UpdatePayment = z.object({
-  job_order_id: z.number().min(1),
-  borrow_id: z.number().min(1),
+  service_id: z.number().min(1),
   sales_id: z.number().min(1),
   service_type: z.enum(['Borrow', 'Reservation', 'Sales', 'Joborder']),
   amount: z.number().min(1),

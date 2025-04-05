@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "id": "8088daa5-4ea8-4235-9dd1-0cd77cdc5a35",
+=======
+  "id": "61ca69a6-36f1-4069-b305-db53852867f8",
+>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2101,6 +2105,7 @@
           "primaryKey": true,
           "notNull": true
         },
+<<<<<<< HEAD
         "job_order_id": {
           "name": "job_order_id",
           "type": "integer",
@@ -2109,6 +2114,10 @@
         },
         "borrow_id": {
           "name": "borrow_id",
+=======
+        "service_id": {
+          "name": "service_id",
+>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -2187,6 +2196,7 @@
       },
       "indexes": {},
       "foreignKeys": {
+<<<<<<< HEAD
         "payment_job_order_id_job_order_job_order_id_fk": {
           "name": "payment_job_order_id_job_order_job_order_id_fk",
           "tableFrom": "payment",
@@ -2209,6 +2219,17 @@
           ],
           "columnsTo": [
             "borrow_id"
+=======
+        "payment_service_id_service_service_id_fk": {
+          "name": "payment_service_id_service_service_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "service",
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "service_id"
+>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2317,12 +2338,96 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+<<<<<<< HEAD
+=======
+    "public.employeeLog": {
+      "name": "employeeLog",
+      "schema": "",
+      "columns": {
+        "employee_logs_id": {
+          "name": "employee_logs_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "employeeLog_employee_id_employee_employee_id_fk": {
+          "name": "employeeLog_employee_id_employee_employee_id_fk",
+          "tableFrom": "employeeLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "employee_id"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "employeeLog_performed_by_employee_employee_id_fk": {
+          "name": "employeeLog_performed_by_employee_employee_id_fk",
+          "tableFrom": "employeeLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
     "public.OrderTransLog": {
       "name": "OrderTransLog",
       "schema": "",
       "columns": {
-        "order_transaction_id": {
-          "name": "order_transaction_id",
+        "order_log_id": {
+          "name": "order_log_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -2427,8 +2532,8 @@
       "name": "ProductTransLog",
       "schema": "",
       "columns": {
-        "product_transaction_id": {
-          "name": "product_transaction_id",
+        "product_log_id": {
+          "name": "product_log_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -2548,6 +2653,291 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+<<<<<<< HEAD
+=======
+    "public.salesLog": {
+      "name": "salesLog",
+      "schema": "",
+      "columns": {
+        "sales_logs_id": {
+          "name": "sales_logs_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sales_id": {
+          "name": "sales_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_id": {
+          "name": "payment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sales_items_idv": {
+          "name": "sales_items_idv",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "salesLog_sales_id_sales_sales_id_fk": {
+          "name": "salesLog_sales_id_sales_sales_id_fk",
+          "tableFrom": "salesLog",
+          "tableTo": "sales",
+          "columnsFrom": [
+            "sales_id"
+          ],
+          "columnsTo": [
+            "sales_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "salesLog_payment_id_payment_payment_id_fk": {
+          "name": "salesLog_payment_id_payment_payment_id_fk",
+          "tableFrom": "salesLog",
+          "tableTo": "payment",
+          "columnsFrom": [
+            "payment_id"
+          ],
+          "columnsTo": [
+            "payment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "salesLog_sales_items_idv_sales_items_sales_item_id_fk": {
+          "name": "salesLog_sales_items_idv_sales_items_sales_item_id_fk",
+          "tableFrom": "salesLog",
+          "tableTo": "sales_items",
+          "columnsFrom": [
+            "sales_items_idv"
+          ],
+          "columnsTo": [
+            "sales_item_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "salesLog_performed_by_employee_employee_id_fk": {
+          "name": "salesLog_performed_by_employee_employee_id_fk",
+          "tableFrom": "salesLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.serviceLog": {
+      "name": "serviceLog",
+      "schema": "",
+      "columns": {
+        "service_log_id": {
+          "name": "service_log_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "service_id": {
+          "name": "service_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ticket_id": {
+          "name": "ticket_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report_id": {
+          "name": "report_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "service_item_id": {
+          "name": "service_item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_id": {
+          "name": "payment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "serviceLog_service_id_service_service_id_fk": {
+          "name": "serviceLog_service_id_service_service_id_fk",
+          "tableFrom": "serviceLog",
+          "tableTo": "service",
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "service_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serviceLog_ticket_id_tickets_ticket_id_fk": {
+          "name": "serviceLog_ticket_id_tickets_ticket_id_fk",
+          "tableFrom": "serviceLog",
+          "tableTo": "tickets",
+          "columnsFrom": [
+            "ticket_id"
+          ],
+          "columnsTo": [
+            "ticket_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serviceLog_report_id_reports_reports_id_fk": {
+          "name": "serviceLog_report_id_reports_reports_id_fk",
+          "tableFrom": "serviceLog",
+          "tableTo": "reports",
+          "columnsFrom": [
+            "report_id"
+          ],
+          "columnsTo": [
+            "reports_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serviceLog_service_item_id_serviceItems_service_items_id_fk": {
+          "name": "serviceLog_service_item_id_serviceItems_service_items_id_fk",
+          "tableFrom": "serviceLog",
+          "tableTo": "serviceItems",
+          "columnsFrom": [
+            "service_item_id"
+          ],
+          "columnsTo": [
+            "service_items_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serviceLog_payment_id_payment_payment_id_fk": {
+          "name": "serviceLog_payment_id_payment_payment_id_fk",
+          "tableFrom": "serviceLog",
+          "tableTo": "payment",
+          "columnsFrom": [
+            "payment_id"
+          ],
+          "columnsTo": [
+            "payment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serviceLog_performed_by_employee_employee_id_fk": {
+          "name": "serviceLog_performed_by_employee_employee_id_fk",
+          "tableFrom": "serviceLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
     "public.sales": {
       "name": "sales",
       "schema": "",
@@ -2746,8 +3136,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "job_order_id": {
-          "name": "job_order_id",
+        "service_id": {
+          "name": "service_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -2793,15 +3183,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "assigned_employees_job_order_id_job_order_job_order_id_fk": {
-          "name": "assigned_employees_job_order_id_job_order_job_order_id_fk",
+        "assigned_employees_service_id_service_service_id_fk": {
+          "name": "assigned_employees_service_id_service_service_id_fk",
           "tableFrom": "assigned_employees",
-          "tableTo": "job_order",
+          "tableTo": "service",
           "columnsFrom": [
-            "job_order_id"
+            "service_id"
           ],
           "columnsTo": [
-            "job_order_id"
+            "service_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2823,131 +3213,31 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.borrow": {
-      "name": "borrow",
+    "public.reports": {
+      "name": "reports",
       "schema": "",
       "columns": {
-        "borrow_id": {
-          "name": "borrow_id",
+        "reports_id": {
+          "name": "reports_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "customer_id": {
-          "name": "customer_id",
+        "service_id": {
+          "name": "service_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "borrow_date": {
-          "name": "borrow_date",
-          "type": "varchar",
+        "reports_title": {
+          "name": "reports_title",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "return_date": {
-          "name": "return_date",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fee": {
-          "name": "fee",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "borrow_status": {
-          "name": "borrow_status",
-          "type": "borrow_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "borrow_customer_id_customer_customer_id_fk": {
-          "name": "borrow_customer_id_customer_customer_id_fk",
-          "tableFrom": "borrow",
-          "tableTo": "customer",
-          "columnsFrom": [
-            "customer_id"
-          ],
-          "columnsTo": [
-            "customer_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.borrow_items": {
-      "name": "borrow_items",
-      "schema": "",
-      "columns": {
-        "borrow_item_id": {
-          "name": "borrow_item_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "borrow_id": {
-          "name": "borrow_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "borrow_date": {
-          "name": "borrow_date",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fee": {
-          "name": "fee",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "borrow_item_status": {
-          "name": "borrow_item_status",
-          "type": "borrowStatusEnum",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "return_date": {
-          "name": "return_date",
-          "type": "date",
+        "tickets": {
+          "name": "tickets",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -2974,28 +3264,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "borrow_items_product_id_product_product_id_fk": {
-          "name": "borrow_items_product_id_product_product_id_fk",
-          "tableFrom": "borrow_items",
-          "tableTo": "product",
+        "reports_service_id_service_service_id_fk": {
+          "name": "reports_service_id_service_service_id_fk",
+          "tableFrom": "reports",
+          "tableTo": "service",
           "columnsFrom": [
-            "product_id"
+            "service_id"
           ],
           "columnsTo": [
-            "product_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "borrow_items_borrow_id_borrow_borrow_id_fk": {
-          "name": "borrow_items_borrow_id_borrow_borrow_id_fk",
-          "tableFrom": "borrow_items",
-          "tableTo": "borrow",
-          "columnsFrom": [
-            "borrow_id"
-          ],
-          "columnsTo": [
-            "borrow_id"
+            "service_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3004,37 +3281,31 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.job_order": {
-      "name": "job_order",
+    "public.service": {
+      "name": "service",
       "schema": "",
       "columns": {
-        "job_order_id": {
-          "name": "job_order_id",
+        "service_id": {
+          "name": "service_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "joborder_type_id": {
-          "name": "joborder_type_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "customer_id": {
-          "name": "customer_id",
+        "service_type_id": {
+          "name": "service_type_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
         "uuid": {
           "name": "uuid",
-          "type": "varchar(255)",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "description": {
           "name": "description",
-          "type": "varchar",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -3044,16 +3315,22 @@
           "primaryKey": false,
           "notNull": false
         },
-        "joborder_status": {
-          "name": "joborder_status",
-          "type": "joborder_status",
+        "customer_id": {
+          "name": "customer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "service_status": {
+          "name": "service_status",
+          "type": "remarktickets_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
         "total_cost_price": {
           "name": "total_cost_price",
-          "type": "real",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -3080,22 +3357,22 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "job_order_joborder_type_id_job_order_type_joborder_type_id_fk": {
-          "name": "job_order_joborder_type_id_job_order_type_joborder_type_id_fk",
-          "tableFrom": "job_order",
-          "tableTo": "job_order_type",
+        "service_service_type_id_service_Type_service_type_id_fk": {
+          "name": "service_service_type_id_service_Type_service_type_id_fk",
+          "tableFrom": "service",
+          "tableTo": "service_Type",
           "columnsFrom": [
-            "joborder_type_id"
+            "service_type_id"
           ],
           "columnsTo": [
-            "joborder_type_id"
+            "service_type_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "job_order_customer_id_customer_customer_id_fk": {
-          "name": "job_order_customer_id_customer_customer_id_fk",
-          "tableFrom": "job_order",
+        "service_customer_id_customer_customer_id_fk": {
+          "name": "service_customer_id_customer_customer_id_fk",
+          "tableFrom": "service",
           "tableTo": "customer",
           "columnsFrom": [
             "customer_id"
@@ -3110,12 +3387,12 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.job_order_items": {
-      "name": "job_order_items",
+    "public.serviceItems": {
+      "name": "serviceItems",
       "schema": "",
       "columns": {
-        "job_order_item_id": {
-          "name": "job_order_item_id",
+        "service_items_id": {
+          "name": "service_items_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -3126,21 +3403,33 @@
           "primaryKey": false,
           "notNull": false
         },
-        "job_order_id": {
-          "name": "job_order_id",
+        "service_id": {
+          "name": "service_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "varchar",
+        "product_record_id": {
+          "name": "product_record_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
+        "serial_id": {
+          "name": "serial_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ticket_status": {
+          "name": "ticket_status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
         "quantity": {
           "name": "quantity",
-          "type": "real",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -3167,9 +3456,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "job_order_items_product_id_product_product_id_fk": {
-          "name": "job_order_items_product_id_product_product_id_fk",
-          "tableFrom": "job_order_items",
+        "serviceItems_product_id_product_product_id_fk": {
+          "name": "serviceItems_product_id_product_product_id_fk",
+          "tableFrom": "serviceItems",
           "tableTo": "product",
           "columnsFrom": [
             "product_id"
@@ -3180,15 +3469,41 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "job_order_items_job_order_id_job_order_job_order_id_fk": {
-          "name": "job_order_items_job_order_id_job_order_job_order_id_fk",
-          "tableFrom": "job_order_items",
-          "tableTo": "job_order",
+        "serviceItems_service_id_service_service_id_fk": {
+          "name": "serviceItems_service_id_service_service_id_fk",
+          "tableFrom": "serviceItems",
+          "tableTo": "service",
           "columnsFrom": [
-            "job_order_id"
+            "service_id"
           ],
           "columnsTo": [
-            "job_order_id"
+            "service_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serviceItems_product_record_id_product_record_product_record_id_fk": {
+          "name": "serviceItems_product_record_id_product_record_product_record_id_fk",
+          "tableFrom": "serviceItems",
+          "tableTo": "product_record",
+          "columnsFrom": [
+            "product_record_id"
+          ],
+          "columnsTo": [
+            "product_record_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "serviceItems_serial_id_serialized_product_serial_id_fk": {
+          "name": "serviceItems_serial_id_serialized_product_serial_id_fk",
+          "tableFrom": "serviceItems",
+          "tableTo": "serialized_product",
+          "columnsFrom": [
+            "serial_id"
+          ],
+          "columnsTo": [
+            "serial_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3197,12 +3512,60 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.job_order_type": {
-      "name": "job_order_type",
+    "public.service_Type": {
+      "name": "service_Type",
       "schema": "",
       "columns": {
-        "joborder_type_id": {
-          "name": "joborder_type_id",
+        "service_type_id": {
+          "name": "service_type_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.ticketType": {
+      "name": "ticketType",
+      "schema": "",
+      "columns": {
+        "ticket_type_id": {
+          "name": "ticket_type_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -3245,24 +3608,24 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.remark_tickets": {
-      "name": "remark_tickets",
+    "public.tickets": {
+      "name": "tickets",
       "schema": "",
       "columns": {
-        "remark_id": {
-          "name": "remark_id",
+        "ticket_id": {
+          "name": "ticket_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "remark_type_id": {
-          "name": "remark_type_id",
+        "ticket_type_id": {
+          "name": "ticket_type_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "job_order_id": {
-          "name": "job_order_id",
+        "service_id": {
+          "name": "service_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -3285,9 +3648,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "remark_tickets_status": {
-          "name": "remark_tickets_status",
-          "type": "remarktickets_status",
+        "ticket_status": {
+          "name": "ticket_status",
+          "type": "tickets_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -3321,296 +3684,28 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "remark_tickets_remark_type_id_remark_type_remark_type_id_fk": {
-          "name": "remark_tickets_remark_type_id_remark_type_remark_type_id_fk",
-          "tableFrom": "remark_tickets",
-          "tableTo": "remark_type",
+        "tickets_ticket_type_id_ticketType_ticket_type_id_fk": {
+          "name": "tickets_ticket_type_id_ticketType_ticket_type_id_fk",
+          "tableFrom": "tickets",
+          "tableTo": "ticketType",
           "columnsFrom": [
-            "remark_type_id"
+            "ticket_type_id"
           ],
           "columnsTo": [
-            "remark_type_id"
+            "ticket_type_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "remark_tickets_job_order_id_job_order_job_order_id_fk": {
-          "name": "remark_tickets_job_order_id_job_order_job_order_id_fk",
-          "tableFrom": "remark_tickets",
-          "tableTo": "job_order",
+        "tickets_service_id_service_service_id_fk": {
+          "name": "tickets_service_id_service_service_id_fk",
+          "tableFrom": "tickets",
+          "tableTo": "service",
           "columnsFrom": [
-            "job_order_id"
+            "service_id"
           ],
           "columnsTo": [
-            "job_order_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.remark_type": {
-      "name": "remark_type",
-      "schema": "",
-      "columns": {
-        "remark_type_id": {
-          "name": "remark_type_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.reports": {
-      "name": "reports",
-      "schema": "",
-      "columns": {
-        "reports_id": {
-          "name": "reports_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "job_order_id": {
-          "name": "job_order_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "reports_title": {
-          "name": "reports_title",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "remarks": {
-          "name": "remarks",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "reports_job_order_id_job_order_job_order_id_fk": {
-          "name": "reports_job_order_id_job_order_job_order_id_fk",
-          "tableFrom": "reports",
-          "tableTo": "job_order",
-          "columnsFrom": [
-            "job_order_id"
-          ],
-          "columnsTo": [
-            "job_order_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.reserve": {
-      "name": "reserve",
-      "schema": "",
-      "columns": {
-        "reserve_id": {
-          "name": "reserve_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "customer_id": {
-          "name": "customer_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "reserve_status": {
-          "name": "reserve_status",
-          "type": "reserveStatusEnum",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "reserve_customer_id_customer_customer_id_fk": {
-          "name": "reserve_customer_id_customer_customer_id_fk",
-          "tableFrom": "reserve",
-          "tableTo": "customer",
-          "columnsFrom": [
-            "customer_id"
-          ],
-          "columnsTo": [
-            "customer_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.reserve_items": {
-      "name": "reserve_items",
-      "schema": "",
-      "columns": {
-        "reserve_item_id": {
-          "name": "reserve_item_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "reserve_id": {
-          "name": "reserve_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "expiration_date": {
-          "name": "expiration_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "reserve_item_status": {
-          "name": "reserve_item_status",
-          "type": "reserveStatusEnum",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "reserve_items_product_id_product_product_id_fk": {
-          "name": "reserve_items_product_id_product_product_id_fk",
-          "tableFrom": "reserve_items",
-          "tableTo": "product",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "product_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "reserve_items_reserve_id_reserve_reserve_id_fk": {
-          "name": "reserve_items_reserve_id_reserve_reserve_id_fk",
-          "tableFrom": "reserve_items",
-          "tableTo": "reserve",
-          "columnsFrom": [
-            "reserve_id"
-          ],
-          "columnsTo": [
-            "reserve_id"
+            "service_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3854,6 +3949,7 @@
         "Pending"
       ]
     },
+<<<<<<< HEAD
     "public.borrow_status": {
       "name": "borrow_status",
       "schema": "public",
@@ -3893,26 +3989,34 @@
         "Approved",
         "Rejected",
         "Closed"
+=======
+    "public.sales_item_type": {
+      "name": "sales_item_type",
+      "schema": "public",
+      "values": [
+        "Sales",
+        "Job Order",
+        "Borrow",
+        "Purchase"
+>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
       ]
     },
     "public.remarktickets_status": {
       "name": "remarktickets_status",
       "schema": "public",
       "values": [
+        "In Progress",
+        "Pending",
+        "Complete"
+      ]
+    },
+    "public.tickets_status": {
+      "name": "tickets_status",
+      "schema": "public",
+      "values": [
         "Resolved",
         "Pending",
         "Removed"
-      ]
-    },
-    "public.reserveStatusEnum": {
-      "name": "reserveStatusEnum",
-      "schema": "public",
-      "values": [
-        "Reserved",
-        "Confirmed",
-        "Cancelled",
-        "Pending",
-        "Completed"
       ]
     }
   },
