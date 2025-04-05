@@ -113,17 +113,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
- CREATE TYPE "public"."borrow_status" AS ENUM('Borrowed', 'Confirmed', 'Cancelled', 'Pending', 'Completed');
-========
- CREATE TYPE "public"."sales_item_type" AS ENUM('Sales', 'Job Order', 'Borrow', 'Purchase');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."remarktickets_status" AS ENUM('In Progress', 'Pending', 'Complete');
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -461,23 +451,8 @@ CREATE TABLE IF NOT EXISTS "receipt" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
-CREATE TABLE IF NOT EXISTS "OrderTransLog" (
-	"order_transaction_id" serial PRIMARY KEY NOT NULL,
-========
-CREATE TABLE IF NOT EXISTS "employeeLog" (
-	"employee_logs_id" serial PRIMARY KEY NOT NULL,
-	"employee_id" integer,
-	"action" varchar(255),
-	"performed_by" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "OrderTransLog" (
 	"order_log_id" serial PRIMARY KEY NOT NULL,
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
 	"order_id" integer,
 	"order_item_id" integer,
 	"action" varchar(255),
@@ -489,11 +464,7 @@ CREATE TABLE IF NOT EXISTS "OrderTransLog" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "ProductTransLog" (
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
-	"product_transaction_id" serial PRIMARY KEY NOT NULL,
-========
 	"product_log_id" serial PRIMARY KEY NOT NULL,
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
 	"product_id" integer,
 	"product_record_id" integer,
 	"serial_id" integer,
@@ -505,8 +476,16 @@ CREATE TABLE IF NOT EXISTS "ProductTransLog" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
-========
+CREATE TABLE IF NOT EXISTS "employeeLog" (
+	"employee_logs_id" serial PRIMARY KEY NOT NULL,
+	"employee_id" integer,
+	"action" varchar(255),
+	"performed_by" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "salesLog" (
 	"sales_logs_id" serial PRIMARY KEY NOT NULL,
 	"sales_id" integer,
@@ -534,7 +513,6 @@ CREATE TABLE IF NOT EXISTS "serviceLog" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
 CREATE TABLE IF NOT EXISTS "sales" (
 	"sales_id" serial PRIMARY KEY NOT NULL,
 	"customer_id" integer,
@@ -824,17 +802,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
- ALTER TABLE "payment" ADD CONSTRAINT "payment_job_order_id_job_order_job_order_id_fk" FOREIGN KEY ("job_order_id") REFERENCES "public"."job_order"("job_order_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "payment" ADD CONSTRAINT "payment_borrow_id_borrow_borrow_id_fk" FOREIGN KEY ("borrow_id") REFERENCES "public"."borrow"("borrow_id") ON DELETE no action ON UPDATE no action;
-========
  ALTER TABLE "payment" ADD CONSTRAINT "payment_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -858,21 +826,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
-========
- ALTER TABLE "employeeLog" ADD CONSTRAINT "employeeLog_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "employeeLog" ADD CONSTRAINT "employeeLog_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
  ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_order_id_order_order_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."order"("order_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -915,8 +868,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
-========
+ ALTER TABLE "employeeLog" ADD CONSTRAINT "employeeLog_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "employeeLog" ADD CONSTRAINT "employeeLog_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "salesLog" ADD CONSTRAINT "salesLog_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -977,7 +940,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
  ALTER TABLE "sales" ADD CONSTRAINT "sales_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -996,7 +958,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
-<<<<<<<< HEAD:drizzle/migrations/0000_glamorous_james_howlett.sql
  ALTER TABLE "sales_items" ADD CONSTRAINT "sales_items_product_record_id_product_record_product_record_id_fk" FOREIGN KEY ("product_record_id") REFERENCES "public"."product_record"("product_record_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1009,10 +970,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "assigned_employees" ADD CONSTRAINT "assigned_employees_job_order_id_job_order_job_order_id_fk" FOREIGN KEY ("job_order_id") REFERENCES "public"."job_order"("job_order_id") ON DELETE no action ON UPDATE no action;
-========
  ALTER TABLE "assigned_employees" ADD CONSTRAINT "assigned_employees_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
->>>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4:drizzle/migrations/0000_equal_exiles.sql
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

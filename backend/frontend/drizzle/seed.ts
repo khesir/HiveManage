@@ -3000,36 +3000,36 @@ async function main() {
     // Participants
     await seedCustomerGroup(db);
     await seedCustomer(db);
-    await seedInquiry(db);
+    // await seedInquiry(db);
 
     // Sales and related data
-    await seedSales(db);
-    await seedSalesItem(db);
-    await seedBorrow(db);
-    await seedBorrowItem(db);
-    await seedReserve(db);
-    await seedReserveItem(db);
-    await seedDiscount(db);
-    await seedDiscountCustomer(db);
-    await seedDiscountProducts(db);
-    await seedCouponRedemptions(db);
+    // await seedSales(db);
+    // await seedSalesItem(db);
+    // await seedBorrow(db);
+    // await seedBorrowItem(db);
+    // await seedReserve(db);
+    // await seedReserveItem(db);
+    // await seedDiscount(db);
+    // await seedDiscountCustomer(db);
+    // await seedDiscountProducts(db);
+    // await seedCouponRedemptions(db);
 
     // Job Order and related data
-    await seedJobOrderTypes(db);
-    await seedJobOrder(db);
-    await seedJobOrderItems(db);
-    await seedPayment(db);
-    await seedReceipt(db);
+    // await seedJobOrderTypes(db);
+    // await seedJobOrder(db);
+    // await seedJobOrderItems(db);
+    // await seedPayment(db);
+    // await seedReceipt(db);
 
     // Pass employee IDs to seedRemarkTickets
-    await seedRemarkType(db);
-    await seedRemarkTickets(db);
-    await seedReports(db);
-    await seedAssignedEmployees(db);
+    // await seedRemarkType(db);
+    // await seedRemarkTickets(db);
+    // await seedReports(db);
+    // await seedAssignedEmployees(db);
 
     // logs
-    await seedOrderTransactionLogs(db);
-    await seedProductTransactionLogs(db);
+    // await seedOrderTransactionLogs(db);
+    // await seedProductTransactionLogs(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

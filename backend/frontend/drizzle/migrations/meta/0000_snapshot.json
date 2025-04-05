@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "id": "8088daa5-4ea8-4235-9dd1-0cd77cdc5a35",
-=======
-  "id": "61ca69a6-36f1-4069-b305-db53852867f8",
->>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
+  "id": "bccf861d-9eb6-4192-81e1-78ac2e503973",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2105,19 +2101,8 @@
           "primaryKey": true,
           "notNull": true
         },
-<<<<<<< HEAD
-        "job_order_id": {
-          "name": "job_order_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "borrow_id": {
-          "name": "borrow_id",
-=======
         "service_id": {
           "name": "service_id",
->>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -2196,30 +2181,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-<<<<<<< HEAD
-        "payment_job_order_id_job_order_job_order_id_fk": {
-          "name": "payment_job_order_id_job_order_job_order_id_fk",
-          "tableFrom": "payment",
-          "tableTo": "job_order",
-          "columnsFrom": [
-            "job_order_id"
-          ],
-          "columnsTo": [
-            "job_order_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "payment_borrow_id_borrow_borrow_id_fk": {
-          "name": "payment_borrow_id_borrow_borrow_id_fk",
-          "tableFrom": "payment",
-          "tableTo": "borrow",
-          "columnsFrom": [
-            "borrow_id"
-          ],
-          "columnsTo": [
-            "borrow_id"
-=======
         "payment_service_id_service_service_id_fk": {
           "name": "payment_service_id_service_service_id_fk",
           "tableFrom": "payment",
@@ -2229,7 +2190,6 @@
           ],
           "columnsTo": [
             "service_id"
->>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2338,90 +2298,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-<<<<<<< HEAD
-=======
-    "public.employeeLog": {
-      "name": "employeeLog",
-      "schema": "",
-      "columns": {
-        "employee_logs_id": {
-          "name": "employee_logs_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "employee_id": {
-          "name": "employee_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "action": {
-          "name": "action",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "performed_by": {
-          "name": "performed_by",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "employeeLog_employee_id_employee_employee_id_fk": {
-          "name": "employeeLog_employee_id_employee_employee_id_fk",
-          "tableFrom": "employeeLog",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "employeeLog_performed_by_employee_employee_id_fk": {
-          "name": "employeeLog_performed_by_employee_employee_id_fk",
-          "tableFrom": "employeeLog",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "performed_by"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
->>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
     "public.OrderTransLog": {
       "name": "OrderTransLog",
       "schema": "",
@@ -2653,8 +2529,87 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-<<<<<<< HEAD
-=======
+    "public.employeeLog": {
+      "name": "employeeLog",
+      "schema": "",
+      "columns": {
+        "employee_logs_id": {
+          "name": "employee_logs_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "employeeLog_employee_id_employee_employee_id_fk": {
+          "name": "employeeLog_employee_id_employee_employee_id_fk",
+          "tableFrom": "employeeLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "employee_id"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "employeeLog_performed_by_employee_employee_id_fk": {
+          "name": "employeeLog_performed_by_employee_employee_id_fk",
+          "tableFrom": "employeeLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.salesLog": {
       "name": "salesLog",
       "schema": "",
@@ -2937,7 +2892,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
->>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
     "public.sales": {
       "name": "sales",
       "schema": "",
@@ -3947,58 +3901,6 @@
         "Partially Completed",
         "Cancelled",
         "Pending"
-      ]
-    },
-<<<<<<< HEAD
-    "public.borrow_status": {
-      "name": "borrow_status",
-      "schema": "public",
-      "values": [
-        "Borrowed",
-        "Confirmed",
-        "Cancelled",
-        "Pending",
-        "Completed"
-      ]
-    },
-    "public.borrowStatusEnum": {
-      "name": "borrowStatusEnum",
-      "schema": "public",
-      "values": [
-        "Requested",
-        "Approved",
-        "Borrowed",
-        "Returned",
-        "Overdue",
-        "Rejected",
-        "Cancelled",
-        "Lost",
-        "Damaged"
-      ]
-    },
-    "public.joborder_status": {
-      "name": "joborder_status",
-      "schema": "public",
-      "values": [
-        "Pending",
-        "In Progress",
-        "Completed",
-        "On Hold",
-        "Cancelled",
-        "Awaiting Approval",
-        "Approved",
-        "Rejected",
-        "Closed"
-=======
-    "public.sales_item_type": {
-      "name": "sales_item_type",
-      "schema": "public",
-      "values": [
-        "Sales",
-        "Job Order",
-        "Borrow",
-        "Purchase"
->>>>>>> 966495827a3c8cb085f53bad8afe9a53fecda3b4
       ]
     },
     "public.remarktickets_status": {
