@@ -25,29 +25,6 @@ export class SalesItemService {
   ) {
     const conditions = [isNull(salesItems.deleted_at)];
 
-    if (sales_item_status) {
-      const validStatuses = [
-        'Sales',
-        'Job Order',
-        'Borrow',
-        'Purchase',
-      ] as const;
-      if (
-        validStatuses.includes(
-          sales_item_status as (typeof validStatuses)[number],
-        )
-      ) {
-        conditions.push(
-          eq(
-            salesItems.salesItem_type,
-            sales_item_status as (typeof validStatuses)[number],
-          ),
-        );
-      } else {
-        throw new Error(`Invalid item status: ${sales_item_status}`);
-      }
-    }
-
     if (product_id !== undefined && !isNaN(Number(product_id))) {
       conditions.push(eq(salesItems.product_id, Number(product_id)));
     }

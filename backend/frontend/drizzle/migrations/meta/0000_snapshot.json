@@ -1,5 +1,5 @@
 {
-  "id": "761be5ba-0328-4111-a2dd-98007abb60f1",
+  "id": "8088daa5-4ea8-4235-9dd1-0cd77cdc5a35",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2091,6 +2091,232 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.payment": {
+      "name": "payment",
+      "schema": "",
+      "columns": {
+        "payment_id": {
+          "name": "payment_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "job_order_id": {
+          "name": "job_order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "borrow_id": {
+          "name": "borrow_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sales_id": {
+          "name": "sales_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "service_type": {
+          "name": "service_type",
+          "type": "service_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_price": {
+          "name": "total_price",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vat_rate": {
+          "name": "vat_rate",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "discount_id": {
+          "name": "discount_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "payment_method",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payment_status": {
+          "name": "payment_status",
+          "type": "payment_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "payment_job_order_id_job_order_job_order_id_fk": {
+          "name": "payment_job_order_id_job_order_job_order_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "job_order",
+          "columnsFrom": [
+            "job_order_id"
+          ],
+          "columnsTo": [
+            "job_order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payment_borrow_id_borrow_borrow_id_fk": {
+          "name": "payment_borrow_id_borrow_borrow_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "borrow",
+          "columnsFrom": [
+            "borrow_id"
+          ],
+          "columnsTo": [
+            "borrow_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payment_sales_id_sales_sales_id_fk": {
+          "name": "payment_sales_id_sales_sales_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "sales",
+          "columnsFrom": [
+            "sales_id"
+          ],
+          "columnsTo": [
+            "sales_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payment_discount_id_discount_discount_id_fk": {
+          "name": "payment_discount_id_discount_discount_id_fk",
+          "tableFrom": "payment",
+          "tableTo": "discount",
+          "columnsFrom": [
+            "discount_id"
+          ],
+          "columnsTo": [
+            "discount_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.receipt": {
+      "name": "receipt",
+      "schema": "",
+      "columns": {
+        "receipt_id": {
+          "name": "receipt_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "payment_id": {
+          "name": "payment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "issued_data": {
+          "name": "issued_data",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "receipt_dl_link": {
+          "name": "receipt_dl_link",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "receipt_payment_id_payment_payment_id_fk": {
+          "name": "receipt_payment_id_payment_payment_id_fk",
+          "tableFrom": "receipt",
+          "tableTo": "payment",
+          "columnsFrom": [
+            "payment_id"
+          ],
+          "columnsTo": [
+            "payment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.OrderTransLog": {
       "name": "OrderTransLog",
       "schema": "",
@@ -2322,232 +2548,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.payment": {
-      "name": "payment",
-      "schema": "",
-      "columns": {
-        "payment_id": {
-          "name": "payment_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "job_order_id": {
-          "name": "job_order_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "borrow_id": {
-          "name": "borrow_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sales_id": {
-          "name": "sales_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "service_type": {
-          "name": "service_type",
-          "type": "service_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "total_price": {
-          "name": "total_price",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "vat_rate": {
-          "name": "vat_rate",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "discount_id": {
-          "name": "discount_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "payment_date": {
-          "name": "payment_date",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "payment_method": {
-          "name": "payment_method",
-          "type": "payment_method",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "payment_status": {
-          "name": "payment_status",
-          "type": "payment_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "payment_job_order_id_job_order_job_order_id_fk": {
-          "name": "payment_job_order_id_job_order_job_order_id_fk",
-          "tableFrom": "payment",
-          "tableTo": "job_order",
-          "columnsFrom": [
-            "job_order_id"
-          ],
-          "columnsTo": [
-            "job_order_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "payment_borrow_id_borrow_borrow_id_fk": {
-          "name": "payment_borrow_id_borrow_borrow_id_fk",
-          "tableFrom": "payment",
-          "tableTo": "borrow",
-          "columnsFrom": [
-            "borrow_id"
-          ],
-          "columnsTo": [
-            "borrow_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "payment_sales_id_sales_sales_id_fk": {
-          "name": "payment_sales_id_sales_sales_id_fk",
-          "tableFrom": "payment",
-          "tableTo": "sales",
-          "columnsFrom": [
-            "sales_id"
-          ],
-          "columnsTo": [
-            "sales_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "payment_discount_id_discount_discount_id_fk": {
-          "name": "payment_discount_id_discount_discount_id_fk",
-          "tableFrom": "payment",
-          "tableTo": "discount",
-          "columnsFrom": [
-            "discount_id"
-          ],
-          "columnsTo": [
-            "discount_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.receipt": {
-      "name": "receipt",
-      "schema": "",
-      "columns": {
-        "receipt_id": {
-          "name": "receipt_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "payment_id": {
-          "name": "payment_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "issued_data": {
-          "name": "issued_data",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "total_amount": {
-          "name": "total_amount",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "receipt_dl_link": {
-          "name": "receipt_dl_link",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "receipt_payment_id_payment_payment_id_fk": {
-          "name": "receipt_payment_id_payment_payment_id_fk",
-          "tableFrom": "receipt",
-          "tableTo": "payment",
-          "columnsFrom": [
-            "payment_id"
-          ],
-          "columnsTo": [
-            "payment_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.sales": {
       "name": "sales",
       "schema": "",
@@ -2633,16 +2633,21 @@
           "primaryKey": false,
           "notNull": false
         },
-        "quantity": {
-          "name": "quantity",
+        "product_record_id": {
+          "name": "product_record_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "salesItem_type": {
-          "name": "salesItem_type",
-          "type": "sales_item_type",
-          "typeSchema": "public",
+        "serial_id": {
+          "name": "serial_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -2697,6 +2702,32 @@
           ],
           "columnsTo": [
             "sales_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_items_product_record_id_product_record_product_record_id_fk": {
+          "name": "sales_items_product_record_id_product_record_product_record_id_fk",
+          "tableFrom": "sales_items",
+          "tableTo": "product_record",
+          "columnsFrom": [
+            "product_record_id"
+          ],
+          "columnsTo": [
+            "product_record_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_items_serial_id_serialized_product_serial_id_fk": {
+          "name": "sales_items_serial_id_serialized_product_serial_id_fk",
+          "tableFrom": "sales_items",
+          "tableTo": "serialized_product",
+          "columnsFrom": [
+            "serial_id"
+          ],
+          "columnsTo": [
+            "serial_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3821,16 +3852,6 @@
         "Partially Completed",
         "Cancelled",
         "Pending"
-      ]
-    },
-    "public.sales_item_type": {
-      "name": "sales_item_type",
-      "schema": "public",
-      "values": [
-        "Sales",
-        "Job Order",
-        "Borrow",
-        "Purchase"
       ]
     },
     "public.borrow_status": {

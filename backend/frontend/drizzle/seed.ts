@@ -707,7 +707,6 @@ async function seedPayment(db: PostgresJsDatabase<SchemaType>) {
   const paymentRecords = [
     {
       job_order_id: faker.helpers.arrayElement(joborderIDs).job_order_id,
-      borrow_id: faker.helpers.arrayElement(borrowIDs).borrow_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       discount_id: faker.helpers.arrayElement(discountIDs).discount_id,
       service_type: faker.helpers.arrayElement(paymentType),
@@ -868,12 +867,11 @@ async function seedPayment(db: PostgresJsDatabase<SchemaType>) {
 async function seedSales(db: PostgresJsDatabase<SchemaType>) {
   const customerIDs = await db.select().from(customer);
 
-  const salesStatuses: (
-    | 'Completed'
-    | 'Partially Completed'
-    | 'Cancelled'
-    | 'Pending'
-  )[] = ['Completed', 'Partially Completed', 'Cancelled', 'Pending'];
+  const salesStatuses = [
+    'Completed',
+    'Partially Completed',
+    'Cancelled',
+  ] as const;
 
   const salesRecords = [
     {
@@ -930,89 +928,71 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
   const productIDs = await db.select().from(product);
   const salesIDs = await db.select().from(sales);
 
-  const salesitemStatuses: ('Job Order' | 'Borrow' | 'Sales' | 'Purchase')[] = [
-    'Job Order',
-    'Borrow',
-    'Sales',
-    'Purchase',
-  ];
-
   const salesitemsRecords = [
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
     {
       product_id: faker.helpers.arrayElement(productIDs).product_id,
       sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
       quantity: 10,
-      salesItem_type: faker.helpers.arrayElement(salesitemStatuses),
       total_price: 150,
     },
   ];
@@ -3631,29 +3611,29 @@ async function main() {
     await seedInquiry(db);
 
     // Sales and related data
-    await seedSales(db);
-    await seedSalesItem(db);
-    await seedBorrow(db);
-    await seedBorrowItem(db);
-    await seedReserve(db);
-    await seedReserveItem(db);
-    await seedDiscount(db);
-    await seedDiscountCustomer(db);
-    await seedDiscountProducts(db);
-    await seedCouponRedemptions(db);
+    // await seedSales(db);
+    // await seedSalesItem(db);
+    // await seedBorrow(db);
+    // await seedBorrowItem(db);
+    // await seedReserve(db);
+    // await seedReserveItem(db);
+    // await seedDiscount(db);
+    // await seedDiscountCustomer(db);
+    // await seedDiscountProducts(db);
+    // await seedCouponRedemptions(db);
 
     // Job Order and related data
-    await seedJobOrderTypes(db);
-    await seedJobOrder(db);
-    await seedJobOrderItems(db);
-    await seedPayment(db);
-    await seedReceipt(db);
+    // await seedJobOrderTypes(db);
+    // await seedJobOrder(db);
+    // await seedJobOrderItems(db);
+    // await seedPayment(db);
+    // await seedReceipt(db);
 
     // Pass employee IDs to seedRemarkTickets
-    await seedRemarkType(db);
-    await seedRemarkTickets(db);
-    await seedReports(db);
-    await seedAssignedEmployees(db);
+    // await seedRemarkType(db);
+    // await seedRemarkTickets(db);
+    // await seedReports(db);
+    // await seedAssignedEmployees(db);
 
     // logs
     await seedOrderTransactionLogs(db);

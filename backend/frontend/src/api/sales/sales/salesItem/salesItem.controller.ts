@@ -58,14 +58,21 @@ export class SalesItemController {
 
   async createSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, sales_id, quantity, salesItem_type, total_price } =
-        req.body;
+      const {
+        product_id,
+        sales_id,
+        quantity,
+        product_record_id,
+        serial_id,
+        total_price,
+      } = req.body;
 
       await this.salesitemService.createSalesItem({
         product_id,
         sales_id,
+        product_record_id,
+        serial_id,
         quantity,
-        salesItem_type,
         total_price,
       });
       res.status(HttpStatus.CREATED.code).json({
@@ -85,15 +92,22 @@ export class SalesItemController {
   async updateSalesItem(req: Request, res: Response, next: NextFunction) {
     try {
       const { sales_items_id } = req.params;
-      const { product_id, sale_id, quantity, salesItem_type, total_price } =
-        req.body;
+      const {
+        product_id,
+        sale_id,
+        quantity,
+        product_record_id,
+        serial_id,
+        total_price,
+      } = req.body;
 
       await this.salesitemService.updateSalesItem(
         {
           product_id,
           sale_id,
+          product_record_id,
+          serial_id,
           quantity,
-          salesItem_type,
           total_price,
         },
         Number(sales_items_id),

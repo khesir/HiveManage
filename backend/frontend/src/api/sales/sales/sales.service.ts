@@ -29,7 +29,6 @@ export class SalesService {
       const validStatuses = [
         'Cancelled',
         'Partially Completed',
-        'Pending',
         'Completed',
       ] as const;
       if (validStatuses.includes(status as (typeof validStatuses)[number])) {

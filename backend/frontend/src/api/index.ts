@@ -9,7 +9,7 @@ import log from '@/lib/logger';
 import cmsRoute from './cms/cms.route';
 import pmsRoute from './payment/proof.route';
 import smsRoute from './sales/sales.route';
-import logs from './logs/logs.route';
+import logs from './records/logs.route';
 
 const baseRoute = express.Router({ mergeParams: true });
 
