@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { ProductTransLog } from '@/drizzle/schema/records';
+import { ProductLog } from '@/drizzle/schema/records';
 
 // There's a globally used
 // middleware like error handling and schema validation
@@ -13,26 +13,21 @@ export async function validateOrderTransactionLogID(
   res: Response,
   next: NextFunction,
 ) {
-  const { product_transaction_id } = req.params;
+  const { product_log_id } = req.params;
 
   try {
     const data = await db
       .select()
-      .from(ProductTransLog)
+      .from(ProductLog)
       .where(
         and(
-          eq(
-            ProductTransLog.product_transaction_id,
-            Number(product_transaction_id),
-          ),
-          isNull(ProductTransLog.deleted_at),
+          eq(ProductLog.product_log_id, Number(product_log_id)),
+          isNull(ProductLog.deleted_at),
         ),
       );
 
     if (!data[0]) {
-      return res
-        .status(404)
-        .json({ message: 'Product Transaction Log not found' });
+      return res.status(404).json({ message: 'Product Log not found' });
     }
     next();
   } catch (error) {

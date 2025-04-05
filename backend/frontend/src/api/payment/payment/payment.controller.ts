@@ -58,8 +58,7 @@ export class PaymentController {
   async createPayment(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        job_order_id,
-        borrow_id,
+        service_id,
         sales_id,
         service_type,
         amount,
@@ -71,8 +70,7 @@ export class PaymentController {
       } = req.body;
 
       await this.paymentService.createPayment({
-        job_order_id,
-        borrow_id,
+        service_id,
         sales_id,
         service_type,
         amount,
@@ -99,8 +97,7 @@ export class PaymentController {
     try {
       const { payment_id } = req.params;
       const {
-        job_order_id,
-        borrow_id,
+        service_id,
         sales_id,
         service_type,
         amount,
@@ -113,8 +110,7 @@ export class PaymentController {
 
       await this.paymentService.updatePayment(
         {
-          job_order_id,
-          borrow_id,
+          service_id,
           sales_id,
           service_type,
           amount,
