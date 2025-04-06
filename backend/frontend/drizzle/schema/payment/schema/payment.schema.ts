@@ -9,7 +9,6 @@ import {
 } from 'drizzle-orm/pg-core';
 import { service } from '../../services';
 import { sales } from '../../sales';
-import { discount } from '../../ims';
 
 export const paymentStatusEnum = pgEnum('payment_status', [
   'Pending',
@@ -42,7 +41,7 @@ export const payment = pgTable('payment', {
   service_type: serviceType('service_type').notNull(),
   amount: real('total_price'),
   vat_rate: real('vat_rate'),
-  discount_id: integer('discount_id').references(() => discount.discount_id),
+  discount_amount: integer('discount_amount'),
   payment_date: varchar('payment_date'),
   payment_method: paymentMethodEnum('payment_method').notNull(),
   payment_status: paymentStatusEnum('payment_status').notNull(),
