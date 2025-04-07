@@ -1,10 +1,10 @@
-import {Product} from '@/components/validation/inventory/product';
+import {Product} from '@/components/validation/product';
 import {AxiosError} from 'axios';
 import {create} from 'zustand';
 import {ApiRequest, PaginationResponse, request} from './axios';
-import {ItemRecords} from '@/components/validation/inventory/item-record';
+import {ItemRecords} from '@/components/validation/item-record';
 import {toast} from 'sonner';
-import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
+import {ProductSupplier} from '@/components/validation/product-supplier';
 
 type ProductState = {
 	products: Product[];

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {ColumnDef, Row} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-import {BatchItem} from '@/components/validation/inventory/batch-items';
+import {BatchItem} from '@/components/validation/batch-items';
 import {BatchRecordTable} from './batch-record-table';
 import {Button} from '@/components/ui/button';
 import {

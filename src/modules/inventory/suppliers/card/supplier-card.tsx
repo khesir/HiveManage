@@ -11,7 +11,7 @@ import {
 import {Users2} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Supplier} from '../../../../components/validation/inventory/supplier';
+import {Supplier} from '../../../../components/validation/supplier';
 
 export function SupplierCard() {
 	const navigate = useNavigate();

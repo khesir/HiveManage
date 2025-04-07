@@ -4,7 +4,7 @@ import {useEffect} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
 
 import {ApiRequest, request} from '@/api/axios';
-import {Product} from '@/components/validation/inventory/product';
+import {Product} from '@/components/validation/product';
 import {InformationCard} from './information-card';
 
 import {ViewRecordTabs} from '../item-record-tabs';

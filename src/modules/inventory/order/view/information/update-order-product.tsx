@@ -6,7 +6,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import {OrderProduct} from '@/components/validation/inventory/order-product';
+import {OrderProduct} from '@/components/validation/order-product';
 import {PenBox} from 'lucide-react';
 import {useCallback, useState} from 'react';
 import {UpdateOrderProductForm} from './update-order-product-form';

@@ -1,13 +1,14 @@
 import {create} from 'zustand';
 import {toast} from 'sonner';
-import {BatchItem} from '../validation/inventory/batch-items';
-import {SerializeItem} from '../validation/inventory/serialize-items';
+import {BatchItem} from '../validation/batch-items';
+import {SerializeItem} from '../validation/serialize-items';
 
 type Product = BatchItem | SerializeItem;
 
 interface SalesItem {
 	product_id: number;
 	quantity: number;
+	total_price: number;
 	record: Product;
 	data: Product;
 }
@@ -37,6 +38,7 @@ export const useSalesHook = create<SalesHook>((set) => ({
 			const salesItem: SalesItem = {
 				product_id: product.product_id,
 				quantity: quantity,
+				total_price: (product.price || 0) * quantity,
 				record: product,
 				data: product,
 			};

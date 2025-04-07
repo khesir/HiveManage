@@ -1,4 +1,5 @@
 import {PaginationResponse, request} from '@/api/axios';
+import useCustomer from '@/components/hooks/use-sales-customer-hook';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
 import {
@@ -19,15 +20,11 @@ import {
 import {Customer} from '@/lib/cms-zod-schema';
 import {useEffect, useState} from 'react';
 
-interface SearchCustomerProps {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	processCreate: (data: Customer) => void;
-}
-
-export function SearchCustomer({processCreate}: SearchCustomerProps) {
+export function SearchCustomer() {
 	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const {setCustomer} = useCustomer();
 
 	// Function to handle customer search
 	useEffect(() => {
@@ -97,7 +94,7 @@ export function SearchCustomer({processCreate}: SearchCustomerProps) {
 							<Button
 								onClick={() => {
 									setIsModalOpen(false);
-									processCreate(selectedCustomer!);
+									setCustomer(selectedCustomer!);
 								}}
 							>
 								Confirm

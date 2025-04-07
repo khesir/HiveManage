@@ -1,5 +1,5 @@
 import {ColumnDef} from '@tanstack/react-table';
-import {Order} from '../../../components/validation/inventory/order';
+import {Order} from '../../../components/validation/order';
 import {Badge} from '@/components/ui/badge';
 import {dateParser} from '@/lib/util/utils';
 import {AvatarCircles} from '@/components/ui/avatarcircles';

@@ -1,4 +1,4 @@
-import {Product} from '@/components/validation/inventory/product';
+import {Product} from '@/components/validation/product';
 import {create} from 'zustand';
 
 type PropsProps = {

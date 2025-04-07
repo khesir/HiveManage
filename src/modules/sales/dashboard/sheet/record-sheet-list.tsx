@@ -7,7 +7,7 @@ import {
 	SheetHeader,
 	SheetTrigger,
 } from '@/components/ui/sheet';
-import {Product} from '@/components/validation/inventory/product';
+import {Product} from '@/components/validation/product';
 import {InformationCard} from '@/modules/inventory/products/view/information/information-card';
 import BatchRecordList from '@/modules/inventory/products/view/record/batch-record-list';
 import SerializeItemRecord from '@/modules/inventory/products/view/record/serialize-item-list';

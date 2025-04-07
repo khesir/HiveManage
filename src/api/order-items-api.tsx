@@ -1,7 +1,7 @@
 import {AxiosError} from 'axios';
 import {toast} from 'sonner';
 import {PaginationResponse, request} from './axios';
-import {OrderProduct} from '@/components/validation/inventory/order-product';
+import {OrderProduct} from '@/components/validation/order-product';
 
 export const getAllOrderItems = async (
 	paramsId?: number,

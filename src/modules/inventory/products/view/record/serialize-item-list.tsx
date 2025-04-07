@@ -1,5 +1,5 @@
 import {PaginationResponse, request} from '@/api/axios';
-import {SerializeItem} from '@/components/validation/inventory/serialize-items';
+import {SerializeItem} from '@/components/validation/serialize-items';
 import {useEffect, useState} from 'react';
 import {ColumnDef, Row} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';

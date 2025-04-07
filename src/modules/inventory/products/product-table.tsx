@@ -28,10 +28,10 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Product} from '@/components/validation/inventory/product';
+import {Product} from '@/components/validation/product';
 import {Input} from '@/components/ui/input';
 import useProducts from '../_components/hooks/use-products';
-import {Category} from '../../../components/validation/inventory/category';
+import {Category} from '../../../components/validation/category';
 import {
 	DropdownMenu,
 	DropdownMenuContent,

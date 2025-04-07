@@ -198,25 +198,25 @@ export function getSalesMenuList(pathname: string): Group[] {
 				{
 					href: '/sales/inventory/products',
 					label: 'Inventory',
-					active: pathname.includes('/admin/inventory/products'),
+					active: pathname.includes('/sales/inventory/products'),
 					icon: ShoppingBag,
 					submenus: [
 						{
 							href: '/sales/inventory/products',
 							label: 'Products',
-							icon: LayoutGrid,
+							icon: BoxIcon,
 							active: pathname === '/sales/inventory/products',
 						},
 						{
-							href: '/sales/inventory/products/orders',
+							href: '/sales/inventory/orders',
 							label: 'Orders',
-							icon: LayoutGrid,
+							icon: BoxesIcon,
 							active: pathname === '/sales/inventory/orders',
 						},
 						{
-							href: '/sales/inventory/products/suppliers',
+							href: '/sales/inventory/suppliers',
 							label: 'Supplier',
-							icon: LayoutGrid,
+							icon: Users,
 							active: pathname === '/sales/inventory/suppliers',
 						},
 					],

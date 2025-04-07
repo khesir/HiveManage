@@ -1,6 +1,6 @@
 import {ColumnDef, Row} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
-import {Product} from '../../../components/validation/inventory/product';
+import {Product} from '../../../components/validation/product';
 import clsx from 'clsx';
 import {
 	Tooltip,

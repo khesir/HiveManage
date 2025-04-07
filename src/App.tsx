@@ -195,7 +195,6 @@ function App() {
 					<Route element={<RequireAuth allowedRoles={['Sales']} />}>
 						<Route path="dashboard" element={<SalesDashboardPage />} />
 						<Route path="settings" element={<Settings />} />
-						<Route path="terminal" element={<Terminal />} />
 
 						{/* Systems */}
 						{/* Sales list */}
@@ -203,6 +202,7 @@ function App() {
 						<Route path="system">
 							<Route path="create" element={<CreateSalesPage />} />
 							<Route path="list" element={<SalesListPage />} />
+							<Route path="view/:id" />
 							<Route path="services" element={<ServicePages />} />
 							<Route path="services/view/:id" element={<ViewServicePage />} />
 							<Route path="services/create" />
@@ -225,26 +225,26 @@ function App() {
 										path="create"
 										element={<InventoryRecordCreatePage />}
 									/>
+
 									<Route path="orders">
 										<Route index element={<OrderPage />} />
 										<Route path="create" element={<CreateOrderPage />} />
 										<Route path="view/:id" />
 									</Route>
 								</Route>
-
-								<Route path="orders">
-									<Route index element={<OrderPage />} />
-									<Route path="create" element={<CreateOrderPage />} />
-									<Route path="view/:id" />
-									<Route
-										path="view/product/:id"
-										element={<InventoryViewPage />}
-									/>
-								</Route>
-								<Route path="suppliers">
-									<Route index element={<SupplierPage />} />
-									<Route path="view/:id" />
-								</Route>
+							</Route>
+							<Route path="orders">
+								<Route index element={<OrderPage />} />
+								<Route path="create" element={<CreateOrderPage />} />
+								<Route path="view/:id" element={<ViewOrderPage />} />
+								<Route
+									path="view/product/:id"
+									element={<InventoryViewPage />}
+								/>
+							</Route>
+							<Route path="suppliers">
+								<Route index element={<SupplierPage />} />
+								<Route path="view/:id" />
 							</Route>
 						</Route>
 						<Route path="inquiry" element={<InquiryPage />} />

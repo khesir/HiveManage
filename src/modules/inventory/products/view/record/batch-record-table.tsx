@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import {BatchItem} from '@/components/validation/inventory/batch-items';
+import {BatchItem} from '@/components/validation/batch-items';
 import {CreateRecordDialogueForm} from '../_components/dialogue/create-record-dialogue';
 
 interface DataTableProps<TData, TValue> {

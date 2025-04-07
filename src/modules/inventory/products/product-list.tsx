@@ -2,8 +2,8 @@ import {PaginationResponse, request} from '@/api/axios';
 import {useEffect, useState} from 'react';
 import {ProductWithDetailsTable} from './product-table';
 import {columns} from './columns';
-import {Category} from '../../../components/validation/inventory/category';
-import {Product} from '../../../components/validation/inventory/product';
+import {Category} from '../../../components/validation/category';
+import {Product} from '../../../components/validation/product';
 
 interface ProductWithDetails {
 	searchParams: URLSearchParams;

@@ -11,7 +11,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {OrderProduct} from '@/components/validation/inventory/order-product';
+import {OrderProduct} from '@/components/validation/order-product';
 import {
 	ColumnDef,
 	flexRender,

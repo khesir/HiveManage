@@ -5,7 +5,7 @@ import useOrderStore from '../_components/hooks/use-orders';
 import useTrackReferesh from '../_components/hooks/uset-track-refresh';
 import {OrderDataTable} from './order-table';
 import {columns} from './columns';
-import {Order} from '@/components/validation/inventory/order';
+import {Order} from '@/components/validation/order';
 
 interface ProductWithDetails {
 	searchParams: URLSearchParams;

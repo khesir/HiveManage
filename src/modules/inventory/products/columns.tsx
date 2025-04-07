@@ -1,6 +1,6 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
-import {Product} from '../../../components/validation/inventory/product';
+import {Product} from '../../../components/validation/product';
 import {dateParser} from '@/lib/util/utils';
 import clsx from 'clsx';
 export const columns: ColumnDef<Product>[] = [

@@ -12,7 +12,7 @@ import {Input} from '@/components/ui/input';
 import {
 	OrderProduct,
 	orderProductSchema,
-} from '@/components/validation/inventory/order-product';
+} from '@/components/validation/order-product';
 import {zodResolver} from '@hookform/resolvers/zod';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';

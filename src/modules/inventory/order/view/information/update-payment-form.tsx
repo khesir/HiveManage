@@ -15,7 +15,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Order, orderSchema} from '@/components/validation/inventory/order';
+import {Order, orderSchema} from '@/components/validation/order';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 

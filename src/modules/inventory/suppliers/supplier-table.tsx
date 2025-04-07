@@ -29,7 +29,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {SupplierWithRelatedData} from '../../../components/validation/inventory/supplier';
+import {SupplierWithRelatedData} from '../../../components/validation/supplier';
 import useSupplierStore from '../_components/hooks/use-supplier';
 import {
 	DropdownMenu,

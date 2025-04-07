@@ -28,7 +28,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Order} from '../../../components/validation/inventory/order';
+import {Order} from '../../../components/validation/order';
 import useOrderStore from '../_components/hooks/use-orders';
 import {DropdownMenu, DropdownMenuContent} from '@/components/ui/dropdown-menu';
 import {DropdownMenuTrigger} from '@radix-ui/react-dropdown-menu';

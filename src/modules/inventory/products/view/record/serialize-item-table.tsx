@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import {SerializeItem} from '@/components/validation/inventory/serialize-items';
+import {SerializeItem} from '@/components/validation/serialize-items';
 import {CreateSerialDialogueForm} from '../_components/dialogue/create-serial-dialogue';
 
 interface DataTableProps<TData, TValue> {

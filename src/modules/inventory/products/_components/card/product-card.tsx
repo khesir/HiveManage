@@ -8,8 +8,8 @@ import {Badge} from '@/components/ui/badge';
 import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {File} from 'lucide-react';
-import {Product} from '../../../../../components/validation/inventory/product';
-import {ProductCategory} from '../../../../../components/validation/inventory/category';
+import {Product} from '../../../../../components/validation/product';
+import {ProductCategory} from '../../../../../components/validation/category';
 
 interface ProfileProps {
 	data: Product | undefined;

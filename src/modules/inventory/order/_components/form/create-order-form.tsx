@@ -20,7 +20,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {useState, useEffect} from 'react';
-import {Supplier} from '../../../../../components/validation/inventory/supplier';
+import {Supplier} from '../../../../../components/validation/supplier';
 import {Heading} from '@/components/ui/heading';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
@@ -50,11 +50,11 @@ import {
 } from '@/components/ui/command';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
-import {ProductCategory} from '@/components/validation/inventory/category';
+import {ProductCategory} from '@/components/validation/category';
 import {useNavigate} from 'react-router-dom';
-import {Order, orderSchema} from '@/components/validation/inventory/order';
-import {Product} from '@/components/validation/inventory/product';
-import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
+import {Order, orderSchema} from '@/components/validation/order';
+import {Product} from '@/components/validation/product';
+import {ProductSupplier} from '@/components/validation/product-supplier';
 import {Textarea} from '@/components/ui/textarea';
 import useOrderStore from '@/api/order-state';
 

@@ -16,7 +16,7 @@ import {useEffect, useState} from 'react';
 import {ApiRequest, request} from '@/api/axios';
 import {Skeleton} from '@/components/ui/skeleton';
 
-import {Supplier} from '@/components/validation/inventory/supplier';
+import {Supplier} from '@/components/validation/supplier';
 import {
 	Select,
 	SelectContent,
@@ -29,7 +29,7 @@ import {Button} from '@/components/ui/button';
 import {
 	SerializeItem,
 	serializeItemSchema,
-} from '@/components/validation/inventory/serialize-items';
+} from '@/components/validation/serialize-items';
 import {generateCustomUUID} from '@/lib/util/utils';
 
 interface Props {

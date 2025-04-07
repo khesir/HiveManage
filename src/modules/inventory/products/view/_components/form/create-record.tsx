@@ -19,7 +19,7 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {
 	ItemRecords,
 	itemRecordSchema,
-} from '@/components/validation/inventory/item-record';
+} from '@/components/validation/item-record';
 import {
 	Select,
 	SelectContent,
@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
+import {ProductSupplier} from '@/components/validation/product-supplier';
 
 interface Props {
 	onSubmit?: () => void;

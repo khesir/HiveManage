@@ -1,5 +1,5 @@
 import {Task} from '../../../joborder/_components/validation/task';
-import {ItemWithDetails} from '@/components/validation/inventory/product';
+import {ItemWithDetails} from '@/components/validation/product';
 
 export const SubmitTicket = async (
 	formdata: Task,

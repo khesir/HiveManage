@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import {Plus} from 'lucide-react';
 import {useEffect, useState} from 'react';
-import {Supplier, supplierSchema} from '../../../../components/validation/inventory/supplier';
+import {Supplier, supplierSchema} from '../../../../components/validation/supplier';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -34,7 +34,7 @@ import {Separator} from '@radix-ui/react-dropdown-menu';
 import axios, {AxiosError} from 'axios';
 import {useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-import {Category} from '../../../../components/validation/inventory/category';
+import {Category} from '../../../../components/validation/category';
 import {
 	Select,
 	SelectContent,

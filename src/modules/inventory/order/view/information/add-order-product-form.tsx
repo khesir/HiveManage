@@ -19,13 +19,13 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {ProductCategory} from '@/components/validation/inventory/category';
+import {ProductCategory} from '@/components/validation/category';
 import {
 	OrderProduct,
 	orderProductSchema,
-} from '@/components/validation/inventory/order-product';
-import {Product} from '@/components/validation/inventory/product';
-import {ProductSupplier} from '@/components/validation/inventory/product-supplier';
+} from '@/components/validation/order-product';
+import {Product} from '@/components/validation/product';
+import {ProductSupplier} from '@/components/validation/product-supplier';
 import {zodResolver} from '@hookform/resolvers/zod';
 import axios from 'axios';
 import {useEffect, useState} from 'react';

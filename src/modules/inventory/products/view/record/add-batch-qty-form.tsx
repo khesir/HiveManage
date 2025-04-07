@@ -16,7 +16,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {BatchItem} from '@/components/validation/inventory/batch-items';
+import {BatchItem} from '@/components/validation/batch-items';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Plus} from 'lucide-react';
 import {useState} from 'react';

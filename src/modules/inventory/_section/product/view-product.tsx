@@ -1,4 +1,4 @@
-import useProductStore from '@/api/product';
+import useProductStore from '@/api/product-state';
 import {ViewItemTabDetails} from '../../products/view/item-tab-view';
 import {useEffect} from 'react';
 import {useParams} from 'react-router-dom';

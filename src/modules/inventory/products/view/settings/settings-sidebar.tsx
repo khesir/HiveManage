@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom';
 import {SidebarNav} from './_components/sidebar-nav';
 import useSettingsFormSelection from './hooks/settings-form-selection';
 import {ProfileForm} from './form/profile-form';
-import {Product} from '@/components/validation/inventory/product';
+import {Product} from '@/components/validation/product';
 import {ApiRequest, request} from '@/api/axios';
 import {SupplierForm} from './form/supplier-form';
 import {Skeleton} from '@/components/ui/skeleton';

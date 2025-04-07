@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import {toast} from 'sonner';
 import axios from 'axios';
-import {OrderTrackingItemWithDetails} from '../../../../../components/validation/inventory/order';
+import {OrderTrackingItemWithDetails} from '../../../../../components/validation/order';
 import {request} from '@/api/axios';
 import {useState} from 'react';
 import {Card} from '@/components/ui/card';

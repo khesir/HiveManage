@@ -1,8 +1,8 @@
 import {PaginationResponse, request} from '@/api/axios';
 import {useEffect, useState} from 'react';
-import {Product} from '../../../components/validation/inventory/product';
+import {Product} from '../../../components/validation/product';
 import {useSearchParams} from 'react-router-dom';
-import {Category} from '@/components/validation/inventory/category';
+import {Category} from '@/components/validation/category';
 import {columns} from './sales-product-columns';
 import {SalesProductTable} from './sales-product-table';
 

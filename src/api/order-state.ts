@@ -1,8 +1,8 @@
-import {Order} from '@/components/validation/inventory/order';
+import {Order} from '@/components/validation/order';
 import {AxiosError} from 'axios';
 import {create} from 'zustand';
 import {ApiRequest, PaginationResponse, request} from './axios';
-import {OrderProduct} from '@/components/validation/inventory/order-product';
+import {OrderProduct} from '@/components/validation/order-product';
 import {toast} from 'sonner';
 
 type OrderState = {

@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {Joborder} from './joborder';
 import {EmployeeBasicInformation} from '@/modules/ems/_components/validation/employee';
-import {ItemWithDetails} from '@/components/validation/inventory/product';
+import {ItemWithDetails} from '@/components/validation/product';
 
 export const taskSchema = z.object({
 	remark_id: z.number().optional(),

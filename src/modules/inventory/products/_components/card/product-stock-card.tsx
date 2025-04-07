@@ -13,7 +13,7 @@ import {
 	PolarRadiusAxis,
 	Label,
 } from 'recharts';
-import {Product} from '../../../../../components/validation/inventory/product';
+import {Product} from '../../../../../components/validation/product';
 
 interface ProductPriceCardProps {
 	product: Product;

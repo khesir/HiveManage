@@ -28,7 +28,7 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 import {Badge} from '@/components/ui/badge';
 import {Input} from '@/components/ui/input';
 import {useProductWithRelatedDataStore} from '@/modules/sales/_components/hooks/use-selected-item';
-import {ProductWithRelatedTables} from '@/components/validation/inventory/product';
+import {ProductWithRelatedTables} from '@/components/validation/product';
 
 interface ItemListingModal {
 	title: string;

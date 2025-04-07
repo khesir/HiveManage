@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {OrderWithDetails} from '../../../../../components/validation/inventory/order';
+import {OrderWithDetails} from '../../../../../components/validation/order';
 import {Separator} from '@/components/ui/separator';
 import {dateParser} from '@/lib/util/utils';
 import {ScrollArea} from '@/components/ui/scroll-area';

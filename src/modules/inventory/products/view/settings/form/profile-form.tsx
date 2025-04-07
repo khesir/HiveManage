@@ -28,12 +28,12 @@ import {
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {Checkbox} from '@/components/ui/checkbox';
-import {Category} from '@/components/validation/inventory/category';
+import {Category} from '@/components/validation/category';
 import {
 	Product,
 	productSchema,
-} from '@/components/validation/inventory/product';
-import {Supplier} from '@/components/validation/inventory/supplier';
+} from '@/components/validation/product';
+import {Supplier} from '@/components/validation/supplier';
 import {Switch} from '@/components/ui/switch';
 interface Props {
 	selectedProduct: Product | undefined;

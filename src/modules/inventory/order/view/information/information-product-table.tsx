@@ -28,7 +28,7 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-import {OrderProduct} from '@/components/validation/inventory/order-product';
+import {OrderProduct} from '@/components/validation/order-product';
 import {AddOrderProductDialogue} from './add-order-product-dialogue';
 import {DeleteOrderProductConfirmation} from './delete-order-product-confirmation';
 import {UpdateOrderProductDialogue} from './update-order-product';

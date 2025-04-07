@@ -14,7 +14,7 @@ import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {dateParser} from '@/lib/util/utils';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-import {StockLogs} from '../../../../components/validation/inventory/stock-logs';
+import {StockLogs} from '../../../../components/validation/stock-logs';
 
 interface Props {
 	product_id: string;

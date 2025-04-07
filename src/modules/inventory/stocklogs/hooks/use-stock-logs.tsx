@@ -1,4 +1,4 @@
-import {StockLogsWithDetails} from '@/components/validation/inventory/product';
+import {StockLogsWithDetails} from '@/components/validation/product';
 import {create} from 'zustand';
 
 type StockLogsWithDetailsFormStore = {

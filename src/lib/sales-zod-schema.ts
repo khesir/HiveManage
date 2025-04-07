@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {EmployeeBasicInformation} from '../modules/ems/_components/validation/employee';
 import {Customer} from './cms-zod-schema';
-import {ItemWithDetails, Product} from '../components/validation/inventory/product';
+import {ItemWithDetails, Product} from '../components/validation/product';
 
 export const salesSchema = z.object({
 	sales_id: z.number().optional(),
