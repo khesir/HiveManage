@@ -447,6 +447,9 @@ CREATE TABLE IF NOT EXISTS "sales" (
 	"sales_id" serial PRIMARY KEY NOT NULL,
 	"customer_id" integer,
 	"sales_status" "sales_status" NOT NULL,
+	"handled_by" integer,
+	"product_sold" integer,
+	"total_price" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -811,6 +814,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "sales" ADD CONSTRAINT "sales_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "sales" ADD CONSTRAINT "sales_handled_by_employee_employee_id_fk" FOREIGN KEY ("handled_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

@@ -52,15 +52,15 @@ const salesItemSchema = z.object({
 });
 
 export const CreateSales = z.object({
+  handled_by: z.number().min(1),
   status: z.enum(['Completed', 'Partially Completed', 'Cancelled']),
-
   salesItem: z.array(salesItemSchema).min(1),
   customer: customerSchema.optional(),
   payment: paymentSchema.optional(),
 });
 
 export const UpdateSales = z.object({
-  customer_id: z.number().min(1),
+  handled_by: z.number().min(1),
   status: z.enum(['Completed', 'Partially Completed', 'Cancelled']),
 
   salesItem: z.array(salesItemSchema).min(1),

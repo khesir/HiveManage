@@ -1,5 +1,5 @@
 {
-  "id": "5c9489bf-4f58-401b-a597-d94b2249c223",
+  "id": "dfe1f5c9-eb32-422f-9ca3-89f13ca833cb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2461,6 +2461,24 @@
           "primaryKey": false,
           "notNull": true
         },
+        "handled_by": {
+          "name": "handled_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_sold": {
+          "name": "product_sold",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_price": {
+          "name": "total_price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -2493,6 +2511,19 @@
           ],
           "columnsTo": [
             "customer_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_handled_by_employee_employee_id_fk": {
+          "name": "sales_handled_by_employee_employee_id_fk",
+          "tableFrom": "sales",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "handled_by"
+          ],
+          "columnsTo": [
+            "employee_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

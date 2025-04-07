@@ -13,6 +13,7 @@ export class SalesController {
 
   async getAllSales(req: Request, res: Response, next: NextFunction) {
     const customer_id = (req.params.customer_id as string) || undefined;
+    const employee_id = (req.query.handled_by as string) || undefined;
     const status = (req.query.status as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -21,6 +22,7 @@ export class SalesController {
     try {
       const data = await this.salesService.getAllSales(
         customer_id,
+        employee_id,
         status,
         sort,
         limit,
@@ -57,12 +59,13 @@ export class SalesController {
 
   async createSales(req: Request, res: Response, next: NextFunction) {
     try {
-      const { status, salesItem, customer, payment } = req.body;
+      const { status, salesItem, customer, handled_by, payment } = req.body;
 
       const data = await this.salesService.createSales({
         status,
         salesItem,
         customer,
+        handled_by,
         payment,
       });
       res.status(HttpStatus.CREATED.code).json({
@@ -83,10 +86,10 @@ export class SalesController {
   async updateSales(req: Request, res: Response, next: NextFunction) {
     try {
       const { sales_id } = req.params;
-      const { customer_id, status, salesItem, customer, payment } = req.body;
+      const { status, salesItem, customer, handled_by, payment } = req.body;
 
       await this.salesService.updateSales(
-        { customer_id, status, salesItem, customer, payment },
+        { status, salesItem, customer, handled_by, payment },
         Number(sales_id),
       );
       res

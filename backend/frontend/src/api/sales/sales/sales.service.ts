@@ -4,6 +4,8 @@ import { customer } from '@/drizzle/schema/customer';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateSales } from './sales.model';
 import { sales, salesItems } from '@/drizzle/schema/sales';
+import { productRecord, serializeProduct } from '@/drizzle/schema/ims';
+import { employee } from '@/drizzle/schema/ems';
 
 export class SalesService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -42,12 +44,24 @@ export class SalesService {
             })
             .returning({ customer_id: customer.customer_id })
         )[0].customer_id;
-
       const [newSales] = await tx
         .insert(sales)
         .values({
           status: data.status,
-          customer_id,
+          handled_by: data.handled_by,
+          customer_id: customer_id,
+          total_price: Math.round(
+            data.salesItem.reduce(
+              (total, item) => total + (item.total_price || 0),
+              0,
+            ),
+          ),
+          product_sold: Math.round(
+            data.salesItem.reduce(
+              (total, item) => total + (item.quantity || 0),
+              0,
+            ),
+          ),
         })
         .returning({ sales_id: sales.sales_id });
 
@@ -56,6 +70,21 @@ export class SalesService {
           sales_id: newSales.sales_id,
           ...item,
         });
+
+        if (item.product_record_id) {
+          await tx
+            .update(productRecord)
+            .set({
+              quantity: sql`${productRecord.quantity} - ${item.quantity}`,
+              status: sql`CASE WHEN ${productRecord.quantity} = ${item.quantity} THEN 'Sold' ELSE ${productRecord.status} END`,
+            })
+            .where(eq(productRecord.product_record_id, item.product_record_id));
+        } else if (item.serial_id) {
+          await tx
+            .update(serializeProduct)
+            .set({ status: 'Sold' })
+            .where(eq(serializeProduct.serial_id, item.serial_id));
+        }
       }
 
       return {
@@ -67,6 +96,7 @@ export class SalesService {
 
   async getAllSales(
     customer_id: string | undefined,
+    employee_id: string | undefined,
     status: string | undefined,
     sort: string,
     limit: number,
@@ -91,7 +121,9 @@ export class SalesService {
     if (customer_id) {
       conditions.push(eq(sales.customer_id, Number(customer_id)));
     }
-
+    if (employee_id) {
+      conditions.push(eq(sales.handled_by, Number(employee_id)));
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -105,6 +137,7 @@ export class SalesService {
       .select()
       .from(sales)
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
+      .leftJoin(employee, eq(employee.employee_id, sales.handled_by))
       .where(and(...conditions))
       .orderBy(sort === 'asc' ? asc(sales.created_at) : desc(sales.created_at))
       .limit(limit)
@@ -113,6 +146,9 @@ export class SalesService {
       ...row.sales,
       customer: {
         ...row.customer,
+      },
+      employee: {
+        ...row.employee,
       },
     }));
 
