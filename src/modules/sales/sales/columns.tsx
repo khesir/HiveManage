@@ -1,116 +1,102 @@
-import {ServiceWithDetails} from '@/lib/sales-zod-schema';
 import {dateParser} from '@/lib/util/utils';
-import {ColumnDef} from '@tanstack/react-table';
-import {Button} from '@/components/ui/button';
-import {useLocation, useNavigate} from 'react-router-dom';
-import useServiceFormStore from '@/components/hooks/use-service-store';
+import {ColumnDef, Row} from '@tanstack/react-table';
 import {Badge} from '@/components/ui/badge';
+import {Sales} from '@/components/validation/sales';
+import {AvatarCircles} from '@/components/ui/avatarcircles';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {Button} from '@/components/ui/button';
+import {useNavigate} from 'react-router-dom';
+import {File} from 'lucide-react';
 
-const ActionsCell = (data: ServiceWithDetails) => {
-	const {setServiceFormData} = useServiceFormStore();
+const ActionCell = (data: Sales) => {
 	const navigate = useNavigate();
-	const location = useLocation();
-	const handleClick = (service_id: number) => {
-		const id = Number(service_id);
-		if (location.pathname.startsWith('/sales')) {
-			navigate(`/sales/services/view/${id}`);
-		} else if (location.pathname.startsWith('/admin')) {
-			navigate(`/admin/sales/services/view/${id}`);
-		} else if (location.pathname.startsWith('/tech')) {
-			navigate(`/tech/services/view/${id}`);
-		}
-		setServiceFormData(data);
-	};
-
-	return <Button onClick={() => handleClick(data.service_id)}>View</Button>;
+	return (
+		<div className="flex gap-2">
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger>
+						<Button onClick={() => navigate(`view/${data.sales_id}`)}>
+							<File />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>View More</p>
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
+		</div>
+	);
 };
-
-export const columns: ColumnDef<ServiceWithDetails>[] = [
+export const columns: ColumnDef<Sales>[] = [
 	{
-		accessorKey: 'service_id',
+		accessorKey: 'sales_id',
 		header: 'ID',
 	},
 	{
 		id: 'Fullname',
-		header: 'Customer Name',
-		accessorFn: (row) =>
-			`${row.customer.firstname} ${row.customer.middlename ? row.customer.middlename + ' ' : ''}${row.customer.lastname}`,
-		cell: (info) => info.getValue(),
-		filterFn: 'includesString',
+		cell: ({row}) => {
+			return (
+				<>
+					{row.original.customer &&
+					Object.keys(row.original.customer).length !== 0
+						? `${row.original.customer?.firstname} ${row.original.customer?.middlename} ${row.original.customer?.lastname}`
+						: 'No Selected Customer'}
+				</>
+			);
+		},
 	},
 	{
 		accessorKey: 'service_status',
 		header: 'Status',
 		cell: ({row}) => {
+			return <Badge>{row.original.status}</Badge>;
+		},
+	},
+	{
+		accessorKey: 'product_sold',
+		header: 'Product Sold',
+	},
+	{
+		accessorKey: 'total_price',
+		header: 'Total Price',
+	},
+	{
+		accessorKey: 'handled_by',
+		header: 'Handled by',
+		cell: ({row}) => {
 			return (
-				<Badge
-					className={`${row.original.service_status === 'Active' ? 'bg-green-400 font-semibold hover:bg-green-400' : 'bg-gray-400 font-semibold hover:bg-gray-400'}`}
-				>
-					{row.original.service_status ? 'Active' : 'Inactive'}
-				</Badge>
+				<AvatarCircles
+					avatar={[
+						{
+							link:
+								typeof row.original.employee?.profile_link === 'string'
+									? row.original.employee?.profile_link
+									: '',
+							name: row.original.employee?.firstname ?? '',
+						},
+					]}
+				/>
 			);
 		},
 	},
 	{
-		accessorKey: 'last_updated',
-		header: 'Last Updated',
+		accessorKey: 'Created_at',
+		header: 'Created At',
 		cell: ({row}) => dateParser(row?.original?.last_updated ?? ''),
 	},
 	{
-		id: 'has_sales_item',
-		header: 'Sales',
-		cell: ({row}) => {
+		header: 'Action',
+		cell: ({row}: {row: Row<Sales>}) => {
 			return (
-				<Badge
-					className={`${row.original.has_sales_item ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
-				>
-					{row.original.has_sales_item ? 'Active' : 'Inactive'}
-				</Badge>
+				<>
+					<ActionCell {...row.original} />
+				</>
 			);
 		},
-	},
-	{
-		id: 'has_job_order',
-		header: 'Joborder',
-		cell: ({row}) => {
-			return (
-				<Badge
-					className={`${row.original.has_job_order ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
-				>
-					{row.original.has_job_order ? 'Active' : 'Inactive'}
-				</Badge>
-			);
-		},
-	},
-	{
-		id: 'has_reservation',
-		header: 'Reservation',
-		cell: ({row}) => {
-			return (
-				<Badge
-					className={`${row.original.has_reservation ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
-				>
-					{row.original.has_reservation ? 'Active' : 'Inactive'}
-				</Badge>
-			);
-		},
-	},
-	{
-		id: 'has_borrow',
-		header: 'Borrow',
-		cell: ({row}) => {
-			return (
-				<Badge
-					className={`${row.original.has_borrow ? 'bg-green-400 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-400'}`}
-				>
-					{row.original.has_borrow ? 'Active' : 'Inactive'}
-				</Badge>
-			);
-		},
-	},
-	{
-		id: 'actions',
-		header: 'Actions',
-		cell: ({row}) => <ActionsCell {...row.original} />,
 	},
 ];

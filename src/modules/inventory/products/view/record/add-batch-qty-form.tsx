@@ -41,7 +41,7 @@ export function AddBatchQuantityForm({data}: Props) {
 	});
 	const [formModal, setFormModal] = useState<boolean>();
 	const processForm = async (formData: z.infer<typeof batchFormSchema>) => {
-		addProduct(data, formData.quantity);
+		addProduct(data, formData.quantity, data.product_record_id!, false);
 		setFormModal(false);
 	};
 

@@ -5,8 +5,7 @@ import {useParams} from 'react-router-dom';
 
 export default function ViewProductRecord() {
 	const {id} = useParams();
-	const {getProductById, selectedProduct} = useProductStore();
-	console.log(selectedProduct);
+	const {getProductById} = useProductStore();
 	useEffect(() => {
 		getProductById(Number(id));
 	}, []);

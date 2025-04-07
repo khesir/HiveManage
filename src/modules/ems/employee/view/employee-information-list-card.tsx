@@ -8,7 +8,7 @@ import {useEffect, useState} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
 import {EmployeeRolesWithDetails} from '../../_components/validation/employeeRoles';
 import {PaginationResponse, request} from '@/api/axios';
-import ServiceList from '@/modules/sales/sales/service_list';
+import ServiceList from '@/modules/sales/sales/sales-list';
 import {Separator} from '@/components/ui/separator';
 import {JoborderList} from '@/modules/joborder/joborder-list';
 

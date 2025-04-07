@@ -1,6 +1,6 @@
 import {Separator} from '@/components/ui/separator';
-import SalesProductList from '../dashboard/sales-product-list';
-import {SelectedSaleItems} from '../dashboard/selected-sale-items';
+import SalesProductList from '../../dashboard/sales-product-list';
+import {SelectedSaleItems} from '../../dashboard/selected-sale-items';
 import {Heading} from '@/components/ui/heading';
 
 export default function SalesPosSection() {

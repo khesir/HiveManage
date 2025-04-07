@@ -31,7 +31,7 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 import {toast} from 'sonner';
 import {AssignEmployeeWithDetails} from '@/lib/sales-zod-schema';
 import {ProcessAssignEmployee} from '../api/process-assign-employee';
-import {useEmployeeStore} from '../../sales/view/hooks/use-employee-list';
+import {useEmployeeStore} from '../../service/view/hooks/use-employee-list';
 
 interface AssignEmployeeProps {
 	joborder_id: number | null;

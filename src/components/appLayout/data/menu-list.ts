@@ -4,7 +4,6 @@ import {
 	Settings,
 	LayoutGrid,
 	LucideIcon,
-	PackageOpenIcon,
 	Terminal,
 	LayoutPanelLeft,
 	MessageSquare,
@@ -14,6 +13,10 @@ import {
 	ShoppingBag,
 	BoxesIcon,
 	BoxIcon,
+	Banknote,
+	ScrollText,
+	ShoppingCart,
+	Scroll,
 } from 'lucide-react';
 
 type Submenu = {
@@ -46,13 +49,6 @@ export function getAdminMenuList(pathname: string): Group[] {
 					label: 'Dashboard',
 					active: pathname.includes('/admin/dashboard'),
 					icon: LayoutGrid,
-					submenus: [],
-				},
-				{
-					href: '/admin/inquiry',
-					label: 'Inquiry',
-					active: pathname.includes('/inquiry'),
-					icon: MessageSquare,
 					submenus: [],
 				},
 				{
@@ -90,19 +86,19 @@ export function getAdminMenuList(pathname: string): Group[] {
 						{
 							href: '/admin/sales/list',
 							label: 'Sales',
-							icon: LayoutGrid,
+							icon: ShoppingCart,
 							active: pathname === '/admin/sales/list',
 						},
 						{
 							href: '/admin/sales/services',
 							label: 'Service',
-							icon: LayoutGrid,
+							icon: Scroll,
 							active: pathname === '/admin/sales/services',
 						},
 						{
 							href: 'admin/sales/payments',
 							label: 'Payments',
-							icon: LayoutGrid,
+							icon: Banknote,
 							active: pathname === '/admin/sales/payments',
 						},
 					],
@@ -151,10 +147,10 @@ export function getSalesMenuList(pathname: string): Group[] {
 					submenus: [],
 				},
 				{
-					href: '/admin/inquiry',
-					label: 'Inquiry',
-					active: pathname.includes('/inquiry'),
-					icon: MessageSquare,
+					href: '/admin/settings',
+					label: 'Settings',
+					active: pathname.includes('/admin/settings'),
+					icon: Settings,
 					submenus: [],
 				},
 			],
@@ -163,10 +159,10 @@ export function getSalesMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
-					href: '/sales/overview',
-					label: 'Overview',
-					active: pathname === '/sales/overview',
-					icon: LayoutPanelLeft,
+					href: '/sales/customer',
+					label: 'Customer',
+					active: pathname.includes('/sales/customer'),
+					icon: Users,
 					submenus: [],
 				},
 				{
@@ -178,19 +174,19 @@ export function getSalesMenuList(pathname: string): Group[] {
 						{
 							href: '/sales/system/list',
 							label: 'Sales',
-							icon: LayoutGrid,
+							icon: ShoppingCart,
 							active: pathname === '/sales/system/list',
 						},
 						{
 							href: '/sales/system/services',
 							label: 'Service',
-							icon: LayoutGrid,
+							icon: ScrollText,
 							active: pathname === '/sales/system/services',
 						},
 						{
 							href: '/sales/system/payment',
 							label: 'Payments',
-							icon: LayoutGrid,
+							icon: Banknote,
 							active: pathname === '/sales/system/payment',
 						},
 					],
@@ -220,39 +216,6 @@ export function getSalesMenuList(pathname: string): Group[] {
 							active: pathname === '/sales/inventory/suppliers',
 						},
 					],
-				},
-				{
-					href: '/sales/customer',
-					label: 'Customer',
-					active: pathname.includes('/sales/customer'),
-					icon: Users,
-					submenus: [],
-				},
-				{
-					href: '/sales/inquiry',
-					label: 'Inquiries',
-					active: pathname.includes('/sales/inquiry'),
-					icon: PackageOpenIcon,
-					submenus: [],
-				},
-			],
-		},
-		{
-			groupLabel: 'Settings',
-			menus: [
-				// {
-				// 	href: '/sales/terminal',
-				// 	label: 'Terminal',
-				// 	active: pathname.includes('/sales/terminal'),
-				// 	icon: Terminal,
-				// 	submenus: [],
-				// },
-				{
-					href: '/sales/settings',
-					label: 'Settings',
-					active: pathname.includes('/sales/settings'),
-					icon: Settings,
-					submenus: [],
 				},
 			],
 		},

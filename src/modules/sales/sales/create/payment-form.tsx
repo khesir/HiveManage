@@ -50,6 +50,13 @@ export function CreatePaymentForm({process, loading}: Props) {
 		mode: 'onChange',
 	});
 	const processForm = (data: Payment) => {
+		if ((data.change_amount ?? 0) > 0) {
+			form.setError('change_amount', {
+				type: 'manual',
+				message: 'Change amount cannot be more than 0',
+			});
+			return;
+		}
 		process(data);
 	};
 	const paymentMethod = ['Cash', 'Card', 'Online Payment'];

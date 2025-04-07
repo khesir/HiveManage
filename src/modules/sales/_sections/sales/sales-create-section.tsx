@@ -1,41 +1,48 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {Separator} from '@/components/ui/separator';
-import {CreateCustomerForm} from '../../customer/_components/create/create-customer';
 import {Heading} from '@/components/ui/heading'; // Assuming you have a custom Heading component
-import {SelectedSaleReviewItems} from '../dashboard/selected-sale-review-items';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {SearchCustomer} from '../dashboard/customer/search-customer';
 import {Button} from '@/components/ui/button';
 import {useSalesHook} from '@/components/hooks/use-sales-hook';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Card} from '@/components/ui/card';
 import {Customer} from '@/lib/cms-zod-schema';
-import {SalesCustomerProfile} from '../sales/create/customer-profile-form';
-import {CreatePaymentForm} from '../sales/create/payment-form';
 import {Payment} from '@/components/validation/payment';
 import {useNavigate} from 'react-router-dom';
 import useCustomer from '@/components/hooks/use-sales-customer-hook';
 import {CreateSales} from '@/api/sales-api';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import {toast} from 'sonner';
+import {SalesCustomerProfile} from '../../sales/create/customer-profile-form';
+import {CreatePaymentForm} from '../../sales/create/payment-form';
+import {CreateCustomerForm} from '@/modules/customer/_components/create/create-customer';
+import {SearchCustomer} from '../../dashboard/customer/search-customer';
+import {SelectedSaleReviewItems} from '../../dashboard/selected-sale-review-items';
 
 export function CreateSalesSection() {
 	const [loading, setLoading] = useState<boolean>(false);
 	const {salesHookData, resetProducts} = useSalesHook();
 	const {customer, setCustomer, resetCustomer} = useCustomer();
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (salesHookData.length < 1) {
-			navigate('/sales/overview');
-		}
-	}, [salesHookData, navigate]);
+	const {user} = useEmployeeRoleDetailsStore();
 
 	const processData = async (payment: Payment) => {
 		setLoading(true);
-		const data = await CreateSales(salesHookData, customer, payment);
+		if (!user) {
+			toast.error('User is null. Cannot proceed with creating sales.');
+			setLoading(false);
+			return;
+		}
+		const data = await CreateSales(
+			salesHookData,
+			customer,
+			payment,
+			user.employee.employee_id,
+		);
+		navigate(`/sales/system/view/${data?.sales_id}`);
 		resetCustomer();
 		resetProducts();
-		navigate(`/sales/system/view/${data?.sales_id}`);
 		setLoading(false);
 	};
 
@@ -89,10 +96,10 @@ export function CreateSalesSection() {
 									</Button>
 								</div>
 								<TabsContent value="item-1" className="p-5">
-									<CreateCustomerForm />
+									<CreateCustomerForm processCreate={setCustomer} />
 								</TabsContent>
 								<TabsContent value="item-2" className="p-5">
-									<SearchCustomer />
+									<SearchCustomer processCreate={setCustomer} />
 								</TabsContent>
 							</Tabs>
 						</>

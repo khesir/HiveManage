@@ -1,7 +1,7 @@
 import {Heading} from '@/components/ui/heading';
 import {Separator} from '@/components/ui/separator';
-import {ViewSalesTabList} from '../../sales/view/sales-tab-view-list';
-import {SalesItemProfile} from '../../sales/view/sales-item-profile';
+import {ViewSalesTabList} from '../../service/view/sales-tab-view-list';
+import {SalesItemProfile} from '../../service/view/sales-item-profile';
 
 export default function ServiceViewPage() {
 	return (

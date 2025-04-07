@@ -38,7 +38,9 @@ const ActionCell = (data: SerializeItem) => {
 				<TooltipProvider>
 					<Tooltip>
 						<TooltipTrigger>
-							<Button onClick={() => addProduct(data, 1)}>
+							<Button
+								onClick={() => addProduct(data, 1, data.serial_id!, true)}
+							>
 								<Plus className="w-4 h-4" />
 							</Button>
 						</TooltipTrigger>

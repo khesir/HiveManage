@@ -8,6 +8,8 @@ type Product = BatchItem | SerializeItem;
 interface SalesItem {
 	product_id: number;
 	quantity: number;
+	product_record_id: number | undefined;
+	serial_id: number | undefined;
 	total_price: number;
 	record: Product;
 	data: Product;
@@ -15,7 +17,12 @@ interface SalesItem {
 interface SalesHook {
 	salesHookData: SalesItem[];
 	trigger: boolean;
-	addProduct: (product: Product, quantity: number) => void;
+	addProduct: (
+		product: Product,
+		quantity: number,
+		record_id: number,
+		serialized: boolean,
+	) => void;
 	updateQuantity: (index: number, quantity: number) => void;
 	removeProduct: (id: number) => void;
 	resetProducts: () => void;
@@ -25,7 +32,7 @@ export const useSalesHook = create<SalesHook>((set) => ({
 	salesHookData: [],
 	trigger: false,
 
-	addProduct: (product, quantity) =>
+	addProduct: (product, quantity, record_id, serialized) =>
 		set((state) => {
 			const exists = state.salesHookData.some(
 				(p) => p.product_id === product.product_id, // Assuming `Product` has an `id` field
@@ -35,18 +42,37 @@ export const useSalesHook = create<SalesHook>((set) => ({
 				return state;
 			}
 
-			const salesItem: SalesItem = {
-				product_id: product.product_id,
-				quantity: quantity,
-				total_price: (product.price || 0) * quantity,
-				record: product,
-				data: product,
-			};
+			if (serialized) {
+				const salesItem: SalesItem = {
+					product_id: product.product_id,
+					product_record_id: undefined,
+					serial_id: record_id,
+					quantity: quantity,
+					total_price: (product.price || 0) * quantity,
+					record: product,
+					data: product,
+				};
 
-			return {
-				salesHookData: [...state.salesHookData, salesItem],
-				trigger: !state.trigger,
-			};
+				return {
+					salesHookData: [...state.salesHookData, salesItem],
+					trigger: !state.trigger,
+				};
+			} else {
+				const salesItem: SalesItem = {
+					product_id: product.product_id,
+					product_record_id: record_id,
+					serial_id: undefined,
+					quantity: quantity,
+					total_price: (product.price || 0) * quantity,
+					record: product,
+					data: product,
+				};
+
+				return {
+					salesHookData: [...state.salesHookData, salesItem],
+					trigger: !state.trigger,
+				};
+			}
 		}),
 
 	updateQuantity: (index, quantity) =>

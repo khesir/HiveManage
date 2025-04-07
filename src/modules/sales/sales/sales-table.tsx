@@ -5,14 +5,10 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
+	Row,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
-import {
-	Link,
-	useLocation,
-	useNavigate,
-	useSearchParams,
-} from 'react-router-dom';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
@@ -29,35 +25,39 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Button, buttonVariants} from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {ServiceWithDetails} from '@/lib/sales-zod-schema';
+import {Input} from '@/components/ui/input';
+import useSales from '../_components/hooks/use-sales';
+import {Category} from '../../../components/validation/category';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Input} from '@/components/ui/input';
-import {cn} from '@/lib/util/utils';
+import {Separator} from '@/components/ui/separator';
+import {Badge} from '@/components/ui/badge';
+import { Sales } from '@/components/validation/sales';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	pageSizeOptions?: number[];
+	pageSizecategorys?: number[];
 	pageCount: number;
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
-	isDetails?: boolean;
 }
-
-export function ServiceTable<TData extends ServiceWithDetails, TValue>({
+// type SelectedValue = {
+// 	id: number; // Selected ID
+// 	name: string; // Selected name
+// };
+export function SalesTable<TData extends Sales, TValue>({
 	columns,
 	data,
 	pageCount,
-	pageSizeOptions = [10, 20, 30, 40, 50],
-	isDetails = false,
+	pageSizecategorys = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -71,9 +71,7 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 	const per_page = searchParams.get('limit') || '10';
 	const perPageAsNumber = Number(per_page);
 	const fallBackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber;
-	const [filter, setFilter] = useState<boolean>(true);
 
-	// Create query string
 	const createQueryString = useCallback(
 		(params: {[s: string]: unknown} | ArrayLike<unknown>) => {
 			const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -90,7 +88,7 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 		[searchParams],
 	);
 
-	// Handle server-side pagination
+	// State for table pagination
 	const [{pageIndex, pageSize}, setPagination] = useState({
 		pageIndex: fallbackPage - 1,
 		pageSize: fallBackPerPage,
@@ -122,137 +120,118 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 		manualFiltering: true,
 	});
 
+	// Set the first employee data to Zustand on initial render
+	useEffect(() => {
+		if (data.length > 0) {
+			const rdata: Sales = data[0];
+			useSales.getState().setSale(rdata);
+		}
+	}, [data]);
+
+	// This handles the employee viewing by click
+	const handleRowClick = (row: Row<TData>) => {
+		// Access the data of the clicked row
+		const rowData: Sales = row.original;
+
+		// Do something with the row data
+		useSales.getState().setSale(rowData);
+	};
+
+	// ====================================================================================
+	// Search Funtion
 	// Debounced search value to avoid triggering requests too frequently
-	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-	// console.log(debouncedSearchValue);
-	// useEffect(() => {
-	// 	const handler = setTimeout(() => {
-	// 		setDebouncedSearchValue(searchValue);
-	// 	}, 500); // Adjust debounce delay as needed
-	// 	return () => clearTimeout(handler);
-	// }, [searchValue]);
-
 	// // Update the URL with the search query when the searchValue changes
-	// useEffect(() => {
-	// 	if (debouncedSearchValue?.length > 0) {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null, // Reset page when searching
-	// 				limit: pageSize,
-	// 				fullname: debouncedSearchValue, // Add search param to URL
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	} else {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null,
-	// 				limit: pageSize,
-	// 				fullname: null, // Remove search param from URL if empty
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	}
+	useEffect(() => {
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1, // Preserve current page instead of resetting
+				limit: pageSize,
+			})}`,
+			{replace: true},
+		);
 
-	// 	// Reset pagination to first page on search change
-	// 	setPagination((prev) => ({...prev, pageIndex: 0}));
-	// }, [
-	// 	debouncedSearchValue,
-	// 	pageSize,
-	// 	navigate,
-	// 	location.pathname,
-	// 	createQueryString,
-	// ]);
+	}, [
+		pageSize,
+		pageIndex, // Add pageIndex here
+		navigate,
+		location.pathname,
+		createQueryString,
+	]);
 
+	// Filter
+
+	// TODO: Command Dynamic Filter
+	// const [selectedValues, setSelectedValues] = useState<Set<SelectedValue>>(
+	// 	new Set(),
+	// );
+	// const handleSelect = (id: number, name: string) => {
+	// 	setSelectedValues((prevSet) => {
+	// 		const newSet = new Set(prevSet);
+	// 		const isSelected = Array.from(newSet).some((item) => item.id === id);
+
+	// 		if (isSelected) {
+	// 			// Remove item if it exists
+	// 			newSet.forEach((item) => {
+	// 				if (item.id === id) newSet.delete(item);
+	// 			});
+	// 		} else {
+	// 			// Add new item
+	// 			newSet.add({id, name});
+	// 		}
+
+	// 		return newSet;
+	// 	});
+	// };
+	// const selectedValuesArray = Array.from(selectedValues);
+
+	// const resetFilter = () => {
+	// 	setSelectedValues(new Set());
+	// };
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
+		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
+	);
+	const handleSortOrderChange = (order: 'asc' | 'desc') => {
+		if (sortOrder === order) return;
+
+		setSortOrder(order);
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1,
+				limit: pageSize,
+				status: categoryFilter,
+				sort: order,
+			})}`,
+			{replace: true},
+		);
+	};
+
+	// Category Filter
+	const [categoryFilter, setCategoryFilter] = useState<number | null>(
+		Number(searchParams.get('category_id')),
+	);
+	const handleCategoryFilterChange = (category_id: number | null) => {
+		if (category_id === categoryFilter) return;
+
+		const newCategory = category_id === null ? null : category_id;
+		setCategoryFilter(newCategory);
+
+		// Reset to the first page on filter change and update the URL
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: 1,
+				limit: pageSize,
+				sort: sortOrder,
+				category_id: newCategory,
+			})}`,
+			{replace: true},
+		);
+
+		setPagination((prev) => ({...prev, pageIndex: 0}));
+	};
 	return (
 		<>
-			<div className="flex justify-between gap-3">
-				<div className="space-x-2 flex">
-					{!isDetails && (
-						<Input
-							placeholder={`Find Service...`}
-							// value={searchValue ?? ''} // Bind the input value to the current filter value
-							// onChange={(event) =>
-							// 	table.getColumn(searchKey)?.setFilterValue(event.target.value)
-							// } // Update filter value}
-							className="w-[300px]"
-						/>
-					)}
-					{filter ? (
-						<Button variant={'outline'} onClick={() => setFilter(!filter)}>
-							Filter
-						</Button>
-					) : (
-						<>
-							<Button variant={'outline'} onClick={() => setFilter(!filter)}>
-								Filter
-							</Button>
-							<DropdownMenu>
-								<DropdownMenu>
-									<DropdownMenuTrigger>
-										<Button variant={'outline'}>Sort</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent className="flex flex-col">
-										<Button variant={'ghost'}>Asc</Button>
-										<Button variant={'ghost'}>Desc</Button>
-									</DropdownMenuContent>
-								</DropdownMenu>
-								<DropdownMenuTrigger>
-									<Button variant={'outline'}>Status</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>No set</Button>
-									<Button variant={'ghost'}>Active</Button>
-									<Button variant={'ghost'}>Inactive</Button>
-								</DropdownMenuContent>
-							</DropdownMenu>
-							<DropdownMenu>
-								<DropdownMenuTrigger>
-									<Button variant={'outline'}>Reservation: True</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>true</Button>
-									<Button variant={'ghost'}>false</Button>
-								</DropdownMenuContent>
-							</DropdownMenu>
-							<DropdownMenu>
-								<DropdownMenuTrigger>
-									<Button variant={'outline'}>Sales : True</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>true</Button>
-									<Button variant={'ghost'}>false</Button>
-								</DropdownMenuContent>
-							</DropdownMenu>
-							<DropdownMenu>
-								<DropdownMenuTrigger>
-									<Button variant={'outline'}>Borrow: True</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>true</Button>
-									<Button variant={'ghost'}>false</Button>
-								</DropdownMenuContent>
-							</DropdownMenu>
-							<DropdownMenu>
-								<DropdownMenuTrigger>
-									<Button variant={'outline'}>Joborder : True</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="flex flex-col">
-									<Button variant={'ghost'}>true</Button>
-									<Button variant={'ghost'}>false</Button>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</>
-					)}
-				</div>
-				<div className="flex justify-between gap-3 md:gap-0">
-					<Link
-						to={'create'}
-						className={cn(buttonVariants({variant: 'default'}))}
-					>
-						<Plus className="mr-2 h-4 w-4" /> Add Services
-					</Link>
-				</div>
+			<div className="flex justify-between gap-3 md:gap-0">
+
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
@@ -279,6 +258,7 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
+									onClick={() => handleRowClick(row)}
 									style={{cursor: 'pointer'}}
 									data-state={row.getIsSelected() && 'selected'}
 								>
@@ -329,7 +309,7 @@ export function ServiceTable<TData extends ServiceWithDetails, TValue>({
 									/>
 								</SelectTrigger>
 								<SelectContent side="top">
-									{pageSizeOptions.map((pageSize) => (
+									{pageSizecategorys.map((pageSize) => (
 										<SelectItem key={pageSize} value={`${pageSize}`}>
 											{pageSize}
 										</SelectItem>

@@ -1,5 +1,5 @@
 import {Tabs, TabsList, TabsTrigger, TabsContent} from '@/components/ui/tabs';
-import {SalesAllItem} from '@/modules/sales/sales/view/sales-all-items';
+import {SalesAllItem} from '@/modules/sales/service/view/sales-all-items';
 import {TaskList} from './tasklist/tasklist-list';
 
 export function ViewJoborderTasks() {

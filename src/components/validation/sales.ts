@@ -50,15 +50,33 @@ const salesItemSchema = z.object({
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
 });
+const employeeSchema = z.object({
+	employee_id: z.number().optional(),
+	position_id: z.string().min(1),
+	firstname: z.string().min(1, 'First name is required'),
+	middlename: z.string().optional(),
+	lastname: z.string().min(1, 'Last name is required'),
+	email: z.string().min(1),
+	profile_link: z.string().optional(),
+	// This is just form form submission on settings, not part of employee Schema
+	role_id: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
 
 export const salesSchema = z.object({
 	sales_id: z.number().optional(),
 	customer_id: z.number().optional(),
+	handled_by: z.number().min(1),
+	product_sold: z.number().optional(),
+	total_price: z.number().optional(),
 	status: z.enum(['Completed', 'Partially Completed', 'Cancelled', 'Pending']),
 
 	salesItem: z.array(salesItemSchema).min(1),
 	customer: customerSchema.optional(),
 	payment: paymentSchema.optional(),
+	employee: employeeSchema.optional(),
 
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),

@@ -12,12 +12,7 @@ import {
 	EmployeeViewPage,
 } from './pages/admin';
 
-import {
-	SalesPosPage,
-	SalesDashboardPage,
-	ServicePages,
-	SalesListPage,
-} from './pages/sales';
+import {SalesPosPage, SalesListPage} from './pages/sales';
 
 // TODO: Sort this to each index found in root of page file index.ts
 import {CreateSalesPage} from './pages/sales/systems/sales/sales-create-page';
@@ -27,7 +22,6 @@ import CustomerViewPage from './pages/customer/customer-view-page';
 import TechOverview from './pages/tech/systems/overview/overview-page';
 import Settings from './pages/general/settings';
 import Terminal from './pages/general/terminal';
-import InquiryPage from './pages/sales/systems/inquiry';
 import JoborderListsPage from './pages/tech/systems/service/joborder-page';
 import JoborderViewPage from './pages/tech/systems/service/view/view-page';
 import ReadTask from './pages/sales/systems/service/tickets/task-detail';
@@ -45,6 +39,9 @@ import CreateOrderPage from './pages/inventory/order/create-order-page';
 import InventoryRecordCreatePage from './pages/inventory/product/inventoryView/inventory-record-create';
 import CustomerDatabasePage from './pages/customer/customer-page';
 import ViewOrderPage from './pages/inventory/order/order-view-page';
+import SalesViewPage from './pages/sales/systems/sales/sales-view-page';
+import PaymentListPage from './pages/payment/system/payment-list-page';
+import ServiceListPage from './pages/sales/systems/service/service-list-page';
 
 function App() {
 	return (
@@ -78,7 +75,7 @@ function App() {
 						<Route path="sales/system">
 							<Route path="create" element={<CreateSalesPage />} />
 							<Route path="list" element={<SalesListPage />} />
-							<Route path="services" element={<ServicePages />} />
+							<Route path="services" element={<ServiceListPage />} />
 							<Route path="services/view/:id" element={<ViewServicePage />} />
 							<Route path="services/create" />
 							<Route path="payment" />
@@ -185,28 +182,25 @@ function App() {
 								</Route>
 							</Route>
 						</Route>
-
-						<Route path="inquiry" element={<InquiryPage />} />
 					</Route>
 				</Route>
 
 				{/* Sales Layout */}
 				<Route path="sales" element={<MainLayout userType={'sales'} />}>
 					<Route element={<RequireAuth allowedRoles={['Sales']} />}>
-						<Route path="dashboard" element={<SalesDashboardPage />} />
+						<Route path="dashboard" element={<SalesPosPage />} />
 						<Route path="settings" element={<Settings />} />
 
 						{/* Systems */}
 						{/* Sales list */}
-						<Route path="overview" element={<SalesPosPage />} />
 						<Route path="system">
 							<Route path="create" element={<CreateSalesPage />} />
 							<Route path="list" element={<SalesListPage />} />
-							<Route path="view/:id" />
-							<Route path="services" element={<ServicePages />} />
+							<Route path="list/view/:id" element={<SalesViewPage />} />
+							<Route path="services" element={<ServiceListPage />} />
 							<Route path="services/view/:id" element={<ViewServicePage />} />
 							<Route path="services/create" />
-							<Route path="payment" />
+							<Route path="payment" element={<PaymentListPage />} />
 						</Route>
 
 						{/* Customer */}
@@ -247,7 +241,6 @@ function App() {
 								<Route path="view/:id" />
 							</Route>
 						</Route>
-						<Route path="inquiry" element={<InquiryPage />} />
 					</Route>
 				</Route>
 			</Router>

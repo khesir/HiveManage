@@ -15,14 +15,17 @@ export const CreateSales = async (
 	items: SalesItem[],
 	customer: Customer | null,
 	payment: Payment,
+	employee_id: number,
 ): Promise<Sales | undefined> => {
 	try {
 		const orderedData: Sales = {
 			status: 'Completed',
+			handled_by: employee_id,
 			customer: customer || undefined,
 			salesItem: items,
 			payment: payment,
 		};
+		console.log(customer);
 		const res = await request<ApiRequest<Sales>>(
 			'POST',
 			`/api/v1/sms/sales`,

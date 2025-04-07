@@ -32,9 +32,8 @@ import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-import {CreateCustomer} from '../api/create-customer';
+import {CreateCustomer} from '../../../../api/customer-api';
 import {useNavigate} from 'react-router-dom';
-import useCustomer from '@/components/hooks/use-sales-customer-hook';
 
 interface CreateCustomerFormProps {
 	processCreate?: (data: Customer) => void;
@@ -45,7 +44,6 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [, setPreviousStep] = useState(0);
 	const navigate = useNavigate();
 	const {setCustomerFormData, resetCustomerFormData} = useCustomerFormStore();
-	const {setCustomer} = useCustomer();
 
 	useEffect(() => {
 		resetCustomerFormData();
@@ -150,7 +148,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 			// Overview main transaction process
 			// Don't touch
 			if (typeof processCreate === 'function') {
-				setCustomer(data);
+				processCreate(data);
 				return true;
 			}
 
