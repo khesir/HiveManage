@@ -7,16 +7,7 @@ import {
   department,
   designation,
 } from './ems';
-import {
-  product,
-  category,
-  supplier,
-  order,
-  orderProduct,
-  discount,
-  discountCustomer,
-  discountProducts,
-} from './ims';
+import { product, category, supplier, order, orderProduct } from './ims';
 import {
   reports,
   tickets,
@@ -27,7 +18,7 @@ import {
   assignedEmployees,
 } from './services';
 import { sales, salesItems } from './sales';
-import { payment, receipt } from './payment';
+import { payment } from './payment';
 import { inquiry, customerGroup, customer } from './customer';
 
 export type SchemaType = {
@@ -57,7 +48,6 @@ export const schema: SchemaType = {
   salesItems,
 
   payment,
-  receipt,
 
   // Inventory
   product,
@@ -65,10 +55,6 @@ export const schema: SchemaType = {
   supplier,
   order,
   orderProduct,
-
-  discount,
-  discountCustomer,
-  discountProducts,
 
   inquiry,
   customerGroup,

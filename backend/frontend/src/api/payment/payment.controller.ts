@@ -12,7 +12,6 @@ export class PaymentController {
   }
 
   async getAllPayment(req: Request, res: Response, next: NextFunction) {
-    const payment_status = (req.query.payment_status as string) || undefined;
     const payment_method = (req.query.payment_method as string) || undefined;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
@@ -21,7 +20,6 @@ export class PaymentController {
     try {
       const data = await this.paymentService.getAllPayment(
         payment_method,
-        payment_status,
         sort,
         limit,
         offset,
@@ -62,11 +60,14 @@ export class PaymentController {
         sales_id,
         service_type,
         amount,
-        vat_rate,
+        vat_amount,
+        paid_amount,
+        change_amount,
+        reference_number,
         discount_amount,
         payment_date,
         payment_method,
-        payment_status,
+        payment_type,
       } = req.body;
 
       await this.paymentService.createPayment({
@@ -74,11 +75,14 @@ export class PaymentController {
         sales_id,
         service_type,
         amount,
-        vat_rate,
+        vat_amount,
+        paid_amount,
+        change_amount,
         discount_amount,
         payment_date,
         payment_method,
-        payment_status,
+        reference_number,
+        payment_type,
       });
       res
         .status(HttpStatus.CREATED.code)
@@ -101,11 +105,14 @@ export class PaymentController {
         sales_id,
         service_type,
         amount,
-        vat,
+        vat_amount,
+        paid_amount,
+        change_amount,
+        reference_number,
         discount_amount,
         payment_date,
         payment_method,
-        payment_status,
+        payment_type,
       } = req.body;
 
       await this.paymentService.updatePayment(
@@ -114,11 +121,14 @@ export class PaymentController {
           sales_id,
           service_type,
           amount,
-          vat,
+          vat_amount,
+          paid_amount,
+          change_amount,
           discount_amount,
           payment_date,
           payment_method,
-          payment_status,
+          reference_number,
+          payment_type,
         },
         Number(payment_id),
       );

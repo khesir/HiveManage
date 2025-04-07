@@ -1,6 +1,6 @@
 import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-import { CreatePayment } from './payment.model';
+import { CreatePayment, UpdatePayment } from './payment.model';
 import { payment } from '@/drizzle/schema/payment/schema/payment.schema';
 import { SchemaType } from '@/drizzle/schema/type';
 import { sales } from '@/drizzle/schema/sales';
@@ -18,7 +18,6 @@ export class PaymentService {
   }
 
   async getAllPayment(
-    payment_status: string | undefined,
     payment_method: string | undefined,
     sort: string,
     limit: number,
@@ -42,32 +41,6 @@ export class PaymentService {
       }
     }
 
-    if (payment_status) {
-      const validStatuses = [
-        'Pending',
-        'Completed',
-        'Failed',
-        'Cancelled',
-        'Refunded',
-        'Partially Refunded',
-        'Overdue',
-        'Processing',
-        'Declined',
-        'Authorized',
-      ] as const;
-      if (
-        validStatuses.includes(payment_status as (typeof validStatuses)[number])
-      ) {
-        conditions.push(
-          eq(
-            payment.payment_status,
-            payment_status as (typeof validStatuses)[number],
-          ),
-        );
-      } else {
-        throw new Error(`Invalid payment status: ${payment_status}`);
-      }
-    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -123,11 +96,8 @@ export class PaymentService {
     return paymentWithDetails;
   }
 
-  async updatePayment(data: object, paramsId: number) {
-    await this.db
-      .update(payment)
-      .set(data)
-      .where(eq(payment.payment_id, paramsId));
+  async updatePayment(data: UpdatePayment, paramsId: number) {
+    console.log(`ParamsID: ${paramsId}`, data);
   }
 
   async deletePayment(paramsId: number): Promise<void> {

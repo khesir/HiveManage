@@ -3,7 +3,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { customer } from '@/drizzle/schema/customer';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateSales } from './sales.model';
-import { sales } from '@/drizzle/schema/sales';
+import { sales, salesItems } from '@/drizzle/schema/sales';
 
 export class SalesService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -13,7 +13,56 @@ export class SalesService {
   }
 
   async createSales(data: CreateSales) {
-    await this.db.insert(sales).values(data);
+    return this.db.transaction(async (tx) => {
+      const validStandings = [
+        'Active',
+        'Inactive',
+        'Pending',
+        'Suspended',
+        'Banned',
+        'VIP',
+        'Delinquent',
+        'Prospect',
+      ] as const;
+      type Standing = (typeof validStandings)[number];
+      const defaultStanding: Standing = 'Active';
+
+      const customer_id =
+        data.customer?.customer_id ??
+        (
+          await tx
+            .insert(customer)
+            .values({
+              ...data.customer,
+              standing: validStandings.includes(
+                data.customer?.standing as Standing,
+              )
+                ? (data.customer?.standing as Standing)
+                : defaultStanding,
+            })
+            .returning({ customer_id: customer.customer_id })
+        )[0].customer_id;
+
+      const [newSales] = await tx
+        .insert(sales)
+        .values({
+          status: data.status,
+          customer_id,
+        })
+        .returning({ sales_id: sales.sales_id });
+
+      for (const item of data.salesItem) {
+        await tx.insert(salesItems).values({
+          sales_id: newSales.sales_id,
+          ...item,
+        });
+      }
+
+      return {
+        sales_id: newSales.sales_id,
+        customer_id,
+      };
+    });
   }
 
   async getAllSales(
@@ -88,7 +137,8 @@ export class SalesService {
   }
 
   async updateSales(data: object, paramsId: number) {
-    await this.db.update(sales).set(data).where(eq(sales.sales_id, paramsId));
+    console.log(paramsId);
+    console.log(data);
   }
 
   async deleteSales(paramsId: number): Promise<void> {

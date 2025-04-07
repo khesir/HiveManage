@@ -10,8 +10,3 @@ export { supplier } from './schema/product/supplier.schema';
 // Orders
 export { order } from './schema/order/order.schema';
 export { orderProduct } from './schema/order/orderItem.schema';
-
-// Discounts
-export { discount } from './schema/discount/discount.schema';
-export { discountCustomer } from './schema/discount/discountCustomer.schema';
-export { discountProducts } from './schema/discount/discountProducts.schema';

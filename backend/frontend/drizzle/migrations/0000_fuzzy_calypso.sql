@@ -23,12 +23,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."discount_type" AS ENUM('Percentage Discount', 'Fixed Amount Discount', 'BOGO (Buy x, Get y Free)', 'Bulk Discount', 'Seasonal Discount', 'Clearance Sale', 'Loyalty Discount', 'First-Time Buyer Discount', 'Referral Discount', 'Birthday Discount', 'Employee Discount', 'Cash Payment', 'Coupon');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."order_status" AS ENUM('Draft', 'Finalized', 'Awaiting Arrival', 'Partially Fulfiled', 'Fulfilled', 'Cancelled');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -95,13 +89,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."payment_status" AS ENUM('Pending', 'Completed', 'Failed', 'Cancelled', 'Refunded', 'Partially Refunded', 'Overdue', 'Processing', 'Declined', 'Authorized');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."service_type" AS ENUM('Borrow', 'Reservation', 'Sales', 'Joborder');
+ CREATE TYPE "public"."payment_type" AS ENUM('Service', 'Sales');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -256,46 +244,6 @@ CREATE TABLE IF NOT EXISTS "category" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "discount" (
-	"discount_id" serial PRIMARY KEY NOT NULL,
-	"discount_name" varchar,
-	"discount_type" "discount_type" NOT NULL,
-	"discoun_value" real,
-	"coupon_code" varchar,
-	"is_single_use" boolean,
-	"max_redemption" integer,
-	"start_date" timestamp,
-	"end_date" timestamp,
-	"is_active" boolean,
-	"min_purchase_amount" real,
-	"max_discount_amount" real,
-	"usage_limit" integer,
-	"time_used" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "discount_c" (
-	"discount_c_id" serial PRIMARY KEY NOT NULL,
-	"customer_id" integer,
-	"customer_group" integer,
-	"discount_id" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "discount_p" (
-	"discount_p_id" serial PRIMARY KEY NOT NULL,
-	"product_id" integer,
-	"discount_id" integer,
-	"categor_id" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "order" (
 	"order_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
@@ -388,15 +336,6 @@ CREATE TABLE IF NOT EXISTS "supplier" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "couponredemptions" (
-	"couponredemptions_id" serial PRIMARY KEY NOT NULL,
-	"customer_id" integer,
-	"discount_id" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product_category" (
 	"p_category_id" serial PRIMARY KEY NOT NULL,
 	"category_id" integer,
@@ -428,24 +367,15 @@ CREATE TABLE IF NOT EXISTS "payment" (
 	"payment_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
 	"sales_id" integer,
-	"service_type" "service_type" NOT NULL,
 	"total_price" real,
-	"vat_rate" real,
-	"discount_id" integer,
+	"paid_amount" real,
+	"change_amount" real,
+	"vat_amount" real,
+	"discount_amount" integer,
 	"payment_date" varchar,
 	"payment_method" "payment_method" NOT NULL,
-	"payment_status" "payment_status" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "receipt" (
-	"receipt_id" serial PRIMARY KEY NOT NULL,
-	"payment_id" integer,
-	"issued_data" varchar,
-	"total_amount" integer,
-	"receipt_dl_link" varchar,
+	"payment_type" "payment_type" NOT NULL,
+	"reference_number" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -670,42 +600,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "discount_c" ADD CONSTRAINT "discount_c_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "discount_c" ADD CONSTRAINT "discount_c_customer_group_customer_group_customer_group_id_fk" FOREIGN KEY ("customer_group") REFERENCES "public"."customer_group"("customer_group_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "discount_c" ADD CONSTRAINT "discount_c_discount_id_discount_discount_id_fk" FOREIGN KEY ("discount_id") REFERENCES "public"."discount"("discount_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "discount_p" ADD CONSTRAINT "discount_p_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "discount_p" ADD CONSTRAINT "discount_p_discount_id_discount_discount_id_fk" FOREIGN KEY ("discount_id") REFERENCES "public"."discount"("discount_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "discount_p" ADD CONSTRAINT "discount_p_categor_id_category_category_id_fk" FOREIGN KEY ("categor_id") REFERENCES "public"."category"("category_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "order" ADD CONSTRAINT "order_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -754,18 +648,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "couponredemptions" ADD CONSTRAINT "couponredemptions_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "couponredemptions" ADD CONSTRAINT "couponredemptions_discount_id_discount_discount_id_fk" FOREIGN KEY ("discount_id") REFERENCES "public"."discount"("discount_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "product_category" ADD CONSTRAINT "product_category_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -809,18 +691,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "payment" ADD CONSTRAINT "payment_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "payment" ADD CONSTRAINT "payment_discount_id_discount_discount_id_fk" FOREIGN KEY ("discount_id") REFERENCES "public"."discount"("discount_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "receipt" ADD CONSTRAINT "receipt_payment_id_payment_payment_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."payment"("payment_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

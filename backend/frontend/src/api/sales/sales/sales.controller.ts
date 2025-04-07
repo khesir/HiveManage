@@ -57,15 +57,19 @@ export class SalesController {
 
   async createSales(req: Request, res: Response, next: NextFunction) {
     try {
-      const { customer_id, status } = req.body;
+      const { status, salesItem, customer, payment } = req.body;
 
-      await this.salesService.createSales({
-        customer_id,
+      const data = await this.salesService.createSales({
         status,
+        salesItem,
+        customer,
+        payment,
       });
-      res
-        .status(HttpStatus.CREATED.code)
-        .json({ status: 'Success', message: 'Successfully Created Sales ' });
+      res.status(HttpStatus.CREATED.code).json({
+        status: 'Success',
+        message: 'Successfully Created Sales ',
+        data: data,
+      });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         status: 'Error ',
@@ -79,10 +83,10 @@ export class SalesController {
   async updateSales(req: Request, res: Response, next: NextFunction) {
     try {
       const { sales_id } = req.params;
-      const { customer_id, status } = req.body;
+      const { customer_id, status, salesItem, customer, payment } = req.body;
 
       await this.salesService.updateSales(
-        { customer_id, status },
+        { customer_id, status, salesItem, customer, payment },
         Number(sales_id),
       );
       res

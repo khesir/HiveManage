@@ -10,41 +10,26 @@ import {
 import { service } from '../../services';
 import { sales } from '../../sales';
 
-export const paymentStatusEnum = pgEnum('payment_status', [
-  'Pending',
-  'Completed',
-  'Failed',
-  'Cancelled',
-  'Refunded',
-  'Partially Refunded',
-  'Overdue',
-  'Processing',
-  'Declined',
-  'Authorized',
-]);
 export const paymentMethodEnum = pgEnum('payment_method', [
   'Cash',
   'Card',
   'Online Payment',
 ]);
-export const serviceType = pgEnum('service_type', [
-  'Borrow',
-  'Reservation',
-  'Sales',
-  'Joborder',
-]);
+export const paymentType = pgEnum('payment_type', ['Service', 'Sales']);
 
 export const payment = pgTable('payment', {
   payment_id: serial('payment_id').primaryKey(),
   service_id: integer('service_id').references(() => service.service_id),
   sales_id: integer('sales_id').references(() => sales.sales_id),
-  service_type: serviceType('service_type').notNull(),
   amount: real('total_price'),
-  vat_rate: real('vat_rate'),
+  paid_amount: real('paid_amount'),
+  change_amount: real('change_amount'),
+  vat_amount: real('vat_amount'),
   discount_amount: integer('discount_amount'),
   payment_date: varchar('payment_date'),
   payment_method: paymentMethodEnum('payment_method').notNull(),
-  payment_status: paymentStatusEnum('payment_status').notNull(),
+  payment_type: paymentType('payment_type').notNull(),
+  reference_number: varchar('reference_number'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()
