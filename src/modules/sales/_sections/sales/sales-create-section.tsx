@@ -26,7 +26,7 @@ export function CreateSalesSection() {
 	const {customer, setCustomer, resetCustomer} = useCustomer();
 	const navigate = useNavigate();
 	const {user} = useEmployeeRoleDetailsStore();
-
+	console.log(salesHookData);
 	const processData = async (payment: Payment) => {
 		setLoading(true);
 		if (!user) {
@@ -40,7 +40,7 @@ export function CreateSalesSection() {
 			payment,
 			user.employee.employee_id,
 		);
-		navigate(`/sales/system/view/${data?.sales_id}`);
+		navigate(`/sales/system/list/view/${data?.sales_id}`);
 		resetCustomer();
 		resetProducts();
 		setLoading(false);

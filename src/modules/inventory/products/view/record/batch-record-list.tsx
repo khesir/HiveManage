@@ -32,7 +32,7 @@ const ActionCell = (data: BatchItem) => {
 					</TooltipContent>
 				</Tooltip>
 			</TooltipProvider>
-			{location.pathname.includes('/sales/overview') && (
+			{location.pathname.includes('/sales/dashboard') && (
 				<TooltipProvider>
 					<Tooltip>
 						<TooltipTrigger>

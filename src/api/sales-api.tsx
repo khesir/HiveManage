@@ -4,12 +4,7 @@ import {ApiRequest, request} from './axios';
 import {Customer} from '@/components/validation/customer';
 import {Payment} from '@/components/validation/payment';
 import {Sales} from '@/components/validation/sales';
-
-type SalesItem = {
-	product_id: number;
-	quantity: number;
-	total_price: number;
-};
+import {SalesItem} from '@/components/hooks/use-sales-hook';
 
 export const CreateSales = async (
 	items: SalesItem[],
@@ -22,10 +17,9 @@ export const CreateSales = async (
 			status: 'Completed',
 			handled_by: employee_id,
 			customer: customer || undefined,
-			salesItem: items,
+			salesItems: items,
 			payment: payment,
 		};
-		console.log(customer);
 		const res = await request<ApiRequest<Sales>>(
 			'POST',
 			`/api/v1/sms/sales`,

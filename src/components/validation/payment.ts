@@ -15,5 +15,8 @@ export const paymentSchema = z.object({
 	}),
 	payment_type: z.enum(['Service', 'Sales'], {message: 'Invalid payment type'}),
 	reference_number: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
 });
 export type Payment = z.infer<typeof paymentSchema>;

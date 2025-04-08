@@ -1,6 +1,6 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import PaymentListSection from '@/modules/payment/section/payment-list';
+import PaymentListSection from '@/modules/payment/_section/payment-section-list';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: '/sales/dashboard'},

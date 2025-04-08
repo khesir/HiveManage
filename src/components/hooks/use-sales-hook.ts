@@ -5,11 +5,12 @@ import {SerializeItem} from '../validation/serialize-items';
 
 type Product = BatchItem | SerializeItem;
 
-interface SalesItem {
+export interface SalesItem {
 	product_id: number;
 	quantity: number;
 	product_record_id: number | undefined;
 	serial_id: number | undefined;
+	sold_price: number;
 	total_price: number;
 	record: Product;
 	data: Product;
@@ -48,6 +49,7 @@ export const useSalesHook = create<SalesHook>((set) => ({
 					product_record_id: undefined,
 					serial_id: record_id,
 					quantity: quantity,
+					sold_price: product.price || 0,
 					total_price: (product.price || 0) * quantity,
 					record: product,
 					data: product,
@@ -63,6 +65,7 @@ export const useSalesHook = create<SalesHook>((set) => ({
 					product_record_id: record_id,
 					serial_id: undefined,
 					quantity: quantity,
+					sold_price: product.price || 0,
 					total_price: (product.price || 0) * quantity,
 					record: product,
 					data: product,
