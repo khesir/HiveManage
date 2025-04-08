@@ -8,6 +8,7 @@ export const CreateSalesItem = z.object({
   serial_id: z.number().min(1),
   quantity: z.number().min(1),
   total_price: z.number().min(1),
+  sold_price: z.number().min(1),
 });
 
 export const UpdateSalesItem = z.object({
@@ -15,6 +16,7 @@ export const UpdateSalesItem = z.object({
   sales_id: z.number().min(1),
   quantity: z.number().min(1),
   total_price: z.number().min(1),
+  sold_price: z.number().min(1),
 });
 
 export type CreateSalesItem = z.infer<typeof CreateSalesItem>;

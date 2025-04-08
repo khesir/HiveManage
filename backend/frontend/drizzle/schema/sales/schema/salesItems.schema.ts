@@ -12,6 +12,7 @@ export const salesItems = pgTable('sales_items', {
   ),
   serial_id: integer('serial_id').references(() => serializeProduct.serial_id),
 
+  sold_price: integer('sold_price'),
   quantity: integer('quantity'),
   total_price: real('total_price'),
   created_at: timestamp('created_at').defaultNow(),

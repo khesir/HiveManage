@@ -48,7 +48,7 @@ export class SalesController {
     try {
       const { sales_id } = req.params;
       const data = await this.salesService.getSalesById(Number(sales_id));
-      res.status(200).json({ message: data });
+      res.status(200).json({ data: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -59,11 +59,11 @@ export class SalesController {
 
   async createSales(req: Request, res: Response, next: NextFunction) {
     try {
-      const { status, salesItem, customer, handled_by, payment } = req.body;
+      const { status, salesItems, customer, handled_by, payment } = req.body;
 
       const data = await this.salesService.createSales({
         status,
-        salesItem,
+        salesItems,
         customer,
         handled_by,
         payment,
@@ -86,10 +86,10 @@ export class SalesController {
   async updateSales(req: Request, res: Response, next: NextFunction) {
     try {
       const { sales_id } = req.params;
-      const { status, salesItem, customer, handled_by, payment } = req.body;
+      const { status, salesItems, customer, handled_by, payment } = req.body;
 
       await this.salesService.updateSales(
-        { status, salesItem, customer, handled_by, payment },
+        { status, salesItems, customer, handled_by, payment },
         Number(sales_id),
       );
       res

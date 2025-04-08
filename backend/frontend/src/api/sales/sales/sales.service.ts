@@ -4,8 +4,9 @@ import { customer } from '@/drizzle/schema/customer';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateSales } from './sales.model';
 import { sales, salesItems } from '@/drizzle/schema/sales';
-import { productRecord, serializeProduct } from '@/drizzle/schema/ims';
+import { product, productRecord, serializeProduct } from '@/drizzle/schema/ims';
 import { employee } from '@/drizzle/schema/ems';
+import { payment } from '@/drizzle/schema/payment';
 
 export class SalesService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -51,21 +52,24 @@ export class SalesService {
           handled_by: data.handled_by,
           customer_id: customer_id,
           total_price: Math.round(
-            data.salesItem.reduce(
+            data.salesItems.reduce(
               (total, item) => total + (item.total_price || 0),
               0,
             ),
           ),
           product_sold: Math.round(
-            data.salesItem.reduce(
+            data.salesItems.reduce(
               (total, item) => total + (item.quantity || 0),
               0,
             ),
           ),
         })
         .returning({ sales_id: sales.sales_id });
-
-      for (const item of data.salesItem) {
+      await tx.insert(payment).values({
+        sales_id: newSales.sales_id,
+        ...data.payment!,
+      });
+      for (const item of data.salesItems) {
         await tx.insert(salesItems).values({
           sales_id: newSales.sales_id,
           ...item,
@@ -160,13 +164,27 @@ export class SalesService {
       .select()
       .from(sales)
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
+      .leftJoin(employee, eq(employee.employee_id, sales.handled_by))
+      .leftJoin(payment, eq(payment.sales_id, sales.sales_id))
       .where(eq(sales.sales_id, Number(sales_id)));
+
+    const items = await this.db
+      .select()
+      .from(salesItems)
+      .leftJoin(product, eq(product.product_id, salesItems.product_id))
+      .where(eq(salesItems.sales_id, sales_id));
 
     const salesWithDetails = result.map((row) => ({
       ...row.sales,
       customer: {
         ...row.customer,
       },
+      employee: row.employee,
+      salesItems: items.map((item) => ({
+        ...item.sales_items,
+        product: item.product,
+      })),
+      payment: row.payment,
     }));
 
     return salesWithDetails;

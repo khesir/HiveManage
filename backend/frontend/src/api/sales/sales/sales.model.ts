@@ -39,6 +39,7 @@ const customerSchema = z.object({
   province: z.string().optional(),
   standing: z.string().optional(),
 });
+
 const salesItemSchema = z.object({
   sales_items_id: z.number().optional(),
 
@@ -49,12 +50,13 @@ const salesItemSchema = z.object({
 
   quantity: z.number().optional(),
   total_price: z.number().optional(),
+  sold_price: z.number().optional(),
 });
 
 export const CreateSales = z.object({
   handled_by: z.number().min(1),
   status: z.enum(['Completed', 'Partially Completed', 'Cancelled']),
-  salesItem: z.array(salesItemSchema).min(1),
+  salesItems: z.array(salesItemSchema).min(1),
   customer: customerSchema.optional(),
   payment: paymentSchema.optional(),
 });
@@ -63,7 +65,7 @@ export const UpdateSales = z.object({
   handled_by: z.number().min(1),
   status: z.enum(['Completed', 'Partially Completed', 'Cancelled']),
 
-  salesItem: z.array(salesItemSchema).min(1),
+  salesItems: z.array(salesItemSchema).min(1),
   customer: customerSchema.optional(),
   payment: paymentSchema.optional(),
 });

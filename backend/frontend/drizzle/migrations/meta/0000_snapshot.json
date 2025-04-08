@@ -1,5 +1,5 @@
 {
-  "id": "dfe1f5c9-eb32-422f-9ca3-89f13ca833cb",
+  "id": "dcf71af1-6a5b-4386-8f54-31eb406412cb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2562,6 +2562,12 @@
         },
         "serial_id": {
           "name": "serial_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_price": {
+          "name": "sold_price",
           "type": "integer",
           "primaryKey": false,
           "notNull": false

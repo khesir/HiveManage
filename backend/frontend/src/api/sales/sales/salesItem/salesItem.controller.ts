@@ -65,6 +65,7 @@ export class SalesItemController {
         product_record_id,
         serial_id,
         total_price,
+        sold_price,
       } = req.body;
 
       await this.salesitemService.createSalesItem({
@@ -74,6 +75,7 @@ export class SalesItemController {
         serial_id,
         quantity,
         total_price,
+        sold_price,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -99,6 +101,7 @@ export class SalesItemController {
         product_record_id,
         serial_id,
         total_price,
+        sold_price,
       } = req.body;
 
       await this.salesitemService.updateSalesItem(
@@ -109,6 +112,7 @@ export class SalesItemController {
           serial_id,
           quantity,
           total_price,
+          sold_price,
         },
         Number(sales_items_id),
       );

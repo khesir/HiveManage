@@ -461,6 +461,7 @@ CREATE TABLE IF NOT EXISTS "sales_items" (
 	"sales_id" integer,
 	"product_record_id" integer,
 	"serial_id" integer,
+	"sold_price" integer,
 	"quantity" integer,
 	"total_price" real,
 	"created_at" timestamp DEFAULT now(),
