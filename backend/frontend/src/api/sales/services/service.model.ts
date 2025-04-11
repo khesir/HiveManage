@@ -6,8 +6,10 @@ export const CreateService = z.object({
   fee: z.number().min(1),
   description: z.string().min(1),
   customer_id: z.number().optional(),
-  service_status: z.enum(['Pending', 'In Progress', 'Complete']),
-  total_price_cost: z.number().optional(),
+  service_status: z.enum(['Cancelled', 'Pending', 'In Progress', 'Complete']),
+  total_cost_price: z.number().optional(),
+
+  user_id: z.number().min(1),
 });
 
 export const UpdateService = z.object({
@@ -16,7 +18,7 @@ export const UpdateService = z.object({
   fee: z.number().min(1),
   description: z.string().min(1),
   customer_id: z.number().optional(),
-  service_status: z.enum(['Pending', 'In Progress', 'Complete']),
+  service_status: z.enum(['Cancelled', 'Pending', 'In Progress', 'Complete']),
   total_price_cost: z.number().optional(),
 });
 

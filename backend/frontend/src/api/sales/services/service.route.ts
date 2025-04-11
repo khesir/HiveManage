@@ -8,7 +8,6 @@ import { CreateService, UpdateService } from './service.model';
 import reportsRoute from './tickets/reports/reports.route';
 import ticketsRoute from './tickets/ticket.route';
 import tickettypesRoute from './ticketType/tickettype.route';
-import servicetypesRoute from './servicetype/servicetype.route';
 import serviceitemsRoute from './serviceitem/serviceitem.route';
 
 const serviceRoute = Router({ mergeParams: true });
@@ -51,19 +50,13 @@ serviceRoute.use(
 serviceRoute.use('/:service_id/tickets', validateServiceID, ticketsRoute);
 
 serviceRoute.use(
-  '/:service_id/tickettype',
+  '/:service_id/ticket-type',
   validateServiceID,
   tickettypesRoute,
 );
 
 serviceRoute.use(
-  '/:service_id/serviceType',
-  validateServiceID,
-  servicetypesRoute,
-);
-
-serviceRoute.use(
-  '/:service_id/serviceitem',
+  '/:service_id/service-item',
   validateServiceID,
   serviceitemsRoute,
 );

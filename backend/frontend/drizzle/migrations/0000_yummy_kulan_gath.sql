@@ -101,7 +101,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."remarktickets_status" AS ENUM('In Progress', 'Pending', 'Complete');
+ CREATE TYPE "public"."remarktickets_status" AS ENUM('Cancelled', 'In Progress', 'Pending', 'Complete');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -474,7 +474,7 @@ CREATE TABLE IF NOT EXISTS "assigned_employees" (
 	"service_id" integer,
 	"employee_id" integer,
 	"is_leader" boolean,
-	"assigned_by" varchar(255),
+	"assigned_by" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -857,6 +857,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "assigned_employees" ADD CONSTRAINT "assigned_employees_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "assigned_employees" ADD CONSTRAINT "assigned_employees_assigned_by_employee_employee_id_fk" FOREIGN KEY ("assigned_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

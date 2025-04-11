@@ -5,7 +5,6 @@ import {
   pgTable,
   serial,
   timestamp,
-  varchar,
 } from 'drizzle-orm/pg-core';
 import { service } from './service';
 
@@ -14,7 +13,7 @@ export const assignedEmployees = pgTable('assigned_employees', {
   service_id: integer('service_id').references(() => service.service_id),
   employee_id: integer('employee_id').references(() => employee.employee_id),
   is_leader: boolean('is_leader'),
-  assigned_by: varchar('assigned_by', { length: 255 }),
+  assigned_by: integer('assigned_by').references(() => employee.employee_id),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

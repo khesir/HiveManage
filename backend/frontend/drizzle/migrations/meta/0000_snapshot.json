@@ -1,5 +1,5 @@
 {
-  "id": "dcf71af1-6a5b-4386-8f54-31eb406412cb",
+  "id": "e1f04901-b5eb-441c-98ae-90a687f9ee1c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2693,7 +2693,7 @@
         },
         "assigned_by": {
           "name": "assigned_by",
-          "type": "varchar(255)",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -2739,6 +2739,19 @@
           "tableTo": "employee",
           "columnsFrom": [
             "employee_id"
+          ],
+          "columnsTo": [
+            "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "assigned_employees_assigned_by_employee_employee_id_fk": {
+          "name": "assigned_employees_assigned_by_employee_employee_id_fk",
+          "tableFrom": "assigned_employees",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "assigned_by"
           ],
           "columnsTo": [
             "employee_id"
@@ -3453,6 +3466,7 @@
       "name": "remarktickets_status",
       "schema": "public",
       "values": [
+        "Cancelled",
         "In Progress",
         "Pending",
         "Complete"

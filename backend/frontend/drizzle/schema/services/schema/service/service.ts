@@ -10,6 +10,7 @@ import { customer } from '@/drizzle/schema/customer/schema/customer.schema';
 import { service_Type } from './serviceType';
 
 export const service_status = pgEnum('remarktickets_status', [
+  'Cancelled',
   'In Progress',
   'Pending',
   'Complete',

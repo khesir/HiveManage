@@ -793,97 +793,6 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
 //  =======================================================================================
 // ==================================== SERVICES ======================================
 
-async function seedAssignedEmployees(db: PostgresJsDatabase<SchemaType>) {
-  const serviceIDs = await db.select().from(service);
-  const employees = await db.select().from(employee);
-
-  const assignedEmployeesRecords = [
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'John Doe',
-      is_leader: true,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Jane Smith',
-      is_leader: false,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Alice Johnson',
-      is_leader: true,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Michael Brown',
-      is_leader: false,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Emily Davis',
-      is_leader: true,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Rey Larombe',
-      is_leader: false,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Aj Tollo',
-      is_leader: false,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Catto Akii',
-      is_leader: true,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Shaheen Adlawin',
-      is_leader: false,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      employee_id: faker.helpers.arrayElement(employees).employee_id,
-      assigned_by: 'Rhyss Jimenez',
-      is_leader: true,
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
-
-  await db.insert(assignedEmployees).values(assignedEmployeesRecords);
-  log.info('Assigned Employees seeded successfully');
-}
-
 async function seedTickets(db: PostgresJsDatabase<SchemaType>) {
   const serviceIDs = await db.select().from(service);
   const tickettypeIDs = await db.select().from(ticketType);
@@ -1342,75 +1251,6 @@ async function seedServiceItems(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(serviceItems).values(serviceitemRecords);
 
   log.info('Service Items records seeded successfully');
-}
-
-async function seedServiceType(db: PostgresJsDatabase<SchemaType>) {
-  const servicetypeRecords = [
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      name: faker.lorem.word(),
-      description: faker.lorem.paragraph(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
-
-  await db.insert(service_Type).values(servicetypeRecords);
-
-  log.info('Service Type records seeded successfully');
 }
 
 //  =======================================================================================
@@ -2210,6 +2050,31 @@ async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(serializeProduct).values(serializedproductsRecords);
   log.info('Serialized Products records seeded successfully');
 }
+async function seedServiceType(db: PostgresJsDatabase<SchemaType>) {
+  const typesRecords = [
+    {
+      name: 'Joborder',
+      description:
+        'A service request for performing repairs, maintenance, or construction tasks.',
+    },
+    {
+      name: 'Borrow',
+      description:
+        'A service for temporarily borrowing items such as tools, equipment, or assets.',
+    },
+    {
+      name: 'Reserve',
+      description:
+        'A service to reserve items, rooms, or equipment for future use.',
+    },
+    {
+      name: 'Maintenance',
+      description:
+        'Scheduled or unscheduled maintenance services to ensure optimal performance of assets.',
+    },
+  ];
+  await db.insert(service_Type).values(typesRecords);
+}
 
 async function main() {
   try {
@@ -2233,7 +2098,7 @@ async function main() {
     await seedOrder(db);
     await seedOrderItems(db);
     await seedSerializedItems(db);
-
+    await seedServiceType(db);
     // Participants
     await seedCustomerGroup(db);
     await seedCustomer(db);
