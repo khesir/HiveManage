@@ -14,8 +14,9 @@ import {Customer} from '@/components/validation/customer';
 interface Props {
 	data: Customer;
 	onClick: () => void;
+	children?: React.ReactNode;
 }
-export function SalesCustomerProfile({data, onClick}: Props) {
+export function SalesCustomerProfile({data, onClick, children}: Props) {
 	return (
 		<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
 			<CardHeader className="flex flex-row items-start bg-muted/50">
@@ -59,11 +60,12 @@ export function SalesCustomerProfile({data, onClick}: Props) {
 					</ul>
 				</div>
 			</CardContent>
-			<CardFooter>
+			<CardFooter className="flex flex-col gap-3">
 				<Button
 					size="sm"
 					variant="outline"
 					className="h-10 w-full gap-1"
+					type="button"
 					onClick={() => onClick()}
 				>
 					<ArrowBigLeft className="h-3.5 w-3.5" />
@@ -71,6 +73,7 @@ export function SalesCustomerProfile({data, onClick}: Props) {
 						Change
 					</span>
 				</Button>
+				{children && children}
 			</CardFooter>
 		</Card>
 	);

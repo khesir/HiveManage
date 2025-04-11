@@ -1,6 +1,5 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import ViewTask from '@/modules/joborder/_sections/task/view-task';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'sales/dashboard'},
@@ -15,7 +14,6 @@ export default function ReadTask() {
 	return (
 		<ContentLayout title="PC BEE Management Systems">
 			<Breadcrumbs items={breadcrubItems} />
-			<ViewTask />
 		</ContentLayout>
 	);
 }

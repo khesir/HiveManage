@@ -16,13 +16,14 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import {Customer} from '@/lib/cms-zod-schema';
+import {Customer} from '@/components/validation/customer';
 import {useEffect, useState} from 'react';
 
 interface Props {
 	processCreate: (data: Customer) => void;
+	showTitle?: boolean;
 }
-export function SearchCustomer({processCreate}: Props) {
+export function SearchCustomer({processCreate, showTitle = true}: Props) {
 	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +48,7 @@ export function SearchCustomer({processCreate}: Props) {
 
 	return (
 		<div className="flex flex-col gap-2">
-			<h1 className="font-semibold">Search Customer</h1>
+			{showTitle && <h1 className="font-semibold">Search Customer</h1>}
 			{/* ShadCN Command Component for displaying search results */}
 			<Command>
 				<CommandInput placeholder="Search for a customer..." />

@@ -26,10 +26,18 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Payment} from '@/components/validation/payment';
-import usePaymentFormStore from '../_component/use-payments-hook';
+import {Service} from '@/components/validation/service';
+import {Input} from '@/components/ui/input';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {Separator} from '@/components/ui/separator';
+import {Badge} from '@/components/ui/badge';
+import useServiceFormStore from './_components/use-service-hook';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -39,12 +47,14 @@ interface DataTableProps<TData, TValue> {
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
+	searchKey: string;
 }
 
-export function PaymentTable<TData extends Payment, TValue>({
+export function ServiceTable<TData extends Service, TValue>({
 	columns,
 	data,
 	pageCount,
+	searchKey,
 	pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
@@ -108,69 +118,125 @@ export function PaymentTable<TData extends Payment, TValue>({
 		manualPagination: true,
 		manualFiltering: true,
 	});
+	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
+	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
 
-	// Debounced search value to avoid triggering requests too frequently
-	// const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-	// console.log(debouncedSearchValue);
-	// useEffect(() => {
-	// 	const handler = setTimeout(() => {
-	// 		setDebouncedSearchValue(searchValue);
-	// 	}, 500); // Adjust debounce delay as needed
-	// 	return () => clearTimeout(handler);
-	// }, [searchValue]);
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			setDebouncedSearchValue(searchValue);
+		}, 500); // Adjust debounce delay as needed
+		return () => clearTimeout(handler);
+	}, [searchValue]);
 
 	// // Update the URL with the search query when the searchValue changes
-	// useEffect(() => {
-	// 	if (debouncedSearchValue?.length > 0) {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null, // Reset page when searching
-	// 				limit: pageSize,
-	// 				fullname: debouncedSearchValue, // Add search param to URL
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	} else {
-	// 		navigate(
-	// 			`${location.pathname}?${createQueryString({
-	// 				page: null,
-	// 				limit: pageSize,
-	// 				fullname: null, // Remove search param from URL if empty
-	// 			})}`,
-	// 			{replace: true},
-	// 		);
-	// 	}
+	useEffect(() => {
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1,
+				limit: pageSize,
+				uuid: debouncedSearchValue || null,
+			})}`,
+			{replace: true},
+		);
 
-	// 	// Reset pagination to first page on search change
-	// 	setPagination((prev) => ({...prev, pageIndex: 0}));
-	// }, [
-	// 	debouncedSearchValue,
-	// 	pageSize,
-	// 	navigate,
-	// 	location.pathname,
-	// 	createQueryString,
-	// ]);
+		// Reset pagination to first page on search change
+		if (debouncedSearchValue) {
+			setPagination((prev) => ({...prev, pageIndex: 0}));
+		}
+	}, [
+		debouncedSearchValue,
+		pageSize,
+		pageIndex, // Add pageIndex here
+		navigate,
+		location.pathname,
+		createQueryString,
+	]);
 
 	// Set the first employee data to Zustand on initial render
 	useEffect(() => {
 		if (data.length > 0) {
-			const payment: Payment = data[0];
-			usePaymentFormStore.getState().setPaymentFormData(payment);
+			const payment: Service = data[0];
+			useServiceFormStore.getState().setServiceFormData(payment);
 		}
 	}, [data]);
 
 	// This handles the employee viewing by click
 	const handleRowClick = (row: Row<TData>) => {
 		// Access the data of the clicked row
-		const rowData: Payment = row.original;
+		const rowData: Service = row.original;
 
 		// Do something with the row data
-		usePaymentFormStore.getState().setPaymentFormData(rowData);
+		useServiceFormStore.getState().setServiceFormData(rowData);
+	};
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
+		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
+	);
+	const handleSortOrderChange = (order: 'asc' | 'desc') => {
+		if (sortOrder === order) return;
+
+		setSortOrder(order);
+		navigate(
+			`${location.pathname}?${createQueryString({
+				page: pageIndex + 1,
+				limit: pageSize,
+				sort: order,
+			})}`,
+			{replace: true},
+		);
 	};
 
 	return (
 		<>
-			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
+			<div className="flex justify-between items-center">
+				<div className="flex gap-10 items-center">
+					<h1 className="text-2xl font-bold tracking-tight">Service List</h1>
+					<div className="flex gap-1">
+						<Input
+							placeholder={`Find Customer...`}
+							value={searchValue ?? ''} // Bind the input value to the current filter value
+							onChange={(event) =>
+								table.getColumn(searchKey)?.setFilterValue(event.target.value)
+							} // Update filter value}
+							className="w-[30vh] "
+						/>
+						<DropdownMenu>
+							<DropdownMenuTrigger>
+								<Button variant={'outline'}>
+									Sort:{' '}
+									<div className="flex items-center">
+										<Separator orientation="vertical" className="mx-2 h-4" />
+										<Badge
+											variant={'secondary'}
+											className="rounded-sm px-1 font-normal"
+										>
+											{sortOrder === 'asc' ? 'Asc' : 'Desc'}
+										</Badge>
+									</div>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className="flex flex-col">
+								<Button
+									variant={sortOrder === 'asc' ? 'default' : 'ghost'}
+									onClick={() => handleSortOrderChange('asc')}
+								>
+									Ascending
+								</Button>
+								<Button
+									variant={sortOrder === 'desc' ? 'default' : 'ghost'}
+									onClick={() => handleSortOrderChange('desc')}
+								>
+									Descending
+								</Button>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				</div>
+				<Button onClick={() => navigate('create')}>
+					<Plus className="mr-2 h-4 w-4" />
+					Create Service
+				</Button>
+			</div>
+			<ScrollArea className="h-[calc(90vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (

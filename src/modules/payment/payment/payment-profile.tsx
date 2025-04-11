@@ -5,7 +5,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import {Separator} from '@/components/ui/separator';
 import {dateParser} from '@/lib/util/utils';
 import usePaymentFormStore from '../_component/use-payments-hook';
 
@@ -59,7 +58,6 @@ export function PaymentProfile() {
 						</li>
 					</ul>
 				</div>
-				<Separator className="my-4" />
 			</CardContent>
 		</Card>
 	);

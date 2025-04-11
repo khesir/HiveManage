@@ -1,4 +1,4 @@
-import {Customer} from '@/lib/cms-zod-schema';
+import {Customer} from '@/components/validation/customer';
 
 export const CreateCustomer = async (data: Customer) => {
 	// Don't use try catch here

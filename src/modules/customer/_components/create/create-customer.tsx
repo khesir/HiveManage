@@ -25,7 +25,6 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
-import {Customer, customerSchema} from '@/lib/cms-zod-schema';
 import {cn} from '@/lib/util/utils';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
@@ -34,6 +33,7 @@ import {useFieldArray, useForm} from 'react-hook-form';
 import {toast} from 'sonner';
 import {CreateCustomer} from '../../../../api/customer-api';
 import {useNavigate} from 'react-router-dom';
+import {Customer, customerSchema} from '@/components/validation/customer';
 
 interface CreateCustomerFormProps {
 	processCreate?: (data: Customer) => void;

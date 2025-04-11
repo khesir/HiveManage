@@ -19,14 +19,8 @@ import {CreateSalesPage} from './pages/sales/systems/sales/sales-create-page';
 import ViewServicePage from './pages/sales/systems/service/view-service-page';
 import CustomerCreatePage from './pages/customer/customer-create-page';
 import CustomerViewPage from './pages/customer/customer-view-page';
-import TechOverview from './pages/tech/systems/overview/overview-page';
 import Settings from './pages/general/settings';
 import Terminal from './pages/general/terminal';
-import JoborderListsPage from './pages/tech/systems/service/joborder-page';
-import JoborderViewPage from './pages/tech/systems/service/view/view-page';
-import ReadTask from './pages/sales/systems/service/tickets/task-detail';
-import TicketsPage from './pages/tech/systems/service/task-page';
-import ReportsPage from './pages/tech/systems/service/reports-page';
 import RequireAuth from './modules/authentication/auth-layout';
 import Unauthorized from './pages/_auth/unauthorized';
 import EmployeePage from './pages/admin/systems/ems/employee-page';
@@ -42,6 +36,7 @@ import ViewOrderPage from './pages/inventory/order/order-view-page';
 import SalesViewPage from './pages/sales/systems/sales/sales-view-page';
 import PaymentListPage from './pages/payment/system/payment-list-page';
 import ServiceListPage from './pages/sales/systems/service/service-list-page';
+import CreateServicePage from './pages/sales/systems/service/create-service-page';
 
 function App() {
 	return (
@@ -124,24 +119,7 @@ function App() {
 						<Route path="terminal" element={<Terminal />} />
 
 						{/* Systems */}
-						<Route path="services">
-							<Route path="overview" element={<TechOverview />} />
-							{/* Joborder */}
-							<Route path="joborders">
-								<Route index element={<JoborderListsPage />} />
-								<Route path="view/:id" element={<JoborderViewPage />} />
-								{/* Tickets */}
-								<Route path="tasks">
-									<Route index element={<TicketsPage />} />
-									<Route path="view/:task_id" element={<ReadTask />} />
-								</Route>
-								{/* Report route */}
-								<Route path="reports">
-									<Route index element={<ReportsPage />} />
-									<Route path="view/:report_id" />
-								</Route>
-							</Route>
-						</Route>
+						<Route path="services"></Route>
 
 						<Route path="customer">
 							<Route index element={<CustomerDatabasePage />} />
@@ -199,46 +177,46 @@ function App() {
 							<Route path="list/view/:id" element={<SalesViewPage />} />
 							<Route path="services" element={<ServiceListPage />} />
 							<Route path="services/view/:id" element={<ViewServicePage />} />
-							<Route path="services/create" />
+							<Route path="services/create" element={<CreateServicePage />} />
 							<Route path="payment" element={<PaymentListPage />} />
-						</Route>
 
-						{/* Customer */}
-						<Route path="customer" element={<CustomerDatabasePage />} />
-						<Route path="customer/view/:id" element={<CustomerViewPage />} />
-						<Route path="customer/create" element={<CustomerCreatePage />} />
+							{/* Customer */}
+							<Route path="customer" element={<CustomerDatabasePage />} />
+							<Route path="customer/view/:id" element={<CustomerViewPage />} />
+							<Route path="customer/create" element={<CustomerCreatePage />} />
 
-						{/* Inventory */}
-						<Route path="inventory">
-							<Route path="products">
-								<Route index element={<ProductPage />} />
-								<Route path="create" element={<CreateProductPage />} />
-								<Route path="view/:id">
-									<Route index element={<InventoryViewPage />} />
-									<Route
-										path="create"
-										element={<InventoryRecordCreatePage />}
-									/>
+							{/* Inventory */}
+							<Route path="inventory">
+								<Route path="products">
+									<Route index element={<ProductPage />} />
+									<Route path="create" element={<CreateProductPage />} />
+									<Route path="view/:id">
+										<Route index element={<InventoryViewPage />} />
+										<Route
+											path="create"
+											element={<InventoryRecordCreatePage />}
+										/>
 
-									<Route path="orders">
-										<Route index element={<OrderPage />} />
-										<Route path="create" element={<CreateOrderPage />} />
-										<Route path="view/:id" />
+										<Route path="orders">
+											<Route index element={<OrderPage />} />
+											<Route path="create" element={<CreateOrderPage />} />
+											<Route path="view/:id" />
+										</Route>
 									</Route>
 								</Route>
-							</Route>
-							<Route path="orders">
-								<Route index element={<OrderPage />} />
-								<Route path="create" element={<CreateOrderPage />} />
-								<Route path="view/:id" element={<ViewOrderPage />} />
-								<Route
-									path="view/product/:id"
-									element={<InventoryViewPage />}
-								/>
-							</Route>
-							<Route path="suppliers">
-								<Route index element={<SupplierPage />} />
-								<Route path="view/:id" />
+								<Route path="orders">
+									<Route index element={<OrderPage />} />
+									<Route path="create" element={<CreateOrderPage />} />
+									<Route path="view/:id" element={<ViewOrderPage />} />
+									<Route
+										path="view/product/:id"
+										element={<InventoryViewPage />}
+									/>
+								</Route>
+								<Route path="suppliers">
+									<Route index element={<SupplierPage />} />
+									<Route path="view/:id" />
+								</Route>
 							</Route>
 						</Route>
 					</Route>
