@@ -47,7 +47,7 @@ serviceRoute.use(
   assignedEmployeeRoute,
 );
 
-serviceRoute.use('/:service_id/tickets', validateServiceID, ticketsRoute);
+serviceRoute.use('/:service_id/ticket', validateServiceID, ticketsRoute);
 
 serviceRoute.use(
   '/:service_id/ticket-type',

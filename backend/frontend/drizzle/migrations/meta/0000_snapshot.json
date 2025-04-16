@@ -1,5 +1,5 @@
 {
-  "id": "e1f04901-b5eb-441c-98ae-90a687f9ee1c",
+  "id": "1cf29602-6aea-458c-91b0-316c87ceade7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2691,12 +2691,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "assigned_by": {
-          "name": "assigned_by",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -2745,16 +2739,97 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.assigned_ticket": {
+      "name": "assigned_ticket",
+      "schema": "",
+      "columns": {
+        "assigned_ticket_id": {
+          "name": "assigned_ticket_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
-        "assigned_employees_assigned_by_employee_employee_id_fk": {
-          "name": "assigned_employees_assigned_by_employee_employee_id_fk",
-          "tableFrom": "assigned_employees",
+        "ticket_id": {
+          "name": "ticket_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "employee_id": {
+          "name": "employee_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "service_id": {
+          "name": "service_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "assigned_ticket_ticket_id_tickets_ticket_id_fk": {
+          "name": "assigned_ticket_ticket_id_tickets_ticket_id_fk",
+          "tableFrom": "assigned_ticket",
+          "tableTo": "tickets",
+          "columnsFrom": [
+            "ticket_id"
+          ],
+          "columnsTo": [
+            "ticket_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "assigned_ticket_employee_id_employee_employee_id_fk": {
+          "name": "assigned_ticket_employee_id_employee_employee_id_fk",
+          "tableFrom": "assigned_ticket",
           "tableTo": "employee",
           "columnsFrom": [
-            "assigned_by"
+            "employee_id"
           ],
           "columnsTo": [
             "employee_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "assigned_ticket_service_id_service_service_id_fk": {
+          "name": "assigned_ticket_service_id_service_service_id_fk",
+          "tableFrom": "assigned_ticket",
+          "tableTo": "service",
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "service_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2873,7 +2948,7 @@
         },
         "service_status": {
           "name": "service_status",
-          "type": "remarktickets_status",
+          "type": "service_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -3462,8 +3537,8 @@
         "Pending"
       ]
     },
-    "public.remarktickets_status": {
-      "name": "remarktickets_status",
+    "public.service_status": {
+      "name": "service_status",
       "schema": "public",
       "values": [
         "Cancelled",
@@ -3476,9 +3551,16 @@
       "name": "tickets_status",
       "schema": "public",
       "values": [
-        "Resolved",
         "Pending",
-        "Removed"
+        "In Review",
+        "Approved",
+        "Rejected",
+        "Assigned",
+        "In Progress",
+        "On Hold",
+        "Completed",
+        "Cancelled",
+        "Closed"
       ]
     }
   },

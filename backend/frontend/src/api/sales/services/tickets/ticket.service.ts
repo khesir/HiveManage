@@ -1,9 +1,11 @@
-import { and, eq, isNull, sql, asc, desc } from 'drizzle-orm';
+import { and, eq, isNull, sql, asc, desc, inArray } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateTickets } from './ticket.model';
 import { tickets } from '@/drizzle/schema/services/schema/service/tickets';
-import { service, ticketType } from '@/drizzle/schema/services';
+import { assignedTicket, service, ticketType } from '@/drizzle/schema/services';
+import { serviceLog } from '@/drizzle/schema/records/schema/serviceLog';
+import { employee } from '@/drizzle/schema/ems';
 
 export class TicketsService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -13,7 +15,33 @@ export class TicketsService {
   }
 
   async createTickets(data: CreateTickets) {
-    await this.db.insert(tickets).values(data);
+    await this.db.transaction(async (tx) => {
+      const [newTicket] = await tx
+        .insert(tickets)
+        .values({ ...data })
+        .returning({ ticket_id: tickets.ticket_id });
+
+      await tx.insert(serviceLog).values({
+        service_id: data.service_id,
+        ticket_id: newTicket.ticket_id,
+        action: `User ID: ${data.user_id} created new ticket`,
+        performed_by: data.user_id,
+      });
+
+      for (const employee of data.employees) {
+        await tx.insert(assignedTicket).values({
+          ticket_id: newTicket.ticket_id,
+          employee_id: employee,
+          service_id: data.service_id,
+        });
+        await tx.insert(serviceLog).values({
+          service_id: data.service_id,
+          ticket_id: newTicket.ticket_id,
+          action: `User ID: ${employee} has assigned employee to the ticket ID${newTicket.ticket_id}`,
+          performed_by: data.user_id,
+        });
+      }
+    });
   }
 
   async getAllTickets(
@@ -27,8 +55,18 @@ export class TicketsService {
     const conditions = [isNull(tickets.deleted_at)];
 
     if (ticket_status) {
-      // Define valid statuses as a string union type
-      const validStatuses = ['Removed', 'Resolved', 'Pending'] as const; // 'as const' infers a readonly tuple of strings
+      const validStatuses = [
+        'Pending',
+        'In Review',
+        'Approved',
+        'Rejected',
+        'Assigned',
+        'In Progress',
+        'On Hold',
+        'Completed',
+        'Cancelled',
+        'Closed',
+      ] as const;
       if (
         validStatuses.includes(ticket_status as (typeof validStatuses)[number])
       ) {
@@ -62,7 +100,6 @@ export class TicketsService {
         ticketType,
         eq(ticketType.ticket_type_id, tickets.ticket_type_id),
       )
-      .leftJoin(service, eq(service.service_id, tickets.service_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(tickets.created_at) : desc(tickets.created_at),
@@ -74,38 +111,12 @@ export class TicketsService {
     }
 
     const result = await query;
-
+    const ticketIds = result.map((s) => s.tickets.ticket_id);
+    const assignedByTicket = await this.getAssignedTicketByTicketIDs(ticketIds);
     const ticketitemWithDetails = result.map((row) => ({
-      ticket_id: row.tickets.ticket_id,
-      ticketType: {
-        ticket_type_id: row.ticketType?.ticket_type_id,
-        name: row.ticketType?.name,
-        description: row.ticketType?.description,
-        created_at: row.ticketType?.created_at,
-        last_updated: row.ticketType?.last_updated,
-        deleted_at: row.ticketType?.deleted_at,
-      },
-      service: {
-        service_id: row.service?.service_id,
-        service_type_id: row.service?.service_type_id,
-        description: row.service?.description,
-        uuid: row.service?.uuid,
-        fee: row.service?.fee,
-        customer_id: row.service?.customer_id,
-        service_status: row.service?.service_status,
-        total_cost_price: row.service?.total_cost_price,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
-      },
-      title: row.tickets.title,
-      description: row.tickets?.description,
-      content: row.tickets?.content,
-      ticket_status: row.tickets?.ticket_status,
-      deadline: row.tickets?.deadline,
-      created_at: row.tickets?.created_at,
-      last_updated: row.tickets?.last_updated,
-      deleted_at: row.tickets?.deleted_at,
+      ...row.tickets,
+      ticket_type: row.ticketType,
+      assigned: assignedByTicket.get(row.tickets.ticket_id),
     }));
 
     return { totalData, ticketitemWithDetails };
@@ -170,5 +181,29 @@ export class TicketsService {
       .update(tickets)
       .set({ deleted_at: new Date(Date.now()) })
       .where(eq(tickets.ticket_id, paramsId));
+  }
+
+  private async getAssignedTicketByTicketIDs(
+    ticketIDs: number[],
+  ): Promise<Map<number, unknown[]>> {
+    const result = await this.db
+      .select()
+      .from(assignedTicket)
+      .leftJoin(employee, eq(employee.employee_id, assignedTicket.employee_id))
+      .where(inArray(assignedTicket.ticket_id, ticketIDs));
+
+    const assignedTicketByTicketID = new Map<number, unknown[]>();
+
+    result.forEach((record) => {
+      const ticketID = record.assigned_ticket.ticket_id!;
+      if (!assignedTicketByTicketID.has(ticketID)) {
+        assignedTicketByTicketID.set(ticketID, []);
+      }
+      assignedTicketByTicketID.get(ticketID)!.push({
+        ...record.assigned_ticket,
+        employee: record.employee,
+      });
+    });
+    return assignedTicketByTicketID;
   }
 }

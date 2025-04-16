@@ -10,6 +10,7 @@ import {
 } from '@/drizzle/schema/services';
 import { customer } from '@/drizzle/schema/customer';
 import { employee } from '@/drizzle/schema/ems';
+import { payment } from '@/drizzle/schema/payment';
 
 export class ServicesService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -30,7 +31,6 @@ export class ServicesService {
           service_id: newService.service_id,
           employee_id: data.user_id,
           is_leader: true,
-          assigned_by: data.user_id,
         });
       }
     });
@@ -65,6 +65,7 @@ export class ServicesService {
         eq(service_Type.service_type_id, service.service_type_id),
       )
       .leftJoin(customer, eq(customer.customer_id, service.customer_id))
+      .leftJoin(payment, eq(payment.service_id, service.service_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(service.created_at) : desc(service.created_at),
@@ -85,6 +86,7 @@ export class ServicesService {
       customer: row.customer,
       service_type: row.service_Type,
       assigned: assignedByService.get(row.service.service_id),
+      payment: row.payment,
     }));
 
     return { totalData, serviceWithDetails };
@@ -98,27 +100,20 @@ export class ServicesService {
         service_Type,
         eq(service_Type.service_type_id, service.service_type_id),
       )
+      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
+      .leftJoin(payment, eq(payment.service_id, service.service_id))
       .where(eq(service.service_id, Number(service_id)));
 
+    const assignedByService = await this.getAssignedEmployeeByServiceIDs([
+      service_id,
+    ]);
+
     const serviceWithDetails = result.map((row) => ({
-      service_id: row.service.service_id,
-      service_Type: {
-        service_type: row.service_Type?.service_type_id,
-        name: row.service_Type?.name,
-        description: row.service_Type?.description,
-        created_at: row.service_Type?.created_at,
-        last_updated: row.service_Type?.last_updated,
-        deleted_at: row.service_Type?.deleted_at,
-      },
-      uuid: row.service?.uuid,
-      description: row.service?.description,
-      fee: row.service?.fee,
-      customer_id: row.service?.customer_id,
-      service_status: row.service?.service_status,
-      total_cost_price: row.service?.total_cost_price,
-      created_at: row.service?.created_at,
-      last_updated: row.service?.last_updated,
-      deleted_at: row.service?.deleted_at,
+      ...row.service,
+      customer: row.customer,
+      service_type: row.service_Type,
+      assigned: assignedByService.get(row.service.service_id),
+      payment: row.payment,
     }));
 
     return serviceWithDetails;

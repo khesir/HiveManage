@@ -101,13 +101,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."remarktickets_status" AS ENUM('Cancelled', 'In Progress', 'Pending', 'Complete');
+ CREATE TYPE "public"."service_status" AS ENUM('Cancelled', 'In Progress', 'Pending', 'Complete');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."tickets_status" AS ENUM('Resolved', 'Pending', 'Removed');
+ CREATE TYPE "public"."tickets_status" AS ENUM('Pending', 'In Review', 'Approved', 'Rejected', 'Assigned', 'In Progress', 'On Hold', 'Completed', 'Cancelled', 'Closed');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -474,7 +474,16 @@ CREATE TABLE IF NOT EXISTS "assigned_employees" (
 	"service_id" integer,
 	"employee_id" integer,
 	"is_leader" boolean,
-	"assigned_by" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "assigned_ticket" (
+	"assigned_ticket_id" serial PRIMARY KEY NOT NULL,
+	"ticket_id" integer,
+	"employee_id" integer,
+	"service_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -497,7 +506,7 @@ CREATE TABLE IF NOT EXISTS "service" (
 	"description" varchar(255),
 	"fee" integer,
 	"customer_id" integer,
-	"service_status" "remarktickets_status" NOT NULL,
+	"service_status" "service_status" NOT NULL,
 	"total_cost_price" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -862,7 +871,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "assigned_employees" ADD CONSTRAINT "assigned_employees_assigned_by_employee_employee_id_fk" FOREIGN KEY ("assigned_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "assigned_ticket" ADD CONSTRAINT "assigned_ticket_ticket_id_tickets_ticket_id_fk" FOREIGN KEY ("ticket_id") REFERENCES "public"."tickets"("ticket_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "assigned_ticket" ADD CONSTRAINT "assigned_ticket_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "assigned_ticket" ADD CONSTRAINT "assigned_ticket_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

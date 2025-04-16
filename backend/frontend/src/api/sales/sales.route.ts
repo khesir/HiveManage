@@ -10,9 +10,6 @@ import servicetypesRoute from './services/servicetype/servicetype.route';
 const smsRoute = Router({ mergeParams: true });
 
 // Business_logic
-smsRoute.use('/tickettype', tickettypesRoute);
-log.info('ROUTE remarktype set');
-
 smsRoute.use('/tickets', ticketsRoute);
 
 smsRoute.use('/assigned-employee', assignedEmployeeRoute);
@@ -25,6 +22,10 @@ smsRoute.use('/service', serviceRoute);
 log.info('ROUTE services set');
 
 smsRoute.use('/service-type', servicetypesRoute);
+log.info('ROUTE service-type set');
+
+smsRoute.use('/ticket-type', tickettypesRoute);
+log.info('ROUTE ticket-type set');
 
 // Purpose: for table
 export default smsRoute;

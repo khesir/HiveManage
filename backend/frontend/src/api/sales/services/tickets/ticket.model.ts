@@ -6,8 +6,21 @@ export const CreateTickets = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   content: z.string().optional(),
-  ticket_status: z.enum(['Resolved', 'Pending', 'Removed']),
+  ticket_status: z.enum([
+    'Pending',
+    'In Review',
+    'Approved',
+    'Rejected',
+    'Assigned',
+    'In Progress',
+    'On Hold',
+    'Completed',
+    'Cancelled',
+    'Closed',
+  ]),
   deadline: z.string().optional(),
+  employees: z.array(z.number()).min(1),
+  user_id: z.number().min(1),
 });
 
 export const UpdateTickets = z.object({
@@ -16,8 +29,20 @@ export const UpdateTickets = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   content: z.string().optional(),
-  ticket_status: z.enum(['Resolved', 'Pending', 'Removed']),
+  ticket_status: z.enum([
+    'Pending',
+    'In Review',
+    'Approved',
+    'Rejected',
+    'Assigned',
+    'In Progress',
+    'On Hold',
+    'Completed',
+    'Cancelled',
+    'Closed',
+  ]),
   deadline: z.string().optional(),
+  user_id: z.number().min(1),
 });
 
 export type CreateTickets = z.infer<typeof CreateTickets>;

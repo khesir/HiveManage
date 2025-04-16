@@ -67,6 +67,8 @@ export class TicketsController {
         content,
         ticket_status,
         deadline,
+        employees,
+        user_id,
       } = req.body;
 
       await this.ticketService.createTickets({
@@ -77,6 +79,8 @@ export class TicketsController {
         content,
         ticket_status,
         deadline,
+        employees,
+        user_id,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -104,6 +108,7 @@ export class TicketsController {
         content,
         remarktickets_status,
         deadline,
+        user_id,
       } = req.body;
 
       await this.ticketService.updateTickets(
@@ -115,6 +120,7 @@ export class TicketsController {
           content,
           remarktickets_status,
           deadline,
+          user_id,
         },
         Number(ticket_id),
       );

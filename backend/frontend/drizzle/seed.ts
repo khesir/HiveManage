@@ -793,202 +793,52 @@ async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
 //  =======================================================================================
 // ==================================== SERVICES ======================================
 
-async function seedTickets(db: PostgresJsDatabase<SchemaType>) {
-  const serviceIDs = await db.select().from(service);
-  const tickettypeIDs = await db.select().from(ticketType);
-
-  const tickets_status: ('Resolved' | 'Removed' | 'Pending')[] = [
-    'Resolved',
-    'Pending',
-    'Removed',
-  ];
-
-  const ticketsRecords = [
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Quality Issue on Job #123',
-      content: faker.lorem.paragraph(),
-      description: 'There was a quality issue with the materials used.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Delayed Delivery for Job #456',
-      content: faker.lorem.paragraph(),
-      description: 'The delivery is delayed due to supplier issues.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Customer Complaint on Job #789',
-      content: faker.lorem.paragraph(),
-      description: 'The customer reported issues with the service provided.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Job Completed for Job #321',
-      content: faker.lorem.paragraph(),
-      description: 'The job was completed successfully and closed.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Urgent Issue with Job #654',
-      content: faker.lorem.paragraph(),
-      description: 'An urgent issue has arisen that needs immediate attention.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Follow-Up Needed for Job #888',
-      content: faker.lorem.paragraph(),
-      description:
-        'A follow-up is required for additional details on Job #888.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Payment Dispute for Job #234',
-      content: faker.lorem.paragraph(),
-      description:
-        'There is a dispute regarding the payment for Job #234 that needs resolution.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Quality Feedback for Job #567',
-      content: faker.lorem.paragraph(),
-      description: 'Feedback from the quality assurance team on Job #567.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Client Request for Job #876',
-      content: faker.lorem.paragraph(),
-      description: 'The client has made a special request regarding Job #876.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Follow-Up on Warranty for Job #345',
-      content: faker.lorem.paragraph(),
-      description:
-        'A follow-up is required regarding the warranty for Job #345.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      ticket_type_id: faker.helpers.arrayElement(tickettypeIDs).ticket_type_id,
-      title: 'Issue with Job #135',
-      content: faker.lorem.paragraph(),
-      description:
-        'There is a technical issue with Job #135 that requires urgent attention.',
-      ticket_status: faker.helpers.arrayElement(tickets_status),
-      deadline: faker.date.future().toISOString(),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
-
-  await db.insert(tickets).values(ticketsRecords);
-  log.info('Tickets seeded successfully');
-}
-
 async function seedTicketType(db: PostgresJsDatabase<SchemaType>) {
   const tickettypeRecords = [
     {
-      name: 'Product Quality Issue',
+      name: 'Job Order',
       description:
-        'Remarks related to product quality concerns, including defects and damages.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+        'Request for a service or task to be completed, such as repairs or installations.',
     },
     {
-      name: 'Customer Service Feedback',
-      description:
-        'Comments and feedback regarding customer service experiences.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      name: 'Borrow Request',
+      description: 'Request to temporarily borrow items or equipment.',
     },
     {
-      name: 'Shipping Delay',
-      description: 'Remarks concerning delays in shipping and delivery times.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      name: 'Reservation',
+      description: 'Booking a service, room, or equipment for future use.',
     },
     {
-      name: 'Order Inaccuracy',
-      description:
-        'Issues reported when an order does not match what was received.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      name: 'Repair Request',
+      description: 'Request to fix broken or malfunctioning items.',
     },
     {
-      name: 'Return Process Feedback',
+      name: 'Maintenance Request',
       description:
-        'Feedback regarding the return process and related customer experiences.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+        'Scheduled or emergency maintenance of equipment or facilities.',
     },
     {
-      name: 'Missing Items',
-      description:
-        'Remarks about items that were expected but not included in the order.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+      name: 'Delivery Request',
+      description: 'Request to deliver documents, packages, or other items.',
     },
     {
-      name: 'Product Recommendation',
+      name: 'Pickup Request',
+      description: 'Request to pick up items from a location.',
+    },
+    {
+      name: 'Installation Request',
       description:
-        'Remarks regarding suggestions for product improvements or alternatives.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
+        'Task request to set up or install a device, system, or software.',
+    },
+    {
+      name: 'Cancellation Request',
+      description:
+        'Action to cancel a previously scheduled service or reservation.',
     },
   ];
 
   await db.insert(ticketType).values(tickettypeRecords);
-  log.info('Ticket types seeded successfully.');
+  log.info('Actionable ticket types seeded successfully.');
 }
 
 async function seedService(db: PostgresJsDatabase<SchemaType>) {
@@ -2098,6 +1948,8 @@ async function main() {
     await seedOrder(db);
     await seedOrderItems(db);
     await seedSerializedItems(db);
+
+    await seedTicketType(db);
     await seedServiceType(db);
     // Participants
     await seedCustomerGroup(db);

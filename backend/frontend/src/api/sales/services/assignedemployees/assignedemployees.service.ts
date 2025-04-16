@@ -38,35 +38,13 @@ export class AssignedEmployeeService {
       .where(and(...conditions));
 
     const assignedEmployeeDetails = result.map((row) => ({
-      assigned_employee_id: row.assigned_employees.assigned_employee_id,
+      ...row.assigned_employees,
       service: {
-        service_id: row.service?.service_id,
-        service_type_id: row.service?.service_type_id,
-        uuid: row.service?.uuid,
-        description: row.service?.description,
-        fee: row.service?.fee,
-        customer_id: row.service?.customer_id,
-        service_status: row.service?.service_status,
-        total_cost_price: row.service?.total_cost_price,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
+        ...row.service,
       },
       employee: {
-        employee_id: row.employee?.employee_id,
-        firstname: row.employee?.firstname,
-        middlename: row.employee?.middlename,
-        lastname: row.employee?.lastname,
-        email: row.employee?.email,
-        profile_link: row.employee?.profile_link,
-        created_at: row.employee?.created_at,
-        last_updated: row.employee?.last_updated,
-        deleted_at: row.employee?.deleted_at,
+        ...row.employee,
       },
-      assigned_by: row.assigned_employees.assigned_by,
-      created_at: row.assigned_employees.created_at,
-      last_updated: row.assigned_employees.last_updated,
-      deleted_at: row.assigned_employees.deleted_at,
     }));
 
     return assignedEmployeeDetails;
@@ -89,35 +67,13 @@ export class AssignedEmployeeService {
       );
 
     const assignedEmployeeDetails = result.map((row) => ({
-      assigned_employee_id: row.assigned_employees.assigned_employee_id,
+      ...row.assigned_employees,
       service: {
-        service_id: row.service?.service_id,
-        service_type_id: row.service?.service_type_id,
-        uuid: row.service?.uuid,
-        description: row.service?.description,
-        fee: row.service?.fee,
-        customer_id: row.service?.customer_id,
-        service_status: row.service?.service_status,
-        total_cost_price: row.service?.total_cost_price,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
+        ...row.service,
       },
       employee: {
-        employee_id: row.employee?.employee_id,
-        firstname: row.employee?.firstname,
-        middlename: row.employee?.middlename,
-        lastname: row.employee?.lastname,
-        email: row.employee?.email,
-        profile_link: row.employee?.profile_link,
-        created_at: row.employee?.created_at,
-        last_updated: row.employee?.last_updated,
-        deleted_at: row.employee?.deleted_at,
+        ...row.employee,
       },
-      assigned_by: row.assigned_employees.assigned_by,
-      created_at: row.assigned_employees.created_at,
-      last_updated: row.assigned_employees.last_updated,
-      deleted_at: row.assigned_employees.deleted_at,
     }));
 
     return assignedEmployeeDetails;

@@ -10,9 +10,16 @@ import { ticketType } from './ticketType';
 import { service } from './service';
 
 export const tickets_status = pgEnum('tickets_status', [
-  'Resolved',
   'Pending',
-  'Removed',
+  'In Review',
+  'Approved',
+  'Rejected',
+  'Assigned',
+  'In Progress',
+  'On Hold',
+  'Completed',
+  'Cancelled',
+  'Closed',
 ]);
 
 export const tickets = pgTable('tickets', {
