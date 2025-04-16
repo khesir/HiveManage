@@ -65,13 +65,7 @@ export function ProductProfile() {
 						className="h-8 gap-1"
 						onClick={() => {
 							const id = Number(data.product_id);
-							if (location.pathname.startsWith('/sales')) {
-								navigate(`/sales/inventory/products/view/${id}`);
-							} else if (location.pathname.startsWith('/admin')) {
-								navigate(`/admin/inventory/products/view/${id}`);
-							} else if (location.pathname.startsWith('/tech')) {
-								navigate(`/tech/inventory/products/view/${id}`);
-							}
+							navigate(`view/${id}`);
 						}}
 					>
 						<File className="h-3.5 w-3.5" />

@@ -1,4 +1,3 @@
-import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {SalesInfoCard} from './card/sales-info-card';
 import {useEffect, useState} from 'react';
 import {ApiRequest, request} from '@/api/axios';
@@ -32,33 +31,23 @@ export function SalesTab() {
 		};
 		fetchProducts();
 	}, [id]);
-	console.log(sales);
 	return (
-		<Tabs defaultValue="Informations">
-			<div className="flex items-center">
-				<TabsList>
-					<TabsTrigger value="Informations">Informations</TabsTrigger>
-				</TabsList>
+		<div className="flex flex-col sm:gap-4">
+			<div className="pt-4 px-4 sm:px-6 space-y-2">
+				<Heading
+					title={'Sales Details'}
+					description={'Overall data for sales and sold items'}
+				/>
+				<Separator />
 			</div>
-			<TabsContent value="Informations">
-				<div className="flex flex-col sm:gap-4">
-					<div className="pt-4 px-4 sm:px-6 space-y-2">
-						<Heading
-							title={'Sales Details'}
-							description={'Overall data for sales and sold items'}
-						/>
-						<Separator />
-					</div>
-					<div className="grid flex-1 items-start gap-4 pt-0 p-4 sm:px-6 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-						<div className="flex flex-col gap-4">
-							{sales ? <SalesInfoCard data={sales} /> : <div>skeleton</div>}
-						</div>
-						<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
-							<SalesTableList salesItems={sales?.salesItems ?? []} />
-						</div>
-					</div>
+			<div className="grid flex-1 items-start gap-4 pt-0 p-4 sm:px-6 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+				<div className="flex flex-col gap-4">
+					{sales ? <SalesInfoCard data={sales} /> : <div>skeleton</div>}
 				</div>
-			</TabsContent>
-		</Tabs>
+				<div className="grid items-start auto-rows-max gap-4 gap md:gap-6 lg:col-span-2">
+					<SalesTableList salesItems={sales?.salesItems ?? []} />
+				</div>
+			</div>
+		</div>
 	);
 }

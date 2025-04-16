@@ -3,17 +3,14 @@ import {useStore} from '@/components/appLayout/hooks/use-store';
 import {useSidebarToggle} from '@/components/appLayout/hooks/use-sidebar-toggle';
 import {Outlet, useLocation} from 'react-router-dom';
 import {Sidebar} from './components/sidebar';
-import {
-	getAdminMenuList,
-	getDefaultMenuList,
-	getSalesMenuList,
-	getTechMenuList,
-} from './data/menu-list';
 import {SheetMenu} from './components/sheet-menu';
 import {ModeToggle} from './providers/mode-toggle';
 import {UserNav} from './components/user-nav';
 import useHeaderTitle from './hooks/use-head-title';
 import {Toaster} from '../ui/sonner';
+import {getAdminMenuList, getDefaultMenuList} from './data/menu-admin';
+import {getSalesMenuList} from './data/menu-sales';
+import {getTechMenuList} from './data/menu-tech';
 
 export default function MainLayout({userType}: {userType: string}) {
 	const sidebar = useStore(useSidebarToggle, (state) => state);

@@ -12,7 +12,7 @@ import {
 	TooltipProvider,
 } from '@/components/ui/tooltip';
 import {Link} from 'react-router-dom';
-import {Group} from '@/components/appLayout/data/menu-list';
+import {Group} from '@/components/appLayout/data/menu-admin';
 import {CollapseMenuButton} from './collapse-menu-button';
 interface MenuProps {
 	isOpen: boolean | undefined;

@@ -11,7 +11,7 @@ import {File} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-import { Separator } from '@/components/ui/separator';
+import {Separator} from '@/components/ui/separator';
 
 export function ServiceProfile() {
 	const {data} = useServiceFormStore();

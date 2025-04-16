@@ -20,7 +20,6 @@ import ViewServicePage from './pages/sales/systems/service/view-service-page';
 import CustomerCreatePage from './pages/customer/customer-create-page';
 import CustomerViewPage from './pages/customer/customer-view-page';
 import Settings from './pages/general/settings';
-import Terminal from './pages/general/terminal';
 import RequireAuth from './modules/authentication/auth-layout';
 import Unauthorized from './pages/_auth/unauthorized';
 import EmployeePage from './pages/admin/systems/ems/employee-page';
@@ -37,6 +36,7 @@ import SalesViewPage from './pages/sales/systems/sales/sales-view-page';
 import PaymentListPage from './pages/payment/system/payment-list-page';
 import ServiceListPage from './pages/sales/systems/service/service-list-page';
 import CreateServicePage from './pages/sales/systems/service/create-service-page';
+import CreateTaskPage from './pages/sales/systems/service/tickets/task-create';
 
 function App() {
 	return (
@@ -51,104 +51,65 @@ function App() {
 					<Route element={<RequireAuth allowedRoles={['Admin']} />}>
 						<Route path="dashboard" element={<DashboardPage />} />
 						<Route path="settings" element={<Settings />} />
-						{/* <Route path="terminal" element={<Terminal />} /> */}
-
-						<Route path="ems">
-							<Route path="employees">
+						<Route path="system">
+							<Route path="employee">
 								<Route index element={<EmployeePage />} />
 								<Route path="create" element={<EmployeeCreatePage />} />
 								<Route path="update" element={<EmployeeUpdatePage />} />
 								<Route path="view/:id" element={<EmployeeViewPage />} />
 							</Route>
-						</Route>
 
-						{/* Customer */}
-						<Route path="customer" element={<CustomerDatabasePage />} />
-						<Route path="customer/view/:id" element={<CustomerViewPage />} />
-						<Route path="customer/create" element={<CustomerCreatePage />} />
-
-						<Route path="sales/system">
-							<Route path="create" element={<CreateSalesPage />} />
-							<Route path="list" element={<SalesListPage />} />
-							<Route path="services" element={<ServiceListPage />} />
-							<Route path="services/view/:id" element={<ViewServicePage />} />
-							<Route path="services/create" />
-							<Route path="payment" />
-						</Route>
-
-						<Route path="inventory">
-							<Route path="products">
-								<Route index element={<ProductPage />} />
-								<Route path="create" element={<CreateProductPage />} />
-								<Route path="view/:id">
-									<Route index element={<InventoryViewPage />} />
+							{/* Sales */}
+							<Route path="sales">
+								<Route path="create" element={<CreateSalesPage />} />
+								<Route path="list" element={<SalesListPage />} />
+								<Route path="list/view/:id" element={<SalesViewPage />} />
+								<Route path="services">
+									<Route index element={<ServiceListPage />} />
+									<Route path="create" element={<CreateServicePage />} />
+									<Route path="view/:id" element={<ViewServicePage />} />
+									{/* Ticket */}
 									<Route
-										path="create"
-										element={<InventoryRecordCreatePage />}
+										path="view/:id/ticket"
+										element={<CreateServicePage />}
 									/>
-
-									<Route path="orders">
-										<Route index element={<OrderPage />} />
-										<Route path="create" element={<CreateOrderPage />} />
-										<Route path="view/:id" />
-									</Route>
+									<Route
+										path="view/:id/ticket/create"
+										element={<CreateTaskPage />}
+									/>
 								</Route>
 							</Route>
-							<Route path="orders">
-								<Route index element={<OrderPage />} />
-								<Route path="create" element={<CreateOrderPage />} />
-								<Route path="view/:id" element={<ViewOrderPage />} />
-								<Route
-									path="view/product/:id"
-									element={<InventoryViewPage />}
-								/>
+
+							<Route path="payments" element={<PaymentListPage />} />
+
+							<Route path="customer">
+								<Route index element={<CustomerDatabasePage />} />
+								<Route path="view/:id" element={<CustomerViewPage />} />
+								<Route path="create" element={<CustomerCreatePage />} />
 							</Route>
-							<Route path="suppliers">
-								<Route index element={<SupplierPage />} />
-								<Route path="view/:id" />
-							</Route>
-						</Route>
-					</Route>
-				</Route>
 
-				{/* Technical Layout */}
-				<Route path="tech" element={<MainLayout userType={'tech'} />}>
-					<Route element={<RequireAuth allowedRoles={['Technician']} />}>
-						<Route path="dashboard" element={<DashboardPage />} />
-						<Route path="settings" element={<Settings />} />
-						<Route path="terminal" element={<Terminal />} />
+							<Route path="inventory">
+								<Route path="products">
+									<Route index element={<ProductPage />} />
+									<Route path="create" element={<CreateProductPage />} />
+									<Route path="view/:id">
+										<Route index element={<InventoryViewPage />} />
+										<Route
+											path="create"
+											element={<InventoryRecordCreatePage />}
+										/>
 
-						{/* Systems */}
-						<Route path="services"></Route>
-
-						<Route path="customer">
-							<Route index element={<CustomerDatabasePage />} />
-							<Route path="view/:customer_id" element={<CustomerViewPage />} />
-							<Route path="create" element={<CustomerCreatePage />} />
-						</Route>
-
-						<Route path="inventory">
-							<Route path="products">
-								<Route index element={<ProductPage />} />
-								<Route path="create" element={<CreateProductPage />} />
-								<Route path="view/:id">
-									<Route index element={<InventoryViewPage />} />
-									<Route
-										path="create"
-										element={<InventoryRecordCreatePage />}
-									/>
-
-									<Route path="orders">
-										<Route index element={<OrderPage />} />
-										<Route path="create" element={<CreateOrderPage />} />
-										<Route path="view/:id" />
+										<Route path="orders">
+											<Route index element={<OrderPage />} />
+											<Route path="create" element={<CreateOrderPage />} />
+											<Route path="view/:id" />
+										</Route>
 									</Route>
 								</Route>
-
 								<Route path="orders">
 									<Route index element={<OrderPage />} />
 									<Route path="create" element={<CreateOrderPage />} />
-									<Route path="view/:id" />
+									<Route path="view/:id" element={<ViewOrderPage />} />
 									<Route
 										path="view/product/:id"
 										element={<InventoryViewPage />}
@@ -163,29 +124,108 @@ function App() {
 					</Route>
 				</Route>
 
-				{/* Sales Layout */}
+				<Route path="tech" element={<MainLayout userType={'tech'} />}>
+					<Route element={<RequireAuth allowedRoles={['Technician']} />}>
+						<Route path="dashboard" element={<DashboardPage />} />
+						<Route path="settings" element={<Settings />} />
+						<Route path="system">
+							{/* Sales */}
+							<Route path="sales">
+								<Route path="create" element={<CreateSalesPage />} />
+								<Route path="list" element={<SalesListPage />} />
+								<Route path="list/view/:id" element={<SalesViewPage />} />
+							</Route>
+							<Route path="services">
+								<Route index element={<ServiceListPage />} />
+								<Route path="view/:id" element={<ViewServicePage />} />
+								<Route path="create" element={<CreateServicePage />} />
+								{/* Ticket */}
+								<Route
+									path="view/:id/tickets"
+									element={<CreateServicePage />}
+								/>
+								<Route
+									path="view/:id/tickets/create"
+									element={<CreateServicePage />}
+								/>
+							</Route>
+
+							<Route path="payment" element={<PaymentListPage />} />
+
+							<Route path="customer">
+								<Route index element={<CustomerDatabasePage />} />
+								<Route path="view/:id" element={<CustomerViewPage />} />
+								<Route path="create" element={<CustomerCreatePage />} />
+							</Route>
+
+							<Route path="inventory">
+								<Route path="products">
+									<Route index element={<ProductPage />} />
+									<Route path="create" element={<CreateProductPage />} />
+									<Route path="view/:id">
+										<Route index element={<InventoryViewPage />} />
+										<Route
+											path="create"
+											element={<InventoryRecordCreatePage />}
+										/>
+
+										<Route path="orders">
+											<Route index element={<OrderPage />} />
+											<Route path="create" element={<CreateOrderPage />} />
+											<Route path="view/:id" />
+										</Route>
+									</Route>
+								</Route>
+								<Route path="orders">
+									<Route index element={<OrderPage />} />
+									<Route path="create" element={<CreateOrderPage />} />
+									<Route path="view/:id" element={<ViewOrderPage />} />
+									<Route
+										path="view/product/:id"
+										element={<InventoryViewPage />}
+									/>
+								</Route>
+								<Route path="suppliers">
+									<Route index element={<SupplierPage />} />
+									<Route path="view/:id" />
+								</Route>
+							</Route>
+						</Route>
+					</Route>
+				</Route>
+
 				<Route path="sales" element={<MainLayout userType={'sales'} />}>
 					<Route element={<RequireAuth allowedRoles={['Sales']} />}>
 						<Route path="dashboard" element={<SalesPosPage />} />
 						<Route path="settings" element={<Settings />} />
 
-						{/* Systems */}
-						{/* Sales list */}
 						<Route path="system">
-							<Route path="create" element={<CreateSalesPage />} />
-							<Route path="list" element={<SalesListPage />} />
-							<Route path="list/view/:id" element={<SalesViewPage />} />
-							<Route path="services" element={<ServiceListPage />} />
-							<Route path="services/view/:id" element={<ViewServicePage />} />
-							<Route path="services/create" element={<CreateServicePage />} />
+							{/* Sales */}
+							<Route path="sales">
+								<Route path="create" element={<CreateSalesPage />} />
+								<Route path="list" element={<SalesListPage />} />
+								<Route path="list/view/:id" element={<SalesViewPage />} />
+							</Route>
+							<Route path="services">
+								<Route index element={<ServiceListPage />} />
+								<Route path="view/:id" element={<ViewServicePage />} />
+								<Route path="create" element={<CreateServicePage />} />
+								{/* Ticket */}
+								<Route path="view/:id/ticket" />
+								<Route
+									path="view/:id/ticket/create"
+									element={<CreateTaskPage />}
+								/>
+							</Route>
+
 							<Route path="payment" element={<PaymentListPage />} />
 
-							{/* Customer */}
-							<Route path="customer" element={<CustomerDatabasePage />} />
-							<Route path="customer/view/:id" element={<CustomerViewPage />} />
-							<Route path="customer/create" element={<CustomerCreatePage />} />
+							<Route path="customer">
+								<Route index element={<CustomerDatabasePage />} />
+								<Route path="view/:id" element={<CustomerViewPage />} />
+								<Route path="create" element={<CustomerCreatePage />} />
+							</Route>
 
-							{/* Inventory */}
 							<Route path="inventory">
 								<Route path="products">
 									<Route index element={<ProductPage />} />

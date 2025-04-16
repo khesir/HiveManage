@@ -5,7 +5,7 @@ import {useSidebarToggle} from '@/components/appLayout/hooks/use-sidebar-toggle'
 import {Link} from 'react-router-dom';
 import {SidebarToggle} from './sidebar-toggle';
 import {Menu} from './menu';
-import {Group} from '../data/menu-list';
+import {Group} from '../data/menu-admin';
 
 interface SidebarProps {
 	menuList: Group[];

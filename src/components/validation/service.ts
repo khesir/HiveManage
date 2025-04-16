@@ -81,6 +81,7 @@ export const serviceSchema = z.object({
 	service_type: serviceTypeSchema.optional(),
 	assigned: z.array(assignedEmployeeSchema).optional(),
 	payment: paymentSchema.optional(),
+
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),
