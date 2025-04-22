@@ -3,14 +3,14 @@ services:
     container_name: frontend
     build: ./
     ports:
-      - "5174:5174"
+      - "4173:4173"
     networks:
       - sad-app
       - supabase_network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`sad.khesir.com`)"  # Route backend traffic to `/api`
-      - "traefik.http.services.backend.loadbalancer.server.port=5174"  # Forward to internal port 3000
+      - "traefik.http.services.backend.loadbalancer.server.port=4173"  # Forward to internal port 3000
 
 networks:
   sad-app:

@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm run web-build
 
-EXPOSE 5174
+EXPOSE 4173
 
 CMD ["npm", "run", "serve"]
