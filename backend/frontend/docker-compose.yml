@@ -26,6 +26,7 @@ services:
       - "5000:5000"
     networks:
       - sad-app
+      - supabase_network
     environment:
       DATABASE_URL: ${DATABASE_URL}
       SUPABASE_URL: ${SUPABASE_URL}
@@ -38,10 +39,10 @@ services:
       - "traefik.http.routers.backend.rule=Host(`sadapi.khesir.com`) && PathPrefix(`/api`)"  # Route backend traffic to `/api`
       - "traefik.http.services.backend.loadbalancer.server.port=5000"  # Forward to internal port 3000
 
-
-
 networks:
   sad-app:
     driver: bridge
-      
+  supabase_network:
+    external: true
+    name: supabase_network_Backend-Enterprise-Management-System
       
