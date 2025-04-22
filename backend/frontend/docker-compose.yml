@@ -35,7 +35,7 @@ services:
       NODE_ENV: ${NODE_ENV}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`sadapi.khesir.com`)"  # Route backend traffic to `/api`
+      - "traefik.http.routers.backend.rule=Host(`sadapi.khesir.com`) && PathPrefix(`/api`)"  # Route backend traffic to `/api`
       - "traefik.http.services.backend.loadbalancer.server.port=5000"  # Forward to internal port 3000
 
 
