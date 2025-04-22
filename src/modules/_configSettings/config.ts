@@ -8,7 +8,8 @@ class ConfigManager {
 	private baseURL: string;
 	private joborder_fee: number;
 	constructor() {
-		this.baseURL = 'http://localhost:5000';
+		// this.baseURL = 'http://localhost:5000';
+		this.baseURL = 'http://sadapi.khesir.com/';
 		this.joborder_fee = 100;
 	}
 
