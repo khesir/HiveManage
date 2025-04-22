@@ -15,6 +15,7 @@ services:
 networks:
   sad-app:
     external: true
+    name: sad-app
   supabase_network:
     external: true
     name: supabase_network_Backend-Enterprise-Management-System
