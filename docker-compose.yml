@@ -5,16 +5,16 @@ services:
     ports:
       - "4173:4173"
     networks:
-      - sad-app
+      - sad_network
       - supabase_network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`sad.khesir.com`)"  # Route backend traffic to `/api`
-      - "traefik.http.services.frontend.loadbalancer.server.port=4173"  # Forward to internal port 3000
+      - "traefik.http.routers.frontend.rule=Host(`sad.khesir.com`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=4173"
 
 networks:
   sad-app:
-    driver: bridge
+    external: true
   supabase_network:
     external: true
     name: supabase_network_Backend-Enterprise-Management-System
