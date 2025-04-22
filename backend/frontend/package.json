@@ -18,7 +18,6 @@
     "db:migrate": "npx drizzle-kit migrate",
     "db:studio": "npx drizzle-kit studio",
     "db:seed": "tsx ./drizzle/seed.ts",
-    "prepare": "husky install && npx lint-staged",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""

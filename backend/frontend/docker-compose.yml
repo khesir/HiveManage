@@ -1,25 +1,22 @@
 services:
-  mysqldb:
-    image: mysql:8.0
-    container_name: mysqlcontainer
-    command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    volumes:
-      - /var/lib/mysql
+  backend:
+    container_name: backend
+    build: ./
     ports:
-        - 3306:3306
-    environment:
-      MYSQL_DATABASE: pcbeedb
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: 1234
-      MYSQL_ROOT_PASSWORD: 1234 
-      SERVICE_TAGS: dev
-      SERVICE_name: mysqldb
+      - "5000:5000"
     networks:
-      - internalnet
+      - sad-app
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+      PROFILE_BUCKET: ${PROFILE_BUCKET}
+      SERVER_PORT: ${SERVER_PORT}
+      NODE_ENV: ${NODE_ENV}
+
 
 networks:
-  internalnet:
+  sad-app:
     driver: bridge
       
       
