@@ -119,7 +119,7 @@ export const orderProductSchema = z.object({
 	delivered_quantity: z.number().optional(),
 	unit_price: z.string().min(1),
 	is_serialize: z.boolean().optional(),
-	status: z.string().optional(),
+	status: z.string().min(1),
 
 	order: orderSchema.optional(),
 	product: productSchema.optional(),

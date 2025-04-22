@@ -1,6 +1,5 @@
 import {
 	Users,
-	Settings,
 	LayoutGrid,
 	LucideIcon,
 	LayoutPanelLeft,
@@ -75,24 +74,24 @@ export function getTechMenuList(pathname: string): Group[] {
 				},
 			],
 		},
-		{
-			groupLabel: 'Settings',
-			menus: [
-				// {
-				// 	href: '/tech/terminal',
-				// 	label: 'Terminal',
-				// 	active: pathname.includes('/terminal'),
-				// 	icon: Terminal,
-				// 	submenus: [],
-				// },
-				{
-					href: '/tech/settings',
-					label: 'Settings',
-					active: pathname.includes('/settings'),
-					icon: Settings,
-					submenus: [],
-				},
-			],
-		},
+		// {
+		// 	groupLabel: 'Settings',
+		// 	menus: [
+		// 		// {
+		// 		// 	href: '/tech/terminal',
+		// 		// 	label: 'Terminal',
+		// 		// 	active: pathname.includes('/terminal'),
+		// 		// 	icon: Terminal,
+		// 		// 	submenus: [],
+		// 		// },
+		// 		{
+		// 			href: '/tech/settings',
+		// 			label: 'Settings',
+		// 			active: pathname.includes('/settings'),
+		// 			icon: Settings,
+		// 			submenus: [],
+		// 		},
+		// 	],
+		// },
 	];
 }

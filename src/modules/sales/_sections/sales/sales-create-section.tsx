@@ -9,7 +9,6 @@ import {useState} from 'react';
 import {Card} from '@/components/ui/card';
 import {Payment} from '@/components/validation/payment';
 import {useNavigate} from 'react-router-dom';
-import useCustomer from '@/components/hooks/use-sales-customer-hook';
 import {CreateSales} from '@/api/sales-api';
 import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {toast} from 'sonner';
@@ -19,6 +18,7 @@ import {CreateCustomerForm} from '@/modules/customer/_components/create/create-c
 import {SearchCustomer} from '../../dashboard/customer/search-customer';
 import {SelectedSaleReviewItems} from '../../dashboard/selected-sale-review-items';
 import {Customer} from '@/components/validation/customer';
+import useCustomer from '@/components/hooks/use-sales-customer';
 
 export function CreateSalesSection() {
 	const [loading, setLoading] = useState<boolean>(false);
@@ -39,7 +39,7 @@ export function CreateSalesSection() {
 			payment,
 			user.employee.employee_id,
 		);
-		navigate(`/sales/system/list/view/${data?.sales_id}`);
+		navigate(`/sales/system/sales/list/view/${data?.sales_id}`);
 		resetCustomer();
 		resetProducts();
 		setLoading(false);

@@ -26,19 +26,10 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Input} from '@/components/ui/input';
 import useSales from '../_components/hooks/use-sales';
-import {Category} from '../../../components/validation/category';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Separator} from '@/components/ui/separator';
-import {Badge} from '@/components/ui/badge';
-import { Sales } from '@/components/validation/sales';
+import {Sales} from '@/components/validation/sales';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -149,7 +140,6 @@ export function SalesTable<TData extends Sales, TValue>({
 			})}`,
 			{replace: true},
 		);
-
 	}, [
 		pageSize,
 		pageIndex, // Add pageIndex here
@@ -187,52 +177,9 @@ export function SalesTable<TData extends Sales, TValue>({
 	// const resetFilter = () => {
 	// 	setSelectedValues(new Set());
 	// };
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
-		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
-	);
-	const handleSortOrderChange = (order: 'asc' | 'desc') => {
-		if (sortOrder === order) return;
-
-		setSortOrder(order);
-		navigate(
-			`${location.pathname}?${createQueryString({
-				page: pageIndex + 1,
-				limit: pageSize,
-				status: categoryFilter,
-				sort: order,
-			})}`,
-			{replace: true},
-		);
-	};
-
-	// Category Filter
-	const [categoryFilter, setCategoryFilter] = useState<number | null>(
-		Number(searchParams.get('category_id')),
-	);
-	const handleCategoryFilterChange = (category_id: number | null) => {
-		if (category_id === categoryFilter) return;
-
-		const newCategory = category_id === null ? null : category_id;
-		setCategoryFilter(newCategory);
-
-		// Reset to the first page on filter change and update the URL
-		navigate(
-			`${location.pathname}?${createQueryString({
-				page: 1,
-				limit: pageSize,
-				sort: sortOrder,
-				category_id: newCategory,
-			})}`,
-			{replace: true},
-		);
-
-		setPagination((prev) => ({...prev, pageIndex: 0}));
-	};
 	return (
 		<>
-			<div className="flex justify-between gap-3 md:gap-0">
-
-			</div>
+			<div className="flex justify-between gap-3 md:gap-0"></div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>

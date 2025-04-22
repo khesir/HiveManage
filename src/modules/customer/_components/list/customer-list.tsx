@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react';
 import {columns} from './columns';
 import {PaginationResponse, request} from '@/api/axios';
-import {Customer} from '@/lib/cms-zod-schema';
 import {CustomerTable} from './customer-table';
+import {Customer} from '@/components/validation/customer';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;

@@ -40,7 +40,7 @@ export function SelectedSaleItems() {
 				<Button
 					className="flex flex-auto"
 					disabled={salesHookData.length <= 0}
-					onClick={() => navigate('/sales/system/create')}
+					onClick={() => navigate('/sales/system/sales/create')}
 				>
 					Confirm
 				</Button>

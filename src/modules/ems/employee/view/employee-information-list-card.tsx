@@ -2,20 +2,15 @@ import {Card} from '@/components/ui/card';
 import {useEmployeeStore} from '../../_components/hooks/use-employee-story';
 import {Button} from '@/components/ui/button';
 import {Moon, Sun} from 'lucide-react';
-import {EmployeeRecentActivity} from './employee-recent-activity';
 import {EmployeInforTabs} from './info-card/employee-tabs';
 import {useEffect, useState} from 'react';
-import {useParams, useSearchParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {EmployeeRolesWithDetails} from '../../_components/validation/employeeRoles';
 import {PaginationResponse, request} from '@/api/axios';
-import ServiceList from '@/modules/sales/sales/sales-list';
-import {Separator} from '@/components/ui/separator';
-import {JoborderList} from '@/modules/joborder/joborder-list';
 
 export function EmployeeInformationListCard() {
 	const {selectedEmployee, setSelectedEmployee} = useEmployeeStore();
 	const [loading, setLoading] = useState<boolean>(false);
-	const [searchParams] = useSearchParams();
 	const {id} = useParams();
 	useEffect(() => {
 		const fetchData = async () => {

@@ -142,7 +142,7 @@ export function ProductProfile() {
 									{data.product_records?.reduce(
 										(sum, record) => sum + record.quantity,
 										0,
-									)}{' '}
+									)}
 									Qty
 								</span>
 							</li>

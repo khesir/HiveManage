@@ -1,7 +1,7 @@
 'use client';
 
 import {useState} from 'react';
-import {ChevronDown, Dot, LucideIcon} from 'lucide-react';
+import {ChevronDown, LucideIcon} from 'lucide-react';
 
 import {cn} from '@/lib/util/utils';
 import {Button} from '@/components/ui/button';

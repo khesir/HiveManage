@@ -1,4 +1,4 @@
-import {Customer} from '@/lib/cms-zod-schema';
+import {Customer} from '@/components/validation/customer';
 import {create} from 'zustand';
 
 type CustomerFormStore = {

@@ -82,7 +82,7 @@ const UpdateActionCell = (data: OrderProduct) => {
 		</div>
 	);
 };
-export const getcolumns = (status: string): ColumnDef<OrderProduct>[] => [
+const columns: ColumnDef<OrderProduct>[] = [
 	{
 		accessorKey: 'product.img_url',
 		header: 'Img',
@@ -130,30 +130,31 @@ export const getcolumns = (status: string): ColumnDef<OrderProduct>[] => [
 		accessorKey: 'status',
 		header: 'Status',
 	},
-	...(status === 'Draft'
-		? [
-				{
-					header: 'Action',
-					cell: ({row}: {row: Row<OrderProduct>}) => (
+	{
+		header: 'Action',
+		cell: ({row}: {row: Row<OrderProduct>}) => {
+			return (
+				<>
+					{row.original.status === 'Draft' && (
+						<UpdateActionCell {...row.original} />
+					)}
+					{row.original.status === 'Awaiting Arrival' && (
 						<ActionCell {...row.original} />
-					),
-				},
-			]
-		: status === 'Awaiting Arrival'
-			? [
-					{
-						header: 'Action',
-						cell: ({row}: {row: Row<OrderProduct>}) => {
-							return (
-								<>
-									<UpdateActionCell {...row.original} />
-									{/* {row.original.status === 'Delivered' && <div>Delivered</div>} */}
-								</>
-							);
-						},
-					},
-				]
-			: []),
+					)}
+					{/* {row.original.status === 'Delivered' && <div>Delivered</div>} */}
+				</>
+			);
+		},
+	},
+	// ...(status === 'Draft'
+	// 	? [
+
+	// 		]
+	// 	: status === 'Awaiting Arrival'
+	// 		? [
+
+	// 			]
+	// 		: []),
 ];
 
 export function InformationProductTable() {
@@ -165,7 +166,6 @@ export function InformationProductTable() {
 	const totalPages = Math.ceil(
 		(selectedOrder?.order_products?.length ?? 0) / pageSize,
 	);
-	const columns = getcolumns(selectedOrder.order_status);
 	// Initialize the table
 	const table = useReactTable({
 		data: selectedOrder.order_products || [],
@@ -244,7 +244,7 @@ export function InformationProductTable() {
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={getcolumns(selectedOrder.order_status).length}
+									colSpan={columns.length}
 									className="h-24 text-center"
 								>
 									No results.

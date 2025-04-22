@@ -1,14 +1,14 @@
+import {Supplier} from '@/components/validation/supplier';
 import {create} from 'zustand';
-import {SupplierWithRelatedData} from '../../../../components/validation/supplier';
 
 type PropsProps = {
-	data: SupplierWithRelatedData | null;
-	setSupplier: (newData: SupplierWithRelatedData) => void;
+	data: Supplier | null;
+	setSupplier: (newData: Supplier) => void;
 };
 
 const useSupplierStore = create<PropsProps>((set) => ({
 	data: null,
-	setSupplier: (newData: SupplierWithRelatedData) =>
+	setSupplier: (newData: Supplier) =>
 		set((state) => {
 			const updatedData = {...state.data, ...newData};
 

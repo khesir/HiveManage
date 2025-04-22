@@ -416,16 +416,8 @@ export function CreateOrderForm() {
 														<div className="relative z-10 flex gap-4">
 															<img
 																src={
-																	typeof formState.selectedProduct[index]
-																		?.img_url === 'string'
-																		? formState.selectedProduct[index]?.img_url
-																		: formState.selectedProduct[index]
-																					?.img_url instanceof File
-																			? URL.createObjectURL(
-																					formState.selectedProduct[index]
-																						?.img_url,
-																				)
-																			: '/img/placeholder.jpg'
+																	formState.selectedProduct[index]
+																		?.img_url as string
 																}
 																alt={`Product ID ${formState.selectedProduct[index]?.product_id} - ${formState.selectedProduct[index]?.name}`}
 																className="rounded-lg w-20 h-20 object-cover"

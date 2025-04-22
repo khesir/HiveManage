@@ -1,6 +1,6 @@
 import {ColumnDef} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
-import {Customer} from '@/lib/cms-zod-schema';
+import {Customer} from '@/components/validation/customer';
 
 export const columns: ColumnDef<Customer>[] = [
 	{

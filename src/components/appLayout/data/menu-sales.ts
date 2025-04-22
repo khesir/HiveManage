@@ -1,7 +1,6 @@
 import {
 	Tag,
 	Users,
-	Settings,
 	LayoutGrid,
 	LucideIcon,
 	ShoppingBag,
@@ -39,18 +38,18 @@ export function getSalesMenuList(pathname: string): Group[] {
 			menus: [
 				{
 					href: '/sales/dashboard',
-					label: 'Dashboard',
+					label: 'Point of Sale',
 					active: pathname.includes('/sales/dashboard'),
 					icon: LayoutGrid,
 					submenus: [],
 				},
-				{
-					href: '/admin/settings',
-					label: 'Settings',
-					active: pathname.includes('/admin/settings'),
-					icon: Settings,
-					submenus: [],
-				},
+				// {
+				// 	href: '/admin/settings',
+				// 	label: 'Settings',
+				// 	active: pathname.includes('/admin/settings'),
+				// 	icon: Settings,
+				// 	submenus: [],
+				// },
 			],
 		},
 		{

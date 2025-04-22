@@ -5,7 +5,6 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
-	Row,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
 import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
@@ -29,8 +28,6 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {SupplierWithRelatedData} from '../../../components/validation/supplier';
-import useSupplierStore from '../_components/hooks/use-supplier';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -38,6 +35,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
+import {Supplier} from '@/components/validation/supplier';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -50,7 +48,7 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function SupplierTable<TData extends SupplierWithRelatedData, TValue>({
+export function SupplierTable<TData extends Supplier, TValue>({
 	columns,
 	data,
 	searchKey,
@@ -165,21 +163,6 @@ export function SupplierTable<TData extends SupplierWithRelatedData, TValue>({
 	]);
 
 	// Set the first employee data to Zustand on initial render
-	useEffect(() => {
-		if (data.length > 0) {
-			const supplier: SupplierWithRelatedData = data[0];
-			useSupplierStore.getState().setSupplier(supplier);
-		}
-	}, [data]);
-
-	// This handles the employee viewing by click
-	const handleRowClick = (row: Row<TData>) => {
-		// Access the data of the clicked row
-		const rowData: SupplierWithRelatedData = row.original;
-
-		// Do something with the row data
-		useSupplierStore.getState().setSupplier(rowData);
-	};
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
 		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
 	);
@@ -264,7 +247,6 @@ export function SupplierTable<TData extends SupplierWithRelatedData, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									onClick={() => handleRowClick(row)}
 									style={{cursor: 'pointer'}}
 									data-state={row.getIsSelected() && 'selected'}
 								>

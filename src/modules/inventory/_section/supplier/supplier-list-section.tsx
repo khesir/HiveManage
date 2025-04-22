@@ -3,9 +3,9 @@ import {Heading} from '@/components/ui/heading';
 import {useSearchParams} from 'react-router-dom';
 import SupplierList from '../../suppliers/supplier-list';
 import {SupplierProfile} from '../../suppliers/supplier-profile';
-import useSupplierStore from '../../_components/hooks/use-supplier';
 import {CreateSupplierDialogForm} from '../../suppliers/form/create-supplier-form';
 import {useState} from 'react';
+import useSupplierStore from '../../_components/hooks/use-supplier';
 
 export default function SupplierListView() {
 	const [searchParams] = useSearchParams();

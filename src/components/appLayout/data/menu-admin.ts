@@ -46,13 +46,13 @@ export function getAdminMenuList(pathname: string): Group[] {
 					icon: LayoutGrid,
 					submenus: [],
 				},
-				{
-					href: '/admin/settings',
-					label: 'Settings',
-					active: pathname.includes('/admin/settings'),
-					icon: Settings,
-					submenus: [],
-				},
+				// {
+				// 	href: '/admin/settings',
+				// 	label: 'Settings',
+				// 	active: pathname.includes('/admin/settings'),
+				// 	icon: Settings,
+				// 	submenus: [],
+				// },
 			],
 		},
 		{
