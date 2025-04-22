@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker';
 
 import log from '../lib/logger';
@@ -9,8 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import mime from 'mime';
 import { SchemaType } from './schema/type';
-
-import { customer, customerGroup, inquiry } from './schema/customer';
+import { customer } from './schema/customer';
 import {
   position,
   employee,
@@ -21,27 +19,8 @@ import {
   personalInformation,
 } from './schema/ems';
 
-import {
-  assignedEmployees,
-  tickets,
-  ticketType,
-  service,
-  serviceItems,
-  reports,
-  service_Type,
-} from './schema/services';
-import { payment } from './schema/payment';
-import { sales, salesItems } from './schema/sales';
-import {
-  category,
-  order,
-  orderProduct,
-  product,
-  productDetails,
-  productRecord,
-  serializeProduct,
-  supplier,
-} from './schema/ims';
+import { service_Type, ticketType } from './schema/services';
+import { category, supplier } from './schema/ims';
 
 const supabase = new SupabaseService();
 
@@ -111,43 +90,27 @@ async function createProfileBucketIfNotExists() {
 // ===================== EMPLOYEE BASE =========================
 
 async function seedEmployees(db: PostgresJsDatabase<SchemaType>) {
-  const employeePositions = await db.select().from(position);
-
   const employees = [
     {
-      position_id: faker.helpers.arrayElement(employeePositions).position_id,
+      position_id: 1,
       firstname: 'Aj',
       middlename: 'Rizaldo',
       lastname: 'Tollo',
-      email: 'ajrizaldo2@example.com',
+      email: 'admin@example.com',
     },
     {
-      position_id: faker.helpers.arrayElement(employeePositions).position_id,
-      firstname: 'Jane',
-      middlename: 'Ann',
-      lastname: 'Smith',
-      email: 'jane.smith1@example.com',
+      position_id: 2,
+      firstname: 'Clyde Cedrick',
+      middlename: 'Fabro',
+      lastname: 'Macabangon',
+      email: 'tech@example.com',
     },
     {
-      position_id: faker.helpers.arrayElement(employeePositions).position_id,
-      firstname: 'Jacob',
-      middlename: 'Ann',
-      lastname: 'Thompson',
-      email: 'Jacob.Thompson1@example.com',
-    },
-    {
-      position_id: faker.helpers.arrayElement(employeePositions).position_id,
-      firstname: 'Olivia ',
-      middlename: 'Ann',
-      lastname: 'Martinez',
-      email: 'Olivia.Martinez1@example.com',
-    },
-    {
-      position_id: faker.helpers.arrayElement(employeePositions).position_id,
-      firstname: 'Ethan',
-      middlename: 'Ann',
-      lastname: 'Lewis',
-      email: 'Ethan.Lewis1@example.com',
+      position_id: 3,
+      firstname: 'Rey',
+      middlename: 'Juson',
+      lastname: 'Larombe',
+      email: 'sales@example.com',
     },
   ];
   const employeesWithProfileLinks = await Promise.all(
@@ -215,37 +178,6 @@ async function seedEmployeePosition(db: PostgresJsDatabase<SchemaType>) {
 
 async function seedPersonalInformation(db: PostgresJsDatabase<SchemaType>) {
   const employeeIDs = await db.select().from(employee);
-
-  const employeeStatuses: (
-    | 'Active'
-    | 'On Leave'
-    | 'Terminated'
-    | 'Resigned'
-    | 'Suspended'
-    | 'Retired'
-    | 'Inactive'
-  )[] = [
-    'Active',
-    'On Leave',
-    'Terminated',
-    'Resigned',
-    'Suspended',
-    'Retired',
-    'Inactive',
-  ] as const;
-  const employeeTypes: (
-    | 'Regular'
-    | 'Probationary'
-    | 'Seasonal'
-    | 'Contractual'
-    | 'Temporary'
-  )[] = [
-    'Regular',
-    'Probationary',
-    'Seasonal',
-    'Contractual',
-    'Temporary',
-  ] as const;
 
   const personalInfoRecords = [
     {
@@ -332,9 +264,6 @@ async function seedPersonalInformation(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(personalInformation).values(personalInfoRecords);
   log.info('Personal Information records seeded successfully.');
 }
-
-//  =======================================================================================
-// =============================== COMPANY FEATURES ======================================
 
 async function seedDepartments(db: PostgresJsDatabase<SchemaType>) {
   const departmentStatuses: ('Active' | 'Inactive')[] = ['Active', 'Inactive'];
@@ -428,7 +357,6 @@ async function seedDesignations(db: PostgresJsDatabase<SchemaType>) {
 }
 
 async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
-  const customergroupIDs = await db.select().from(customerGroup);
   const status = [
     'Active',
     'Inactive',
@@ -455,8 +383,6 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Metro Manila',
       email: 'johndoe@example.com',
       standing: faker.helpers.arrayElement(status),
-      customer_group_id:
-        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -471,8 +397,6 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Cebu',
       email: 'janesmith@example.com',
       standing: faker.helpers.arrayElement(status),
-      customer_group_id:
-        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -489,8 +413,6 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Davao',
       email: 'alicejohnson@example.com',
       standing: faker.helpers.arrayElement(status),
-      customer_group_id:
-        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -508,8 +430,6 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Quezon City',
       email: 'bobwilliams@example.com',
       standing: faker.helpers.arrayElement(status),
-      customer_group_id:
-        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -526,8 +446,6 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
       province: 'Manila',
       email: 'charliebrown@example.com',
       standing: faker.helpers.arrayElement(status),
-      customer_group_id:
-        faker.helpers.arrayElement(customergroupIDs).customer_group_id,
       created_at: new Date(),
       last_updated: new Date(),
     },
@@ -537,933 +455,60 @@ async function seedCustomer(db: PostgresJsDatabase<SchemaType>) {
   await db.insert(customer).values(customerRecords);
   log.info('Customer records seeded successfully');
 }
-
-async function seedCustomerGroup(db: PostgresJsDatabase<SchemaType>) {
-  const customersgroup = [
-    {
-      name: faker.company.name(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      name: faker.company.name(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      name: faker.company.name(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      name: faker.company.name(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-    {
-      name: faker.company.name(),
-      created_at: new Date(),
-      last_updated: new Date(),
-    },
-  ];
-  await db.insert(customerGroup).values(customersgroup);
-  log.info('Customer Group records seeded successfully.');
-}
-
-async function seedInquiry(db: PostgresJsDatabase<SchemaType>) {
-  const customerIDs = await db.select().from(customer);
-
-  const inquiryTypes: (
-    | 'Product'
-    | 'Pricing'
-    | 'Order Status'
-    | 'Technical Support'
-    | 'Billing'
-    | 'Complaint'
-    | 'Feedback'
-    | 'Return/Refund'
-  )[] = [
-    'Product',
-    'Pricing',
-    'Order Status',
-    'Technical Support',
-    'Billing',
-    'Complaint',
-    'Feedback',
-    'Return/Refund',
-  ];
-
-  const inquirys = [
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      inquiryTitle: 'Software Engineer',
-      inquiry_type: faker.helpers.arrayElement(inquiryTypes),
-    },
-  ];
-
-  await db.insert(inquiry).values(inquirys);
-  log.info('Inquiry records seeded successfully.');
-}
-
-//  =======================================================================================
-// ===================================== SALES ======================================
-
-async function seedSales(db: PostgresJsDatabase<SchemaType>) {
-  const customerIDs = await db.select().from(customer);
-
-  const salesStatuses = [
-    'Completed',
-    'Partially Completed',
-    'Cancelled',
-  ] as const;
-
-  const salesRecords = [
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-    {
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      status: faker.helpers.arrayElement(salesStatuses),
-    },
-  ];
-
-  await db.insert(sales).values(salesRecords);
-  log.info('Sales records seeded successfully');
-}
-
-async function seedSalesItem(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
-  const salesIDs = await db.select().from(sales);
-
-  const salesitemsRecords = [
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      sales_id: faker.helpers.arrayElement(salesIDs).sales_id,
-      quantity: 10,
-      total_price: 150,
-    },
-  ];
-
-  await db.insert(salesItems).values(salesitemsRecords);
-  log.info('Sales Items records seeded successfully');
-}
-
-//  =======================================================================================
-// ==================================== SERVICES ======================================
-
 async function seedTicketType(db: PostgresJsDatabase<SchemaType>) {
   const tickettypeRecords = [
     {
-      name: 'Job Order',
+      name: 'Product Quality Issue',
       description:
-        'Request for a service or task to be completed, such as repairs or installations.',
+        'Remarks related to product quality concerns, including defects and damages.',
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
     },
     {
-      name: 'Borrow Request',
-      description: 'Request to temporarily borrow items or equipment.',
-    },
-    {
-      name: 'Reservation',
-      description: 'Booking a service, room, or equipment for future use.',
-    },
-    {
-      name: 'Repair Request',
-      description: 'Request to fix broken or malfunctioning items.',
-    },
-    {
-      name: 'Maintenance Request',
+      name: 'Customer Service Feedback',
       description:
-        'Scheduled or emergency maintenance of equipment or facilities.',
+        'Comments and feedback regarding customer service experiences.',
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
     },
     {
-      name: 'Delivery Request',
-      description: 'Request to deliver documents, packages, or other items.',
+      name: 'Shipping Delay',
+      description: 'Remarks concerning delays in shipping and delivery times.',
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
     },
     {
-      name: 'Pickup Request',
-      description: 'Request to pick up items from a location.',
-    },
-    {
-      name: 'Installation Request',
+      name: 'Order Inaccuracy',
       description:
-        'Task request to set up or install a device, system, or software.',
+        'Issues reported when an order does not match what was received.',
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
     },
     {
-      name: 'Cancellation Request',
+      name: 'Return Process Feedback',
       description:
-        'Action to cancel a previously scheduled service or reservation.',
+        'Feedback regarding the return process and related customer experiences.',
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      name: 'Missing Items',
+      description:
+        'Remarks about items that were expected but not included in the order.',
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
+    },
+    {
+      name: 'Product Recommendation',
+      description:
+        'Remarks regarding suggestions for product improvements or alternatives.',
+      created_at: faker.date.recent(),
+      last_updated: faker.date.recent(),
     },
   ];
 
   await db.insert(ticketType).values(tickettypeRecords);
-  log.info('Actionable ticket types seeded successfully.');
-}
-
-async function seedService(db: PostgresJsDatabase<SchemaType>) {
-  const servicetypeIDs = await db.select().from(service_Type);
-  const customerIDs = await db.select().from(customer);
-
-  const service_status: ('Pending' | 'In Progress' | 'Complete')[] = [
-    'Pending',
-    'In Progress',
-    'Complete',
-  ];
-
-  const serviceRecords = [
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_type_id:
-        faker.helpers.arrayElement(servicetypeIDs).service_type_id,
-      uuid: faker.string.uuid(),
-      description: faker.lorem.paragraph(),
-      fee: faker.number.int({ min: 100, max: 1000 }),
-      customer_id: faker.helpers.arrayElement(customerIDs).customer_id,
-      service_status: faker.helpers.arrayElement(service_status),
-      total_cost_price: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
-
-  await db.insert(service).values(serviceRecords);
-
-  log.info('Service records seeded successfully');
-}
-
-async function seedServiceItems(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
-  const serviceIDs = await db.select().from(service);
-  const productrecordIDs = await db.select().from(productRecord);
-  const serializeditemIDs = await db.select().from(serializeProduct);
-
-  const serviceitemRecords = [
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: faker.helpers.arrayElement(productIDs).product_id,
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      product_record_id:
-        faker.helpers.arrayElement(productrecordIDs).product_record_id,
-      serial_id: faker.helpers.arrayElement(serializeditemIDs).serial_id,
-      serviceitem_status: faker.lorem.word(),
-      quantity: faker.number.int({ min: 100, max: 1000 }),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
-
-  await db.insert(serviceItems).values(serviceitemRecords);
-
-  log.info('Service Items records seeded successfully');
-}
-
-//  =======================================================================================
-// =================================== JOB ORDER ==========================================
-
-async function seedReports(db: PostgresJsDatabase<SchemaType>) {
-  const serviceIDs = await db.select().from(service);
-
-  const reportsRecords = [
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Initial Review of Job Order #1',
-      tickets: 'All documents are in order, ready for processing.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Progress Update for Job Order #2',
-      tickets:
-        'Work is currently in progress, slight delays due to material shortage.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Completion Report for Job Order #3',
-      tickets:
-        'The job order has been completed successfully, awaiting customer feedback.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Issues Reported for Job Order #4',
-      tickets: 'Customer reported a discrepancy in billing; review initiated.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Final Assessment for Job Order #5',
-      tickets: 'All requirements have been met; closing report prepared.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Follow-Up for Job Order #6',
-      tickets:
-        "Scheduled follow-up on the customer's feedback; no issues reported.",
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Alert for Job Order #7',
-      tickets:
-        'Critical delays in the supply chain; immediate action required.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Evaluation Report for Job Order #8',
-      tickets:
-        'Evaluation completed; improvements suggested for future orders.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Customer Satisfaction for Job Order #9',
-      tickets: 'Customer feedback is positive; satisfaction survey completed.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      service_id: faker.helpers.arrayElement(serviceIDs).service_id,
-      reports_title: 'Closure Notice for Job Order #10',
-      tickets:
-        'Job order has been officially closed; all documentation submitted.',
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
-
-  await db.insert(reports).values(reportsRecords);
-
-  log.info('Report records seeded successfully.');
-}
-
-//  =======================================================================================
-// =================================== INVENTORY ==========================================
-
-async function seedProductRecord(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
-  const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
-  const status = [
-    'Available',
-    'Sold',
-    'On Order',
-    'In Service',
-    'Sold out',
-  ] as const;
-  const productrecordRecords = [
-    {
-      product_id: 1,
-      supplier_id: 1,
-      quantity: Number(faker.number.int({ min: 10, max: 100 })),
-      price: Number(faker.number.int({ min: 100, max: 1000 })),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: 2,
-      supplier_id: 1,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: 3,
-      supplier_id: 1,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: 4,
-      supplier_id: 1,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: 5,
-      supplier_id: 1,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: 6,
-      supplier_id: 1,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: 7,
-      supplier_id: 1,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-    {
-      product_id: 8,
-      supplier_id: 1,
-      quantity: faker.number.int({ min: 10, max: 100 }),
-      price: faker.number.int({ min: 100, max: 1000 }),
-      condition: faker.helpers.arrayElement(recordCondition),
-      status: faker.helpers.arrayElement(status),
-      created_at: faker.date.recent(),
-      last_updated: faker.date.recent(),
-    },
-  ];
-  await db.insert(productRecord).values(productrecordRecords);
-  log.info('Product Records seeded successfully!');
-}
-async function seedProduct(db: PostgresJsDatabase<SchemaType>) {
-  const supplierIDs = await db.select().from(supplier);
-
-  const statuses = ['Unavailable'] as const;
-
-  const productsRecords = [
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Lenovo ThinkPad X1 Carbon',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Razer Blackshark V3 Pro',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-02-01'),
-      last_updated: new Date('2023-02-15'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Dell XPS 15',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Sony WH-1000XM5',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Logitech MX Master 3S',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'WD Black NVMe SSD 1TB',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Corsair Vengeance RGB Pro 32GB RAM',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Asus ROG Strix RTX 4080 GPU',
-      is_serialize: false,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Samsung SSD 970 EVO Plus 1TB',
-      is_serialize: true,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      name: 'Seagate IronWolf 4TB NAS HDD',
-      is_serialize: true,
-      status: faker.helpers.arrayElement(statuses),
-      created_at: new Date('2023-03-01'),
-      last_updated: new Date('2023-03-20'),
-    },
-  ];
-
-  await db.insert(product).values(productsRecords);
-  log.info('Product records seeded successfully');
-}
-
-async function seedProductDetails(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
-
-  const productdetailsRecords = [
-    {
-      product_id: 1,
-      description:
-        'Flagship smartphone with A16 Bionic chip and ProMotion display.',
-      warranty_date: new Date('2026-10-01'),
-      size: '6.1 inches',
-      color: 'Space Black',
-    },
-    {
-      product_id: 2,
-      description:
-        'High-end Android phone with 200MP camera and Snapdragon 8 Gen 2.',
-      warranty_date: new Date('2026-09-15'),
-      size: '6.8 inches',
-      color: 'Phantom Black',
-    },
-    {
-      product_id: 3,
-      description: 'Premium laptop with Intel Core i9 and 4K OLED display.',
-      warranty_date: new Date('2027-01-10'),
-      size: '15.6 inches',
-      color: 'Silver',
-    },
-    {
-      product_id: 4,
-      description:
-        'Wireless noise-canceling headphones with industry-leading ANC.',
-      warranty_date: new Date('2025-12-30'),
-      size: 'Over-Ear',
-      color: 'Black',
-    },
-    {
-      product_id: 5,
-      description: 'Advanced ergonomic wireless mouse with precise tracking.',
-      warranty_date: new Date('2025-06-20'),
-      size: 'Standard',
-      color: 'Graphite',
-    },
-    {
-      product_id: 6,
-      description: 'High-speed SSD for gaming and content creation.',
-      warranty_date: new Date('2028-03-05'),
-      size: '1TB',
-      color: 'Black',
-    },
-    {
-      product_id: 7,
-      description: 'DDR4 memory with dynamic RGB lighting for gaming rigs.',
-      warranty_date: new Date('2027-08-15'),
-      size: '32GB',
-      color: 'RGB',
-    },
-    {
-      product_id: 8,
-      description: 'High-end graphics card for 4K gaming and AI rendering.',
-      warranty_date: new Date('2027-02-28'),
-      size: 'Triple Slot',
-      color: 'Black',
-    },
-    {
-      product_id: 9,
-      description:
-        'High-efficiency printer with cost-effective ink tank system.',
-      warranty_date: new Date('2026-05-10'),
-      size: 'Standard',
-      color: 'White',
-    },
-    {
-      product_id: 10,
-      description: 'Durable and high-capacity hard drive for NAS systems.',
-      warranty_date: new Date('2028-09-30'),
-      size: '4TB',
-      color: 'Red',
-    },
-  ];
-  await db.insert(productDetails).values(productdetailsRecords);
-  log.info('Product details seeded successfully!');
+  log.info('Ticket types seeded successfully.');
 }
 
 async function seedCategory(db: PostgresJsDatabase<SchemaType>) {
@@ -1635,271 +680,6 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
   log.info('Supplier records seeded successfully');
 }
 
-async function seedOrder(db: PostgresJsDatabase<SchemaType>) {
-  const supplierIDs = await db.select().from(supplier);
-
-  const orderStatus = [
-    'Draft',
-    'Finalized',
-    'Awaiting Arrival',
-    'Partially Fulfiled',
-    'Fulfilled',
-    'Cancelled',
-  ] as const;
-  const paymentStatus = ['Pending', 'Partially Paid', 'Paid'] as const;
-  const paymentMethod = [
-    'Cash',
-    'Credit Card',
-    'Bank Transfer',
-    'Check',
-    'Digital Wallet',
-  ] as const;
-  const orderRecords = [
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-02-15'),
-      order_value: '50000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Urgent order for motherboard components.',
-      receive_at: new Date('2024-02-16'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-02-20'),
-      order_value: '90000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Bulk purchase of SSDs.',
-      receive_at: new Date('2024-02-21'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-03-05'),
-      order_value: '250000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Order for gaming keyboards and mice.',
-      receive_at: new Date('2024-03-06'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-02-18'),
-      order_value: '70000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Replacement parts for damaged inventory.',
-      receive_at: new Date('2024-02-19'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-02-25'),
-      order_value: '180000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Order for networking cables and routers.',
-      receive_at: new Date('2024-02-26'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-03-01'),
-      order_value: '400000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'High-end GPUs for gaming PC builds.',
-      receive_at: new Date('2024-03-02'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-02-22'),
-      order_value: '125000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Urgent CPU stock replenishment.',
-      receive_at: new Date('2024-02-23'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-03-10'),
-      order_value: '225000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Bulk order for office workstation components.',
-      receive_at: new Date('2024-03-11'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-02-28'),
-      order_value: '140000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Order for high-capacity external hard drives.',
-      receive_at: new Date('2024-02-29'),
-    },
-    {
-      supplier_id: faker.helpers.arrayElement(supplierIDs).supplier_id,
-      expected_arrival: new Date('2024-03-05'),
-      order_value: '320000.0',
-      order_status: faker.helpers.arrayElement(orderStatus),
-      order_payment_status: faker.helpers.arrayElement(paymentStatus),
-      order_payment_method: faker.helpers.arrayElement(paymentMethod),
-      notes: 'Stocking up on premium power supplies.',
-      receive_at: new Date('2024-03-06'),
-    },
-  ];
-
-  await db.insert(order).values(orderRecords);
-  log.info('Order records seeded successfully');
-}
-
-async function seedOrderItems(db: PostgresJsDatabase<SchemaType>) {
-  const orderIDs = await db.select().from(order);
-
-  const orderitemsRecords = [
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 2,
-      total_quantity: 2,
-      unit_price: '59999.99',
-      discount_amount: '0.00',
-      status: 'Awaiting Arrival' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 1,
-      total_quantity: 1,
-      unit_price: '12999.50',
-      discount_amount: '500.00',
-      status: 'Draft' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 3,
-      total_quantity: 3,
-      unit_price: '1499.75',
-      discount_amount: '100.00',
-      status: 'Delivered' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 5,
-      total_quantity: 5,
-      unit_price: '249.99',
-      discount_amount: '50.00',
-      status: 'Partially Delivered' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 1,
-      total_quantity: 1,
-      unit_price: '7999.99',
-      discount_amount: '0.00',
-      status: 'Cancelled' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 2,
-      total_quantity: 2,
-      unit_price: '999.99',
-      discount_amount: '20.00',
-      status: 'Stocked' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 4,
-      total_quantity: 4,
-      unit_price: '3499.00',
-      discount_amount: '200.00',
-      status: 'Finalized' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 1,
-      total_quantity: 1,
-      unit_price: '55999.99',
-      discount_amount: '1000.00',
-      status: 'Awaiting Arrival' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 3,
-      total_quantity: 3,
-      unit_price: '1199.50',
-      discount_amount: '50.00',
-      status: 'Delivered' as const,
-    },
-    {
-      order_id: faker.helpers.arrayElement(orderIDs).order_id,
-      product_id: faker.number.int({ min: 1, max: 10 }),
-      quantity: 2,
-      total_quantity: 2,
-      unit_price: '2099.99',
-      discount_amount: '100.00',
-      status: 'Stocked' as const,
-    },
-  ];
-
-  await db.insert(orderProduct).values(orderitemsRecords);
-}
-
-async function seedSerializedItems(db: PostgresJsDatabase<SchemaType>) {
-  const productIDs = await db.select().from(product);
-  const recordCondition = ['New', 'Secondhand', 'Broken'] as const;
-
-  const statuses = [
-    'Available',
-    'Returned',
-    'Sold',
-    'On Order',
-    'In Service',
-    'Damage',
-    'Retired',
-  ] as const;
-
-  const serializedproductsRecords = [
-    {
-      product_id: 9,
-      supplier_id: 1,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      price: Number(faker.number.int({ min: 100, max: 1000 })),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-    {
-      product_id: 10,
-      supplier_id: 1,
-      serial_number: faker.string.uuid(),
-      status: faker.helpers.arrayElement(statuses),
-      condition: faker.helpers.arrayElement(recordCondition),
-      price: Number(faker.number.int({ min: 100, max: 1000 })),
-      created_at: new Date('2023-01-01'),
-      last_updated: new Date('2023-01-10'),
-    },
-  ];
-
-  await db.insert(serializeProduct).values(serializedproductsRecords);
-  log.info('Serialized Products records seeded successfully');
-}
 async function seedServiceType(db: PostgresJsDatabase<SchemaType>) {
   const typesRecords = [
     {
@@ -1942,17 +722,10 @@ async function main() {
     // Inventory
     await seedCategory(db);
     await seedSupplier(db);
-    await seedProduct(db);
-    await seedProductDetails(db);
-    await seedProductRecord(db);
-    await seedOrder(db);
-    await seedOrderItems(db);
-    await seedSerializedItems(db);
 
     await seedTicketType(db);
     await seedServiceType(db);
     // Participants
-    await seedCustomerGroup(db);
     await seedCustomer(db);
   } catch (error) {
     console.error('Error during seeding:', error);
