@@ -26,6 +26,9 @@ import {
 } from '@/drizzle/schema/ims';
 import { productCategory } from '@/drizzle/schema/ims/schema/product/productCategory.schema';
 import { productSupplier } from '@/drizzle/schema/ims/schema/product/productSupplier.schema';
+import { ProductLog } from '@/drizzle/schema/records';
+import { employee } from '@/drizzle/schema/ems';
+import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 
 export class ProductService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -73,6 +76,20 @@ export class ProductService {
 
         await tx.insert(productCategory).values(categoriesToInsert);
       }
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+      await tx.insert(ProductLog).values({
+        product_id: newProduct.product_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} created product`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} created product`,
+      });
     });
   }
   async updateProduct(
@@ -81,15 +98,11 @@ export class ProductService {
     paramsId: number,
   ) {
     return this.db.transaction(async (tx) => {
-      console.log('Starting updateProduct transaction...');
-
       try {
-        console.log('Updating product details...');
         const exisiting_data_product = await tx
           .select()
           .from(productDetails)
           .where(eq(productDetails.product_id, paramsId));
-        console.log(exisiting_data_product);
         if (exisiting_data_product.length > 0) {
           await tx
             .update(productDetails)
@@ -144,20 +157,16 @@ export class ProductService {
           }
         });
 
-        console.log('Existing categories:', categories);
-
         const existingCategoryIds = new Set(
           categories?.map(
             ({ category }: { category: { category_id: number } | null }) =>
               category?.category_id,
           ) ?? [],
         );
-        console.log('Existing Category IDs:', existingCategoryIds);
 
         const newCategoryIds = new Set<number>(
           data.product_categories?.map((c) => c.category_id) ?? [],
         );
-        console.log('New Category IDs:', newCategoryIds);
 
         const categoriesToDelete: number[] = [...existingCategoryIds]
           .filter((id): id is number => id !== undefined)
@@ -167,12 +176,7 @@ export class ProductService {
           .filter((id): id is number => id !== undefined)
           .filter((id) => !existingCategoryIds.has(id));
 
-        console.log('Categories to delete:', categoriesToDelete);
-        console.log('Categories to add:', categoriesToAdd);
-
-        // Delete missing categories
         if (categoriesToDelete.length > 0) {
-          console.log('Deleting categories...');
           await tx
             .delete(productCategory)
             .where(
@@ -181,27 +185,21 @@ export class ProductService {
                 inArray(productCategory.category_id, categoriesToDelete),
               ),
             );
-          console.log('Deleted categories successfully.');
         }
 
         // Insert new categories
         if (categoriesToAdd.length > 0) {
-          console.log('Inserting new categories...');
           await tx.insert(productCategory).values(
             categoriesToAdd.map((category_id) => ({
               product_id: paramsId,
               category_id,
             })),
           );
-          console.log('Inserted new categories successfully.');
         }
 
         if (file) {
-          console.log('Uploading new image...');
           const filepath = await this.supabaseService.uploadImageToBucket(file);
-          console.log('Uploaded image, filepath:', filepath);
 
-          console.log('Updating product with new image...');
           await tx
             .update(product)
             .set({
@@ -212,7 +210,6 @@ export class ProductService {
             })
             .where(eq(product.product_id, paramsId));
         } else {
-          console.log('Updating product without image...');
           await tx
             .update(product)
             .set({
@@ -222,8 +219,20 @@ export class ProductService {
             })
             .where(eq(product.product_id, paramsId));
         }
-
-        console.log('Transaction completed successfully.');
+        const empData = await tx
+          .select()
+          .from(employee)
+          .where(eq(employee.employee_id, data.user));
+        await tx.insert(ProductLog).values({
+          product_id: paramsId,
+          action: `${empData[0].firstname} ${empData[0].lastname} updated product`,
+          performed_by: empData[0].employee_id,
+        });
+        await tx.insert(employeeLog).values({
+          employee_id: empData[0].employee_id,
+          performed_by: empData[0].employee_id,
+          action: `${empData[0].firstname} ${empData[0].lastname} created product`,
+        });
       } catch (error) {
         console.error('Error in updateProduct transaction:', error);
         throw error; // Ensure transaction rollback on failure
@@ -259,7 +268,7 @@ export class ProductService {
       )
       .where(and(...conditions))
       .orderBy(
-        sort == 'asc' ? asc(product.created_at) : desc(product.created_at),
+        sort == 'asc' ? desc(product.product_id) : asc(product.product_id),
       )
       .limit(limit)
       .offset(offset);

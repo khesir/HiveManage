@@ -1,8 +1,10 @@
 import { and, eq, isNull, sql, desc, asc, like, or } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { CreateCustomer } from './customer.model';
+import { CreateCustomer, UpdateCustomer } from './customer.model';
 import { customer } from '@/drizzle/schema/customer';
 import { SchemaType } from '@/drizzle/schema/type';
+import { employee } from '@/drizzle/schema/ems';
+import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 
 export class CustomerService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -12,7 +14,22 @@ export class CustomerService {
   }
 
   async createCustomer(data: CreateCustomer) {
-    await this.db.insert(customer).values(data);
+    await this.db.transaction(async (tx) => {
+      const [newCustomer] = await tx
+        .insert(customer)
+        .values(data)
+        .returning({ customer_id: customer.customer_id });
+
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} added customer ${newCustomer.customer_id}`,
+      });
+    });
   }
 
   async getAllCustomer(
@@ -73,11 +90,22 @@ export class CustomerService {
     return result[0];
   }
 
-  async updateCustomer(data: object, paramsId: number) {
-    await this.db
-      .update(customer)
-      .set(data)
-      .where(eq(customer.customer_id, paramsId));
+  async updateCustomer(data: UpdateCustomer, paramsId: number) {
+    await this.db.transaction(async (tx) => {
+      await tx
+        .update(customer)
+        .set({ ...data, contact_phone: data.contact_phone?.toString() })
+        .where(eq(customer.customer_id, paramsId));
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} added customer ${paramsId}`,
+      });
+    });
   }
 
   async deleteCustomer(customerId: number): Promise<void> {

@@ -51,12 +51,13 @@ export class ProductSupplierController {
   // ) {}
 
   async createProductSupplier(req: Request, res: Response, next: NextFunction) {
-    const { supplier_id, product_id } = req.body;
+    const { supplier_id, product_id, user } = req.body;
 
     try {
       await this.productSupplierService.createProductSupplier({
         supplier_id,
         product_id,
+        user,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -78,9 +79,12 @@ export class ProductSupplierController {
 
   async deleteProductSupplier(req: Request, res: Response, next: NextFunction) {
     const { product_supplier_id } = req.params;
+    const user = req.query.user as string | undefined;
+
     try {
       await this.productSupplierService.deleteProductSupplier(
         Number(product_supplier_id),
+        Number(user),
       );
       res.status(200).json({
         status: 'Success',

@@ -16,7 +16,7 @@ export class ProductTransactionLogController {
     res: Response,
     next: NextFunction,
   ) {
-    const product_id = (req.params.product_id as string) || undefined;
+    const product_id = (req.query.product_id as string) || undefined;
     const product_record_id =
       (req.query.product_record_id as string) || undefined;
     const serial_id = (req.query.serial_id as string) || '';

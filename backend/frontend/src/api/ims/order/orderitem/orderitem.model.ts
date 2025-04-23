@@ -21,6 +21,7 @@ export const UpdateOrderItem = z.object({
   unit_price: z.string().min(1),
   is_serialize: z.boolean().optional(),
   status: orderItemStatus.optional(),
+  user: z.number().min(1),
 });
 
 export const CreateOrderItem = z.object({
@@ -34,6 +35,7 @@ export const CreateOrderItem = z.object({
   unit_price: z.string().min(1),
   is_serialize: z.boolean().optional(),
   status: orderItemStatus.optional(),
+  user: z.number().min(1),
 });
 
 export type CreateOrderItem = z.infer<typeof CreateOrderItem>;

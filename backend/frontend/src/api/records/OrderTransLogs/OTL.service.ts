@@ -2,7 +2,6 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
-import { order, orderProduct } from '@/drizzle/schema/ims';
 import { OrderLog } from '@/drizzle/schema/records';
 
 export class OrderTransactionLogService {
@@ -44,15 +43,10 @@ export class OrderTransactionLogService {
     const query = this.db
       .select()
       .from(OrderLog)
-      .leftJoin(order, eq(order.order_id, OrderLog.order_id))
-      .leftJoin(
-        orderProduct,
-        eq(orderProduct.order_product_id, OrderLog.order_item_id),
-      )
       .leftJoin(employee, eq(employee.employee_id, OrderLog.performed_by))
       .where(and(...conditions))
       .orderBy(
-        sort === 'asc' ? asc(OrderLog.created_at) : desc(OrderLog.created_at),
+        sort === 'desc' ? asc(OrderLog.created_at) : desc(OrderLog.created_at),
       );
 
     if (!no_pagination) {
@@ -63,13 +57,7 @@ export class OrderTransactionLogService {
 
     const ordertranslogWithDetails = result.map((row) => ({
       ...row.OrderTransLog,
-      order: {
-        ...row.order,
-      },
-      orderProduct: {
-        row,
-      },
-      employee: {
+      performed_by: {
         ...row.employee,
       },
     }));

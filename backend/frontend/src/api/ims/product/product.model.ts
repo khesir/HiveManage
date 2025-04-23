@@ -18,6 +18,7 @@ export const CreateProduct = z.object({
       size: z.string(),
     })
     .optional(),
+  user: z.number().min(1),
 });
 
 export const UpdateProduct = z.object({
@@ -38,6 +39,7 @@ export const UpdateProduct = z.object({
       size: z.string(),
     })
     .optional(),
+  user: z.number().min(1),
 });
 
 export type CreateProduct = z.infer<typeof CreateProduct>;

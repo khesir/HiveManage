@@ -16,7 +16,7 @@ export class OrderTransactionLogController {
     res: Response,
     next: NextFunction,
   ) {
-    const order_id = (req.params.order_id as string) || undefined;
+    const order_id = (req.query.order_id as string) || undefined;
     const order_item_id = (req.query.order_item_id as string) || undefined;
     const no_pagination = req.query.no_pagination == 'true';
     const sort = (req.query.sort as string) || 'asc';

@@ -1,4 +1,4 @@
-import { eq, isNull, sql, asc, desc, and, inArray } from 'drizzle-orm';
+import { eq, isNull, sql, and, inArray } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreateOrder, UpdateOrder } from './order.model';
 import {
@@ -11,6 +11,9 @@ import {
   productRecord,
 } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
+import { employee } from '@/drizzle/schema/ems';
+import { OrderLog, ProductLog } from '@/drizzle/schema/records';
+import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 
 export class OrderService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -47,11 +50,6 @@ export class OrderService {
       .from(order)
       .where(and(...conditions))
       .groupBy(order.order_id)
-      .orderBy(
-        sort === 'asc'
-          ? asc(order.expected_arrival)
-          : desc(order.expected_arrival),
-      )
       .limit(limit)
       .offset(offset);
 
@@ -140,8 +138,11 @@ export class OrderService {
         }
 
         return acc;
-      }, {}), // Grouping orders by ID
-    );
+      }, {}),
+    ).sort((a, b) => {
+      const sortDirection = sort === 'asc' ? 1 : -1;
+      return (a.order_id - b.order_id) * sortDirection;
+    });
     return { totalData, orderWithDetails };
   }
 
@@ -230,38 +231,92 @@ export class OrderService {
           order_payment_method: 'Cash',
         })
         .returning({ order_id: order.order_id });
+
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+
       for (const item of data.order_products!) {
         await tx.insert(orderProduct).values({
           order_id: insertedOrder.order_id,
           status: 'Draft',
           ...item,
         });
+        await tx.insert(ProductLog).values({
+          product_id: item.product_id,
+          performed_by: empData[0].employee_id,
+          action: `${empData[0].firstname} ${empData[0].lastname} created order with ${item.total_quantity} total quantities`,
+        });
       }
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} created order for ${data.order_products.length} ${data.order_products.length > 1 ? 'products' : 'product'}`,
+      });
+      await tx.insert(OrderLog).values({
+        order_id: insertedOrder.order_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} created order ${insertedOrder.order_id}`,
+      });
     });
   }
 
   async updateOrder(data: UpdateOrder, paramsId: number) {
-    await this.db
-      .update(order)
-      .set({
-        ...data,
-        expected_arrival: data.expected_arrival
-          ? new Date(data.expected_arrival)
-          : null,
-      })
-      .where(eq(order.order_id, paramsId));
+    return this.db.transaction(async (tx) => {
+      await tx
+        .update(order)
+        .set({
+          ...data,
+          expected_arrival: data.expected_arrival
+            ? new Date(data.expected_arrival)
+            : null,
+        })
+        .where(eq(order.order_id, paramsId));
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+      await tx.insert(OrderLog).values({
+        order_id: paramsId,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} updated order`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} updated order ${paramsId}`,
+      });
+    });
   }
 
-  async deleteOrder(paramsId: number): Promise<void> {
-    await this.db
-      .update(order)
-      .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(order.order_id, paramsId));
+  async deleteOrder(paramsId: number, user: number): Promise<void> {
+    await this.db.transaction(async (tx) => {
+      await tx
+        .update(order)
+        .set({ deleted_at: new Date(Date.now()) })
+        .where(eq(order.order_id, paramsId));
 
-    await this.db
-      .update(orderProduct)
-      .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(orderProduct.order_id, paramsId));
+      await tx
+        .update(orderProduct)
+        .set({ deleted_at: new Date(Date.now()) })
+        .where(eq(orderProduct.order_id, paramsId));
+
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, user));
+      await tx.insert(OrderLog).values({
+        order_id: paramsId,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} deleted order`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} deleted order ${paramsId}`,
+      });
+    });
   }
 
   async finalize(data: UpdateOrder, paramsId: number) {
@@ -286,6 +341,21 @@ export class OrderService {
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );
       }
+
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+      await tx.insert(OrderLog).values({
+        order_id: paramsId,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} finalize order`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} finalize order ${paramsId}`,
+      });
     });
   }
   async pushToInventory(data: UpdateOrder, paramsId: number) {
@@ -302,10 +372,16 @@ export class OrderService {
         })
         .where(eq(order.order_id, paramsId));
 
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
       for (const item of data.order_products!) {
+        const status =
+          item.ordered_quantity! == 0 ? 'Stocked' : 'Partially Stocked';
         await tx
           .update(orderProduct)
-          .set({ ...item, status: 'Stocked' })
+          .set({ ...item, status: status })
           .where(
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );
@@ -330,7 +406,22 @@ export class OrderService {
             status: 'Available',
           });
         }
+        await tx.insert(ProductLog).values({
+          product_id: item.product_id,
+          performed_by: empData[0].employee_id,
+          action: `${empData[0].firstname} ${empData[0].lastname} pushed order to inventory ${item.total_quantity}`,
+        });
       }
+      await tx.insert(OrderLog).values({
+        order_id: paramsId,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} finalize order`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} pushed to inventory ${paramsId}`,
+      });
     });
   }
 }

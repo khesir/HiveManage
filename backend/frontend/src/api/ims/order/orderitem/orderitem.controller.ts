@@ -18,7 +18,6 @@ export class OrderItemsController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-    console.log(product_id);
     try {
       const data = await this.orderitemService.getAllOrderItem(
         order_id,
@@ -68,6 +67,7 @@ export class OrderItemsController {
         ordered_quantity,
         unit_price,
         status,
+        user,
       } = req.body;
 
       await this.orderitemService.createOrderItem({
@@ -77,6 +77,7 @@ export class OrderItemsController {
         ordered_quantity,
         unit_price,
         status,
+        user,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -104,6 +105,7 @@ export class OrderItemsController {
         delivered_quantity,
         unit_price,
         status,
+        user,
       } = req.body;
       await this.orderitemService.updateOrderItem(
         {
@@ -114,6 +116,7 @@ export class OrderItemsController {
           delivered_quantity,
           unit_price,
           status,
+          user,
         },
         orderItem_id,
       );
@@ -131,8 +134,13 @@ export class OrderItemsController {
 
   async deleteOrderItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { orderItem_id } = req.params;
-      await this.orderitemService.deleteOrderItem(Number(orderItem_id));
+      const { orderItem_id, order_id } = req.params;
+      const user = req.query.user as string | undefined;
+      await this.orderitemService.deleteOrderItem(
+        Number(orderItem_id),
+        Number(order_id),
+        Number(user),
+      );
       res.status(200).json({
         status: 'Success',
         message: `Order Item ID:${orderItem_id} is deleted Successfully`,

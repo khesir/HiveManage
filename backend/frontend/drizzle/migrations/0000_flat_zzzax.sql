@@ -41,7 +41,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."status" AS ENUM('Draft', 'Finalized', 'Awaiting Arrival', 'Partially Delivered', 'Delivered', 'Cancelled', 'Returned', 'Stocked');
+ CREATE TYPE "public"."status" AS ENUM('Draft', 'Finalized', 'Awaiting Arrival', 'Partially Delivered', 'Delivered', 'Cancelled', 'Returned', 'Partially Stocked', 'Stocked');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -72,6 +72,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."serial_status" AS ENUM('Sold', 'Available', 'In Service', 'On Order', 'Returned', 'Damage', 'Retired');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."supplier_status" AS ENUM('Unavailable', 'Available', 'Discontinued');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -331,6 +337,7 @@ CREATE TABLE IF NOT EXISTS "supplier" (
 	"remarks" varchar(255),
 	"relationship" "supplierRelation_Status",
 	"profile_link" varchar,
+	"supplier_status" "supplier_status" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp

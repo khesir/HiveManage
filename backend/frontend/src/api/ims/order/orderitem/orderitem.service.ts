@@ -3,6 +3,9 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { CreateOrderItem, UpdateOrderItem } from './orderitem.model';
 import { order, orderProduct, product, supplier } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
+import { employee } from '@/drizzle/schema/ems';
+import { OrderLog } from '@/drizzle/schema/records';
+import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 
 export class OrderItemService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -12,7 +15,33 @@ export class OrderItemService {
   }
 
   async createOrderItem(data: CreateOrderItem) {
-    await this.db.insert(orderProduct).values({ ...data, status: 'Draft' });
+    await this.db.transaction(async (tx) => {
+      const [newOrderProduct] = await tx
+        .insert(orderProduct)
+        .values({ ...data, status: 'Draft' })
+        .returning({ order_product_id: orderProduct.order_product_id });
+
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+
+      const productData = await tx
+        .select()
+        .from(product)
+        .where(eq(product.product_id, data.product_id));
+      await tx.insert(OrderLog).values({
+        order_id: data.order_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} created orderItem ID${newOrderProduct.order_product_id}-${productData[0]?.name}`,
+      });
+
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} created orderItem ID${newOrderProduct.order_product_id}-${productData[0]?.name}`,
+      });
+    });
   }
 
   async getAllOrderItem(
@@ -82,16 +111,65 @@ export class OrderItemService {
   }
 
   async updateOrderItem(data: UpdateOrderItem, orderItem_id: string) {
-    await this.db
-      .update(orderProduct)
-      .set({ ...data })
-      .where(eq(orderProduct.order_product_id, Number(orderItem_id)));
+    await this.db.transaction(async (tx) => {
+      await tx
+        .update(orderProduct)
+        .set({ ...data })
+        .where(eq(orderProduct.order_product_id, Number(orderItem_id)));
+
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+
+      const productData = await tx
+        .select()
+        .from(product)
+        .where(eq(product.product_id, data.product_id));
+      await tx.insert(OrderLog).values({
+        order_id: data.order_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} updated orderItem ID${orderItem_id}-${productData[0]?.name}`,
+      });
+
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} updated orderItem ID${orderItem_id}-${productData[0]?.name}`,
+      });
+    });
   }
 
-  async deleteOrderItem(paramsId: number): Promise<void> {
-    await this.db
-      .delete(orderProduct)
-      .where(eq(orderProduct.order_product_id, paramsId));
+  async deleteOrderItem(
+    paramsId: number,
+    orderId: number,
+    user: number,
+  ): Promise<void> {
+    await this.db.transaction(async (tx) => {
+      const orderItem = await tx
+        .select()
+        .from(orderProduct)
+        .leftJoin(product, eq(product.product_id, orderProduct.product_id))
+        .where(eq(orderProduct.order_product_id, paramsId));
+
+      await tx
+        .delete(orderProduct)
+        .where(eq(orderProduct.order_product_id, paramsId));
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, user));
+      await tx.insert(OrderLog).values({
+        order_id: orderId,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} deleted orderItem ID${paramsId}-${orderItem[0].product?.name}`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} deleted orderItem ID${paramsId}-${orderItem[0].product?.name}`,
+      });
+    });
   }
 
   async finalize(data: UpdateOrderItem, orderItem_id: string) {

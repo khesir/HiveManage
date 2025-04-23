@@ -4,6 +4,9 @@ import { CreateProductSupplier } from './productSupplier.model';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { productSupplier } from '@/drizzle/schema/ims/schema/product/productSupplier.schema';
 import { product, supplier } from '@/drizzle/schema/ims';
+import { employee } from '@/drizzle/schema/ems';
+import { ProductLog } from '@/drizzle/schema/records';
+import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 
 export class ProductSupplierService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -45,7 +48,7 @@ export class ProductSupplierService {
       .leftJoin(product, eq(product.product_id, productSupplier.product_id))
       .where(and(...conditions))
       .orderBy(
-        sort == 'asc'
+        sort == 'desc'
           ? asc(productSupplier.created_at)
           : desc(productSupplier.created_at),
       );
@@ -71,15 +74,60 @@ export class ProductSupplierService {
   // }
 
   async createProductSupplier(data: CreateProductSupplier) {
-    await this.db.insert(productSupplier).values(data);
+    await this.db.transaction(async (tx) => {
+      await tx.insert(productSupplier).values(data);
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+      const supData = await tx
+        .select()
+        .from(supplier)
+        .where(eq(supplier.supplier_id, data.supplier_id));
+      await tx.insert(ProductLog).values({
+        product_id: data.product_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} added supplier ${supData[0].name}`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} added supplier in product ${data.product_id}`,
+      });
+    });
   }
 
   // async updateProductSupplier(data: CreateProductSupplier, paramsId: number) {}
 
-  async deleteProductSupplier(paramsId: number) {
-    await this.db
-      .update(productSupplier)
-      .set({ deleted_at: new Date(Date.now()) })
-      .where(eq(productSupplier.product_supplier_id, paramsId));
+  async deleteProductSupplier(paramsId: number, user: number) {
+    await this.db.transaction(async (tx) => {
+      const pSdata = await tx
+        .select()
+        .from(productSupplier)
+        .where(eq(productSupplier.product_supplier_id, paramsId));
+
+      await tx
+        .update(productSupplier)
+        .set({ deleted_at: new Date(Date.now()) })
+        .where(eq(productSupplier.product_supplier_id, paramsId));
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, user));
+      const supData = await tx
+        .select()
+        .from(supplier)
+        .where(eq(supplier.supplier_id, pSdata[0].supplier_id!));
+      await tx.insert(ProductLog).values({
+        product_id: pSdata[0].product_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} removed supplier ${supData[0].name}`,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} removed supplier in product ${pSdata[0].product_id}`,
+      });
+    });
   }
 }

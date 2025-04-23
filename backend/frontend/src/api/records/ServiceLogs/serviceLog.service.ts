@@ -2,13 +2,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
 import { serviceLog } from '@/drizzle/schema/records/schema/serviceLog';
-import {
-  reports,
-  service,
-  serviceItems,
-  tickets,
-} from '@/drizzle/schema/services';
-import { payment } from '@/drizzle/schema/payment';
+import { employee } from '@/drizzle/schema/ems';
 
 export class ServiceLogService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -65,14 +59,7 @@ export class ServiceLogService {
     const query = this.db
       .select()
       .from(serviceLog)
-      .leftJoin(service, eq(service.service_id, serviceLog.service_id))
-      .leftJoin(tickets, eq(tickets.ticket_id, serviceLog.ticket_id))
-      .leftJoin(reports, eq(reports.reports_id, serviceLog.report_id))
-      .leftJoin(
-        serviceItems,
-        eq(serviceItems.service_items_id, serviceLog.service_item_id),
-      )
-      .leftJoin(payment, eq(payment.payment_id, serviceLog.payment_id))
+      .leftJoin(employee, eq(employee.employee_id, serviceLog.performed_by))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -88,18 +75,7 @@ export class ServiceLogService {
 
     const servicelogWithDetails = result.map((row) => ({
       ...row.serviceLog,
-      tickets: {
-        ...row.tickets,
-      },
-      report: {
-        ...row.reports,
-      },
-      serviceitems: {
-        ...row.serviceItems,
-      },
-      payment: {
-        ...row.payment,
-      },
+      performed_by: row.employee,
     }));
 
     return { totalData, servicelogWithDetails };

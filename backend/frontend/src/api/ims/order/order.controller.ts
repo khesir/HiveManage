@@ -80,6 +80,7 @@ export class OrderController {
         order_status,
         order_payment_status,
         order_payment_method,
+        user,
       } = req.body;
 
       await this.orderService.createOrder({
@@ -91,6 +92,7 @@ export class OrderController {
         order_status,
         order_payment_status,
         order_payment_method,
+        user,
       });
       res
         .status(HttpStatus.CREATED.code)
@@ -116,6 +118,7 @@ export class OrderController {
         order_status,
         order_payment_status,
         order_payment_method,
+        user,
       } = req.body;
 
       await this.orderService.updateOrder(
@@ -127,6 +130,7 @@ export class OrderController {
           order_status,
           order_payment_status,
           order_payment_method,
+          user,
         },
         Number(order_id),
       );
@@ -144,7 +148,8 @@ export class OrderController {
   async deleteOrderById(req: Request, res: Response, next: NextFunction) {
     try {
       const { order_id } = req.params;
-      await this.orderService.deleteOrder(Number(order_id));
+      const user = req.query.user as string | undefined;
+      await this.orderService.deleteOrder(Number(order_id), Number(user));
       res.status(200).json({
         status: 'Success',
         message: `Order ID:${order_id} is deleted Successfully`,
@@ -168,6 +173,7 @@ export class OrderController {
       order_status,
       order_payment_status,
       order_payment_method,
+      user,
     } = req.body;
     try {
       await this.orderService.finalize(
@@ -180,6 +186,7 @@ export class OrderController {
           order_status,
           order_payment_status,
           order_payment_method,
+          user,
         },
         Number(order_id),
       );
@@ -201,6 +208,7 @@ export class OrderController {
       order_status,
       order_payment_status,
       order_payment_method,
+      user,
     } = req.body;
     try {
       await this.orderService.pushToInventory(
@@ -213,6 +221,7 @@ export class OrderController {
           order_status,
           order_payment_status,
           order_payment_method,
+          user,
         },
         Number(order_id),
       );

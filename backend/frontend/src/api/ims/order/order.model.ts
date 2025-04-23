@@ -106,6 +106,7 @@ export const CreateOrder = z.object({
 
   order_products: z.array(orderItem).min(1),
   supplier: supplierSchema.optional(),
+  user: z.number().min(1),
 });
 
 export const UpdateOrder = z.object({
@@ -134,6 +135,7 @@ export const UpdateOrder = z.object({
       }),
     )
     .optional(),
+  user: z.number().min(1),
 });
 
 export type CreateOrder = z.infer<typeof CreateOrder>;

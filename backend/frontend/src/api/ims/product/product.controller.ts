@@ -18,7 +18,6 @@ export class ProductController {
     const product_name = (req.query.product_name as string) || undefined;
     const category_id = parseInt(req.query.category_id as string) || undefined;
     try {
-      console.log(req.query);
       const data = await this.productService.getAllProduct(
         sort,
         limit,
@@ -64,10 +63,18 @@ export class ProductController {
         status,
         product_categories,
         product_details,
+        user,
       } = req.body;
 
       await this.productService.createProduct(
-        { name, is_serialize, status, product_categories, product_details },
+        {
+          name,
+          is_serialize,
+          status,
+          product_categories,
+          product_details,
+          user,
+        },
         req.file,
       );
 
@@ -93,9 +100,17 @@ export class ProductController {
         status,
         product_categories,
         product_details,
+        user,
       } = req.body;
       await this.productService.updateProduct(
-        { name, is_serialize, status, product_categories, product_details },
+        {
+          name,
+          is_serialize,
+          status,
+          product_categories,
+          product_details,
+          user,
+        },
         req.file,
         Number(product_id),
       );

@@ -64,12 +64,12 @@ export class CustomerController {
         lastname,
         contact_phone,
         socials,
-        address_line,
+        addressline,
         barangay,
         province,
         email,
         standing,
-        customer_group_id,
+        user,
       } = req.body;
 
       await this.customerService.createCustomer({
@@ -77,12 +77,12 @@ export class CustomerController {
         lastname,
         contact_phone,
         socials,
-        address_line,
+        addressline,
         barangay,
         province,
         email,
         standing,
-        customer_group_id,
+        user,
       });
       res
         .status(HttpStatus.CREATED.code)
@@ -105,12 +105,12 @@ export class CustomerController {
         lastname,
         contact_phone,
         socials,
-        address_line,
+        addressline,
         barangay,
         province,
         email,
         standing,
-        customer_group_id,
+        user,
       } = req.body;
 
       await this.customerService.updateCustomer(
@@ -119,12 +119,13 @@ export class CustomerController {
           lastname,
           contact_phone,
           socials,
-          address_line,
+          addressline,
           barangay,
           province,
           email,
           standing,
-          customer_group_id,
+
+          user,
         },
         Number(customer_id),
       );

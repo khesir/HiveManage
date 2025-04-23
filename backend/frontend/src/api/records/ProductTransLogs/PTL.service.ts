@@ -1,8 +1,8 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
-import { product, productRecord, serializeProduct } from '@/drizzle/schema/ims';
 import { ProductLog } from '@/drizzle/schema/records';
+import { employee } from '@/drizzle/schema/ems';
 
 export class ProductTransactionLogService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -49,18 +49,10 @@ export class ProductTransactionLogService {
     const query = this.db
       .select()
       .from(ProductLog)
-      .leftJoin(product, eq(product.product_id, ProductLog.product_id))
-      .leftJoin(
-        productRecord,
-        eq(productRecord.product_record_id, ProductLog.product_record_id),
-      )
-      .leftJoin(
-        serializeProduct,
-        eq(serializeProduct.serial_id, ProductLog.serial_id),
-      )
+      .leftJoin(employee, eq(employee.employee_id, ProductLog.performed_by))
       .where(and(...conditions))
       .orderBy(
-        sort === 'asc'
+        sort === 'desc'
           ? asc(ProductLog.created_at)
           : desc(ProductLog.created_at),
       );
@@ -73,15 +65,7 @@ export class ProductTransactionLogService {
 
     const producttranslogWithDetails = result.map((row) => ({
       ...row.ProductTransLog,
-      product: {
-        ...row.product,
-      },
-      productRecord: {
-        ...row.product_record,
-      },
-      serializedProduct: {
-        ...row.serialized_product,
-      },
+      performed_by: row.employee,
     }));
 
     return { totalData, producttranslogWithDetails };

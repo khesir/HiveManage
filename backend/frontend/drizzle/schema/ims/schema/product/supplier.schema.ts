@@ -22,6 +22,11 @@ export const supplierRelation = pgEnum('supplierRelation_Status', [
   'accessories supplier',
   'logistics partner',
 ]);
+export const productStatus = pgEnum('supplier_status', [
+  'Unavailable',
+  'Available',
+  'Discontinued',
+]);
 
 export const supplier = pgTable('supplier', {
   supplier_id: serial('supplier_id').primaryKey(),
@@ -30,6 +35,7 @@ export const supplier = pgTable('supplier', {
   remarks: varchar('remarks', { length: 255 }),
   relationship: supplierRelation('relationship'),
   profile_link: varchar('profile_link'),
+  status: productStatus('supplier_status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

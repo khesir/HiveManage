@@ -76,5 +76,6 @@ export const formDataToObject = (
     }
   });
   req.body = data;
+  console.log(req.body);
   next();
 };

@@ -42,21 +42,20 @@ export class SupplierController {
 
   async createSupplier(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        company_name,
-        contact_number,
-        remarks,
-        relationship,
-        profile_link,
-      } = req.body;
+      const { name, contact_number, remarks, relationship, user, status } =
+        req.body;
 
-      await this.supplierService.createSupplier({
-        company_name,
-        contact_number,
-        remarks,
-        relationship,
-        profile_link,
-      });
+      await this.supplierService.createSupplier(
+        {
+          name,
+          contact_number,
+          remarks,
+          relationship,
+          user,
+          status,
+        },
+        req.file,
+      );
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
         message: 'Successfully Created Supplier ',
@@ -74,17 +73,20 @@ export class SupplierController {
   async updateSupplier(req: Request, res: Response, next: NextFunction) {
     try {
       const { supplier_id } = req.params;
-      const {
-        company_name,
-        contact_number,
-        remarks,
-        relationship,
-        profile_link,
-      } = req.body;
+      const { name, contact_number, remarks, relationship, user, status } =
+        req.body;
 
       await this.supplierService.updateSupplier(
-        { company_name, contact_number, remarks, relationship, profile_link },
+        {
+          name,
+          contact_number,
+          remarks,
+          relationship,
+          user,
+          status,
+        },
         Number(supplier_id),
+        req.file,
       );
       res
         .status(HttpStatus.OK.code)
@@ -100,7 +102,11 @@ export class SupplierController {
   async deleteSupplierById(req: Request, res: Response, next: NextFunction) {
     try {
       const { supplier_id } = req.params;
-      await this.supplierService.deleteSupplier(Number(supplier_id));
+      const user = req.query.user as string | undefined;
+      await this.supplierService.deleteSupplier(
+        Number(supplier_id),
+        Number(user),
+      );
       res.status(200).json({
         status: 'Success',
         message: `Supplier ID:${supplier_id} is deleted Successfully`,
