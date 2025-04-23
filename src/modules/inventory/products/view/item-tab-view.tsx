@@ -1,6 +1,7 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {ProductInformationTab} from './information/information-tab';
 import SettingsSidebar from './settings/settings-sidebar';
+import {LogsTabProduct} from './logsRecord/logs-tab';
 
 export function ViewItemTabDetails() {
 	return (
@@ -10,6 +11,7 @@ export function ViewItemTabDetails() {
 					<TabsTrigger value="Informations">Informations</TabsTrigger>
 					{/* <TabsTrigger value="Analytics">Analytics</TabsTrigger> */}
 					<TabsTrigger value="Settings">Settings</TabsTrigger>
+					<TabsTrigger value="Logs">Logs</TabsTrigger>
 				</TabsList>
 				{/* Possibly add a marquee here for announcements or something */}
 			</div>
@@ -21,6 +23,9 @@ export function ViewItemTabDetails() {
 			</TabsContent> */}
 			<TabsContent value="Settings">
 				<SettingsSidebar />
+			</TabsContent>
+			<TabsContent value="Logs">
+				<LogsTabProduct />
 			</TabsContent>
 		</Tabs>
 	);

@@ -42,6 +42,7 @@ export const supplierSchema = z.object({
 		z.string(),
 	]),
 	relationship: z.string().min(1),
+	status: z.union([z.string().optional(), z.boolean()]),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),

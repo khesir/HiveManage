@@ -29,14 +29,11 @@ import {
 } from '@/components/ui/tooltip';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {OrderProduct} from '@/components/validation/order-product';
-import {AddOrderProductDialogue} from './add-order-product-dialogue';
+
 import {DeleteOrderProductConfirmation} from './delete-order-product-confirmation';
 import {UpdateOrderProductDialogue} from './update-order-product';
-import {FinalizeOrder} from './finalize-order';
-import {DeleteOrder} from './delete-order';
+
 import {AddDeliveredProductDialogue} from './add-delivered-product-dialogue';
-import {UpdatePaymentDialogue} from './update-payment-dialogue';
-import {MarkComplete} from './mark-complete';
 
 const ActionCell = (data: OrderProduct) => {
 	return (
@@ -84,33 +81,31 @@ const UpdateActionCell = (data: OrderProduct) => {
 };
 const columns: ColumnDef<OrderProduct>[] = [
 	{
-		accessorKey: 'product.img_url',
-		header: 'Img',
+		header: 'Product',
 		cell: ({row}) => {
 			return (
-				<AvatarCircles
-					avatar={[
-						{
-							link:
-								typeof row.original?.product?.img_url === 'string'
-									? row.original.product?.img_url
-									: '',
-							name: row.original.product?.name ?? '',
-						},
-					]}
-				/>
+				<div className="flex gap-3 items-center">
+					<AvatarCircles
+						avatar={[
+							{
+								link:
+									typeof row.original?.product?.img_url === 'string'
+										? row.original.product?.img_url
+										: '',
+								name: row.original.product?.name ?? '',
+							},
+						]}
+					/>
+					<span>{`${row.original.product?.name}`}</span>
+				</div>
 			);
 		},
-	},
-	{
-		accessorKey: 'product.name',
-		header: 'Name',
 	},
 	{
 		header: 'Total Value',
 		cell: ({row}) => {
 			const totalValue =
-				Number(row.original.ordered_quantity) * Number(row.original.unit_price);
+				Number(row.original.total_quantity) * Number(row.original.unit_price);
 			return <span>{totalValue.toFixed(2)}</span>;
 		},
 	},
@@ -135,26 +130,15 @@ const columns: ColumnDef<OrderProduct>[] = [
 		cell: ({row}: {row: Row<OrderProduct>}) => {
 			return (
 				<>
-					{row.original.status === 'Draft' && (
-						<UpdateActionCell {...row.original} />
-					)}
+					{row.original.status === 'Draft' && <ActionCell {...row.original} />}
 					{row.original.status === 'Awaiting Arrival' && (
-						<ActionCell {...row.original} />
+						<UpdateActionCell {...row.original} />
 					)}
 					{/* {row.original.status === 'Delivered' && <div>Delivered</div>} */}
 				</>
 			);
 		},
 	},
-	// ...(status === 'Draft'
-	// 	? [
-
-	// 		]
-	// 	: status === 'Awaiting Arrival'
-	// 		? [
-
-	// 			]
-	// 		: []),
 ];
 
 export function InformationProductTable() {
@@ -185,24 +169,6 @@ export function InformationProductTable() {
 	}
 	return (
 		<>
-			<div className="flex justify-end gap-3 md:gap-0">
-				{/* Pending orders -- Controls*/}
-				{!loading && selectedOrder.order_status === 'Draft' && (
-					<div className="flex gap-3">
-						<DeleteOrder />
-						<FinalizeOrder />
-						<UpdatePaymentDialogue />
-						<AddOrderProductDialogue />
-					</div>
-				)}
-				{/* Payment */}
-				{!loading && selectedOrder.order_status !== 'Draft' && (
-					<div className="flex gap-3">
-						<UpdatePaymentDialogue />
-						<MarkComplete />
-					</div>
-				)}
-			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>

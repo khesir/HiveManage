@@ -13,6 +13,8 @@ import {
 	OrderProduct,
 	orderProductSchema,
 } from '@/components/validation/order-product';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 import {zodResolver} from '@hookform/resolvers/zod';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
@@ -24,12 +26,14 @@ interface Props {
 }
 
 export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
-	const {selectedOrder, loading, updateOrderItem, getOrderById} =
-		useOrderStore();
+	const {selectedOrder, loading, updateOrderItem} = useOrderStore();
+	const {user} = useEmployeeRoleDetailsStore();
+	const {toggleTrigger} = useEventTrigger();
 
 	const form = useForm<OrderProduct>({
 		resolver: zodResolver(orderProductSchema),
 		defaultValues: {
+			status: orderProduct.status,
 			unit_price: orderProduct.unit_price,
 			ordered_quantity: orderProduct.ordered_quantity,
 			total_quantity: orderProduct.total_quantity,
@@ -40,6 +44,10 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 
 	const processForm = async (data: OrderProduct) => {
 		try {
+			if (!user?.employee.employee_id) {
+				toast.error('You need to be logged in to proceed');
+				return;
+			}
 			await updateOrderItem(
 				selectedOrder.order_id!,
 				orderProduct.order_product_id!,
@@ -47,12 +55,13 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 					...data,
 					order_id: selectedOrder.order_id,
 				},
+				user?.employee.employee_id,
 			);
 			toast.success('Product Added');
 			if (onSubmit) {
 				onSubmit();
 			}
-			getOrderById(selectedOrder.order_id!);
+			toggleTrigger();
 		} catch (error) {
 			console.log(error);
 			let errorMessage = 'An unexpected error occurred';
@@ -73,6 +82,8 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 				onSubmit={form.handleSubmit(processForm)}
 				className="w-full space-y-3"
 			>
+				<pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
+
 				<FormField
 					control={form.control}
 					name={`ordered_quantity`}

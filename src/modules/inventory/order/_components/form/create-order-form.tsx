@@ -1,7 +1,7 @@
 import {toast} from 'sonner';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import axios, {AxiosError} from 'axios';
+import {AxiosError} from 'axios';
 import {ApiRequest, request} from '@/api/axios';
 import {
 	Form,
@@ -57,6 +57,7 @@ import {Product} from '@/components/validation/product';
 import {ProductSupplier} from '@/components/validation/product-supplier';
 import {Textarea} from '@/components/ui/textarea';
 import useOrderStore from '@/api/order-state';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 
 export function CreateOrderForm() {
 	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -72,6 +73,7 @@ export function CreateOrderForm() {
 		selectedProduct: {}, // To store selected product state for each product
 	});
 	const {addOrder} = useOrderStore();
+	const {user} = useEmployeeRoleDetailsStore();
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
@@ -196,25 +198,16 @@ export function CreateOrderForm() {
 	};
 
 	const processForm = async (formData: Order) => {
-		try {
-			if (formData.order_products?.length == 0) {
-				toast.error('No order Items added');
-				return;
-			}
-			await addOrder(formData);
-			navigate(-1);
-		} catch (error) {
-			console.log(error);
-			let errorMessage = 'An unexpected error occurred';
-			if (axios.isAxiosError(error)) {
-				errorMessage =
-					error.response?.data?.message || // Use the `message` field if available
-					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
-					'Failed to process request';
-			}
-
-			toast.error(errorMessage);
+		if (!user?.employee.employee_id) {
+			toast.error('You need to be logged in');
+			return;
 		}
+		if (formData.order_products?.length == 0) {
+			toast.error('No order Items added');
+			return;
+		}
+		await addOrder(formData, user?.employee.employee_id);
+		navigate(-1);
 	};
 
 	if (res) {

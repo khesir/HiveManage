@@ -1,24 +1,40 @@
 import {PaginationResponse, request} from '@/api/axios';
-import {DataTable} from '@/components/table/data-table';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-import {Separator} from '@/components/ui/separator';
 import {dateParser} from '@/lib/util/utils';
 import {ProductSupplier} from '@/components/validation/product-supplier';
 import {ColumnDef} from '@tanstack/react-table';
 import {AxiosError} from 'axios';
 import {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {CreateProductSupplierDialogue} from '../_components/create-product-supplier-dialogue';
-import {X} from 'lucide-react';
+import {useParams, useSearchParams} from 'react-router-dom';
+import {ProductSupplierTable} from './supplier-table';
+import {toast} from 'sonner';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {Button} from '@/components/ui/button';
+import {X} from 'lucide-react';
+import useEventTrigger from '../../../../_components/hooks/use-event-trigger';
 
 const ActionCell = ({pid}: {pid: number}) => {
 	const {id} = useParams();
+	const {user} = useEmployeeRoleDetailsStore();
+	const {toggleTrigger} = useEventTrigger();
+
 	const handleDelete = async () => {
-		await request<PaginationResponse<ProductSupplier>>(
-			'DELETE',
-			`/api/v1/ims/product/${id}/productSupplier/${pid}`,
-		);
+		try {
+			await request<PaginationResponse<ProductSupplier>>(
+				'DELETE',
+				`/api/v1/ims/product/${id}/productSupplier/${pid}?user=${user?.employee.employee_id}`,
+			);
+			toast.success('Deleted Supplier');
+			toggleTrigger();
+		} catch (e) {
+			if (e instanceof Error) {
+				toast.error(e.toString());
+			} else if (e instanceof AxiosError) {
+				toast.error(e.response?.data as string);
+			} else {
+				toast.error('An Unknown error occured');
+			}
+		}
 	};
 	return (
 		<Button variant={'destructive'} onClick={handleDelete}>
@@ -84,59 +100,39 @@ export const columns: ColumnDef<ProductSupplier>[] = [
 
 export function SupplierForm() {
 	const [productSupplier, setProductSupplier] = useState<ProductSupplier[]>([]);
-	const [loading, setLoading] = useState(false);
-	const [res, setRes] = useState<string | null>(null);
 	const {id} = useParams();
-
+	const [searchParams] = useSearchParams();
+	const [pageCount, setPageCount] = useState<number>(0);
+	const page = Number(searchParams.get('page')) || 1;
+	const pageLimit = Number(searchParams.get('limit')) || 10;
+	const offset = (page - 1) * pageLimit;
+	const {isTriggered} = useEventTrigger();
 	useEffect(() => {
 		try {
-			setLoading(true);
 			const fetchProducts = async () => {
 				const response = await request<PaginationResponse<ProductSupplier>>(
 					'GET',
-					`/api/v1/ims/product/${id}/productSupplier?no_pagination=true`,
+					`/api/v1/ims/product/${id}/productSupplier?&limit=${pageLimit}&offest=${offset}`,
 				);
 				setProductSupplier(response.data);
+				setPageCount(Math.ceil(response.total_data / pageLimit));
 			};
 			fetchProducts();
 		} catch (e) {
 			if (e instanceof Error) {
-				setRes(e.toString());
+				toast.error(e.toString());
 			} else if (e instanceof AxiosError) {
-				setRes(e.response?.data as string);
+				toast.error(e.response?.data as string);
 			} else {
-				setRes('An Unknown error occured');
+				toast.error('An Unknown error occured');
 			}
-		} finally {
-			setLoading(false);
 		}
-	}, []);
-	if (res) {
-		return <div>{res}</div>;
-	}
+	}, [offset, pageLimit, isTriggered]);
 	return (
-		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<div>
-					<h3 className="text-lg font-medium">Suppliers</h3>
-					<p className="text-sm text-muted-foreground">
-						Available product supplier
-					</p>
-				</div>
-				{!loading && (
-					<CreateProductSupplierDialogue productSuppliers={productSupplier} />
-				)}
-			</div>
-			<Separator />
-			{loading ? (
-				'Fetching data'
-			) : (
-				<>
-					<DataTable columns={columns} data={productSupplier}>
-						No Available supplier
-					</DataTable>
-				</>
-			)}
-		</div>
+		<ProductSupplierTable
+			columns={columns}
+			data={productSupplier}
+			pageCount={pageCount}
+		/>
 	);
 }

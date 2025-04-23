@@ -10,15 +10,12 @@ import {Badge} from '@/components/ui/badge';
 import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {File} from 'lucide-react';
-import {Supplier} from '../../../components/validation/supplier';
 import {ProductCategory} from '../../../components/validation/category';
+import useSupplier from './_components/use-supplier';
 
-interface ProfileProps {
-	data: Supplier | undefined;
-	showOrderDetails?: boolean;
-}
-export function SupplierProfile({data, showOrderDetails = true}: ProfileProps) {
+export function SupplierProfile() {
 	const navigate = useNavigate();
+	const {data} = useSupplier();
 	return (
 		<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
 			<CardHeader className="relative flex flex-row items-center bg-muted/50">
@@ -113,24 +110,20 @@ export function SupplierProfile({data, showOrderDetails = true}: ProfileProps) {
 						</li>
 					</ul>
 				</div>
-				{showOrderDetails && (
-					<>
-						<Separator className="my-4" />
+				<Separator className="my-4" />
 
-						<div>
-							<ul className="grid gap-3">
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Active Orders</span>
-									<span>10</span>
-								</li>
-								<li className="flex items-center justify-between">
-									<span className="text-muted-foreground">Total Orders</span>
-									<span>1000</span>
-								</li>
-							</ul>
-						</div>
-					</>
-				)}
+				<div>
+					<ul className="grid gap-3">
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Active Orders</span>
+							<span>10</span>
+						</li>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Total Orders</span>
+							<span>1000</span>
+						</li>
+					</ul>
+				</div>
 			</CardContent>
 		</Card>
 	);

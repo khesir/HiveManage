@@ -125,6 +125,10 @@ export const orderSchema = z.object({
 
 	order_products: z.array(orderItemSchema).optional(),
 	supplier: supplierSchema.optional(),
+
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().nullable().optional(),
 });
 
 export type Order = z.infer<typeof orderSchema>;

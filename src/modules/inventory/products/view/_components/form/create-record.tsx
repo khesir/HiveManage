@@ -82,7 +82,6 @@ export function CreateInventoryRecord({onSubmit}: Props) {
 	});
 	const processForm = async (data: ItemRecords) => {
 		try {
-			console.log(data);
 			await request('POST', `/api/v1/ims/product/${id}/productRecord`, data);
 			toast.success('Record Added');
 			if (onSubmit) {

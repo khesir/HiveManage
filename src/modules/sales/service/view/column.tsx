@@ -1,9 +1,32 @@
-import {ColumnDef} from '@tanstack/react-table';
+import {ColumnDef, Row} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
 import {Ticket} from '@/components/validation/tickets';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Badge} from '@/components/ui/badge';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {TicketSheetList} from './sheet/ticket-sheet';
 
+const ActionCell = (data: Ticket) => {
+	return (
+		<div className="flex gap-2">
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger>
+						<TicketSheetList ticket={data} />
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>View Ticket</p>
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
+		</div>
+	);
+};
 export const columns: ColumnDef<Ticket>[] = [
 	{
 		accessorKey: 'ticket_id',
@@ -57,5 +80,9 @@ export const columns: ColumnDef<Ticket>[] = [
 		accessorKey: 'created_at',
 		header: 'Created',
 		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
+	},
+	{
+		header: 'Action',
+		cell: ({row}: {row: Row<Ticket>}) => <ActionCell {...row.original} />,
 	},
 ];

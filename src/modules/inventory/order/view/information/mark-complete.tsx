@@ -10,15 +10,30 @@ import {
 import {useState} from 'react';
 
 import useOrderStore from '@/api/order-state';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import {toast} from 'sonner';
 
 export function MarkComplete() {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const {selectedOrder, pushToInventory} = useOrderStore();
+	const {toggleTrigger} = useEventTrigger();
+	const {user} = useEmployeeRoleDetailsStore();
 
 	const handleDelete = async () => {
-		await pushToInventory(selectedOrder.order_id!, selectedOrder);
+		if (!user?.employee.employee_id) {
+			toast.error('You need to be logged in to proceed');
+			return;
+		}
+		await pushToInventory(
+			selectedOrder.order_id!,
+			selectedOrder,
+			user?.employee.employee_id,
+		);
 		setFormModal(false);
+		toggleTrigger();
 	};
+
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
@@ -30,7 +45,8 @@ export function MarkComplete() {
 			<DialogContent>
 				<DialogTitle>Confirm Order</DialogTitle>
 				<DialogDescription>
-					You cannot further edit this record after finalizing.
+					This will mark the order fullfiled if there are no more ordered
+					quantity.
 				</DialogDescription>
 				<DialogFooter>
 					<Button variant="outline" onClick={() => setFormModal(false)}>

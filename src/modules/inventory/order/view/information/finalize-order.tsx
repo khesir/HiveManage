@@ -10,15 +10,29 @@ import {
 import {useState} from 'react';
 
 import useOrderStore from '@/api/order-state';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import {toast} from 'sonner';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 
 export function FinalizeOrder() {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const {selectedOrder, finalize} = useOrderStore();
-
+	const {user} = useEmployeeRoleDetailsStore();
+	const {toggleTrigger} = useEventTrigger();
 	const handleDelete = async () => {
-		await finalize(selectedOrder.order_id!, selectedOrder);
+		if (!user?.employee.employee_id) {
+			toast.error('You need to be logged in to proceed');
+			return;
+		}
+		await finalize(
+			selectedOrder.order_id!,
+			selectedOrder,
+			user?.employee.employee_id,
+		);
 		setFormModal(false);
+		toggleTrigger();
 	};
+
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>

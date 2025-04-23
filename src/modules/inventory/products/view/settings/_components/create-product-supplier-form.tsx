@@ -18,10 +18,12 @@ import {
 } from '@/components/ui/dialog';
 import {ProductSupplier} from '@/components/validation/product-supplier';
 import {Supplier} from '@/components/validation/supplier';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {toast} from 'sonner';
+import useEventTrigger from '../../../../_components/hooks/use-event-trigger';
 
 interface Props {
 	onSubmit?: () => void;
@@ -33,6 +35,8 @@ export function CreateProductSupplierForm({onSubmit, productSuppliers}: Props) {
 	const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const {id} = useParams();
+	const {user} = useEmployeeRoleDetailsStore();
+	const {toggleTrigger} = useEventTrigger();
 	const fetchData = async () => {
 		try {
 			// Fetch all customers from the backend
@@ -60,12 +64,18 @@ export function CreateProductSupplierForm({onSubmit, productSuppliers}: Props) {
 
 	const processRequest = async (supplier: Supplier) => {
 		try {
+			if (!user?.employee.employee_id) {
+				toast.error('You need to be logged in to do this.');
+				return;
+			}
 			const data = {
 				supplier_id: supplier.supplier_id!,
 				product_id: parseInt(id!),
+				user: user?.employee.employee_id,
 			};
 			await request('POST', `/api/v1/ims/product/${id}/productSupplier`, data);
 			toast.success('Supplier Added');
+			toggleTrigger();
 			if (onSubmit) {
 				setIsModalOpen(false);
 				onSubmit();

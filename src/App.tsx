@@ -37,6 +37,7 @@ import PaymentListPage from './pages/payment/system/payment-list-page';
 import ServiceListPage from './pages/sales/systems/service/service-list-page';
 import CreateServicePage from './pages/sales/systems/service/create-service-page';
 import CreateTaskPage from './pages/sales/systems/service/tickets/task-create';
+import CreateSupplierPage from './pages/inventory/suppliers/create-supplier';
 
 function App() {
 	return (
@@ -117,6 +118,7 @@ function App() {
 								</Route>
 								<Route path="suppliers">
 									<Route index element={<SupplierPage />} />
+									<Route path="create" element={<CreateSupplierPage />} />
 									<Route path="view/:id" />
 								</Route>
 							</Route>
@@ -150,7 +152,7 @@ function App() {
 								/>
 							</Route>
 
-							<Route path="payment" element={<PaymentListPage />} />
+							<Route path="payments" element={<PaymentListPage />} />
 
 							<Route path="customer">
 								<Route index element={<CustomerDatabasePage />} />
@@ -187,6 +189,7 @@ function App() {
 								</Route>
 								<Route path="suppliers">
 									<Route index element={<SupplierPage />} />
+									<Route path="create" element={<CreateSupplierPage />} />
 									<Route path="view/:id" />
 								</Route>
 							</Route>
@@ -255,6 +258,7 @@ function App() {
 								</Route>
 								<Route path="suppliers">
 									<Route index element={<SupplierPage />} />
+									<Route path="create" element={<CreateSupplierPage />} />
 									<Route path="view/:id" />
 								</Route>
 							</Route>

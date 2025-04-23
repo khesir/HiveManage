@@ -1,7 +1,7 @@
 import {Separator} from '@/components/ui/separator';
 import {Heading} from '@/components/ui/heading';
-import {CreateCustomerForm} from '../_components/create/create-customer';
-import {CreateCustomerOverview} from '../_components/create/create-customer-overview';
+import {CreateCustomerForm} from '../customer/create/create-customer';
+import {CreateCustomerOverview} from '../customer/create/create-customer-overview';
 
 export default function CreateCustomerSection() {
 	return (

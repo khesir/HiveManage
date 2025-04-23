@@ -2,10 +2,10 @@ import {useEffect, useState} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
 
 import useOrderStore from '../_components/hooks/use-orders';
-import useTrackReferesh from '../_components/hooks/uset-track-refresh';
 import {OrderDataTable} from './order-table';
 import {columns} from './columns';
 import {Order} from '@/components/validation/order';
+import useEventTrigger from '../_components/hooks/use-event-trigger';
 
 interface ProductWithDetails {
 	searchParams: URLSearchParams;
@@ -25,7 +25,8 @@ export function OrderList({
 	const offset = (page - 1) * pageLimit;
 	// Interactivity
 	const {setOrder} = useOrderStore();
-	const {track} = useTrackReferesh();
+	const {toggleTrigger} = useEventTrigger();
+
 	useEffect(() => {
 		const fetchProducts = async () => {
 			if (product_id) {
@@ -51,7 +52,7 @@ export function OrderList({
 			}
 		};
 		fetchProducts();
-	}, [offset, pageLimit, track, sort]);
+	}, [offset, pageLimit, toggleTrigger, sort]);
 	return (
 		<OrderDataTable columns={columns} data={orders} pageCount={pageCount} />
 	);

@@ -3,16 +3,10 @@ import {PaginationResponse, request} from '@/api/axios';
 import {Supplier} from '../../../components/validation/supplier';
 import {columns} from './columns';
 import {SupplierTable} from './supplier-table';
+import {useSearchParams} from 'react-router-dom';
 
-export type paramsProps = {
-	searchParams: URLSearchParams;
-	modalRefreshTrigger?: boolean;
-};
-
-export default function SupplierList({
-	searchParams,
-	modalRefreshTrigger,
-}: paramsProps) {
+export default function SupplierList() {
+	const [searchParams] = useSearchParams();
 	const [supplier, setSupplier] = useState<Supplier[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 
@@ -33,7 +27,7 @@ export default function SupplierList({
 		};
 
 		fetchEmployees();
-	}, [offset, pageLimit, sort, modalRefreshTrigger]);
+	}, [offset, pageLimit, sort]);
 	return (
 		<SupplierTable
 			searchKey="name"

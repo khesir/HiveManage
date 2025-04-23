@@ -1,6 +1,6 @@
 'use client';
 
-import {LayoutGrid, LogOut, User} from 'lucide-react';
+import {LogOut} from 'lucide-react';
 
 import {Button} from '@/components/ui/button';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
@@ -13,13 +13,12 @@ import {
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {PaginationResponse, request} from '@/api/axios';
 import {useEmployeeRoleDetailsStore} from '../../../modules/authentication/hooks/use-sign-in-userdata';
 import {useEffect} from 'react';
@@ -27,16 +26,11 @@ import {EmployeeRolesWithDetails} from '@/modules/ems/_components/validation/emp
 
 export function UserNav() {
 	const navigate = useNavigate();
-	const location = useLocation();
-	const firstSegment = location.pathname.split('/')[1]; // 'sales'
 	const {user, setUser, clearUser} = useEmployeeRoleDetailsStore();
 
 	const handleClick = async () => {
 		try {
 			await request('GET', '/auth/sign-out');
-			console.log(
-				`/api/v1/ems/employeeRoles/${user?.employee_roles_id}/status`,
-			);
 			await request(
 				'PATCH',
 				`/api/v1/ems/employeeRoles/${user?.employee_roles_id}/status`,
@@ -102,24 +96,6 @@ export function UserNav() {
 						</p>
 					</div>
 				</DropdownMenuLabel>
-				<DropdownMenuSeparator />
-				<DropdownMenuGroup>
-					<DropdownMenuItem className="hover:cursor-pointer" asChild>
-						<Link
-							to={`/${firstSegment}/dashboard`}
-							className="flex items-center"
-						>
-							<LayoutGrid className="w-4 h-4 mr-3 text-muted-foreground" />
-							Dashboard
-						</Link>
-					</DropdownMenuItem>
-					<DropdownMenuItem className="hover:cursor-pointer" asChild>
-						<Link to={`/${firstSegment}/profile`} className="flex items-center">
-							<User className="w-4 h-4 mr-3 text-muted-foreground" />
-							Profile
-						</Link>
-					</DropdownMenuItem>
-				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					className="hover:cursor-pointer"

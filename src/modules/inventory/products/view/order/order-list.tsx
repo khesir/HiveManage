@@ -26,21 +26,23 @@ import {getAllOrderItems} from '@/api/order-items-api';
 
 const columns: ColumnDef<OrderProduct>[] = [
 	{
-		accessorKey: 'order.supplier.profile_link',
-		header: 'Img',
+		header: 'Supplier',
 		cell: ({row}) => {
 			return (
-				<AvatarCircles
-					avatar={[
-						{
-							link:
-								typeof row.original?.order?.supplier?.profile_link === 'string'
-									? row.original.order?.supplier?.profile_link
-									: '',
-							name: row.original.order?.supplier?.name ?? '',
-						},
-					]}
-				/>
+				<div className="flex gap-3 items-center">
+					<AvatarCircles
+						avatar={[
+							{
+								link:
+									typeof row.original.order?.supplier?.profile_link === 'string'
+										? row.original.order?.supplier?.profile_link
+										: '',
+								name: row.original.order?.supplier?.name ?? '',
+							},
+						]}
+					/>
+					<span>{`${row.original.order?.supplier?.name}`}</span>
+				</div>
 			);
 		},
 	},

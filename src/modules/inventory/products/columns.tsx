@@ -93,6 +93,6 @@ export const columns: ColumnDef<Product>[] = [
 	{
 		accessorKey: 'created_at',
 		header: 'Created At',
-		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
+		cell: ({row}) => dateParser(row?.original?.created_at ?? '', true),
 	},
 ];

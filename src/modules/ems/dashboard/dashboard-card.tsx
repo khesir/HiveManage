@@ -15,7 +15,7 @@ export function DashboardCard({
 	count,
 }: DashboardCardProps) {
 	return (
-		<Card className="w-[25vh] h-full flex flex-col p-3 justify-between">
+		<Card className="w-full h-full flex flex-col p-3 justify-between">
 			<div className="flex flex-col gap-2">
 				<div className="flex items-center">
 					<div className="flex-[70%] text-lg font-semibold">{title}</div>
@@ -25,7 +25,7 @@ export function DashboardCard({
 				</div>
 				<div className="text-gray-500 text-sm">{duration}</div>
 			</div>
-			<div className="text-sm font-semibold">{count}</div>
+			<div className="text-3xl font-semibold">{count}</div>
 		</Card>
 	);
 }

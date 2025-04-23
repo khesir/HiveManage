@@ -10,17 +10,20 @@ export const columns: ColumnDef<Order>[] = [
 		header: 'Supplier',
 		cell: ({row}) => {
 			return (
-				<AvatarCircles
-					avatar={[
-						{
-							link:
-								typeof row.original.supplier?.profile_link === 'string'
-									? row.original.supplier?.profile_link
-									: '',
-							name: row.original.supplier?.name ?? '',
-						},
-					]}
-				/>
+				<div className="flex gap-3 items-center">
+					<AvatarCircles
+						avatar={[
+							{
+								link:
+									typeof row.original.supplier?.profile_link === 'string'
+										? row.original.supplier?.profile_link
+										: '',
+								name: row.original.supplier?.name ?? '',
+							},
+						]}
+					/>
+					<span>{`${row.original.supplier?.name}`}</span>
+				</div>
 			);
 		},
 	},
@@ -30,21 +33,30 @@ export const columns: ColumnDef<Order>[] = [
 		cell: ({row}) => <Badge>{row.original.order_status}</Badge>,
 	},
 	{
-		accessorKey: 'supplier.contact_number',
-		header: 'Contact',
-	},
-	{
-		accessorKey: 'order_payment_status',
-		header: 'Payment Status',
-	},
-	{
 		id: 'quantity',
-		header: 'Qty',
+		header: 'Product Count',
 		cell: ({row}) => row.original.order_products?.length ?? 0,
+	},
+	{
+		header: 'Qty',
+		cell: ({row}) => {
+			return (
+				<span>
+					{row.original.order_products?.length === 0
+						? 'No item'
+						: `${row.original.order_products?.reduce((sum, product) => sum + (product.total_quantity || 0), 0)}`}
+				</span>
+			);
+		},
 	},
 	{
 		accessorKey: 'expected_arrival',
 		header: 'Expected Arrival',
 		cell: ({row}) => dateParser(row?.original?.expected_arrival ?? ''),
+	},
+	{
+		accessorKey: 'created_at',
+		header: 'Created At',
+		cell: ({row}) => dateParser(row?.original?.created_at ?? '', true),
 	},
 ];

@@ -31,9 +31,11 @@ import {Trash2Icon, AlertTriangleIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {useFieldArray, useForm} from 'react-hook-form';
 import {toast} from 'sonner';
-import {CreateCustomer} from '../../../../api/customer-api';
 import {useNavigate} from 'react-router-dom';
 import {Customer, customerSchema} from '@/components/validation/customer';
+import {ApiRequest, request} from '@/api/axios';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import {AxiosError} from 'axios';
 
 interface CreateCustomerFormProps {
 	processCreate?: (data: Customer) => void;
@@ -44,7 +46,7 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 	const [, setPreviousStep] = useState(0);
 	const navigate = useNavigate();
 	const {setCustomerFormData, resetCustomerFormData} = useCustomerFormStore();
-
+	const {user} = useEmployeeRoleDetailsStore();
 	useEffect(() => {
 		resetCustomerFormData();
 	}, []);
@@ -144,6 +146,10 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 
 	const processForm = async (data: Customer) => {
 		try {
+			if (!user?.employee.employee_id) {
+				toast.error('You need to be logged in');
+				return;
+			}
 			setLoading(true);
 			// Overview main transaction process
 			// Don't touch
@@ -151,18 +157,28 @@ export function CreateCustomerForm({processCreate}: CreateCustomerFormProps) {
 				processCreate(data);
 				return true;
 			}
-
+			console.log({
+				...data,
+				user: user?.employee.employee_id,
+			});
 			// Saving process for default
 			// ========================================
-			await CreateCustomer(data);
+			await request<ApiRequest<Customer>>('POST', '/api/v1/cms/customer', {
+				...data,
+				user: user?.employee.employee_id,
+			});
 			// ========================================
 			toast('Customer Successfully Created!');
 			navigate(-1);
-		} catch (error) {
-			toast('Error updating employment information:', {
-				description:
-					error instanceof Error ? error.message : 'An unknown error occurred',
-			});
+		} catch (e) {
+			if (e instanceof Error) {
+				toast.error(e.toString());
+			} else if (e instanceof AxiosError) {
+				toast.error(e.response?.data as string);
+			} else {
+				toast.error('An unknown error occured');
+			}
+			console.log(e);
 		}
 		setLoading(false);
 	};

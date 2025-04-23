@@ -1,5 +1,6 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {ServiceDetails} from './service-details';
+import {LogsTabProduct} from './logsRecord/logs-tab';
 
 export function ServiceTab() {
 	return (
@@ -14,7 +15,9 @@ export function ServiceTab() {
 			<TabsContent value="Informations">
 				<ServiceDetails />
 			</TabsContent>
-
+			<TabsContent value="Logs">
+				<LogsTabProduct />
+			</TabsContent>
 			<TabsContent value="Settings"></TabsContent>
 		</Tabs>
 	);

@@ -29,12 +29,10 @@ import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Category} from '@/components/validation/category';
-import {
-	Product,
-	productSchema,
-} from '@/components/validation/product';
+import {Product, productSchema} from '@/components/validation/product';
 import {Supplier} from '@/components/validation/supplier';
 import {Switch} from '@/components/ui/switch';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 interface Props {
 	selectedProduct: Product | undefined;
 }
@@ -50,6 +48,7 @@ export function ProfileForm({selectedProduct}: Props) {
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [selectedCategories, setSelectedCategories] =
 		useState<Category[]>(prevCategories);
+	const {user} = useEmployeeRoleDetailsStore();
 	useEffect(() => {
 		setLoading(true);
 		const fetchData = async () => {
@@ -64,11 +63,6 @@ export function ProfileForm({selectedProduct}: Props) {
 						`/api/v1/ims/supplier?no_pagination=true`,
 					),
 				]);
-				// setSuppliers(
-				// 	Array.isArray(supplierResult.data)
-				// 		? supplierResult.data
-				// 		: [supplierResult.data],
-				// );
 				setCategories(
 					Array.isArray(categoryResult.data)
 						? categoryResult.data
@@ -118,45 +112,6 @@ export function ProfileForm({selectedProduct}: Props) {
 		defaultValues: defaultProductFormValues,
 		mode: 'onChange',
 	});
-	// type ItemRecordError = {
-	// 	[key: number]: FieldError | undefined;
-	// };
-	// const {
-	// 	control,
-	// 	watch,
-	// 	setValue,
-	// 	formState: {errors},
-	// } = form;
-	// const {
-	// 	fields: itemRecordFields,
-	// 	append: appendItemRecord,
-	// 	remove: removeItemRecord,
-	// } = useFieldArray({
-	// 	control: control,
-	// 	name: 'item_record',
-	// });
-	// const itemRecordErrors = errors.item_record as ItemRecordError | undefined;
-
-	// const appendItemToRecord = (recordIndex: number, newItem: Partial<Item>) => {
-	// 	const {append} = useFieldArray({
-	// 		control,
-	// 		name: `item_record.${recordIndex}.item`,
-	// 	});
-	// 	append(newItem);
-	// };
-	// const itemRecords = watch('item_record');
-
-	// useEffect(() => {
-	// 	itemRecords.forEach((record: ItemRecords, index: number) => {
-	// 		const totalStock =
-	// 			record.item?.reduce(
-	// 				(acc: number, item: Item) => acc + (item.quantity || 0),
-	// 				0,
-	// 			) || 0;
-	// 		// Update the total stock for this specific `item_record`
-	// 		setValue(`item_record.${index}.total_stock`, totalStock);
-	// 	});
-	// }, [itemRecords, setValue]);
 
 	const processForm = async (data: Product) => {
 		try {
@@ -172,6 +127,7 @@ export function ProfileForm({selectedProduct}: Props) {
 					color: data.product_details?.color,
 					size: data.product_details?.size,
 				},
+				user: user?.employee.employee_id,
 			};
 			const formData = new FormData();
 			appendFormData(newData, formData);

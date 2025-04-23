@@ -5,6 +5,7 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
+	Row,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
 import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
@@ -26,7 +27,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {
 	DropdownMenu,
@@ -36,6 +37,7 @@ import {
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {Supplier} from '@/components/validation/supplier';
+import useSupplier from './_components/use-supplier';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -118,6 +120,22 @@ export function SupplierTable<TData extends Supplier, TValue>({
 	});
 
 	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
+	// Set the first employee data to Zustand on initial render
+	useEffect(() => {
+		if (data.length > 0) {
+			const rdata: Supplier = data[0];
+			useSupplier.getState().setSupplier(rdata);
+		}
+	}, [data]);
+
+	// This handles the employee viewing by click
+	const handleRowClick = (row: Row<TData>) => {
+		// Access the data of the clicked row
+		const rowData: Supplier = row.original;
+
+		// Do something with the row data
+		useSupplier.getState().setSupplier(rowData);
+	};
 
 	// ====================================================================================
 	// Search Funtion
@@ -191,36 +209,45 @@ export function SupplierTable<TData extends Supplier, TValue>({
 					} // Update filter value}
 					className="w-full md:max-w-sm"
 				/>
-				<DropdownMenu>
-					<DropdownMenuTrigger>
-						<Button variant={'outline'}>
-							Sort:{' '}
-							<div className="flex items-center">
-								<Separator orientation="vertical" className="mx-2 h-4" />
-								<Badge
-									variant={'secondary'}
-									className="rounded-sm px-1 font-normal"
-								>
-									{sortOrder === 'asc' ? 'Ascending' : 'Descending'}
-								</Badge>
-							</div>
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent className="flex flex-col">
-						<Button
-							variant={sortOrder === 'asc' ? 'default' : 'ghost'}
-							onClick={() => handleSortOrderChange('asc')}
-						>
-							Ascending
-						</Button>
-						<Button
-							variant={sortOrder === 'desc' ? 'default' : 'ghost'}
-							onClick={() => handleSortOrderChange('desc')}
-						>
-							Descending
-						</Button>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<div className="flex gap-3">
+					<DropdownMenu>
+						<DropdownMenuTrigger>
+							<Button variant={'outline'}>
+								Sort:
+								<div className="flex items-center">
+									<Separator orientation="vertical" className="mx-2 h-4" />
+									<Badge
+										variant={'secondary'}
+										className="rounded-sm px-1 font-normal"
+									>
+										{sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+									</Badge>
+								</div>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className="flex flex-col">
+							<Button
+								variant={sortOrder === 'asc' ? 'default' : 'ghost'}
+								onClick={() => handleSortOrderChange('asc')}
+							>
+								Ascending
+							</Button>
+							<Button
+								variant={sortOrder === 'desc' ? 'default' : 'ghost'}
+								onClick={() => handleSortOrderChange('desc')}
+							>
+								Descending
+							</Button>
+						</DropdownMenuContent>
+					</DropdownMenu>
+					<Button
+						onClick={() => navigate('create')}
+						className="flex gap-3 items-center"
+					>
+						<Plus />
+						<span>Create</span>
+					</Button>
+				</div>
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
@@ -247,6 +274,7 @@ export function SupplierTable<TData extends Supplier, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
+									onClick={() => handleRowClick(row)}
 									style={{cursor: 'pointer'}}
 									data-state={row.getIsSelected() && 'selected'}
 								>

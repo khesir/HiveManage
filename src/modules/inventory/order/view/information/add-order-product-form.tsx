@@ -26,6 +26,8 @@ import {
 } from '@/components/validation/order-product';
 import {Product} from '@/components/validation/product';
 import {ProductSupplier} from '@/components/validation/product-supplier';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 import {zodResolver} from '@hookform/resolvers/zod';
 import axios from 'axios';
 import {useEffect, useState} from 'react';
@@ -37,10 +39,13 @@ interface Props {
 }
 
 export function AddOrderProductForm({onSubmit}: Props) {
-	const {selectedOrder, loading, addOrderItem, getOrderById} = useOrderStore();
+	const {selectedOrder, loading, addOrderItem} = useOrderStore();
 	const [items, setItems] = useState<ProductSupplier[]>([]);
 	const [selectedProduct, setSelectedProduct] = useState<Product>();
 	const [imgUrl, setImgUrl] = useState<string | null>();
+	const {user} = useEmployeeRoleDetailsStore();
+	const {toggleTrigger} = useEventTrigger();
+
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -68,16 +73,23 @@ export function AddOrderProductForm({onSubmit}: Props) {
 
 	const processForm = async (data: OrderProduct) => {
 		try {
-			console.log(data);
-			addOrderItem(selectedOrder.order_id!, {
-				...data,
-				order_id: selectedOrder.order_id,
-			});
+			if (!user?.employee.employee_id) {
+				toast.error('You need to be logged in to proceed');
+				return;
+			}
+			addOrderItem(
+				selectedOrder.order_id!,
+				{
+					...data,
+					order_id: selectedOrder.order_id,
+				},
+				user?.employee.employee_id,
+			);
 			toast.success('Product Added');
 			if (onSubmit) {
 				onSubmit();
 			}
-			getOrderById(selectedOrder.order_id!);
+			toggleTrigger();
 		} catch (error) {
 			console.log(error);
 			let errorMessage = 'An unexpected error occurred';

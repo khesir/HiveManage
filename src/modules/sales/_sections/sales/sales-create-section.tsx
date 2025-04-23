@@ -14,7 +14,7 @@ import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-si
 import {toast} from 'sonner';
 import {SalesCustomerProfile} from '../../sales/create/customer-profile-form';
 import {CreatePaymentForm} from '../../sales/create/payment-form';
-import {CreateCustomerForm} from '@/modules/customer/_components/create/create-customer';
+import {CreateCustomerForm} from '@/modules/customer/customer/create/create-customer';
 import {SearchCustomer} from '../../dashboard/customer/search-customer';
 import {SelectedSaleReviewItems} from '../../dashboard/selected-sale-review-items';
 import {Customer} from '@/components/validation/customer';

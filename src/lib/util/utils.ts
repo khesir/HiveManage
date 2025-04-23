@@ -39,6 +39,9 @@ export function dateParser(
 	includeTime: boolean = false,
 ): string {
 	try {
+		if (!isoString) {
+			return 'Not set';
+		}
 		// Parse the ISO string into a Date object
 		const date = parseISO(isoString);
 
@@ -98,8 +101,6 @@ export function appendFormData(
 
 		if (value instanceof File) {
 			formData.append(key, value);
-			console.log(key);
-			console.log(value);
 		} else if (value instanceof FileList) {
 			Array.from(value).forEach((file) => formData.append(key, file));
 		} else if (typeof value === 'object' && value !== null) {
@@ -108,5 +109,4 @@ export function appendFormData(
 			formData.append(key, String(value));
 		}
 	});
-	console.log(formData);
 }
