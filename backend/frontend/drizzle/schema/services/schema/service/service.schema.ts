@@ -7,7 +7,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { customer } from '@/drizzle/schema/customer/schema/customer.schema';
-import { service_Type } from './serviceType';
+import { service_Type } from './serviceType.schema';
 
 export const service_status = pgEnum('service_status', [
   'Cancelled',

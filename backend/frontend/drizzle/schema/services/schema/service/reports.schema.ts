@@ -5,7 +5,7 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { service } from './service';
+import { service } from './service.schema';
 
 export const reports = pgTable('reports', {
   reports_id: serial('reports_id').primaryKey(),

@@ -2,7 +2,7 @@ import { and, eq, isNull, sql, asc, desc, inArray } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateTickets } from './ticket.model';
-import { tickets } from '@/drizzle/schema/services/schema/service/tickets';
+import { tickets } from '@/drizzle/schema/services/schema/service/tickets.schema';
 import { assignedTicket, service, ticketType } from '@/drizzle/schema/services';
 import { serviceLog } from '@/drizzle/schema/records/schema/serviceLog';
 import { employee } from '@/drizzle/schema/ems';

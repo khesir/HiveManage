@@ -69,6 +69,7 @@ const productSchema = z.object({
 
 const orderItem = z.object({
   order_product_id: z.number().optional(),
+  supplier_id: z.number().optional(),
   order_id: z.number().optional(),
   product_id: z.number().min(1),
   total_quantity: z.number().min(1),
@@ -93,7 +94,6 @@ const supplierSchema = z.object({
 });
 export const CreateOrder = z.object({
   order_id: z.number().optional(),
-  supplier_id: z.number().optional(),
 
   notes: z.string().optional(),
   receive_at: z.string().optional(),
@@ -111,7 +111,6 @@ export const CreateOrder = z.object({
 
 export const UpdateOrder = z.object({
   order_id: z.number().optional(),
-  supplier_id: z.number().optional(),
 
   notes: z.string().nullable().optional(),
   expected_arrival: z.string().optional(),

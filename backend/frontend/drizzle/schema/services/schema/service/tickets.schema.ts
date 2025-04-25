@@ -6,8 +6,8 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { ticketType } from './ticketType';
-import { service } from './service';
+import { ticketType } from './ticketType.schema';
+import { service } from './service.schema';
 
 export const tickets_status = pgEnum('tickets_status', [
   'Pending',

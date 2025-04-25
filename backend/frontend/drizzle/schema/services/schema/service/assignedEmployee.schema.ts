@@ -6,7 +6,7 @@ import {
   serial,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import { service } from './service';
+import { service } from './service.schema';
 
 export const assignedEmployees = pgTable('assigned_employees', {
   assigned_employee_id: serial('assigned_employee_id').primaryKey(),

@@ -1,7 +1,7 @@
 import { employee } from '@/drizzle/schema/ems/schema/employee.schema';
 import { integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
-import { tickets } from './tickets';
-import { service } from './service';
+import { tickets } from './tickets.schema';
+import { service } from './service.schema';
 
 export const assignedTicket = pgTable('assigned_ticket', {
   assigned_ticket_id: serial('assigned_ticket_id').primaryKey(),

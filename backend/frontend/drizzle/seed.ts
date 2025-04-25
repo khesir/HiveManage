@@ -43,12 +43,11 @@ const samplePosters = fs
       buffer: fs.readFileSync(filePath),
     };
   });
-async function createProfileBucketIfNotExists() {
+async function createBucketByName(bucketName: string) {
   try {
-    const imageBucketName = process.env.PROFILE_BUCKET;
-    if (!imageBucketName) {
+    if (!bucketName) {
       throw new Error(
-        'Image Bucket Name is not set in the env variables(PROFILE_BUCKET)',
+        'Bucket Name is not set in the env variables(PROFILE_BUCKET)',
       );
     }
     const { data: buckets, error: listError } = await supabase
@@ -59,13 +58,11 @@ async function createProfileBucketIfNotExists() {
       throw new Error(`Failed to list buckets: ${listError.message}`);
     }
 
-    const bucketExists = buckets.some(
-      (bucket) => bucket.name === imageBucketName,
-    );
+    const bucketExists = buckets.some((bucket) => bucket.name === bucketName);
     if (!bucketExists) {
       const { data, error } = await supabase
         .getSupabase()
-        .storage.createBucket(imageBucketName, {
+        .storage.createBucket(bucketName, {
           public: true,
           allowedMimeTypes: [
             'image/jpeg',
@@ -81,7 +78,7 @@ async function createProfileBucketIfNotExists() {
 
       return `Image bucket created successfully: ${JSON.stringify(data)}`;
     } else {
-      return `Image bucket '${imageBucketName}' already exists.`;
+      return `Image bucket '${bucketName}' already exists.`;
     }
   } catch (error) {
     console.log(error);
@@ -713,7 +710,8 @@ async function seedServiceType(db: PostgresJsDatabase<SchemaType>) {
 
 async function main() {
   try {
-    await createProfileBucketIfNotExists();
+    await createBucketByName(process.env.PROFILE_BUCKET!);
+    await createBucketByName(process.env.DR_BUCKET!);
 
     // Employee Data
     await seedDepartments(db);

@@ -18,6 +18,7 @@ export const CreateProduct = z.object({
       size: z.string(),
     })
     .optional(),
+  re_order_level: z.number().optional(),
   user: z.number().min(1),
 });
 
@@ -39,6 +40,7 @@ export const UpdateProduct = z.object({
       size: z.string(),
     })
     .optional(),
+  re_order_level: z.number().optional(),
   user: z.number().min(1),
 });
 

@@ -1,5 +1,6 @@
 import {
   boolean,
+  integer,
   pgEnum,
   pgTable,
   serial,
@@ -21,6 +22,7 @@ export const product = pgTable('product', {
   is_serialize: boolean('is_serialize').default(false),
   status: productStatus('product_status').notNull(),
 
+  re_order_level: integer('re_order_level').default(0),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

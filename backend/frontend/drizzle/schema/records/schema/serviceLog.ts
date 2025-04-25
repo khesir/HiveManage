@@ -7,7 +7,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { employee } from '../../ems';
 import { reports, service, tickets } from '../../services';
-import { serviceItems } from '../../services/schema/service/serviceitem';
+import { serviceItems } from '../../services/schema/service/serviceitem.schema';
 import { payment } from '../../payment';
 
 export const serviceLog = pgTable('serviceLog', {

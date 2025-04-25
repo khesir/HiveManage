@@ -8,7 +8,6 @@ import {
   product,
   productDetails,
   serializeProduct,
-  productRecord,
 } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
@@ -22,7 +21,6 @@ export class OrderService {
     this.db = db;
   }
   async getAllOrder(
-    supplier_id: string | undefined,
     sort: string,
     limit: number,
     offset: number,
@@ -30,9 +28,6 @@ export class OrderService {
   ) {
     const conditions = [isNull(order.deleted_at)];
 
-    if (supplier_id && !isNaN(Number(supplier_id))) {
-      conditions.push(eq(order.supplier_id, Number(supplier_id)));
-    }
     // Get total count of unique orders
     const totalCountQuery = await this.db
       .select({ count: sql<number>`COUNT(DISTINCT ${order.order_id})` })
@@ -62,10 +57,11 @@ export class OrderService {
     const query = this.db
       .select({
         order: order,
-        ...(includes.includes('supplier') ? { supplier } : {}),
         ...(includes.includes('order_products')
           ? { order_product: orderProduct }
           : {}),
+        ...(includes.includes('supplier') ? { supplier } : {}),
+
         ...(includes.includes('product') ? { product } : {}),
         ...(includes.includes('product_details')
           ? { product_details: productDetails }
@@ -74,12 +70,15 @@ export class OrderService {
       .from(order)
       .where(inArray(order.order_id, orderIds));
 
-    if (includes.includes('supplier')) {
-      query.leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id));
-    }
     if (includes.includes('order_products')) {
       query.leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id));
 
+      if (includes.includes('supplier')) {
+        query.leftJoin(
+          supplier,
+          eq(supplier.supplier_id, orderProduct.supplier_id),
+        );
+      }
       if (includes.includes('product')) {
         query.leftJoin(
           product,
@@ -111,9 +110,6 @@ export class OrderService {
         if (!acc[orderId]) {
           acc[orderId] = {
             ...row.order,
-            supplier: includes.includes('supplier')
-              ? (row.supplier ?? undefined)
-              : undefined,
             order_products: [],
           };
         }
@@ -123,6 +119,9 @@ export class OrderService {
             ...(row.order_product
               ? (row.order_product as Record<string, unknown>)
               : {}),
+            supplier: includes.includes('supplier')
+              ? (row.supplier ?? undefined)
+              : undefined,
             product:
               includes.includes('product') && row.product
                 ? {
@@ -159,22 +158,26 @@ export class OrderService {
     const query = this.db
       .select({
         order: order,
-        ...(includes.includes('supplier') ? { supplier } : {}),
         ...(includes.includes('order_products')
           ? { order_product: orderProduct }
           : {}),
+        ...(includes.includes('supplier') ? { supplier } : {}),
+
         ...(includes.includes('product') ? { product } : {}),
         ...(includes.includes('product_details') ? { productDetails } : {}),
       })
       .from(order)
       .where(and(...conditions));
 
-    if (includes.includes('supplier')) {
-      query.leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id));
-    }
     if (includes.includes('order_products')) {
       query.leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id));
 
+      if (includes.includes('supplier')) {
+        query.leftJoin(
+          supplier,
+          eq(supplier.supplier_id, orderProduct.supplier_id),
+        );
+      }
       if (includes.includes('product')) {
         query.leftJoin(
           product,
@@ -198,12 +201,12 @@ export class OrderService {
 
     const orderWithDetails = {
       ...result[0].order,
-      supplier: includes.includes('supplier')
-        ? (result[0].supplier ?? undefined)
-        : undefined,
       order_products: includes.includes('order_products')
         ? result.map((row) => ({
             ...(row.order_product ?? {}),
+            supplier: includes.includes('supplier')
+              ? (row.supplier ?? undefined)
+              : undefined,
             product: includes.includes('product')
               ? (row.product ?? undefined)
               : undefined,
@@ -376,6 +379,7 @@ export class OrderService {
         .select()
         .from(employee)
         .where(eq(employee.employee_id, data.user));
+
       for (const item of data.order_products!) {
         const status =
           item.ordered_quantity! == 0 ? 'Stocked' : 'Partially Stocked';
@@ -389,22 +393,10 @@ export class OrderService {
           for (let i = 0; i < item.delivered_quantity!; i++) {
             await tx.insert(serializeProduct).values({
               product_id: Number(item.product_id),
-              supplier_id: Number(data.supplier_id),
-              price: Number(item.unit_price),
               condition: 'New',
               status: 'Available',
-              serial_number: `SN-${item.product_id}-${Date.now()}-${crypto.randomUUID().slice(0, 4)}`,
             });
           }
-        } else {
-          await tx.insert(productRecord).values({
-            product_id: Number(item.product_id),
-            supplier_id: Number(data.supplier_id),
-            quantity: Number(item.delivered_quantity),
-            price: Number(item.unit_price),
-            condition: 'New',
-            status: 'Available',
-          });
         }
         await tx.insert(ProductLog).values({
           product_id: item.product_id,

@@ -13,9 +13,6 @@ export class OrderController {
   }
 
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
-    const supplier_id = req.query.supplier_id
-      ? String(req.query.order_id)
-      : undefined; // This is search based on customer
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const sort = (req.query.sort as string) || 'asc';
@@ -25,7 +22,6 @@ export class OrderController {
         : [];
     try {
       const data = await this.orderService.getAllOrder(
-        supplier_id,
         sort,
         limit,
         offset,
@@ -72,7 +68,6 @@ export class OrderController {
   async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        supplier_id,
         notes,
         expected_arrival,
         order_value,
@@ -84,7 +79,6 @@ export class OrderController {
       } = req.body;
 
       await this.orderService.createOrder({
-        supplier_id,
         notes,
         expected_arrival,
         order_value,
@@ -111,7 +105,6 @@ export class OrderController {
     try {
       const { order_id } = req.params;
       const {
-        supplier_id,
         notes,
         expected_arrival,
         order_value,
@@ -123,7 +116,6 @@ export class OrderController {
 
       await this.orderService.updateOrder(
         {
-          supplier_id,
           notes,
           expected_arrival,
           order_value,
@@ -165,7 +157,6 @@ export class OrderController {
   async finalize(req: Request, res: Response, next: NextFunction) {
     const { order_id } = req.params;
     const {
-      supplier_id,
       notes,
       expected_arrival,
       order_value,
@@ -178,7 +169,6 @@ export class OrderController {
     try {
       await this.orderService.finalize(
         {
-          supplier_id,
           notes,
           expected_arrival,
           order_value,
@@ -200,7 +190,6 @@ export class OrderController {
   async pushToInventory(req: Request, res: Response, next: NextFunction) {
     const { order_id } = req.params;
     const {
-      supplier_id,
       notes,
       expected_arrival,
       order_value,
@@ -213,7 +202,6 @@ export class OrderController {
     try {
       await this.orderService.pushToInventory(
         {
-          supplier_id,
           notes,
           expected_arrival,
           order_value,
