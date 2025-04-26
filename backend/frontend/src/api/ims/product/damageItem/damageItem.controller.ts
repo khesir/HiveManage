@@ -2,16 +2,16 @@ import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SchemaType } from '@/drizzle/schema/type';
-import { ServiceItemService } from './serviceItem.service';
+import { DamageItemService } from './damageItem.service';
 
-export class ServiceItemController {
-  private serviceItemservice: ServiceItemService;
+export class DamageItemController {
+  private damageItemservice: DamageItemService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.serviceItemservice = new ServiceItemService(pool);
+    this.damageItemservice = new DamageItemService(pool);
   }
 
-  async getAllServiceItem(req: Request, res: Response, next: NextFunction) {
+  async getAllDamageItem(req: Request, res: Response, next: NextFunction) {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
@@ -19,7 +19,7 @@ export class ServiceItemController {
     const product_id = req.params.product_id as string;
 
     try {
-      const data = await this.serviceItemservice.getAllServiceItem(
+      const data = await this.damageItemservice.getAllDamageItem(
         product_id,
         no_pagination,
         sort,
@@ -32,7 +32,7 @@ export class ServiceItemController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.serviceitemsWithDetails,
+        data: data.damageitemsWithDetails,
       });
     } catch (error) {
       res
@@ -42,11 +42,11 @@ export class ServiceItemController {
     }
   }
 
-  async getServiceItemById(req: Request, res: Response, next: NextFunction) {
+  async getDamageItemById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { service_item_id } = req.params;
-      const data = await this.serviceItemservice.getServiceItemById(
-        Number(service_item_id),
+      const { damage_item_id } = req.params;
+      const data = await this.damageItemservice.getDamageItemById(
+        Number(damage_item_id),
       );
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
@@ -57,20 +57,18 @@ export class ServiceItemController {
     }
   }
 
-  async createServiceItem(req: Request, res: Response, next: NextFunction) {
+  async createDamageItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, service_type_id, quantity, status } = req.body;
+      const { product_id, quantity } = req.body;
 
-      await this.serviceItemservice.createServiceItem({
+      await this.damageItemservice.createDamageItem({
         product_id,
-        service_type_id,
         quantity,
-        status,
       });
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
-        message: 'Successfully Created Service Item ',
+        message: 'Successfully Created Damage Item ',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -82,23 +80,21 @@ export class ServiceItemController {
     }
   }
 
-  async updateServiceItem(req: Request, res: Response, next: NextFunction) {
+  async updateDamageItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { service_item_id } = req.params;
-      const { product_id, service_type_id, quantity, status } = req.body;
+      const { damage_item_id } = req.params;
+      const { product_id, quantity } = req.body;
 
-      await this.serviceItemservice.updateServiceItem(
+      await this.damageItemservice.updateDamageItem(
         {
           product_id,
-          service_type_id,
           quantity,
-          status,
         },
-        Number(service_item_id),
+        Number(damage_item_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Service Item Updated Successfully ',
+        message: 'Damage Item Updated Successfully ',
       });
     } catch (error) {
       res
@@ -108,13 +104,13 @@ export class ServiceItemController {
     }
   }
 
-  async deleteServiceItem(req: Request, res: Response, next: NextFunction) {
+  async deleteDamageItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { service_item_id } = req.params;
-      await this.serviceItemservice.deleteServiceItem(Number(service_item_id));
+      const { damage_item_id } = req.params;
+      await this.damageItemservice.deleteDamageItem(Number(damage_item_id));
       res.status(200).json({
         status: 'Success',
-        message: `Service Item ID:${service_item_id} is deleted Successfully`,
+        message: `Damage Item ID:${damage_item_id} is deleted Successfully`,
       });
     } catch (error) {
       res

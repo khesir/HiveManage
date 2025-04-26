@@ -8,7 +8,7 @@ import { CreateService, UpdateService } from './service.model';
 import reportsRoute from './tickets/reports/reports.route';
 import ticketsRoute from './tickets/ticket.route';
 import tickettypesRoute from './ticketType/tickettype.route';
-import serviceitemsRoute from './serviceitem/serviceitem.route';
+import transerviceitemsRoute from './transactionServiceItem/transerviceitem.route';
 
 const serviceRoute = Router({ mergeParams: true });
 const serviceController = new ServiceController(db);
@@ -56,9 +56,9 @@ serviceRoute.use(
 );
 
 serviceRoute.use(
-  '/:service_id/service-item',
+  '/:transaction_service_Record/service-item',
   validateServiceID,
-  serviceitemsRoute,
+  transerviceitemsRoute,
 );
 
 export default serviceRoute;

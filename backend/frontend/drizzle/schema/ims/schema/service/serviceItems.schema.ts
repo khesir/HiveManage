@@ -10,7 +10,7 @@ import { service_Type } from '@/drizzle/schema/services';
 
 export const serviceItemStatus = pgEnum('service_item_status', [
   'Available',
-  'Sold out',
+  'Sold Out',
 ]);
 
 export const serviceItem = pgTable('service_item', {

@@ -2,24 +2,28 @@ import { HttpStatus } from '@/lib/HttpStatus';
 import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/schema/type';
-import { ServiceItemService } from './serviceitem.service';
+import { TranServiceItemService } from './transerviceitem.service';
 
-export class ServiceItemsController {
-  private serviceitemService: ServiceItemService;
+export class TranServiceItemsController {
+  private transerviceitemService: TranServiceItemService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.serviceitemService = new ServiceItemService(pool);
+    this.transerviceitemService = new TranServiceItemService(pool);
   }
 
-  async getAllServiceItems(req: Request, res: Response, next: NextFunction) {
-    const product_id = req.params.product_id as string;
+  async getAllTranServiceItems(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const service_record_id = req.params.service_record_id as string;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
-      const data = await this.serviceitemService.getAllServiceItem(
-        product_id,
+      const data = await this.transerviceitemService.getAllTranServiceItem(
+        service_record_id,
         sort,
         limit,
         offset,
@@ -30,7 +34,7 @@ export class ServiceItemsController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.serviceitemWithDetails,
+        data: data.transactionserviceItemWithDetails,
       });
     } catch (error) {
       res
@@ -40,11 +44,15 @@ export class ServiceItemsController {
     }
   }
 
-  async getServiceItemsById(req: Request, res: Response, next: NextFunction) {
+  async getTranServiceItemsById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_items_id } = req.params;
-      const data = await this.serviceitemService.getServiceItemById(
-        Number(service_items_id),
+      const { transaction_service_Record } = req.params;
+      const data = await this.transerviceitemService.getTranServiceItemById(
+        Number(transaction_service_Record),
       );
       res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
@@ -55,23 +63,17 @@ export class ServiceItemsController {
     }
   }
 
-  async createServiceItems(req: Request, res: Response, next: NextFunction) {
+  async createTranServiceItems(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const {
-        product_id,
-        service_id,
-        product_record_id,
-        serial_id,
-        serviceitem_status,
-        quantity,
-      } = req.body;
+      const { service_record_id, service_id, quantity } = req.body;
 
-      await this.serviceitemService.createServiceItem({
-        product_id,
+      await this.transerviceitemService.createTranServiceItem({
+        service_record_id,
         service_id,
-        product_record_id,
-        serial_id,
-        serviceitem_status,
         quantity,
       });
       res.status(HttpStatus.CREATED.code).json({
@@ -88,32 +90,26 @@ export class ServiceItemsController {
     }
   }
 
-  async updateServiceItems(req: Request, res: Response, next: NextFunction) {
+  async updateTranServiceItems(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_items_id } = req.params;
-      const {
-        product_id,
-        service_id,
-        product_record_id,
-        serial_id,
-        serviceitem_status,
-        quantity,
-      } = req.body;
+      const { transaction_service_Record } = req.params;
+      const { service_record_id, service_id, quantity } = req.body;
 
-      await this.serviceitemService.updateServiceItem(
+      await this.transerviceitemService.updateTranServiceItem(
         {
-          product_id,
+          service_record_id,
           service_id,
-          product_record_id,
-          serial_id,
-          serviceitem_status,
           quantity,
         },
-        Number(service_items_id),
+        Number(transaction_service_Record),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Service Item Updated Successfully ',
+        message: 'Transaction Service Item Updated Successfully ',
       });
     } catch (error) {
       res
@@ -123,13 +119,19 @@ export class ServiceItemsController {
     }
   }
 
-  async deleteServiceItems(req: Request, res: Response, next: NextFunction) {
+  async deleteTranServiceItems(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_items_id } = req.params;
-      await this.serviceitemService.deleteServiceItem(Number(service_items_id));
+      const { transaction_service_Record } = req.params;
+      await this.transerviceitemService.deleteTranServiceItem(
+        Number(transaction_service_Record),
+      );
       res.status(200).json({
         status: 'Success',
-        message: `Service Item ID:${service_items_id} is deleted Successfully`,
+        message: `Transaction Service Item ID:${transaction_service_Record} is deleted Successfully`,
       });
     } catch (error) {
       res

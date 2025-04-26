@@ -5,30 +5,35 @@ import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { employee } from '@/drizzle/schema/ems';
-import { serviceItems } from '@/drizzle/schema/services';
+import { transactionServiceItems } from '@/drizzle/schema/services/schema/service/transactionServiceItems.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
 
-export async function validateServiceItemsID(
+export async function validateTranServiceItemsID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { service_items_id } = req.params;
+  const { transaction_service_id } = req.params;
 
   try {
-    const ServiceItem = await db
+    const TransasctionServiceItem = await db
       .select()
-      .from(serviceItems)
+      .from(transactionServiceItems)
       .where(
         and(
-          eq(serviceItems.service_items_id, Number(service_items_id)),
-          isNull(serviceItems.deleted_at),
+          eq(
+            transactionServiceItems.transaction_service_item_id,
+            Number(transaction_service_id),
+          ),
+          isNull(transactionServiceItems.deleted_at),
         ),
       );
-    if (!ServiceItem[0]) {
-      return res.status(404).json({ message: 'Service Item not found' });
+    if (!TransasctionServiceItem[0]) {
+      return res
+        .status(404)
+        .json({ message: 'Transaction Service Item not found' });
     }
     next();
   } catch (error) {

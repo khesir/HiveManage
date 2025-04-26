@@ -3,31 +3,36 @@ import { NextFunction, Request, Response } from 'express';
 
 import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
-import { serviceItem } from '@/drizzle/schema/ims/schema/service/serviceItems.schema';
+import { serializedserviceRecord } from '@/drizzle/schema/ims/schema/service/serviceSerializeItem.schema';
 
 // There's a globally used
 // middleware like error handling and schema validation
 
-export async function validateServiceItemID(
+export async function validateSerializedServiceItemID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { service_item_id } = req.params;
+  const { service_serilize_record_id } = req.params;
 
   try {
     const data = await db
       .select()
-      .from(serviceItem)
+      .from(serializedserviceRecord)
       .where(
         and(
-          eq(serviceItem.service_item_id, Number(service_item_id)),
-          isNull(serviceItem.deleted_at),
+          eq(
+            serializedserviceRecord.service_serilize_record_id,
+            Number(service_serilize_record_id),
+          ),
+          isNull(serializedserviceRecord.deleted_at),
         ),
       );
 
     if (!data[0]) {
-      return res.status(404).json({ message: 'Service Item not found' });
+      return res
+        .status(404)
+        .json({ message: 'Serialize Service Item not found' });
     }
     next();
   } catch (error) {
