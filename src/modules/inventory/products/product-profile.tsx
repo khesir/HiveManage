@@ -14,6 +14,7 @@ import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import clsx from 'clsx';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
+import {CreatePODialogue} from './_components/dialogue/create-po-dialogue';
 
 export function ProductProfile() {
 	const navigate = useNavigate();
@@ -77,15 +78,21 @@ export function ProductProfile() {
 			</CardHeader>
 			<CardContent className="p-6 text-sm">
 				<div className="grid gap-3">
-					<div className="font-semibold">Information</div>
+					<div className="font-semibold flex justify-between">
+						<div>Information</div>
+						<Badge
+							className={clsx(
+								'text-white hover:none',
+								data.status === 'Available' ? 'bg-green-500' : 'bg-red-500',
+							)}
+						>
+							{data.status}
+						</Badge>
+					</div>
 					<ul className="grid gap-3">
-						<li className="flex flex-col gap-3">
-							<span className="items-start text-muted-foreground border-white">
-								Description
-							</span>
-							<span className="border p-3 rounded-sm">
-								{data.product_details?.description || ''}
-							</span>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Selling Price</span>
+							<span>{data.selling_price}</span>
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Category</span>
@@ -119,6 +126,11 @@ export function ProductProfile() {
 								<AvatarCircles numPeople={numPeople} avatar={avatar} />
 							)}
 						</li>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Re-order level</span>
+							<span>{data.re_order_level}</span>
+						</li>
+						<CreatePODialogue id={data.product_id!} />
 					</ul>
 				</div>
 				<Separator className="my-4" />
@@ -127,26 +139,21 @@ export function ProductProfile() {
 
 					<ul className="grid gap-3">
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Orders</span>
-							<span>0 Items ordered</span>
+							<span className="text-muted-foreground">Available Quantity</span>
+							<span>{data.available_quantity}</span>
 						</li>
-						{data.is_serialize ? (
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Serialize Record</span>
-								<span>{data.product_serials?.length ?? 0} Items recorded</span>
-							</li>
-						) : (
-							<li className="flex items-center justify-between">
-								<span className="text-muted-foreground">Batch Record</span>
-								<span>
-									{data.product_records?.reduce(
-										(sum, record) => sum + record.quantity,
-										0,
-									)}
-									Qty
-								</span>
-							</li>
-						)}
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Sold Quantity</span>
+							<span>{data.available_quantity}</span>
+						</li>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Total Quantity</span>
+							<span>{data.available_quantity}</span>
+						</li>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Transfered Quantity</span>
+							<span>{data.available_quantity}</span>
+						</li>
 					</ul>
 				</div>
 			</CardContent>

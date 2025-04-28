@@ -165,6 +165,14 @@ export const productSchema = z.object({
 	]),
 	is_serialize: z.boolean().optional(),
 	status: z.union([z.string().optional(), z.boolean()]),
+	re_order_level: z.number().optional(),
+	selling_price: z.number().min(1),
+
+	total_quantity: z.number().optional(),
+	available_quantity: z.number().optional(),
+	transfered_quantity: z.number().optional(),
+	sold_quantity: z.number().optional(),
+
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),

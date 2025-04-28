@@ -4,11 +4,16 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 
 import {Product} from '@/components/validation/product';
 import clsx from 'clsx';
+import {useEffect} from 'react';
 
 interface Props {
 	data: Product;
+	refreshOnRender: () => void;
 }
-export function InformationCard({data}: Props) {
+export function InformationCard({data, refreshOnRender}: Props) {
+	useEffect(() => {
+		refreshOnRender();
+	}, []);
 	const avatar = (data.product_suppliers ?? []).map((row) => ({
 		name: row.supplier?.name ?? '',
 		link:
@@ -20,8 +25,8 @@ export function InformationCard({data}: Props) {
 	const numPeople = totalAvatar > 5 ? totalAvatar - 5 : 0;
 	return (
 		<ScrollArea className="h-full max-h-full grid gap-3">
-			<ul className="grid gap-3">
-				<li className="flex flex-col gap-3">
+			<ul className="grid grid-cols-2 gap-3">
+				<li className="flex flex-col gap-3 col-span-2">
 					<span className=" rounded-sm text-2xl flex items-center gap-3">
 						{data.name || ''}{' '}
 						<span
@@ -34,15 +39,45 @@ export function InformationCard({data}: Props) {
 						</span>
 					</span>
 				</li>
-				<li className="flex flex-col gap-3">
+				<li className="flex flex-col gap-3 col-span-2">
 					<span className=" rounded-sm font-semibold">Product Details</span>
 				</li>
-				<li className="flex flex-col  text-sm">
+				<li className="flex flex-col  text-sm col-span-2">
 					<span className="items-start text-muted-foreground border-white text-sm">
 						Description
 					</span>
 					<span className=" rounded-sm">
 						{data.product_details?.description || ''}
+					</span>
+				</li>
+				<li className="flex flex-col  text-sm">
+					<span className="items-start text-muted-foreground border-white text-sm">
+						Price
+					</span>
+					<span className=" rounded-sm">{data.selling_price || ''}</span>
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="text-muted-foreground">Suppliers</span>
+					{avatar.length === 0 ? (
+						<span>No suppliers</span>
+					) : (
+						<AvatarCircles numPeople={numPeople} avatar={avatar} />
+					)}
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="items-start text-muted-foreground border-white text-sm">
+						Color
+					</span>
+					<span className=" rounded-sm">
+						{data.product_details?.color || ''}
+					</span>
+				</li>
+				<li className="flex gap-5 text-sm">
+					<span className="items-start text-muted-foreground border-white text-sm">
+						Size
+					</span>
+					<span className=" rounded-sm">
+						{data.product_details?.size || ''}
 					</span>
 				</li>
 				<li className="flex gap-5 text-sm">
@@ -70,30 +105,6 @@ export function InformationCard({data}: Props) {
 					>
 						{data.is_serialize ? 'True' : 'False'}
 					</Badge>
-				</li>
-				<li className="flex gap-5 text-sm">
-					<span className="text-muted-foreground">Suppliers</span>
-					{avatar.length === 0 ? (
-						<span>No suppliers</span>
-					) : (
-						<AvatarCircles numPeople={numPeople} avatar={avatar} />
-					)}
-				</li>
-				<li className="flex gap-5 text-sm">
-					<span className="items-start text-muted-foreground border-white text-sm">
-						Color
-					</span>
-					<span className=" rounded-sm">
-						{data.product_details?.color || ''}
-					</span>
-				</li>
-				<li className="flex gap-5 text-sm">
-					<span className="items-start text-muted-foreground border-white text-sm">
-						Size
-					</span>
-					<span className=" rounded-sm">
-						{data.product_details?.size || ''}
-					</span>
 				</li>
 			</ul>
 		</ScrollArea>

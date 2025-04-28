@@ -3,6 +3,7 @@ import {Badge} from '@/components/ui/badge';
 import {Product} from '../../../components/validation/product';
 import {dateParser} from '@/lib/util/utils';
 import clsx from 'clsx';
+
 export const columns: ColumnDef<Product>[] = [
 	{
 		accessorKey: 'img_url',
@@ -44,18 +45,18 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		header: 'Quantity',
+		accessorKey: 'available_quantity',
+		header: 'Available Quantity',
 		cell: ({row}) => {
-			if (row.original.is_serialize) {
-				return row.original.product_serials?.length ?? 0;
-			} else {
-				return (
-					row.original.product_records?.reduce(
-						(sum: number, record: {quantity: number}) => sum + record.quantity,
-						0,
-					) ?? 0
-				);
-			}
+			const flag =
+				(row.original.re_order_level ?? 0) >=
+				(row.original.available_quantity ?? 0);
+			return (
+				<div className={clsx('text-white flex gap-2', flag && 'text-red-500')}>
+					{row.original.available_quantity}
+					{flag && <Badge className="bg-red-500"> Low Inventory</Badge>}
+				</div>
+			);
 		},
 	},
 	{
@@ -70,22 +71,6 @@ export const columns: ColumnDef<Product>[] = [
 					)}
 				>
 					{row.original.status}
-				</Badge>
-			);
-		},
-	},
-	{
-		accessorKey: 'is_serialize',
-		header: 'Serialized',
-		cell: ({row}) => {
-			return (
-				<Badge
-					className={clsx(
-						'text-white hover:none',
-						row.original.is_serialize ? 'bg-green-500' : 'bg-red-500',
-					)}
-				>
-					{row.original.is_serialize ? 'True' : 'False'}
 				</Badge>
 			);
 		},

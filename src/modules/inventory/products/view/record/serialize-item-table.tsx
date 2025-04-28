@@ -244,7 +244,14 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				{showControls && <CreateSerialDialogueForm />}
+				{showControls && (
+					<div className=" relative ">
+						<p className="absolute text-gray-500 -top-8 text-xs flex text-center">
+							Populating records without transaction, this is optional
+						</p>
+						<CreateSerialDialogueForm />
+					</div>
+				)}
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">

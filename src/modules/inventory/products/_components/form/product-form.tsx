@@ -86,6 +86,7 @@ export function CreateProductForm() {
 		img_url: undefined,
 		is_serialize: false,
 		status: 'Unavailable',
+		selling_price: 1,
 		product_details: {
 			description: '',
 			color: '',
@@ -116,6 +117,8 @@ export function CreateProductForm() {
 					color: data.product_details?.color,
 					size: data.product_details?.size,
 				},
+				selling_price: data.selling_price,
+				re_order_level: data.re_order_level,
 				user: user?.employee.employee_id,
 			};
 			const formData = new FormData();
@@ -244,7 +247,7 @@ export function CreateProductForm() {
 											<FormControl>
 												<Input
 													disabled={loading}
-													placeholder="John"
+													placeholder="Brand - Product - Specifc Specs"
 													{...field}
 												/>
 											</FormControl>
@@ -252,6 +255,54 @@ export function CreateProductForm() {
 										</FormItem>
 									)}
 								/>
+								<div className="w-full grid grid-cols-2 gap-5">
+									<FormField
+										control={form.control}
+										name="selling_price"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Selling Price</FormLabel>
+												<FormControl>
+													<Input
+														type="number"
+														{...field}
+														disabled={loading}
+														placeholder="10000"
+														onChange={(e) => {
+															const value = e.target.value;
+															// Ensure the value is converted to a number
+															field.onChange(value ? parseFloat(value) : 0);
+														}}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="re_order_level"
+										render={({field}) => (
+											<FormItem>
+												<FormLabel>Re-order Level</FormLabel>
+												<FormControl>
+													<Input
+														type="number"
+														{...field}
+														disabled={loading}
+														placeholder="10"
+														onChange={(e) => {
+															const value = e.target.value;
+															// Ensure the value is converted to a number
+															field.onChange(value ? parseFloat(value) : 0);
+														}}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
 								<FormField
 									control={form.control}
 									name="product_details.description"
@@ -295,7 +346,7 @@ export function CreateProductForm() {
 									)}
 								/>
 								<DropdownMenu>
-									<DropdownMenuTrigger className="flex flex-col text-sm gap-3 font-semibold">
+									<DropdownMenuTrigger className="flex flex-col items-start text-sm gap-3 font-semibold">
 										<p>Category</p>
 										<Button
 											variant={'outline'}

@@ -27,10 +27,17 @@ import useEventTrigger from '../../../../_components/hooks/use-event-trigger';
 
 interface Props {
 	onSubmit?: () => void;
+	callback?: (val: Supplier) => void;
 	productSuppliers: ProductSupplier[];
+	alternate?: boolean;
 }
 
-export function CreateProductSupplierForm({onSubmit, productSuppliers}: Props) {
+export function CreateProductSupplierForm({
+	onSubmit,
+	callback,
+	productSuppliers,
+	alternate = false,
+}: Props) {
 	const [suppliers, setSupplier] = useState<Supplier[]>([]);
 	const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,13 +66,30 @@ export function CreateProductSupplierForm({onSubmit, productSuppliers}: Props) {
 	};
 	// Function to handle customer search
 	useEffect(() => {
-		fetchData();
+		if (!alternate) {
+			fetchData();
+		} else {
+			const suppliersOnly = productSuppliers
+				.map((productSupplier) => productSupplier.supplier)
+				.filter((supplier): supplier is Supplier => supplier !== undefined);
+
+			setSupplier(suppliersOnly);
+		}
 	}, []);
 
 	const processRequest = async (supplier: Supplier) => {
 		try {
 			if (!user?.employee.employee_id) {
 				toast.error('You need to be logged in to do this.');
+				return;
+			}
+			// ain't sure if this will tightly coupled some functionality
+			if (callback) {
+				if (supplier.supplier_id !== undefined) {
+					callback(supplier);
+				} else {
+					console.error('Supplier ID is undefined');
+				}
 				return;
 			}
 			const data = {

@@ -18,9 +18,9 @@ const sidebarNavItems = [
 	// {
 	// 	title: 'Employment Information',
 	// },
-	{
-		title: 'Others',
-	},
+	// {
+	// 	title: 'Others',
+	// },
 ];
 
 export default function SettingsSidebar() {
