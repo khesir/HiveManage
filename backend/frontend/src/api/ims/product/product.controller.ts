@@ -63,6 +63,8 @@ export class ProductController {
         status,
         product_categories,
         product_details,
+        re_order_level,
+        selling_price,
         user,
       } = req.body;
 
@@ -73,6 +75,8 @@ export class ProductController {
           status,
           product_categories,
           product_details,
+          re_order_level,
+          selling_price,
           user,
         },
         req.file,
@@ -100,6 +104,8 @@ export class ProductController {
         status,
         product_categories,
         product_details,
+        re_order_level,
+        selling_price,
         user,
       } = req.body;
       await this.productService.updateProduct(
@@ -109,6 +115,8 @@ export class ProductController {
           status,
           product_categories,
           product_details,
+          re_order_level,
+          selling_price,
           user,
         },
         req.file,

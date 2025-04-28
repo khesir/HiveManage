@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-
 import { HttpStatus } from '@/lib/HttpStatus';
 import { OrderService } from './order.service';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
@@ -13,6 +12,8 @@ export class OrderController {
   }
 
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
+    const supplier_id = (req.query.supplier_id as string) || undefined;
+    const status = (req.query.status as string) || undefined;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const sort = (req.query.sort as string) || 'asc';
@@ -26,6 +27,8 @@ export class OrderController {
         limit,
         offset,
         includes,
+        Number(supplier_id),
+        status,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

@@ -19,6 +19,7 @@ export const CreateProduct = z.object({
     })
     .optional(),
   re_order_level: z.number().optional(),
+  selling_price: z.number().min(1),
   user: z.number().min(1),
 });
 
@@ -41,6 +42,7 @@ export const UpdateProduct = z.object({
     })
     .optional(),
   re_order_level: z.number().optional(),
+  selling_price: z.number().min(1),
   user: z.number().min(1),
 });
 

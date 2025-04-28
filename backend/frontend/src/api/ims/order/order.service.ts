@@ -25,9 +25,27 @@ export class OrderService {
     limit: number,
     offset: number,
     includes: string[],
+    supplier_id: number | undefined,
+    status: string | undefined,
   ) {
     const conditions = [isNull(order.deleted_at)];
-
+    if (supplier_id) {
+      conditions.push(eq(order.supplier_id, supplier_id));
+    }
+    if (status) {
+      conditions.push(
+        eq(
+          order.order_status,
+          status as
+            | 'Draft'
+            | 'Finalized'
+            | 'Awaiting Arrival'
+            | 'Partially Fulfiled'
+            | 'Fulfilled'
+            | 'Cancelled',
+        ),
+      );
+    }
     // Get total count of unique orders
     const totalCountQuery = await this.db
       .select({ count: sql<number>`COUNT(DISTINCT ${order.order_id})` })

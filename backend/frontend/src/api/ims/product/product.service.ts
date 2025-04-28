@@ -44,30 +44,28 @@ export class ProductService {
     file: Express.Multer.File | undefined,
   ) {
     return this.db.transaction(async (tx) => {
+      // Create file
       let filepath = undefined;
       if (file) {
         filepath = await this.supabaseService.uploadImageToBucket(file);
       }
-
+      // Product Creation
       const [newProduct] = await tx
         .insert(product)
         .values({
-          name: String(data.name),
-          is_serialize: data.is_serialize,
+          ...data,
           img_url: filepath,
-          status: data.status,
+          selling_price: data.selling_price.toString(),
         })
         .returning({ product_id: product.product_id });
       await tx
         .insert(productDetails)
         .values({
+          ...data.product_details,
           product_id: newProduct.product_id,
-          description: data.product_details?.description,
-          color: data.product_details?.color,
-          size: data.product_details?.size,
         })
         .returning({ p_details_id: productDetails.p_details_id });
-
+      // Category Generation
       if (data.product_categories && data.product_categories.length > 0) {
         const categoriesToInsert = data.product_categories.map((category) => ({
           product_id: newProduct.product_id,
@@ -76,6 +74,7 @@ export class ProductService {
 
         await tx.insert(productCategory).values(categoriesToInsert);
       }
+      // Logging Data
       const empData = await tx
         .select()
         .from(employee)
@@ -98,7 +97,12 @@ export class ProductService {
     paramsId: number,
   ) {
     return this.db.transaction(async (tx) => {
+      // Update Existing product data
       try {
+        await tx
+          .update(product)
+          .set({ ...data, selling_price: data.selling_price.toString() })
+          .where(eq(product.product_id, paramsId));
         const exisiting_data_product = await tx
           .select()
           .from(productDetails)
@@ -113,7 +117,7 @@ export class ProductService {
             .insert(productDetails)
             .values({ product_id: paramsId, ...data.product_details });
         }
-
+        // Updating Categories
         const categories = await tx
           .select()
           .from(productCategory)
@@ -147,7 +151,7 @@ export class ProductService {
               category: category
                 ? {
                     category_id: category.category_id,
-                    name: category.name ?? null, // Ensure no undefined values
+                    name: category.name ?? null,
                     created_at: category.created_at ?? null,
                     last_updated: category.last_updated ?? new Date(),
                     deleted_at: category.deleted_at ?? null,
@@ -273,8 +277,6 @@ export class ProductService {
       .limit(limit)
       .offset(offset);
 
-    // TODO: Turn the product endpoint to a hybrid, that allows data aggregation
-    // Currently this is aggregated, if payload is too heavy, we can add conditions to the endpoint
     const productIds = result.map((p) => p.product.product_id);
     const recordByProduct = await this.getRecordByProduct(productIds);
     const serialByProduct = await this.getSerializedByProduct(productIds);

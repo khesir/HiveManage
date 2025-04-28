@@ -17,7 +17,6 @@ export const productStatus = pgEnum('product_status', [
 
 export const product = pgTable('product', {
   product_id: serial('product_id').primaryKey(),
-
   name: varchar('name'),
   img_url: varchar('img_url'),
   is_serialize: boolean('is_serialize').default(false),
