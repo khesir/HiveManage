@@ -2,25 +2,29 @@ import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SchemaType } from '@/drizzle/schema/type';
-import { ServiceRecordService } from './serviceRecord.service';
+import { InventoryMovementService } from './inventoryMovement.service';
 
-export class ServiceRecordController {
-  private serviceRecordservice: ServiceRecordService;
+export class InventoryMovementController {
+  private inventoryMovementservice: InventoryMovementService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.serviceRecordservice = new ServiceRecordService(pool);
+    this.inventoryMovementservice = new InventoryMovementService(pool);
   }
 
-  async getAllServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async getAllInventoryMovement(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const no_pagination = req.query.no_pagination === 'true';
-    const product_record_id = req.params.product_record_id as string;
+    const product_id = req.params.product_id as string;
 
     try {
-      const data = await this.serviceRecordservice.getAllServiceRecord(
-        product_record_id,
+      const data = await this.inventoryMovementservice.getAllInventoryMovement(
+        product_id,
         no_pagination,
         sort,
         limit,
@@ -32,7 +36,7 @@ export class ServiceRecordController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.serviceRecordsWithDetails,
+        data: data.inventoryMovementWithDetails,
       });
     } catch (error) {
       res
@@ -42,11 +46,15 @@ export class ServiceRecordController {
     }
   }
 
-  async getServiceRecordById(req: Request, res: Response, next: NextFunction) {
+  async getInventoryMovementById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_record_id } = req.params;
-      const data = await this.serviceRecordservice.getServiceRecordById(
-        Number(service_record_id),
+      const { inventory_movement_id } = req.params;
+      const data = await this.inventoryMovementservice.getInventoryMovementById(
+        Number(inventory_movement_id),
       );
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
@@ -57,29 +65,33 @@ export class ServiceRecordController {
     }
   }
 
-  async createServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async createInventoryMovement(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const {
-        product_record_id,
-        service_item_id,
-        available_quantity,
-        on_service_quantity,
-        sold_quantity,
-        status,
+        product_id,
+        source_type,
+        destination_type,
+        quantity,
+        serial_ids,
+        reason,
       } = req.body;
 
-      await this.serviceRecordservice.createServiceRecord({
-        product_record_id,
-        service_item_id,
-        available_quantity,
-        on_service_quantity,
-        sold_quantity,
-        status,
+      await this.inventoryMovementservice.createInventoryMovement({
+        product_id,
+        source_type,
+        destination_type,
+        quantity,
+        serial_ids,
+        reason,
       });
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
-        message: 'Successfully Created Service Record',
+        message: 'Successfully Created Inventory Movement',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -91,32 +103,36 @@ export class ServiceRecordController {
     }
   }
 
-  async updateServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async updateInventoryMovement(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_record_id } = req.params;
+      const { inventory_movement_id } = req.params;
       const {
-        product_record_id,
-        service_item_id,
-        available_quantity,
-        on_service_quantity,
-        sold_quantity,
-        status,
+        product_id,
+        source_type,
+        destination_type,
+        quantity,
+        serial_ids,
+        reason,
       } = req.body;
 
-      await this.serviceRecordservice.updateServiceRecord(
+      await this.inventoryMovementservice.updateInventoryMovement(
         {
-          product_record_id,
-          service_item_id,
-          available_quantity,
-          on_service_quantity,
-          sold_quantity,
-          status,
+          product_id,
+          source_type,
+          destination_type,
+          quantity,
+          serial_ids,
+          reason,
         },
-        Number(service_record_id),
+        Number(inventory_movement_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Service Record Updated Successfully ',
+        message: 'Inventory Movement Updated Successfully ',
       });
     } catch (error) {
       res
@@ -126,15 +142,19 @@ export class ServiceRecordController {
     }
   }
 
-  async deleteServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async deleteInventoryMovement(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_record_id } = req.params;
-      await this.serviceRecordservice.deleteServiceRecord(
-        Number(service_record_id),
+      const { inventory_movement_id } = req.params;
+      await this.inventoryMovementservice.deleteInventoryMovement(
+        Number(inventory_movement_id),
       );
       res.status(200).json({
         status: 'Success',
-        message: `Service Record ID:${service_record_id} is deleted Successfully`,
+        message: `Inventory Movement ID:${inventory_movement_id} is deleted Successfully`,
       });
     } catch (error) {
       res

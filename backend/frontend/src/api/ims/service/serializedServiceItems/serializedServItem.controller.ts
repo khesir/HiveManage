@@ -2,25 +2,29 @@ import { Request, Response, NextFunction } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { SchemaType } from '@/drizzle/schema/type';
-import { ServiceRecordService } from './serviceRecord.service';
+import { SerializeServiceItemService } from './serializedServItem.service';
 
-export class ServiceRecordController {
-  private serviceRecordservice: ServiceRecordService;
+export class SerializeServItemController {
+  private serializedservItem: SerializeServiceItemService;
 
   constructor(pool: PostgresJsDatabase<SchemaType>) {
-    this.serviceRecordservice = new ServiceRecordService(pool);
+    this.serializedservItem = new SerializeServiceItemService(pool);
   }
 
-  async getAllServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async getAllSerializeServItem(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const no_pagination = req.query.no_pagination === 'true';
-    const product_record_id = req.params.product_record_id as string;
+    const serial_id = req.params.serial_id as string;
 
     try {
-      const data = await this.serviceRecordservice.getAllServiceRecord(
-        product_record_id,
+      const data = await this.serializedservItem.getAllSerializeServiceItem(
+        serial_id,
         no_pagination,
         sort,
         limit,
@@ -32,7 +36,7 @@ export class ServiceRecordController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.serviceRecordsWithDetails,
+        data: data.serializedserviceproductsWithDetails,
       });
     } catch (error) {
       res
@@ -42,11 +46,15 @@ export class ServiceRecordController {
     }
   }
 
-  async getServiceRecordById(req: Request, res: Response, next: NextFunction) {
+  async getSerializeServItemById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_record_id } = req.params;
-      const data = await this.serviceRecordservice.getServiceRecordById(
-        Number(service_record_id),
+      const { service_serilize_record_id } = req.params;
+      const data = await this.serializedservItem.getSerializeServiceItemById(
+        Number(service_serilize_record_id),
       );
       res.status(200).json({ status: 'Success', message: data });
     } catch (error) {
@@ -57,29 +65,24 @@ export class ServiceRecordController {
     }
   }
 
-  async createServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async createSerializeServItem(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const {
-        product_record_id,
-        service_item_id,
-        available_quantity,
-        on_service_quantity,
-        sold_quantity,
-        status,
-      } = req.body;
+      const { serial_id, service_item_id, quantity, status } = req.body;
 
-      await this.serviceRecordservice.createServiceRecord({
-        product_record_id,
+      await this.serializedservItem.createSerializeServiceItem({
+        serial_id,
         service_item_id,
-        available_quantity,
-        on_service_quantity,
-        sold_quantity,
+        quantity,
         status,
       });
 
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
-        message: 'Successfully Created Service Record',
+        message: 'Successfully Created Serialize Product ',
       });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
@@ -91,32 +94,27 @@ export class ServiceRecordController {
     }
   }
 
-  async updateServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async updateSerializeServItem(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_record_id } = req.params;
-      const {
-        product_record_id,
-        service_item_id,
-        available_quantity,
-        on_service_quantity,
-        sold_quantity,
-        status,
-      } = req.body;
+      const { service_serilize_record_id } = req.params;
+      const { serial_id, service_item_id, quantity, status } = req.body;
 
-      await this.serviceRecordservice.updateServiceRecord(
+      await this.serializedservItem.updateSerializeServiceItem(
         {
-          product_record_id,
+          serial_id,
           service_item_id,
-          available_quantity,
-          on_service_quantity,
-          sold_quantity,
+          quantity,
           status,
         },
-        Number(service_record_id),
+        Number(service_serilize_record_id),
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
-        message: 'Service Record Updated Successfully ',
+        message: 'Serialize Service Item Updated Successfully ',
       });
     } catch (error) {
       res
@@ -126,15 +124,19 @@ export class ServiceRecordController {
     }
   }
 
-  async deleteServiceRecord(req: Request, res: Response, next: NextFunction) {
+  async deleteSerializeServItem(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { service_record_id } = req.params;
-      await this.serviceRecordservice.deleteServiceRecord(
-        Number(service_record_id),
+      const { service_serilize_record_id } = req.params;
+      await this.serializedservItem.deleteSerializeServiceItem(
+        Number(service_serilize_record_id),
       );
       res.status(200).json({
         status: 'Success',
-        message: `Service Record ID:${service_record_id} is deleted Successfully`,
+        message: `Serialize Service Item ID:${service_serilize_record_id} is deleted Successfully`,
       });
     } catch (error) {
       res

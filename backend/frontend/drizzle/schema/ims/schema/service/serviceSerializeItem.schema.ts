@@ -10,7 +10,7 @@ import { serializeProduct } from '../..';
 
 export const recordStatus = pgEnum('record_status', ['Sold', 'Available']);
 
-export const serviceRecord = pgTable('service_serilize_record', {
+export const serializedserviceRecord = pgTable('service_serialize_record', {
   service_serilize_record_id: serial('service_serilize_record_id').primaryKey(),
   serial_id: integer('serial_id').references(() => serializeProduct.serial_id),
   service_item_id: integer('service_item_id').references(
