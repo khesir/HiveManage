@@ -5,7 +5,6 @@ import assignedEmployeeRoute from './assignedemployees/assignedemployees.route';
 import { ServiceController } from './service.controller';
 import { validateServiceID } from './service.middleware';
 import { CreateService, UpdateService } from './service.model';
-import reportsRoute from './tickets/reports/reports.route';
 import ticketsRoute from './tickets/ticket.route';
 import tickettypesRoute from './ticketType/tickettype.route';
 import transerviceitemsRoute from './transactionServiceItem/transerviceitem.route';
@@ -38,8 +37,6 @@ serviceRoute.delete(
   validateServiceID,
   serviceController.deleteService.bind(serviceController),
 );
-
-serviceRoute.use('/:service_id/reports', validateServiceID, reportsRoute);
 
 serviceRoute.use(
   '/:service_id/assigned-employee',

@@ -10,6 +10,7 @@ import { service } from './service.schema';
 
 export const transaction_service_status = pgEnum('transaction_service_status', [
   'Pending',
+  'Used',
   'Returned',
 ]);
 
@@ -17,8 +18,8 @@ export const transactionServiceItems = pgTable('transaction_service_item', {
   transaction_service_item_id: serial(
     'transaction_service_item_id',
   ).primaryKey(),
-  service_id: integer('service_ud').references(() => service.service_id),
-  service_item_id: integer('service_item').references(
+  service_id: integer('service_id').references(() => service.service_id),
+  service_item_id: integer('service_item_id').references(
     () => serviceItem.service_item_id,
   ),
   quantity: integer('quantity'),

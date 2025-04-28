@@ -2,18 +2,22 @@ import { z } from 'zod';
 
 export const CreateProductRecord = z.object({
   product_id: z.number().min(1),
+  supplier_id: z.number().min(1),
+  order_item_id: z.number().min(1),
+
   quantity: z.number().min(1),
-  price: z.number(),
-  condition: z.enum(['New', 'Secondhand', 'Broken']),
-  status: z.enum(['Sold', 'Available', 'In Service', 'On Order', 'Sold out']),
+  status: z.enum(['Pending', 'Confirmed', 'Returned', 'Added']),
+  handled_by: z.number().min(1),
 });
 
 export const UpdateProductRecord = z.object({
-  product_id: z.number().optional(),
-  record_name: z.string().min(1),
+  product_id: z.number().min(1),
+  supplier_id: z.number().min(1),
+  order_item_id: z.number().min(1),
+
   quantity: z.number().min(1),
-  record_type: z.enum(['Firsthand', 'Secondhand', 'Broken']),
-  status: z.string().min(1),
+  status: z.enum(['Pending', 'Confirmed', 'Returned', 'Added']),
+  handled_by: z.number().min(1),
 });
 
 export type CreateProductRecord = z.infer<typeof CreateProductRecord>;

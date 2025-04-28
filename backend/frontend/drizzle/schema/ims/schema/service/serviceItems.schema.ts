@@ -9,8 +9,9 @@ import { product } from '../product/product.schema';
 import { service_Type } from '@/drizzle/schema/services';
 
 export const serviceItemStatus = pgEnum('service_item_status', [
+  'Unavailable',
   'Available',
-  'Sold Out',
+  'Discontinued',
 ]);
 
 export const serviceItem = pgTable('service_item', {
@@ -20,7 +21,9 @@ export const serviceItem = pgTable('service_item', {
     () => service_Type.service_type_id,
   ),
 
-  quantity: integer('qty').default(0),
+  total_quantity: integer('total_quantity').default(0),
+  used_quantity: integer('used_quantity').default(0),
+  available_quantity: integer('available_quantity').default(0),
   status: serviceItemStatus('status').notNull(),
 
   created_at: timestamp('created_at').defaultNow(),

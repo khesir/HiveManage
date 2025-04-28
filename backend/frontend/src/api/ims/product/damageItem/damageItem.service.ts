@@ -2,7 +2,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateDamageItem } from './damageItem.model';
-import { damageItem } from '@/drizzle/schema/ims/schema/product/damageItems.schema';
+import { damageItem } from '@/drizzle/schema/ims/schema/damage/damageItems.schema';
 import { product } from '@/drizzle/schema/ims';
 
 export class DamageItemService {

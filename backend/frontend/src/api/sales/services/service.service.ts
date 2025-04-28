@@ -6,7 +6,6 @@ import {
   assignedEmployees,
   service,
   service_Type,
-  serviceItems,
 } from '@/drizzle/schema/services';
 import { customer } from '@/drizzle/schema/customer';
 import { employee } from '@/drizzle/schema/ems';
@@ -158,24 +157,5 @@ export class ServicesService {
       });
     });
     return assignedEmployeesByServiceID;
-  }
-  private async getServiceItemByServiceIDs(
-    serviceIDs: number[],
-  ): Promise<Map<number, unknown[]>> {
-    const result = await this.db
-      .select()
-      .from(serviceItems)
-      .where(inArray(serviceItems.service_id, serviceIDs));
-
-    const serviceItemByProductID = new Map<number, unknown[]>();
-
-    result.forEach((record) => {
-      const serviceID = record.service_id!;
-      if (!serviceItemByProductID.has(serviceID)) {
-        serviceItemByProductID.set(serviceID, []);
-      }
-      serviceItemByProductID.get(serviceID)!.push(record);
-    });
-    return serviceItemByProductID;
   }
 }

@@ -1,11 +1,13 @@
 import {
   decimal,
+  integer,
   pgEnum,
   pgTable,
   serial,
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { supplier } from '../product/supplier.schema';
 
 export const orderStatus = pgEnum('order_status', [
   'Draft',
@@ -30,6 +32,7 @@ export const paymentMethod = pgEnum('order_payment_method', [
 
 export const order = pgTable('order', {
   order_id: serial('order_id').primaryKey(),
+  supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
 
   notes: varchar('notes'),
   expected_arrival: timestamp('expected_arrival'),

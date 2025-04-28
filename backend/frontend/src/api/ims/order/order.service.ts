@@ -70,15 +70,12 @@ export class OrderService {
       .from(order)
       .where(inArray(order.order_id, orderIds));
 
+    if (includes.includes('supplier')) {
+      query.leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id));
+    }
     if (includes.includes('order_products')) {
       query.leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id));
 
-      if (includes.includes('supplier')) {
-        query.leftJoin(
-          supplier,
-          eq(supplier.supplier_id, orderProduct.supplier_id),
-        );
-      }
       if (includes.includes('product')) {
         query.leftJoin(
           product,
@@ -111,6 +108,9 @@ export class OrderService {
           acc[orderId] = {
             ...row.order,
             order_products: [],
+            supplier: includes.includes('supplier')
+              ? (row.supplier ?? undefined)
+              : undefined,
           };
         }
 
@@ -119,9 +119,7 @@ export class OrderService {
             ...(row.order_product
               ? (row.order_product as Record<string, unknown>)
               : {}),
-            supplier: includes.includes('supplier')
-              ? (row.supplier ?? undefined)
-              : undefined,
+
             product:
               includes.includes('product') && row.product
                 ? {
@@ -168,16 +166,11 @@ export class OrderService {
       })
       .from(order)
       .where(and(...conditions));
-
+    if (includes.includes('supplier')) {
+      query.leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id));
+    }
     if (includes.includes('order_products')) {
       query.leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id));
-
-      if (includes.includes('supplier')) {
-        query.leftJoin(
-          supplier,
-          eq(supplier.supplier_id, orderProduct.supplier_id),
-        );
-      }
       if (includes.includes('product')) {
         query.leftJoin(
           product,

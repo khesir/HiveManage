@@ -2,7 +2,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { CreateSerialize } from './serialize.model';
 import { SchemaType } from '@/drizzle/schema/type';
-import { product, serializeProduct, supplier } from '@/drizzle/schema/ims';
+import { product, serializeProduct } from '@/drizzle/schema/ims';
 
 export class SerializeItemService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -14,7 +14,7 @@ export class SerializeItemService {
   async createSerializeItem(data: CreateSerialize) {
     await this.db
       .insert(serializeProduct)
-      .values({ ...data, warranty_date: new Date(Date.now()) });
+      .values({ ...data, warranty_date: new Date(Date.now()).toISOString() });
   }
 
   async getAllSerializedProducts(
@@ -42,10 +42,6 @@ export class SerializeItemService {
       .select()
       .from(serializeProduct)
       .leftJoin(product, eq(product.product_id, serializeProduct.product_id))
-      .leftJoin(
-        supplier,
-        eq(supplier.supplier_id, serializeProduct.supplier_id),
-      )
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -77,10 +73,6 @@ export class SerializeItemService {
       .select()
       .from(serializeProduct)
       .leftJoin(product, eq(product.product_id, serializeProduct.product_id))
-      .leftJoin(
-        supplier,
-        eq(supplier.supplier_id, serializeProduct.supplier_id),
-      )
       .where(eq(serializeProduct.serial_id, Number(serial_id)));
 
     const serializedproductsWithDetails = result.map((row) => ({

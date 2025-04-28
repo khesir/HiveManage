@@ -9,11 +9,9 @@ import {
 } from './ems';
 import { product, category, supplier, order, orderProduct } from './ims';
 import {
-  reports,
   tickets,
   ticketType,
   service,
-  serviceItems,
   service_Type,
   assignedEmployees,
 } from './services';
@@ -35,14 +33,13 @@ export const schema: SchemaType = {
   // Company Feature
   department,
   designation,
+
   // Job Order
   service,
-  serviceItems,
   service_Type,
   tickets,
   ticketType,
   assignedEmployees,
-  reports,
 
   sales,
   salesItems,

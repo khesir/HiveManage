@@ -5,22 +5,24 @@ import {
   serial,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import { serviceItem } from './serviceItems.schema';
-import { serializeProduct } from '../..';
+import { serializeProduct } from '../product/serializeProducts.schema';
+import { damageRecord } from './damageRecord.schema';
 
-export const recordStatus = pgEnum('service_record_status', [
-  'Sold',
-  'Available',
+export const damageRecordStatus = pgEnum('damage_record_status', [
+  'Pending',
+  'Confirmed',
+  'Returned',
+  'Added',
 ]);
 
 export const serializedserviceRecord = pgTable('service_serialize_record', {
   service_serilize_record_id: serial('service_serilize_record_id').primaryKey(),
   serial_id: integer('serial_id').references(() => serializeProduct.serial_id),
-  service_item_id: integer('service_item_id').references(
-    () => serviceItem.service_item_id,
+  damage_record_id: integer('damage_Record').references(
+    () => damageRecord.damage_record_id,
   ),
   quantity: integer('qty').default(0),
-  status: recordStatus('status').notNull(),
+  status: damageRecordStatus('status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

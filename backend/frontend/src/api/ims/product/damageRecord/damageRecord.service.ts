@@ -1,11 +1,11 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
-import { damageRecord } from '@/drizzle/schema/ims/schema/product/damageRecord.schema';
+import { damageRecord } from '@/drizzle/schema/ims/schema/damage/damageRecord.schema';
 import { CreateDamageRecord } from './damageRecord.model';
 import { serviceRecord } from '@/drizzle/schema/ims/schema/service/serviceRecord.schema';
 import { product } from '@/drizzle/schema/ims';
-import { damageItem } from '@/drizzle/schema/ims/schema/product/damageItems.schema';
+import { damageItem } from '@/drizzle/schema/ims/schema/damage/damageItems.schema';
 
 export class DamageRecordService {
   private db: PostgresJsDatabase<SchemaType>;

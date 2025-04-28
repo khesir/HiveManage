@@ -1,5 +1,6 @@
 import {
   boolean,
+  decimal,
   integer,
   pgEnum,
   pgTable,
@@ -23,6 +24,14 @@ export const product = pgTable('product', {
   status: productStatus('product_status').notNull(),
 
   re_order_level: integer('re_order_level').default(0),
+
+  selling_price: decimal('selling_price', { precision: 50, scale: 2 }),
+
+  total_quantity: integer('total_quantity').default(0).notNull(),
+  available_quantity: integer('available_quantity').default(0),
+  transfered_quantity: integer('transfered_quantity').default(0),
+  sold_quantity: integer('sold_quantity').default(0),
+
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

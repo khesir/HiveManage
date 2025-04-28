@@ -134,36 +134,9 @@ export class TicketsService {
       .where(eq(tickets.ticket_id, Number(ticket_id)));
 
     const ticketitemWithDetails = result.map((row) => ({
-      ticket_id: row.tickets.ticket_id,
-      ticketType: {
-        ticket_type_id: row.ticketType?.ticket_type_id,
-        name: row.ticketType?.name,
-        description: row.ticketType?.description,
-        created_at: row.ticketType?.created_at,
-        last_updated: row.ticketType?.last_updated,
-        deleted_at: row.ticketType?.deleted_at,
-      },
-      service: {
-        service_id: row.service?.service_id,
-        service_type_id: row.service?.service_type_id,
-        description: row.service?.description,
-        uuid: row.service?.uuid,
-        fee: row.service?.fee,
-        customer_id: row.service?.customer_id,
-        service_status: row.service?.service_status,
-        total_cost_price: row.service?.total_cost_price,
-        created_at: row.service?.created_at,
-        last_updated: row.service?.last_updated,
-        deleted_at: row.service?.deleted_at,
-      },
-      title: row.tickets.title,
-      description: row.tickets?.description,
-      content: row.tickets?.content,
-      ticket_status: row.tickets?.ticket_status,
-      deadline: row.tickets?.deadline,
-      created_at: row.tickets?.created_at,
-      last_updated: row.tickets?.last_updated,
-      deleted_at: row.tickets?.deleted_at,
+      ...row.tickets,
+      ticketType: row.ticketType,
+      service: row.service,
     }));
 
     return ticketitemWithDetails;

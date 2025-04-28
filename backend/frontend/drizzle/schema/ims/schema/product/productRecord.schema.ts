@@ -1,5 +1,4 @@
 import {
-  decimal,
   integer,
   pgEnum,
   pgTable,
@@ -8,29 +7,27 @@ import {
 } from 'drizzle-orm/pg-core';
 import { product } from './product.schema';
 import { supplier } from './supplier.schema';
+import { employee } from '@/drizzle/schema/ems';
+import { orderProduct } from '../order/orderItem.schema';
 
-export const recordStatus = pgEnum('record_status', [
-  'Sold',
-  'Available',
-  'In Service',
-  'On Order',
-  'Sold out',
+export const productRecordStatus = pgEnum('product_record_status', [
+  'Pending',
+  'Confirmed',
+  'Returned',
+  'Added',
 ]);
 
 export const productRecord = pgTable('product_record', {
   product_record_id: serial('product_record_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
   supplier_id: integer('supplier_id').references(() => supplier.supplier_id),
+  order_item_id: integer('order_item_id').references(
+    () => orderProduct.order_product_id,
+  ),
+  quantity: integer('quantity').default(0),
 
-  total_quantity: integer('total_quantity').default(0).notNull(),
-  available_quantity: integer('available_quantity').default(0),
-  sold_quantity: integer('sold_quantity').default(0),
-  transfered_quantity: integer('transfered_quantity').default(0),
-
-  cost_price: decimal('cost_price', { precision: 50, scale: 2 }),
-  selling_price: decimal('selling_price', { precision: 50, scale: 2 }),
-
-  status: recordStatus('status').notNull(),
+  status: productRecordStatus('status').notNull(),
+  handled_by: integer('employee_id').references(() => employee.employee_id),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

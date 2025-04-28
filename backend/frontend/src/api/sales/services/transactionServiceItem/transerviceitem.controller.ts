@@ -16,14 +16,12 @@ export class TranServiceItemsController {
     res: Response,
     next: NextFunction,
   ) {
-    const service_record_id = req.params.service_record_id as string;
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
 
     try {
       const data = await this.transerviceitemService.getAllTranServiceItem(
-        service_record_id,
         sort,
         limit,
         offset,
@@ -34,7 +32,7 @@ export class TranServiceItemsController {
         total_data: data.totalData,
         limit: limit,
         offset: offset,
-        data: data.transactionserviceItemWithDetails,
+        data: data.transactionServiceItemsWithDetails,
       });
     } catch (error) {
       res

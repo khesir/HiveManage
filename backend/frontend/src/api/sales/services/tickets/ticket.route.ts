@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
-import reportsRoute from './reports/reports.route';
 import { TicketsController } from './ticket.controller';
 import { validateTicketsID } from './ticket.middleware';
 import { CreateTickets, UpdateTickets } from './ticket.model';
@@ -34,7 +33,5 @@ ticketsRoute.delete(
   validateTicketsID,
   ticketsController.deleteTickets.bind(ticketsController),
 );
-
-ticketsRoute.use('/:ticket_id/reports', validateTicketsID, reportsRoute);
 
 export default ticketsRoute;

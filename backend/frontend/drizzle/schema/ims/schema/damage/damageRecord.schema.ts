@@ -2,6 +2,7 @@ import { integer, pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 import { product } from '../..';
 import { serviceRecord } from '../service/serviceRecord.schema';
 import { damageItem } from './damageItems.schema';
+import { employee } from '@/drizzle/schema/ems';
 
 export const damageRecord = pgTable('damage_record', {
   damage_record_id: serial('damage_record_id').primaryKey(),
@@ -13,6 +14,7 @@ export const damageRecord = pgTable('damage_record', {
     () => damageItem.damage_item_id,
   ),
   quantity: integer('quantity').default(0),
+  handled_by: integer('employee_id').references(() => employee.employee_id),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

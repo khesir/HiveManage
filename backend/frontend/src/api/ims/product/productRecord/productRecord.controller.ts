@@ -56,13 +56,21 @@ export class ProductRecordController {
 
   async createProductRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const { product_id, quantity, condition, status, price } = req.body;
+      const {
+        product_id,
+        supplier_id,
+        order_item_id,
+        quantity,
+        status,
+        handled_by,
+      } = req.body;
       await this.productrecordService.createProductRecord({
         product_id,
+        supplier_id,
+        order_item_id,
         quantity,
-        condition,
         status,
-        price,
+        handled_by,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -82,16 +90,23 @@ export class ProductRecordController {
   async updateProductRecord(req: Request, res: Response, next: NextFunction) {
     try {
       const { product_record_id } = req.params;
-      const { product_id, record_name, quantity, status, record_type } =
-        req.body;
+      const {
+        product_id,
+        supplier_id,
+        order_item_id,
+        quantity,
+        status,
+        handled_by,
+      } = req.body;
 
       await this.productrecordService.updateItemRecord(
         {
           product_id,
-          record_name,
+          supplier_id,
+          order_item_id,
           quantity,
           status,
-          record_type,
+          handled_by,
         },
         Number(product_record_id),
       );
