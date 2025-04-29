@@ -15,11 +15,30 @@ import {Badge} from '@/components/ui/badge';
 import clsx from 'clsx';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {CreatePODialogue} from './_components/dialogue/create-po-dialogue';
+import {useEffect, useState} from 'react';
+import {Order} from '@/components/validation/order';
+import {PaginationResponse, request} from '@/api/axios';
 
 export function ProductProfile() {
 	const navigate = useNavigate();
 	const {data} = useProducts();
-
+	const [currentOrder, setCurrentOrder] = useState<Order[]>([]);
+	const fetchData = async () => {
+		const orderData = await request<PaginationResponse<Order>>(
+			'GET',
+			`/api/v1/ims/order/product?product_id=${data?.product_id}&status=Draft&no_pagination=true`,
+		);
+		if (orderData.data) {
+			setCurrentOrder(orderData.data);
+		} else {
+			setCurrentOrder([]);
+		}
+	};
+	useEffect(() => {
+		if (data) {
+			fetchData();
+		}
+	}, [data]);
 	if (!data) {
 		return (
 			<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
@@ -49,8 +68,8 @@ export function ProductProfile() {
 						})`,
 					}}
 				></div>
-				<div className="relative z-10 grid gap-0.5">
-					<CardTitle className="group flex items-center gap-2 text-lg">
+				<div className="relative z-10 grid gap-0.5 bg-black p-1 bg-opacity-75 rounded-md">
+					<CardTitle className="group flex items-center gap-2 text-lg text-white ">
 						{`# ${data.product_id} ${data.name}`}
 					</CardTitle>
 					{data && (
@@ -59,11 +78,11 @@ export function ProductProfile() {
 						</CardDescription>
 					)}
 				</div>
-				<div className="relative ml-auto flex items-center gap-1">
+				<div className="relative ml-auto flex items-center flex-col">
 					<Button
 						size="sm"
 						variant="outline"
-						className="h-8 gap-1"
+						className="h-8 gap-1 rounded-b-none"
 						onClick={() => {
 							const id = Number(data.product_id);
 							navigate(`view/${id}`);
@@ -74,6 +93,14 @@ export function ProductProfile() {
 							View More
 						</span>
 					</Button>
+					<div
+						className={clsx(
+							'text-white hover:none, text-xs w-full text-center font-semibold rounded-b-sm',
+							data.is_serialize ? 'bg-green-500' : 'bg-red-500',
+						)}
+					>
+						{data.is_serialize ? 'Serialized' : 'Batch'}
+					</div>
 				</div>
 			</CardHeader>
 			<CardContent className="p-6 text-sm">
@@ -108,17 +135,6 @@ export function ProductProfile() {
 							</span>
 						</li>
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Serialized Item</span>
-							<Badge
-								className={clsx(
-									'text-white hover:none',
-									data.is_serialize ? 'bg-green-500' : 'bg-red-500',
-								)}
-							>
-								{data.is_serialize ? 'True' : 'False'}
-							</Badge>
-						</li>
-						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Suppliers</span>
 							{avatar.length === 0 ? (
 								<span>No suppliers</span>
@@ -131,6 +147,9 @@ export function ProductProfile() {
 							<span>{data.re_order_level}</span>
 						</li>
 						<CreatePODialogue id={data.product_id!} />
+						<p className=" text-gray-500 text-xs font-semibold">
+							Has currently {currentOrder.length} active/draft purchase order
+						</p>
 					</ul>
 				</div>
 				<Separator className="my-4" />
@@ -138,6 +157,10 @@ export function ProductProfile() {
 					<div className="font-semibold">Stock records</div>
 
 					<ul className="grid gap-3">
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Total Quantity</span>
+							<span>{data.available_quantity}</span>
+						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Available Quantity</span>
 							<span>{data.available_quantity}</span>
@@ -147,7 +170,7 @@ export function ProductProfile() {
 							<span>{data.available_quantity}</span>
 						</li>
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Total Quantity</span>
+							<span className="text-muted-foreground">Ordered Quantity</span>
 							<span>{data.available_quantity}</span>
 						</li>
 						<li className="flex items-center justify-between">

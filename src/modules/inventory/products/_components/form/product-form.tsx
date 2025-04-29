@@ -97,7 +97,7 @@ export function CreateProductForm() {
 	const form = useForm<Product>({
 		resolver: zodResolver(productSchema),
 		defaultValues: defaultProductFormValues,
-		mode: 'onChange',
+		mode: 'onSubmit',
 	});
 
 	const processForm = async (data: Product) => {
@@ -247,10 +247,13 @@ export function CreateProductForm() {
 											<FormControl>
 												<Input
 													disabled={loading}
-													placeholder="Brand - Product - Specifc Specs"
+													placeholder="Insert Name"
 													{...field}
 												/>
 											</FormControl>
+											<FormDescription>
+												Brand - Product - Specifc Specs
+											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}
@@ -271,7 +274,7 @@ export function CreateProductForm() {
 														onChange={(e) => {
 															const value = e.target.value;
 															// Ensure the value is converted to a number
-															field.onChange(value ? parseFloat(value) : 0);
+															field.onChange(value ? parseFloat(value) : null);
 														}}
 													/>
 												</FormControl>

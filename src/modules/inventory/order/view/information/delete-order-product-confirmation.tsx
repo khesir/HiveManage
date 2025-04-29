@@ -11,6 +11,8 @@ import {X} from 'lucide-react';
 import {useState} from 'react';
 
 import useOrderStore from '@/api/order-state';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import {toast} from 'sonner';
 
 interface Props {
 	product_order_id: number;
@@ -18,9 +20,18 @@ interface Props {
 export function DeleteOrderProductConfirmation({product_order_id}: Props) {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const {selectedOrder, removeOrderItem, getOrderById} = useOrderStore();
+	const {user} = useEmployeeRoleDetailsStore();
 
 	const handleDelete = async () => {
-		await removeOrderItem(selectedOrder.order_id!, product_order_id);
+		if (!user?.employee.employee_id) {
+			toast.error('You need to be logged in to proceed');
+			return;
+		}
+		await removeOrderItem(
+			selectedOrder.order_id!,
+			product_order_id,
+			user?.employee.employee_id,
+		);
 		await getOrderById(selectedOrder.order_id!);
 		setFormModal(false);
 	};

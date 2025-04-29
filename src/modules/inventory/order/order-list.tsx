@@ -18,7 +18,8 @@ export function OrderList({
 }: ProductWithDetails) {
 	const [orders, setOrders] = useState<Order[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
-
+	const pid = product_id || Number(searchParams.get('product_id'));
+	const supplier_id = Number(searchParams.get('supplier_id'));
 	const page = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
 	const sort = searchParams.get('sort') || null;
@@ -29,12 +30,10 @@ export function OrderList({
 
 	useEffect(() => {
 		const fetchProducts = async () => {
-			if (product_id) {
+			if (pid) {
 				const res = await request<PaginationResponse<Order>>(
 					'GET',
-					`/api/v1/ims/order?limit=${pageLimit}&offset=${offset}` +
-						(sort ? `&sort=${sort}` : '') +
-						'&includes=order_products,supplier',
+					`/api/v1/ims/order/product?product_id=${product_id}&supplier_id=${supplier_id}&status=Draft`,
 				);
 				setOrders(res.data);
 				setOrder(res.data[0]);

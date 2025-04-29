@@ -3,27 +3,34 @@ import {Card, CardContent, CardFooter, CardHeader} from '@/components/ui/card';
 import {useEffect, useState} from 'react';
 import {useParams, useSearchParams} from 'react-router-dom';
 
-import {ApiRequest, request} from '@/api/axios';
+import {ApiRequest, PaginationResponse, request} from '@/api/axios';
 import {Product} from '@/components/validation/product';
 import {InformationCard} from './information-card';
 
 import {ViewRecordTabs} from '../item-record-tabs';
 import {CreatePODialogue} from '../../_components/dialogue/create-po-dialogue';
+import {Order} from '@/components/validation/order';
 
 export function ProductInformationTab() {
 	const [searchParams] = useSearchParams();
 	const {id} = useParams();
 	const [data, setData] = useState<Product>();
+	const [currentOrder, setCurrentOrder] = useState<Order[]>([]);
 	const fetchData = async () => {
-		const newProductData = await request<ApiRequest<Product>>(
-			'GET',
-			`/api/v1/ims/product/${id}`,
-		);
+		const [newProductData, orderData] = await Promise.all([
+			request<ApiRequest<Product>>('GET', `/api/v1/ims/product/${id}`),
+			request<PaginationResponse<Order>>(
+				'GET',
+				`/api/v1/ims/order/product?product_id=${id}&status=Draft`,
+			),
+		]);
+
 		if (!Array.isArray(newProductData.data)) {
 			setData(newProductData.data);
 		} else {
 			setData(newProductData.data[0]);
 		}
+		setCurrentOrder(orderData.data);
 	};
 	useEffect(() => {
 		fetchData();
@@ -91,8 +98,12 @@ export function ProductInformationTab() {
 									</ul>
 								</div>
 							</CardContent>
-							<CardFooter className="w-full">
+							<CardFooter className="w-full flex-col items-start">
 								<CreatePODialogue id={data.product_id!} />
+								<p className=" text-gray-500 text-xs font-semibold">
+									Has currently {currentOrder.length} active/draft purchase
+									order
+								</p>
 							</CardFooter>
 						</Card>
 					</div>

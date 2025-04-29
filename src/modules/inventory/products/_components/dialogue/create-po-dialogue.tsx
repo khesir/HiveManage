@@ -25,12 +25,15 @@ import {Input} from '@/components/ui/input';
 import {Supplier} from '@/components/validation/supplier';
 import {toast} from 'sonner';
 import {createPO} from './fetch-supplier-draft-order.-dialogue';
+import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
+import {Separator} from '@/components/ui/separator';
 interface Props {
 	id: number;
 }
 
 const createPo = z.object({
 	quantity: z.string().regex(/^\d+$/, 'Quantity must be a numeric'),
+	price: z.string().regex(/^\d+$/, 'Price must be a numeric'),
 });
 export function CreatePODialogue({id}: Props) {
 	const [formModal, setFormModal] = useState<boolean>(false);
@@ -46,6 +49,7 @@ export function CreatePODialogue({id}: Props) {
 	const [productSupplier, setProductSupplier] = useState<ProductSupplier[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
+	const {user} = useEmployeeRoleDetailsStore();
 	useEffect(() => {
 		try {
 			setLoading(true);
@@ -71,7 +75,7 @@ export function CreatePODialogue({id}: Props) {
 	}, []);
 	const form = useForm<z.infer<typeof createPo>>({
 		resolver: zodResolver(createPo),
-		defaultValues: {quantity: ''},
+		defaultValues: {quantity: '', price: ''},
 		mode: 'onSubmit',
 	});
 	const processForm = async (poData: z.infer<typeof createPo>) => {
@@ -79,7 +83,17 @@ export function CreatePODialogue({id}: Props) {
 			toast.error('No Selected Supplier');
 			return;
 		}
-		await createPO(Number(poData.quantity), selectedSupplier.supplier_id, id);
+		if (!user || !user.employee.employee_id) {
+			toast.error('Cannot process, you must properly authenticate');
+			return;
+		}
+		await createPO(
+			Number(poData.quantity),
+			Number(poData.price),
+			selectedSupplier.supplier_id,
+			id,
+			user.employee.employee_id,
+		);
 	};
 	if (loading) {
 		return <div>Fetching data</div>;
@@ -104,6 +118,25 @@ export function CreatePODialogue({id}: Props) {
 							name="quantity"
 							render={({field}) => (
 								<FormItem>
+									<FormLabel>Quantity</FormLabel>
+									<FormControl>
+										<Input
+											type="number"
+											{...field}
+											disabled={loading}
+											placeholder="10000"
+											value={field.value ?? ''}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="price"
+							render={({field}) => (
+								<FormItem>
 									<FormLabel>Selling Price</FormLabel>
 									<FormControl>
 										<Input
@@ -118,7 +151,7 @@ export function CreatePODialogue({id}: Props) {
 								</FormItem>
 							)}
 						/>
-
+						<Separator />
 						<div className="border p-2 rounded-sm">
 							{selectedSupplier ? (
 								<div className="flex justify-between items-center">
