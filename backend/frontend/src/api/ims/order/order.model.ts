@@ -69,13 +69,17 @@ const productSchema = z.object({
 
 const orderItem = z.object({
   order_product_id: z.number().optional(),
-  supplier_id: z.number().optional(),
   order_id: z.number().optional(),
   product_id: z.number().min(1),
+
   total_quantity: z.number().min(1),
   ordered_quantity: z.number().optional(),
   delivered_quantity: z.number().optional(),
-  unit_price: z.string().min(1),
+
+  cost_price: z.string().min(1),
+  selling_price: z.string().optional(),
+
+  status: z.string().optional(),
   is_serialize: z.boolean().optional(),
   product: productSchema.optional(),
 });
@@ -94,7 +98,7 @@ const supplierSchema = z.object({
 });
 export const CreateOrder = z.object({
   order_id: z.number().optional(),
-
+  supplier_id: z.number().min(1),
   notes: z.string().optional(),
   receive_at: z.string().optional(),
   expected_arrival: z.string().optional(),
@@ -111,7 +115,7 @@ export const CreateOrder = z.object({
 
 export const UpdateOrder = z.object({
   order_id: z.number().optional(),
-
+  supplier_id: z.number().min(1),
   notes: z.string().nullable().optional(),
   expected_arrival: z.string().optional(),
 
@@ -120,20 +124,7 @@ export const UpdateOrder = z.object({
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
 
-  order_products: z
-    .array(
-      z.object({
-        order_product_id: z.number().optional(),
-        order_id: z.number().optional(),
-        product_id: z.number().min(1),
-        total_quantity: z.number().min(1),
-        ordered_quantity: z.number().optional(),
-        delivered_quantity: z.number().optional(),
-        unit_price: z.string().min(1),
-        is_serialize: z.boolean().optional(),
-      }),
-    )
-    .optional(),
+  order_products: z.array(orderItem).optional(),
   user: z.number().min(1),
 });
 

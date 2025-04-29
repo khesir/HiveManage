@@ -20,6 +20,73 @@ export class OrderService {
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
   }
+  async getOrdersByProductID(
+    limit: number,
+    offset: number,
+    no_pagination: boolean,
+    product_id?: number,
+    supplier_id?: number,
+    status?: string,
+  ) {
+    const baseQuery = this.db
+      .select({
+        order,
+        order_product: orderProduct,
+      })
+      .from(order)
+      .leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id))
+      .leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id));
+
+    const conditions = [isNull(order.deleted_at)];
+
+    if (status) {
+      conditions.push(
+        eq(
+          order.order_status,
+          status as
+            | 'Draft'
+            | 'Finalized'
+            | 'Awaiting Arrival'
+            | 'Partially Fulfiled'
+            | 'Fulfilled'
+            | 'Cancelled',
+        ),
+      );
+    }
+
+    if (supplier_id) {
+      conditions.push(eq(supplier.supplier_id, supplier_id));
+    }
+
+    if (product_id) {
+      conditions.push(eq(orderProduct.product_id, product_id));
+    }
+
+    // Total count query
+    const totalCountResult = await this.db
+      .select({ count: sql<number>`COUNT(DISTINCT ${order.order_id})` })
+      .from(order)
+      .leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id))
+      .leftJoin(supplier, eq(supplier.supplier_id, order.supplier_id))
+      .where(and(...conditions));
+    const totalData = totalCountResult[0].count;
+
+    // Final data query
+    const query = baseQuery.where(and(...conditions));
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+
+    const result = await query;
+
+    const orderWithDetails = result.map((row) => ({
+      ...row.order,
+      order_product: row.order_product,
+    }));
+
+    return { totalData, orderWithDetails };
+  }
+
   async getAllOrder(
     sort: string,
     limit: number,
@@ -254,9 +321,21 @@ export class OrderService {
       for (const item of data.order_products!) {
         await tx.insert(orderProduct).values({
           order_id: insertedOrder.order_id,
-          status: 'Draft',
           ...item,
+          status: 'Draft' as
+            | 'Draft'
+            | 'Finalized'
+            | 'Awaiting Arrival'
+            | 'Cancelled'
+            | 'Partially Delivered'
+            | 'Delivered'
+            | 'Returned'
+            | 'Partially Stocked'
+            | 'Stocked'
+            | null
+            | undefined,
         });
+        // Logging
         await tx.insert(ProductLog).values({
           product_id: item.product_id,
           performed_by: empData[0].employee_id,
@@ -287,6 +366,7 @@ export class OrderService {
             : null,
         })
         .where(eq(order.order_id, paramsId));
+      // Logging
       const empData = await tx
         .select()
         .from(employee)
@@ -315,7 +395,7 @@ export class OrderService {
         .update(orderProduct)
         .set({ deleted_at: new Date(Date.now()) })
         .where(eq(orderProduct.order_id, paramsId));
-
+      // Logging
       const empData = await tx
         .select()
         .from(employee)

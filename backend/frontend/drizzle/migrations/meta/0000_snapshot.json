@@ -1,5 +1,5 @@
 {
-  "id": "e7b83b61-ff72-4fbf-9213-45916202a6df",
+  "id": "a79a6415-0fe1-4142-a736-15fe2aa5e106",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1012,7 +1012,8 @@
           "type": "status",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "default": "'Draft'"
         },
         "is_serialize": {
           "name": "is_serialize",

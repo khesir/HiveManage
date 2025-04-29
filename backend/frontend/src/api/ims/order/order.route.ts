@@ -12,6 +12,11 @@ const orderController = new OrderController(db);
 orderRoute.get('/', orderController.getAllOrders.bind(orderController));
 
 orderRoute.get(
+  '/product',
+  orderController.getOrdersByProductID.bind(orderController),
+);
+
+orderRoute.get(
   '/:order_id',
   validateOrderId,
   orderController.getOrderById.bind(orderController),
@@ -47,6 +52,6 @@ orderRoute.delete(
   orderController.deleteOrderById.bind(orderController),
 );
 
-orderRoute.use('/:order_id/orderProduct', validateOrderId, orderitemsRoute);
+orderRoute.use('/:order_id/order-product', validateOrderId, orderitemsRoute);
 
 export default orderRoute;

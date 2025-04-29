@@ -304,7 +304,7 @@ CREATE TABLE IF NOT EXISTS "order_product" (
 	"delivered_quantity" integer DEFAULT 0,
 	"cost_price" numeric(50, 2),
 	"selling_price" numeric(50, 2),
-	"status" "status" NOT NULL,
+	"status" "status" DEFAULT 'Draft',
 	"is_serialize" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,

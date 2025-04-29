@@ -10,7 +10,38 @@ export class OrderController {
   constructor(pool: PostgresJsDatabase<SchemaType>) {
     this.orderService = new OrderService(pool);
   }
+  async getOrdersByProductID(req: Request, res: Response, next: NextFunction) {
+    const product_id = (req.query.product_id as string) || undefined;
+    const supplier_id = (req.query.supplier_id as string) || undefined;
+    const status = (req.query.status as string) || undefined;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+    const no_pagination = req.query.no_pagination == 'true';
 
+    try {
+      const data = await this.orderService.getOrdersByProductID(
+        limit,
+        offset,
+        no_pagination,
+        Number(product_id),
+        Number(supplier_id),
+        status,
+      );
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Data retrieved successfully',
+        total_data: data.totalData,
+        limit: limit,
+        offset: offset,
+        data: data.orderWithDetails,
+      });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
     const supplier_id = (req.query.supplier_id as string) || undefined;
     const status = (req.query.status as string) || undefined;
@@ -72,6 +103,7 @@ export class OrderController {
     try {
       const {
         notes,
+        supplier_id,
         expected_arrival,
         order_value,
         order_products,
@@ -83,6 +115,7 @@ export class OrderController {
 
       await this.orderService.createOrder({
         notes,
+        supplier_id,
         expected_arrival,
         order_value,
         order_products,
@@ -109,6 +142,7 @@ export class OrderController {
       const { order_id } = req.params;
       const {
         notes,
+        supplier_id,
         expected_arrival,
         order_value,
         order_status,
@@ -120,6 +154,7 @@ export class OrderController {
       await this.orderService.updateOrder(
         {
           notes,
+          supplier_id,
           expected_arrival,
           order_value,
           order_status,
@@ -143,7 +178,7 @@ export class OrderController {
   async deleteOrderById(req: Request, res: Response, next: NextFunction) {
     try {
       const { order_id } = req.params;
-      const user = req.query.user as string | undefined;
+      const user = req.query.user_id as string | undefined;
       await this.orderService.deleteOrder(Number(order_id), Number(user));
       res.status(200).json({
         status: 'Success',
@@ -161,6 +196,7 @@ export class OrderController {
     const { order_id } = req.params;
     const {
       notes,
+      supplier_id,
       expected_arrival,
       order_value,
       order_products,
@@ -173,6 +209,7 @@ export class OrderController {
       await this.orderService.finalize(
         {
           notes,
+          supplier_id,
           expected_arrival,
           order_value,
           order_products,
@@ -194,6 +231,7 @@ export class OrderController {
     const { order_id } = req.params;
     const {
       notes,
+      supplier_id,
       expected_arrival,
       order_value,
       order_products,
@@ -206,6 +244,7 @@ export class OrderController {
       await this.orderService.pushToInventory(
         {
           notes,
+          supplier_id,
           expected_arrival,
           order_value,
           order_products,

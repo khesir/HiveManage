@@ -32,7 +32,7 @@ export const orderProduct = pgTable('order_product', {
   cost_price: decimal('cost_price', { precision: 50, scale: 2 }),
   selling_price: decimal('selling_price', { precision: 50, scale: 2 }),
 
-  status: orderItemStatus('status').notNull(),
+  status: orderItemStatus('status').default('Draft'),
   is_serialize: boolean('is_serialize').default(false),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
