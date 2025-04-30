@@ -2,9 +2,10 @@ import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
 import { validateOrderId } from './order.middleware';
-import { CreateOrder, UpdateOrder } from './order.model';
+import { CreateOrder, FinalizeOrder, UpdateOrder } from './order.model';
 import { OrderController } from './order.controller';
 import orderitemsRoute from './orderitem/orderitem.route';
+import { multerbase } from '../product/product.middleware';
 
 const orderRoute = Router({ mergeParams: true });
 const orderController = new OrderController(db);
@@ -30,7 +31,7 @@ orderRoute.post(
 
 orderRoute.post(
   '/:order_id/finalize',
-  [validateRequest({ body: UpdateOrder })],
+  [validateRequest({ body: FinalizeOrder })],
   orderController.finalize.bind(orderController),
 );
 
@@ -50,6 +51,13 @@ orderRoute.delete(
   '/:order_id',
   validateOrderId,
   orderController.deleteOrderById.bind(orderController),
+);
+
+orderRoute.post(
+  '/:order_id',
+  [validateOrderId, multerbase.single('img_url')],
+
+  orderController.updateOrder.bind(orderController),
 );
 
 orderRoute.use('/:order_id/order-product', validateOrderId, orderitemsRoute);

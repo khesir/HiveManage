@@ -13,7 +13,8 @@ export class OrderController {
   async getOrdersByProductID(req: Request, res: Response, next: NextFunction) {
     const product_id = (req.query.product_id as string) || undefined;
     const supplier_id = (req.query.supplier_id as string) || undefined;
-    const status = (req.query.status as string) || undefined;
+    const status =
+      typeof req.query.status === 'string' ? req.query.status.split(',') : [];
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
     const no_pagination = req.query.no_pagination == 'true';
@@ -23,9 +24,9 @@ export class OrderController {
         limit,
         offset,
         no_pagination,
+        status,
         Number(product_id),
         Number(supplier_id),
-        status,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -255,6 +256,17 @@ export class OrderController {
         },
         Number(order_id),
       );
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error' });
+      next(error);
+    }
+  }
+  async uploadDeliveryReceipt(req: Request, res: Response, next: NextFunction) {
+    const { order_id } = req.params;
+    try {
+      await this.orderService.uploadOrder(Number(order_id), req.file!);
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

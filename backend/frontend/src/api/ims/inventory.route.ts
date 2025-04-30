@@ -11,7 +11,7 @@ const imsRoute = Router({ mergeParams: true });
 
 imsRoute.use('/supplier', supplierRoute);
 imsRoute.use('/order', orderRoute);
-imsRoute.use('/orderProduct', orderitemsRoute);
+imsRoute.use('/order-product', orderitemsRoute);
 
 imsRoute.use('/product', productRoute);
 imsRoute.use('/productSupplier', productSuppplierRoute);

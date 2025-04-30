@@ -128,5 +128,39 @@ export const UpdateOrder = z.object({
   user: z.number().min(1),
 });
 
+export const FinalizeOrder = z.object({
+  order_id: z.number().optional(),
+  supplier_id: z.number().min(1),
+  notes: z.string().nullable().optional(),
+  expected_arrival: z.string().min(1),
+
+  order_value: z.string().min(1),
+  order_status: orderStatusEnum,
+  order_payment_status: orderPaymentStatus,
+  order_payment_method: orderPaymentMethod,
+
+  order_products: z
+    .array(
+      z.object({
+        order_product_id: z.number().optional(),
+        order_id: z.number().optional(),
+        product_id: z.number().min(1),
+
+        total_quantity: z.number().min(1),
+        ordered_quantity: z.number().min(1),
+        delivered_quantity: z.number().optional(),
+
+        cost_price: z.string().min(1),
+        selling_price: z.string().optional().nullable(),
+
+        status: z.string().optional(),
+        is_serialize: z.boolean().optional(),
+      }),
+    )
+    .min(1),
+  user: z.number().min(1),
+});
+
+export type FinalizeOrder = z.infer<typeof FinalizeOrder>;
 export type CreateOrder = z.infer<typeof CreateOrder>;
 export type UpdateOrder = z.infer<typeof UpdateOrder>;

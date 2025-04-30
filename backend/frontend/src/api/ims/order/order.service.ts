@@ -13,20 +13,23 @@ import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
 import { OrderLog, ProductLog } from '@/drizzle/schema/records';
 import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
+import { SupabaseService } from '@/supabase/supabase.service';
 
 export class OrderService {
   private db: PostgresJsDatabase<SchemaType>;
+  private supabaseService: SupabaseService;
 
   constructor(db: PostgresJsDatabase<SchemaType>) {
     this.db = db;
+    this.supabaseService = SupabaseService.getInstance();
   }
   async getOrdersByProductID(
     limit: number,
     offset: number,
     no_pagination: boolean,
+    statuses: string[],
     product_id?: number,
     supplier_id?: number,
-    status?: string,
   ) {
     const baseQuery = this.db
       .select({
@@ -39,17 +42,31 @@ export class OrderService {
 
     const conditions = [isNull(order.deleted_at)];
 
-    if (status) {
+    if (statuses.length === 1) {
       conditions.push(
         eq(
           order.order_status,
-          status as
+          statuses[0] as
             | 'Draft'
             | 'Finalized'
             | 'Awaiting Arrival'
             | 'Partially Fulfiled'
             | 'Fulfilled'
             | 'Cancelled',
+        ),
+      );
+    } else if (statuses.length > 1) {
+      conditions.push(
+        inArray(
+          order.order_status,
+          statuses as (
+            | 'Draft'
+            | 'Finalized'
+            | 'Awaiting Arrival'
+            | 'Partially Fulfiled'
+            | 'Fulfilled'
+            | 'Cancelled'
+          )[],
         ),
       );
     }
@@ -279,12 +296,12 @@ export class OrderService {
 
     const orderWithDetails = {
       ...result[0].order,
+      supplier: includes.includes('supplier')
+        ? (result[0].supplier ?? undefined)
+        : undefined,
       order_products: includes.includes('order_products')
         ? result.map((row) => ({
             ...(row.order_product ?? {}),
-            supplier: includes.includes('supplier')
-              ? (row.supplier ?? undefined)
-              : undefined,
             product: includes.includes('product')
               ? (row.product ?? undefined)
               : undefined,
@@ -505,6 +522,19 @@ export class OrderService {
         performed_by: empData[0].employee_id,
         action: `${empData[0].firstname} ${empData[0].lastname} pushed to inventory ${paramsId}`,
       });
+    });
+  }
+  async uploadOrder(paramsId: number, file: Express.Multer.File) {
+    return this.db.transaction(async (tx) => {
+      let filepath = undefined;
+      if (file) {
+        filepath = await this.supabaseService.uploadImageToBucket(file);
+      }
+
+      await tx
+        .update(order)
+        .set({ delivery_receipt: filepath })
+        .where(eq(order.order_id, paramsId));
     });
   }
 }

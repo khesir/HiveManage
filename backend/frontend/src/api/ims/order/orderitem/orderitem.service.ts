@@ -20,7 +20,6 @@ export class OrderItemService {
         .insert(orderProduct)
         .values({ ...data, status: 'Draft' })
         .returning({ order_product_id: orderProduct.order_product_id });
-
       const empData = await tx
         .select()
         .from(employee)
@@ -47,6 +46,7 @@ export class OrderItemService {
   async getAllOrderItem(
     order_id: string | undefined,
     product_id: string | undefined,
+    status: string | undefined,
     sort: string,
     limit: number,
     offset: number,
@@ -60,6 +60,24 @@ export class OrderItemService {
 
     if (product_id) {
       conditions.push(eq(orderProduct.product_id, Number(product_id)));
+    }
+
+    if (status) {
+      conditions.push(
+        eq(
+          orderProduct.status,
+          status as
+            | 'Draft'
+            | 'Finalized'
+            | 'Awaiting Arrival'
+            | 'Cancelled'
+            | 'Partially Delivered'
+            | 'Delivered'
+            | 'Returned'
+            | 'Partially Stocked'
+            | 'Stocked',
+        ),
+      );
     }
 
     const totalCountQuery = await this.db

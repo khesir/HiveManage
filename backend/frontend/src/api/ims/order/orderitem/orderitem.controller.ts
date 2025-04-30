@@ -14,6 +14,7 @@ export class OrderItemsController {
   async getAllOrderItem(req: Request, res: Response, next: NextFunction) {
     const order_id = (req.params.order_id as string) || undefined;
     const product_id = (req.query.product_id as string) || undefined;
+    const status = (req.query.status as string) || undefined;
     const no_pagination = req.query.no_pagination == 'true';
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit as string) || 10;
@@ -22,6 +23,7 @@ export class OrderItemsController {
       const data = await this.orderitemService.getAllOrderItem(
         order_id,
         product_id,
+        status,
         sort,
         limit,
         offset,
@@ -65,8 +67,10 @@ export class OrderItemsController {
         product_id,
         total_quantity,
         ordered_quantity,
-        unit_price,
+        selling_price,
+        cost_price,
         status,
+        is_serialize,
         user,
       } = req.body;
 
@@ -75,8 +79,10 @@ export class OrderItemsController {
         product_id,
         total_quantity,
         ordered_quantity,
-        unit_price,
+        selling_price,
+        cost_price,
         status,
+        is_serialize,
         user,
       });
 
@@ -103,7 +109,8 @@ export class OrderItemsController {
         total_quantity,
         ordered_quantity,
         delivered_quantity,
-        unit_price,
+        selling_price,
+        cost_price,
         status,
         user,
       } = req.body;
@@ -114,7 +121,8 @@ export class OrderItemsController {
           total_quantity,
           ordered_quantity,
           delivered_quantity,
-          unit_price,
+          selling_price,
+          cost_price,
           status,
           user,
         },
