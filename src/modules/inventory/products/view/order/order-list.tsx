@@ -50,13 +50,13 @@ const columns: ColumnDef<OrderProduct>[] = [
 		header: 'Total Value',
 		cell: ({row}) => {
 			const totalValue =
-				Number(row.original.total_quantity) * Number(row.original.unit_price);
+				Number(row.original.total_quantity) * Number(row.original.cost_price);
 			return <span>{totalValue.toFixed(2)}</span>;
 		},
 	},
 	{
-		accessorKey: 'unit_price',
-		header: 'Unit Price',
+		accessorKey: 'cost_price',
+		header: 'Cost Price',
 	},
 	{
 		accessorKey: 'ordered_quantity',

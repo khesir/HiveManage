@@ -9,7 +9,8 @@ export const getAllOrderItems = async (
 	try {
 		const response = await request<PaginationResponse<OrderProduct>>(
 			'GET',
-			`/api/v1/ims/orderProduct?no_pagination=true&` + `product_id=${paramsId}`,
+			`/api/v1/ims/order-product?no_pagination=true&` +
+				`product_id=${paramsId}`,
 		);
 		return response.data;
 	} catch (e) {

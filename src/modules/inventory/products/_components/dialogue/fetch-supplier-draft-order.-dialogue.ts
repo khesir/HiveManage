@@ -8,6 +8,7 @@ export const createPO = async (
 	price: number,
 	supplier_id: number,
 	product_id: number,
+	serialized: boolean,
 	user: number,
 ) => {
 	try {
@@ -19,7 +20,6 @@ export const createPO = async (
 			`/api/v1/ims/order/product?supplier_id=${supplier_id}&status=Draft&no_pagination=true`,
 		);
 		const orderData: Order[] = Array.isArray(res.data) ? res.data : [res.data];
-		console.log(orderData);
 		if (orderData.length > 0) {
 			// Create orderData, currently assuming that
 			// we can only do 1 draft order for 1 supplier
@@ -27,7 +27,9 @@ export const createPO = async (
 				order_id: orderData[0].order_id,
 				product_id: product_id,
 				total_quantity: quantity,
-				unit_price: price.toString(),
+				ordered_quantity: quantity,
+				cost_price: price.toString(),
+				is_serialize: serialized,
 				user: user,
 			};
 			await request<ApiRequest<Order>>(
@@ -47,6 +49,7 @@ export const createPO = async (
 				order_products: [
 					{
 						product_id: product_id,
+						is_serialize: serialized,
 						total_quantity: quantity,
 						ordered_quantity: quantity,
 						cost_price: price.toString(),

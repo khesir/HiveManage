@@ -33,8 +33,9 @@ export function UpdateOrderForm() {
 	const form = useForm<Order>({
 		resolver: zodResolver(orderSchema),
 		defaultValues: {
+			supplier_id: Number(selectedOrder.supplier_id),
 			order_id: selectedOrder.order_id,
-			notes: selectedOrder.notes,
+			notes: selectedOrder.notes || null,
 			expected_arrival: selectedOrder.expected_arrival,
 			order_value: Number(selectedOrder.order_value),
 			order_status: selectedOrder.order_status,
@@ -73,7 +74,7 @@ export function UpdateOrderForm() {
 					onSubmit={form.handleSubmit(processForm)}
 					className="w-full space-y-3"
 				>
-					{/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
+					<pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
 					<div className="grid grid-cols-3 gap-5">
 						<FormField
 							control={form.control}
@@ -160,6 +161,7 @@ export function UpdateOrderForm() {
 									<Textarea
 										placeholder="Additional information to be noted"
 										{...field}
+										value={field.value || ''}
 									/>
 								</FormControl>
 							</FormItem>

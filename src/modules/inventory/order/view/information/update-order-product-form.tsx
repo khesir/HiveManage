@@ -34,7 +34,7 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 		resolver: zodResolver(orderProductSchema),
 		defaultValues: {
 			status: orderProduct.status,
-			unit_price: orderProduct.unit_price,
+			cost_price: orderProduct.cost_price,
 			ordered_quantity: orderProduct.ordered_quantity,
 			total_quantity: orderProduct.total_quantity,
 			product_id: orderProduct.product_id,
@@ -109,7 +109,7 @@ export function UpdateOrderProductForm({onSubmit, orderProduct}: Props) {
 				/>
 				<FormField
 					control={form.control}
-					name={`unit_price`}
+					name={`cost_price`}
 					render={({field}) => (
 						<FormItem>
 							<FormLabel>Unit Price</FormLabel>

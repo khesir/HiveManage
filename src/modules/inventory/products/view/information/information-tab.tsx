@@ -10,18 +10,24 @@ import {InformationCard} from './information-card';
 import {ViewRecordTabs} from '../item-record-tabs';
 import {CreatePODialogue} from '../../_components/dialogue/create-po-dialogue';
 import {Order} from '@/components/validation/order';
+import {OrderProduct} from '@/components/validation/order-product';
 
 export function ProductInformationTab() {
 	const [searchParams] = useSearchParams();
 	const {id} = useParams();
 	const [data, setData] = useState<Product>();
 	const [currentOrder, setCurrentOrder] = useState<Order[]>([]);
+	const [activeOrder, setActiveOrder] = useState<OrderProduct[]>([]);
 	const fetchData = async () => {
-		const [newProductData, orderData] = await Promise.all([
+		const [newProductData, orderData, orderProduct] = await Promise.all([
 			request<ApiRequest<Product>>('GET', `/api/v1/ims/product/${id}`),
 			request<PaginationResponse<Order>>(
 				'GET',
 				`/api/v1/ims/order/product?product_id=${id}&status=Draft`,
+			),
+			request<PaginationResponse<OrderProduct>>(
+				'GET',
+				`/api/v1/ims/order-product?product=${id}&status=Awaiting Arrival`,
 			),
 		]);
 
@@ -30,7 +36,18 @@ export function ProductInformationTab() {
 		} else {
 			setData(newProductData.data[0]);
 		}
-		setCurrentOrder(orderData.data);
+		if (orderData.data) {
+			setCurrentOrder(orderData.data);
+		} else {
+			setCurrentOrder([]);
+		}
+		if (orderProduct) {
+			setActiveOrder(
+				orderProduct.data.filter((p) => p.product_id === Number(id)),
+			);
+		} else {
+			setActiveOrder([]);
+		}
 	};
 	useEffect(() => {
 		fetchData();
@@ -69,8 +86,8 @@ export function ProductInformationTab() {
 								<div className="font-semibold">Stock records</div>
 							</CardHeader>
 							<CardContent>
-								<div className="grid gap-3">
-									<ul className="grid gap-3">
+								<div className="grid gap-1">
+									<ul className="grid gap-1">
 										<li className="flex items-center justify-between">
 											<span className="text-muted-foreground">
 												Available Quantity
@@ -95,11 +112,25 @@ export function ProductInformationTab() {
 											</span>
 											<span>{data.available_quantity}</span>
 										</li>
+										<li className="flex items-center justify-between">
+											<span className="text-muted-foreground">
+												Ordered Quantity
+											</span>
+											<span>
+												{activeOrder.reduce(
+													(sum, pOrder) => sum + (pOrder.total_quantity || 0),
+													0,
+												)}
+											</span>
+										</li>
 									</ul>
 								</div>
 							</CardContent>
 							<CardFooter className="w-full flex-col items-start">
-								<CreatePODialogue id={data.product_id!} />
+								<CreatePODialogue
+									id={data.product_id!}
+									serialize={data.is_serialize!}
+								/>
 								<p className=" text-gray-500 text-xs font-semibold">
 									Has currently {currentOrder.length} active/draft purchase
 									order

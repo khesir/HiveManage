@@ -205,7 +205,7 @@ const useOrderStore = create<OrderState>((set) => ({
 		try {
 			await request(
 				'DELETE',
-				`/api/v1/ims/order/${orderId}/orderProduct/${itemId}?user=${user}`,
+				`/api/v1/ims/order/${orderId}/order-product/${itemId}?user=${user}`,
 			);
 			toast.success('Order item removed');
 		} catch (e) {
@@ -229,12 +229,23 @@ const useOrderStore = create<OrderState>((set) => ({
 			// Is replaced as null
 			await request('POST', `/api/v1/ims/order/${orderId}/finalize`, {
 				...orderData,
+				order_value: orderData.order_products
+					?.reduce(
+						(sum, pOrder) =>
+							sum +
+							(pOrder.total_quantity || 0) * Number(pOrder.cost_price || 0),
+						0,
+					)
+					.toString(),
 				user: user,
 			});
 			toast.success('Order products has been updated');
 		} catch (e) {
 			if (e instanceof Error) {
-				toast.error(e.toString());
+				toast.error(
+					(e as AxiosError<{message?: string}>)?.response?.data?.message ||
+						'An error occurred',
+				);
 			} else if (e instanceof AxiosError) {
 				toast.error(e.response?.data as string);
 			} else {

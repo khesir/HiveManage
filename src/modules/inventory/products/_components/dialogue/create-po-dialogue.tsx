@@ -29,13 +29,14 @@ import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-si
 import {Separator} from '@/components/ui/separator';
 interface Props {
 	id: number;
+	serialize: boolean;
 }
 
 const createPo = z.object({
 	quantity: z.string().regex(/^\d+$/, 'Quantity must be a numeric'),
 	price: z.string().regex(/^\d+$/, 'Price must be a numeric'),
 });
-export function CreatePODialogue({id}: Props) {
+export function CreatePODialogue({id, serialize}: Props) {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
 		null,
@@ -92,6 +93,7 @@ export function CreatePODialogue({id}: Props) {
 			Number(poData.price),
 			selectedSupplier.supplier_id,
 			id,
+			serialize,
 			user.employee.employee_id,
 		);
 	};

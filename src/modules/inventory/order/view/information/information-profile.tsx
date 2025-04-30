@@ -59,7 +59,15 @@ export default function OrderInformationProfile() {
 							<ul className="grid gap-3">
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Order value</span>
-									<span>{selectedOrder.order_value}</span>
+									<span>
+										{selectedOrder.order_products?.reduce(
+											(sum, pOrder) =>
+												sum +
+												(pOrder.total_quantity || 0) *
+													Number(pOrder.cost_price || 0),
+											0,
+										)}
+									</span>
 								</li>
 								<li className="flex items-center justify-between">
 									<span className="text-muted-foreground">Order Status</span>

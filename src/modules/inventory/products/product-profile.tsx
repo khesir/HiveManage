@@ -18,20 +18,37 @@ import {CreatePODialogue} from './_components/dialogue/create-po-dialogue';
 import {useEffect, useState} from 'react';
 import {Order} from '@/components/validation/order';
 import {PaginationResponse, request} from '@/api/axios';
+import {OrderProduct} from '@/components/validation/order-product';
 
 export function ProductProfile() {
 	const navigate = useNavigate();
 	const {data} = useProducts();
 	const [currentOrder, setCurrentOrder] = useState<Order[]>([]);
+	const [activeOrder, setActiveOrder] = useState<OrderProduct[]>([]);
 	const fetchData = async () => {
-		const orderData = await request<PaginationResponse<Order>>(
-			'GET',
-			`/api/v1/ims/order/product?product_id=${data?.product_id}&status=Draft&no_pagination=true`,
-		);
+		const [orderData, orderProduct] = await Promise.all([
+			request<PaginationResponse<Order>>(
+				'GET',
+				`/api/v1/ims/order/product?product_id=${data?.product_id}&status=Draft&no_pagination=true`,
+			),
+			request<PaginationResponse<OrderProduct>>(
+				'GET',
+				`/api/v1/ims/order-product?product=${data?.product_id}&status=Awaiting Arrival`,
+			),
+		]);
 		if (orderData.data) {
 			setCurrentOrder(orderData.data);
 		} else {
 			setCurrentOrder([]);
+		}
+		if (orderProduct) {
+			setActiveOrder(
+				orderProduct.data.filter(
+					(p) => p.product_id === Number(data?.product_id),
+				),
+			);
+		} else {
+			setActiveOrder([]);
 		}
 	};
 	useEffect(() => {
@@ -146,7 +163,10 @@ export function ProductProfile() {
 							<span className="text-muted-foreground">Re-order level</span>
 							<span>{data.re_order_level}</span>
 						</li>
-						<CreatePODialogue id={data.product_id!} />
+						<CreatePODialogue
+							id={data.product_id!}
+							serialize={data.is_serialize!}
+						/>
 						<p className=" text-gray-500 text-xs font-semibold">
 							Has currently {currentOrder.length} active/draft purchase order
 						</p>
@@ -176,6 +196,15 @@ export function ProductProfile() {
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Transfered Quantity</span>
 							<span>{data.available_quantity}</span>
+						</li>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Ordered Quantity</span>
+							<span>
+								{activeOrder.reduce(
+									(sum, pOrder) => sum + (pOrder.total_quantity || 0),
+									0,
+								)}
+							</span>
 						</li>
 					</ul>
 				</div>

@@ -77,7 +77,8 @@ const orderItemSchema = z.object({
 	total_quantity: z.number().min(1),
 	ordered_quantity: z.number().optional(),
 	delivered_quantity: z.number().optional(),
-	unit_price: z.string().min(1),
+	cost_price: z.string().min(1),
+	selling_price: z.string().optional(),
 	is_serialize: z.boolean().optional(),
 	status: z.string(),
 
@@ -101,9 +102,9 @@ const supplierSchema = z.object({
 // Actual Validation
 export const orderSchema = z.object({
 	order_id: z.number().optional(),
-	supplier_id: z.string().nullable().optional(),
+	supplier_id: z.number().nullable().optional(),
 
-	notes: z.string().optional(),
+	notes: z.string().optional().nullable(),
 	expected_arrival: z
 		.string()
 		.refine(
