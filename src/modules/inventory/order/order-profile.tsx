@@ -95,10 +95,6 @@ export function OrderProfile() {
 				<div>
 					<ul className="grid gap-3">
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Order value</span>
-							<span>{data.order_value}</span>
-						</li>
-						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Order Status</span>
 							<Badge>{data.order_status}</Badge>
 						</li>

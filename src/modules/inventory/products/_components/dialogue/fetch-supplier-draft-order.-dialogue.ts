@@ -28,7 +28,7 @@ export const createPO = async (
 				product_id: product_id,
 				total_quantity: quantity,
 				ordered_quantity: quantity,
-				cost_price: price.toString(),
+				unit_price: price.toString(),
 				is_serialize: serialized,
 				user: user,
 			};
@@ -42,7 +42,6 @@ export const createPO = async (
 			);
 		} else {
 			const newData = {
-				order_value: (price * quantity).toString(),
 				user: user,
 				supplier_id: supplier_id,
 				order_status: 'Draft',
@@ -52,7 +51,7 @@ export const createPO = async (
 						is_serialize: serialized,
 						total_quantity: quantity,
 						ordered_quantity: quantity,
-						cost_price: price.toString(),
+						unit_price: price.toString(),
 					},
 				],
 			};

@@ -22,8 +22,9 @@ export function AddDeliveredProductDialogue({orderProduct}: Props) {
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
-				<Button size={'sm'}>
+				<Button size={'sm'} className="flex items-center gap-1">
 					<Upload className="h-4 w-4" />
+					<div>Add Delivery</div>
 				</Button>
 			</DialogTrigger>
 			<DialogContent>

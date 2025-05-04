@@ -64,7 +64,7 @@ export default function OrderInformationProfile() {
 											(sum, pOrder) =>
 												sum +
 												(pOrder.total_quantity || 0) *
-													Number(pOrder.cost_price || 0),
+													Number(pOrder.unit_price || 0),
 											0,
 										)}
 									</span>
@@ -91,9 +91,7 @@ export default function OrderInformationProfile() {
 									<span>
 										{selectedOrder.order_products?.length === 0
 											? 'No item'
-											: selectedOrder.order_products?.length === 1
-												? '1 item'
-												: `${selectedOrder.order_products?.length} items`}
+											: `${selectedOrder.order_products?.reduce((sum, product) => sum + (product.total_quantity || 0), 0)} items`}
 									</span>
 								</li>
 								<li className="flex items-start flex-col gap-1">

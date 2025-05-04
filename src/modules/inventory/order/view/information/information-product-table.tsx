@@ -32,8 +32,7 @@ import {OrderProduct} from '@/components/validation/order-product';
 
 import {DeleteOrderProductConfirmation} from './delete-order-product-confirmation';
 import {UpdateOrderProductDialogue} from './update-order-product';
-
-import {AddDeliveredProductDialogue} from './add-delivered-product-dialogue';
+import {LogSheet} from './actions/log-sheet';
 
 const ActionCell = (data: OrderProduct) => {
 	return (
@@ -69,7 +68,7 @@ const UpdateActionCell = (data: OrderProduct) => {
 			<TooltipProvider>
 				<Tooltip>
 					<TooltipTrigger>
-						<AddDeliveredProductDialogue orderProduct={data} />
+						<LogSheet orderProduct={data} />
 					</TooltipTrigger>
 					<TooltipContent>
 						<p>Update</p>
@@ -105,13 +104,13 @@ const columns: ColumnDef<OrderProduct>[] = [
 		header: 'Total Value',
 		cell: ({row}) => {
 			const totalValue =
-				Number(row.original.total_quantity) * Number(row.original.cost_price);
+				Number(row.original.total_quantity) * Number(row.original.unit_price);
 			return <span>{totalValue.toFixed(2)}</span>;
 		},
 	},
 	{
-		accessorKey: 'cost_price',
-		header: 'Cost',
+		accessorKey: 'unit_price',
+		header: 'Unit Price',
 	},
 	{
 		accessorKey: 'ordered_quantity',
@@ -120,6 +119,10 @@ const columns: ColumnDef<OrderProduct>[] = [
 	{
 		accessorKey: 'delivered_quantity',
 		header: 'Delivered Quantity',
+	},
+	{
+		accessorKey: 'resolved_quantity',
+		header: 'Resolved Quantity',
 	},
 	{
 		accessorKey: 'status',

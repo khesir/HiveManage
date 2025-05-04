@@ -27,10 +27,16 @@ export interface EmployeeLogs {
 export interface OrderLogs {
 	order_log_id: number;
 	order_id: number;
-	product_record_id: number;
+	product_id: number;
 	order_item_id: number;
-	action: string;
-	quantity: number;
+
+	total_quantity: string;
+	ordered_quantity: string;
+	delivered_quantity: string;
+	resolved_quantity: string;
+
+	status: string;
+	action_type: string;
 	performed_by: EmployeeBasicInformation;
 	created_at: string;
 	last_updated: string;

@@ -108,22 +108,54 @@ const orderSchema = z.object({
 	order_payment_method: orderPaymentMethod.optional(),
 	supplier: supplierSchema.optional(),
 });
+const employeeSchema = z.object({
+	employee_id: z.number().optional(),
+	position_id: z.string().min(1),
+	firstname: z.string().min(1, 'First name is required'),
+	middlename: z.string().optional(),
+	lastname: z.string().min(1, 'Last name is required'),
+	email: z.string().min(1),
+	profile_link: z.string(),
+	role_id: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
 
+export const orderLogsSchema = z.object({
+	order_log_id: z.number(),
+	order_id: z.number(),
+	product_id: z.number(),
+	order_item_id: z.number(),
+
+	total_quantity: z.string(),
+	ordered_quantity: z.string(),
+	delivered_quantity: z.string(),
+	resolved_quantity: z.string(),
+
+	status: z.string(),
+	action_type: z.string(),
+
+	performed_by: employeeSchema,
+	created_at: z.string(),
+	last_updated: z.string(),
+	deleted_at: z.string(),
+});
 export const orderProductSchema = z.object({
 	order_product_id: z.number().optional(),
 	order_id: z.number().optional(),
 	product_id: z.number().min(1),
 
 	total_quantity: z.number().min(1),
-	ordered_quantity: z.number().optional(),
-	delivered_quantity: z.number().optional(),
+	ordered_quantity: z.number().optional().default(0),
+	delivered_quantity: z.number().optional().default(0),
+	resolved_quantity: z.number().optional().default(0),
 
-	cost_price: z.string().min(1),
-	selling_price: z.string().optional(),
+	unit_price: z.string().min(1),
 
 	is_serialize: z.boolean().optional(),
 	status: z.string().min(1),
-
+	order_log: z.array(orderLogsSchema).optional(),
 	order: orderSchema.optional(),
 	product: productSchema.optional(),
 });

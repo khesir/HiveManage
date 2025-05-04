@@ -139,7 +139,7 @@ export function CreatePODialogue({id, serialize}: Props) {
 							name="price"
 							render={({field}) => (
 								<FormItem>
-									<FormLabel>Selling Price</FormLabel>
+									<FormLabel>Unit Price</FormLabel>
 									<FormControl>
 										<Input
 											type="number"

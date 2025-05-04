@@ -93,7 +93,6 @@ const useOrderStore = create<OrderState>((set) => ({
 			await request('POST', `api/v1/ims/order/`, {
 				...newOrder,
 				user: user,
-				order_value: newOrder.order_value.toString(),
 				supplier_id: Number(newOrder.supplier_id),
 			});
 			toast.success('Order Added');
@@ -116,7 +115,6 @@ const useOrderStore = create<OrderState>((set) => ({
 		try {
 			await request('PUT', `api/v1/ims/order/${orderId}`, {
 				...order,
-				order_value: order.order_value.toString(),
 				user: user,
 			});
 			toast.success('Order Updated');
@@ -157,7 +155,7 @@ const useOrderStore = create<OrderState>((set) => ({
 	) => {
 		set({loading: true});
 		try {
-			await request('POST', `/api/v1/ims/order/${orderId}/orderProduct`, {
+			await request('POST', `/api/v1/ims/order/${orderId}/order-product`, {
 				...newItem,
 				user: user,
 			});
@@ -183,7 +181,7 @@ const useOrderStore = create<OrderState>((set) => ({
 		try {
 			await request(
 				'PUT',
-				`/api/v1/ims/order/${orderId}/orderProduct/${order_product_id}`,
+				`/api/v1/ims/order/${orderId}/order-product/${order_product_id}`,
 				{...newItem, user: user},
 			);
 			toast.success('Order Item Updated successfully');
@@ -229,14 +227,6 @@ const useOrderStore = create<OrderState>((set) => ({
 			// Is replaced as null
 			await request('POST', `/api/v1/ims/order/${orderId}/finalize`, {
 				...orderData,
-				order_value: orderData.order_products
-					?.reduce(
-						(sum, pOrder) =>
-							sum +
-							(pOrder.total_quantity || 0) * Number(pOrder.cost_price || 0),
-						0,
-					)
-					.toString(),
 				user: user,
 			});
 			toast.success('Order products has been updated');
