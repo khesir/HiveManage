@@ -16,11 +16,11 @@ export const UpdateOrderItem = z.object({
   order_id: z.number().optional(),
   product_id: z.number().min(1),
   total_quantity: z.number().min(1),
-  ordered_quantity: z.number().optional(),
-  delivered_quantity: z.number().optional(),
+  ordered_quantity: z.number().optional().default(0),
+  delivered_quantity: z.number().optional().default(0),
+  resolved_quantity: z.number().optional().default(0),
 
-  cost_price: z.string().min(1),
-  selling_price: z.string().optional(),
+  unit_price: z.string().min(1),
 
   is_serialize: z.boolean().optional(),
   status: orderItemStatus.optional(),
@@ -33,11 +33,10 @@ export const CreateOrderItem = z.object({
   product_id: z.number().min(1),
 
   total_quantity: z.number().min(1),
-  ordered_quantity: z.number().optional(),
-  delivered_quantity: z.number().optional(),
-
-  cost_price: z.string().min(1),
-  selling_price: z.string().optional(),
+  ordered_quantity: z.number().optional().default(0),
+  delivered_quantity: z.number().optional().default(0),
+  resolved_quantity: z.number().optional().default(0),
+  unit_price: z.string().min(1),
 
   is_serialize: z.boolean().optional(),
   status: orderItemStatus.optional(),

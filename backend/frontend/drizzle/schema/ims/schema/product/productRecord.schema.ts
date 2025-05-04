@@ -17,6 +17,12 @@ export const productRecordStatus = pgEnum('product_record_status', [
   'Added',
 ]);
 
+export const productRecordActionType = pgEnum('product_record_action_type', [
+  'Received',
+  'Returned',
+  'Transferred',
+]);
+
 export const productRecord = pgTable('product_record', {
   product_record_id: serial('product_record_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
@@ -27,6 +33,7 @@ export const productRecord = pgTable('product_record', {
   quantity: integer('quantity').default(0),
 
   status: productRecordStatus('status').notNull(),
+  action_type: productRecordActionType('action_type').notNull(),
   handled_by: integer('employee_id').references(() => employee.employee_id),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

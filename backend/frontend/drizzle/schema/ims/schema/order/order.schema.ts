@@ -1,5 +1,4 @@
 import {
-  decimal,
   integer,
   pgEnum,
   pgTable,
@@ -37,7 +36,6 @@ export const order = pgTable('order', {
   notes: varchar('notes'),
   expected_arrival: timestamp('expected_arrival'),
 
-  order_value: decimal('order_value', { precision: 10, scale: 2 }),
   order_status: orderStatus('order_status'),
 
   order_payment_status: paymentStatus('order_payment_status'),

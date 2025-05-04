@@ -76,8 +76,7 @@ const orderItem = z.object({
   ordered_quantity: z.number().optional(),
   delivered_quantity: z.number().optional(),
 
-  cost_price: z.string().min(1),
-  selling_price: z.string().optional(),
+  unit_price: z.string().min(1),
 
   status: z.string().optional(),
   is_serialize: z.boolean().optional(),
@@ -103,7 +102,6 @@ export const CreateOrder = z.object({
   receive_at: z.string().optional(),
   expected_arrival: z.string().optional(),
 
-  order_value: z.string(),
   order_status: orderStatusEnum,
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
@@ -119,7 +117,6 @@ export const UpdateOrder = z.object({
   notes: z.string().nullable().optional(),
   expected_arrival: z.string().optional(),
 
-  order_value: z.string(),
   order_status: orderStatusEnum,
   order_payment_status: orderPaymentStatus.optional(),
   order_payment_method: orderPaymentMethod.optional(),
@@ -134,7 +131,6 @@ export const FinalizeOrder = z.object({
   notes: z.string().nullable().optional(),
   expected_arrival: z.string().min(1),
 
-  order_value: z.string().min(1),
   order_status: orderStatusEnum,
   order_payment_status: orderPaymentStatus,
   order_payment_method: orderPaymentMethod,
@@ -150,8 +146,7 @@ export const FinalizeOrder = z.object({
         ordered_quantity: z.number().min(1),
         delivered_quantity: z.number().optional(),
 
-        cost_price: z.string().min(1),
-        selling_price: z.string().optional().nullable(),
+        unit_price: z.string().min(1),
 
         status: z.string().optional(),
         is_serialize: z.boolean().optional(),

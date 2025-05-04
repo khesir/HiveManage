@@ -62,6 +62,7 @@ export class ProductRecordController {
         order_item_id,
         quantity,
         status,
+        action_type,
         handled_by,
       } = req.body;
       await this.productrecordService.createProductRecord({
@@ -70,6 +71,7 @@ export class ProductRecordController {
         order_item_id,
         quantity,
         status,
+        action_type,
         handled_by,
       });
 
@@ -96,6 +98,7 @@ export class ProductRecordController {
         order_item_id,
         quantity,
         status,
+        action_type,
         handled_by,
       } = req.body;
 
@@ -106,6 +109,7 @@ export class ProductRecordController {
           order_item_id,
           quantity,
           status,
+          action_type,
           handled_by,
         },
         Number(product_record_id),

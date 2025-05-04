@@ -2,7 +2,9 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
-import { OrderLog } from '@/drizzle/schema/records';
+import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog';
+import { CreateOrderTransactionLog } from './OTL.model';
+import { orderProduct } from '@/drizzle/schema/ims';
 
 export class OrderTransactionLogService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -11,7 +13,7 @@ export class OrderTransactionLogService {
     this.db = db;
   }
 
-  async createOrderTransactionLog(data: object) {
+  async createOrderTransactionLog(data: CreateOrderTransactionLog) {
     await this.db.insert(OrderLog).values(data);
   }
 
@@ -44,6 +46,10 @@ export class OrderTransactionLogService {
       .select()
       .from(OrderLog)
       .leftJoin(employee, eq(employee.employee_id, OrderLog.performed_by))
+      .leftJoin(
+        orderProduct,
+        eq(orderProduct.order_product_id, OrderLog.order_item_id),
+      )
       .where(and(...conditions))
       .orderBy(
         sort === 'desc' ? asc(OrderLog.created_at) : desc(OrderLog.created_at),
@@ -57,6 +63,7 @@ export class OrderTransactionLogService {
 
     const ordertranslogWithDetails = result.map((row) => ({
       ...row.OrderTransLog,
+      order_item: row.order_product,
       performed_by: {
         ...row.employee,
       },

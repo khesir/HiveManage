@@ -4,8 +4,8 @@ import { CreateOrderItem, UpdateOrderItem } from './orderitem.model';
 import { order, orderProduct, product, supplier } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
-import { OrderLog } from '@/drizzle/schema/records';
 import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
+import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog';
 
 export class OrderItemService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -29,11 +29,6 @@ export class OrderItemService {
         .select()
         .from(product)
         .where(eq(product.product_id, data.product_id));
-      await tx.insert(OrderLog).values({
-        order_id: data.order_id,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} created orderItem ID${newOrderProduct.order_product_id}-${productData[0]?.name}`,
-      });
 
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
@@ -125,7 +120,13 @@ export class OrderItemService {
       .select()
       .from(orderProduct)
       .where(eq(orderProduct.order_product_id, paramsId));
-    return result[0];
+
+    const orderLogByLogId = await this.getRecordByProduct(paramsId);
+    const orderItemwithDetails = result.map((row) => ({
+      ...row,
+      order_log: orderLogByLogId.get(row.order_product_id),
+    }));
+    return orderItemwithDetails[0];
   }
 
   async updateOrderItem(data: UpdateOrderItem, orderItem_id: string) {
@@ -144,11 +145,6 @@ export class OrderItemService {
         .select()
         .from(product)
         .where(eq(product.product_id, data.product_id));
-      await tx.insert(OrderLog).values({
-        order_id: data.order_id,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} updated orderItem ID${orderItem_id}-${productData[0]?.name}`,
-      });
 
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
@@ -177,11 +173,6 @@ export class OrderItemService {
         .select()
         .from(employee)
         .where(eq(employee.employee_id, user));
-      await tx.insert(OrderLog).values({
-        order_id: orderId,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} deleted orderItem ID${paramsId}-${orderItem[0].product?.name}`,
-      });
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
         performed_by: empData[0].employee_id,
@@ -195,5 +186,60 @@ export class OrderItemService {
       .update(orderProduct)
       .set({ ...data, status: 'Finalized' })
       .where(eq(orderProduct.order_product_id, Number(orderItem_id)));
+  }
+  private async getRecordByProduct(
+    order_item_id: number,
+  ): Promise<Map<number, unknown[]>> {
+    const result = await this.db
+      .select()
+      .from(OrderLog)
+      .leftJoin(employee, eq(employee.employee_id, OrderLog.performed_by))
+
+      .where(eq(OrderLog.order_item_id, order_item_id));
+
+    const productRecordsByProduct = new Map<number, unknown[]>();
+
+    result.forEach((record) => {
+      const order_item_id = record.OrderTransLog.order_item_id!;
+      if (!productRecordsByProduct.has(order_item_id)) {
+        productRecordsByProduct.set(order_item_id, []);
+      }
+      productRecordsByProduct.get(order_item_id)!.push({
+        ...record.OrderTransLog,
+        performed_by: {
+          ...record.employee,
+        },
+      });
+    });
+    return productRecordsByProduct;
+  }
+  async AddDelivery(data: UpdateOrderItem, paramsId: number) {
+    return this.db.transaction(async (tx) => {
+      await tx.insert(OrderLog).values({
+        total_quantity: data.total_quantity,
+        ordered_quantity: data.ordered_quantity,
+        delivered_quantity: data.delivered_quantity,
+        resolved_quantity: data.resolved_quantity,
+        status: 'Pending',
+        action_type: 'Delivered',
+      });
+
+      await tx
+        .update(orderProduct)
+        .set({ ...data })
+        .where(eq(orderProduct.order_product_id, Number(paramsId)));
+
+      // Logging
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} updated order ${paramsId}`,
+      });
+    });
   }
 }

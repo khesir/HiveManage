@@ -53,6 +53,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."order_log_action_type" AS ENUM('Added to inventory', 'Resolved', 'Ordered', 'Returned');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."order_log_status" AS ENUM('Delivered', 'Pending', 'Resolved', 'Approved', 'Refunded');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."destination_Type" AS ENUM('Stock', 'Service', 'Damage');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -66,6 +78,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."product_status" AS ENUM('Unavailable', 'Available', 'Discontinued');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."product_record_action_type" AS ENUM('Received', 'Returned', 'Transferred');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -285,7 +303,6 @@ CREATE TABLE IF NOT EXISTS "order" (
 	"supplier_id" integer,
 	"notes" varchar,
 	"expected_arrival" timestamp,
-	"order_value" numeric(10, 2),
 	"order_status" "order_status",
 	"order_payment_status" "order_payment_status",
 	"order_payment_method" "order_payment_method",
@@ -302,8 +319,8 @@ CREATE TABLE IF NOT EXISTS "order_product" (
 	"total_quantity" integer NOT NULL,
 	"ordered_quantity" integer DEFAULT 0,
 	"delivered_quantity" integer DEFAULT 0,
-	"cost_price" numeric(50, 2),
-	"selling_price" numeric(50, 2),
+	"resolved_quantity" integer DEFAULT 0,
+	"unit_price" numeric(50, 2),
 	"status" "status" DEFAULT 'Draft',
 	"is_serialize" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now(),
@@ -346,6 +363,7 @@ CREATE TABLE IF NOT EXISTS "product_record" (
 	"order_item_id" integer,
 	"quantity" integer DEFAULT 0,
 	"status" "product_record_status" NOT NULL,
+	"action_type" "product_record_action_type" NOT NULL,
 	"employee_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -405,6 +423,23 @@ CREATE TABLE IF NOT EXISTS "service_serialize_record" (
 	"service_item_id" integer,
 	"qty" integer DEFAULT 0,
 	"status" "service_record_status" NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "OrderTransLog" (
+	"order_log_id" serial PRIMARY KEY NOT NULL,
+	"order_id" integer,
+	"order_item_id" integer,
+	"product_id" integer,
+	"total_quantity" integer NOT NULL,
+	"ordered_quantity" integer DEFAULT 0,
+	"delivered_quantity" integer DEFAULT 0,
+	"resolve_quantity" integer DEFAULT 0,
+	"status" "order_log_status",
+	"action_type" "order_log_action_type",
+	"performed_by" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -478,18 +513,6 @@ CREATE TABLE IF NOT EXISTS "payment" (
 	"payment_method" "payment_method" NOT NULL,
 	"payment_type" "payment_type" NOT NULL,
 	"reference_number" varchar,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "OrderTransLog" (
-	"order_log_id" serial PRIMARY KEY NOT NULL,
-	"order_id" integer,
-	"order_item_id" integer,
-	"action" varchar(255),
-	"quantity" integer,
-	"performed_by" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -808,6 +831,30 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_order_id_order_order_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."order"("order_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_order_item_id_order_product_order_product_id_fk" FOREIGN KEY ("order_item_id") REFERENCES "public"."order_product"("order_product_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "inventory_movement" ADD CONSTRAINT "inventory_movement_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -875,24 +922,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "payment" ADD CONSTRAINT "payment_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_order_id_order_order_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."order"("order_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_order_item_id_order_product_order_product_id_fk" FOREIGN KEY ("order_item_id") REFERENCES "public"."order_product"("order_product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "OrderTransLog" ADD CONSTRAINT "OrderTransLog_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

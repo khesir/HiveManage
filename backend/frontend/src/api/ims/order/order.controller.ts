@@ -106,7 +106,7 @@ export class OrderController {
         notes,
         supplier_id,
         expected_arrival,
-        order_value,
+
         order_products,
         order_status,
         order_payment_status,
@@ -118,7 +118,6 @@ export class OrderController {
         notes,
         supplier_id,
         expected_arrival,
-        order_value,
         order_products,
         order_status,
         order_payment_status,
@@ -145,7 +144,7 @@ export class OrderController {
         notes,
         supplier_id,
         expected_arrival,
-        order_value,
+
         order_status,
         order_payment_status,
         order_payment_method,
@@ -157,7 +156,6 @@ export class OrderController {
           notes,
           supplier_id,
           expected_arrival,
-          order_value,
           order_status,
           order_payment_status,
           order_payment_method,
@@ -199,7 +197,7 @@ export class OrderController {
       notes,
       supplier_id,
       expected_arrival,
-      order_value,
+
       order_products,
       order_status,
       order_payment_status,
@@ -212,7 +210,7 @@ export class OrderController {
           notes,
           supplier_id,
           expected_arrival,
-          order_value,
+
           order_products,
           order_status,
           order_payment_status,
@@ -234,7 +232,7 @@ export class OrderController {
       notes,
       supplier_id,
       expected_arrival,
-      order_value,
+
       order_products,
       order_status,
       order_payment_status,
@@ -247,7 +245,6 @@ export class OrderController {
           notes,
           supplier_id,
           expected_arrival,
-          order_value,
           order_products,
           order_status,
           order_payment_status,

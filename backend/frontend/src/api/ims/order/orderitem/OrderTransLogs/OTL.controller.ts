@@ -16,8 +16,8 @@ export class OrderTransactionLogController {
     res: Response,
     next: NextFunction,
   ) {
-    const order_id = (req.query.order_id as string) || undefined;
-    const order_item_id = (req.query.order_item_id as string) || undefined;
+    const order_id = (req.params.order_id as string) || undefined;
+    const order_item_id = (req.params.order_item_id as string) || undefined;
     const no_pagination = req.query.no_pagination == 'true';
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit as string) || 10;
@@ -54,13 +54,29 @@ export class OrderTransactionLogController {
     next: NextFunction,
   ) {
     try {
-      const { order_id, order_item, action, quantity, performed_by } = req.body;
+      const {
+        order_id,
+        order_item_id,
+        product_id,
+        total_quantity,
+        ordered_quantity,
+        delivered_quantity,
+        resolved_quantity,
+        status,
+        action_type,
+        performed_by,
+      } = req.body;
 
       await this.ordertransactionlogService.createOrderTransactionLog({
         order_id,
-        order_item,
-        action,
-        quantity,
+        order_item_id,
+        product_id,
+        total_quantity,
+        ordered_quantity,
+        delivered_quantity,
+        resolved_quantity,
+        status,
+        action_type,
         performed_by,
       });
 

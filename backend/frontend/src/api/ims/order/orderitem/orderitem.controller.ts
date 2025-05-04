@@ -47,11 +47,11 @@ export class OrderItemsController {
 
   async getOrderItemById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { orderItem_id } = req.params;
+      const { order_item_id } = req.params;
       const data = await this.orderitemService.getOrderItemById(
-        Number(orderItem_id),
+        Number(order_item_id),
       );
-      res.status(200).json({ status: 'Success', message: data });
+      res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -67,8 +67,9 @@ export class OrderItemsController {
         product_id,
         total_quantity,
         ordered_quantity,
-        selling_price,
-        cost_price,
+        delivered_quantity,
+        resolved_quantity,
+        unit_price,
         status,
         is_serialize,
         user,
@@ -79,8 +80,9 @@ export class OrderItemsController {
         product_id,
         total_quantity,
         ordered_quantity,
-        selling_price,
-        cost_price,
+        delivered_quantity,
+        resolved_quantity,
+        unit_price,
         status,
         is_serialize,
         user,
@@ -109,8 +111,8 @@ export class OrderItemsController {
         total_quantity,
         ordered_quantity,
         delivered_quantity,
-        selling_price,
-        cost_price,
+        resolved_quantity,
+        unit_price,
         status,
         user,
       } = req.body;
@@ -121,8 +123,8 @@ export class OrderItemsController {
           total_quantity,
           ordered_quantity,
           delivered_quantity,
-          selling_price,
-          cost_price,
+          resolved_quantity,
+          unit_price,
           status,
           user,
         },
@@ -157,6 +159,46 @@ export class OrderItemsController {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
         .json({ status: 'Error', message: 'Internal Server Error' });
+      next(error);
+    }
+  }
+
+  async AddDelivery(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { order_item_id } = req.params;
+      const {
+        order_id,
+        product_id,
+        total_quantity,
+        ordered_quantity,
+        delivered_quantity,
+        resolved_quantity,
+        unit_price,
+        status,
+        user,
+      } = req.body;
+      await this.orderitemService.AddDelivery(
+        {
+          order_id,
+          product_id,
+          total_quantity,
+          ordered_quantity,
+          delivered_quantity,
+          resolved_quantity,
+          unit_price,
+          status,
+          user,
+        },
+        Number(order_item_id),
+      );
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Order Item Updated Successfully ',
+      });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error ' });
       next(error);
     }
   }

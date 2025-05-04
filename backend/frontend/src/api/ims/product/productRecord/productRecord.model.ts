@@ -7,6 +7,7 @@ export const CreateProductRecord = z.object({
 
   quantity: z.number().min(1),
   status: z.enum(['Pending', 'Confirmed', 'Returned', 'Added']),
+  action_type: z.enum(['Received', 'Returned', 'Transferred']),
   handled_by: z.number().min(1),
 });
 

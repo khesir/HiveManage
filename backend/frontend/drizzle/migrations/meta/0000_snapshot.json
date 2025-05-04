@@ -1,5 +1,5 @@
 {
-  "id": "a79a6415-0fe1-4142-a736-15fe2aa5e106",
+  "id": "2a5c7cd4-3f45-4fe6-a68d-af7d61721616",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -880,12 +880,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "order_value": {
-          "name": "order_value",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "order_status": {
           "name": "order_status",
           "type": "order_status",
@@ -995,14 +989,15 @@
           "notNull": false,
           "default": 0
         },
-        "cost_price": {
-          "name": "cost_price",
-          "type": "numeric(50, 2)",
+        "resolved_quantity": {
+          "name": "resolved_quantity",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
-        "selling_price": {
-          "name": "selling_price",
+        "unit_price": {
+          "name": "unit_price",
           "type": "numeric(50, 2)",
           "primaryKey": false,
           "notNull": false
@@ -1290,6 +1285,13 @@
         "status": {
           "name": "status",
           "type": "product_record_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "action_type": {
+          "name": "action_type",
+          "type": "product_record_action_type",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -1818,6 +1820,160 @@
           ],
           "columnsTo": [
             "service_item_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.OrderTransLog": {
+      "name": "OrderTransLog",
+      "schema": "",
+      "columns": {
+        "order_log_id": {
+          "name": "order_log_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_item_id": {
+          "name": "order_item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_quantity": {
+          "name": "total_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ordered_quantity": {
+          "name": "ordered_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "delivered_quantity": {
+          "name": "delivered_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "resolve_quantity": {
+          "name": "resolve_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "order_log_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action_type": {
+          "name": "action_type",
+          "type": "order_log_action_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "OrderTransLog_order_id_order_order_id_fk": {
+          "name": "OrderTransLog_order_id_order_order_id_fk",
+          "tableFrom": "OrderTransLog",
+          "tableTo": "order",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "order_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "OrderTransLog_order_item_id_order_product_order_product_id_fk": {
+          "name": "OrderTransLog_order_item_id_order_product_order_product_id_fk",
+          "tableFrom": "OrderTransLog",
+          "tableTo": "order_product",
+          "columnsFrom": [
+            "order_item_id"
+          ],
+          "columnsTo": [
+            "order_product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "OrderTransLog_product_id_product_product_id_fk": {
+          "name": "OrderTransLog_product_id_product_product_id_fk",
+          "tableFrom": "OrderTransLog",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "OrderTransLog_performed_by_employee_employee_id_fk": {
+          "name": "OrderTransLog_performed_by_employee_employee_id_fk",
+          "tableFrom": "OrderTransLog",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -2391,112 +2547,6 @@
           ],
           "columnsTo": [
             "sales_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.OrderTransLog": {
-      "name": "OrderTransLog",
-      "schema": "",
-      "columns": {
-        "order_log_id": {
-          "name": "order_log_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "order_id": {
-          "name": "order_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "order_item_id": {
-          "name": "order_item_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "action": {
-          "name": "action",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "quantity": {
-          "name": "quantity",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "performed_by": {
-          "name": "performed_by",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "OrderTransLog_order_id_order_order_id_fk": {
-          "name": "OrderTransLog_order_id_order_order_id_fk",
-          "tableFrom": "OrderTransLog",
-          "tableTo": "order",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "order_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "OrderTransLog_order_item_id_order_product_order_product_id_fk": {
-          "name": "OrderTransLog_order_item_id_order_product_order_product_id_fk",
-          "tableFrom": "OrderTransLog",
-          "tableTo": "order_product",
-          "columnsFrom": [
-            "order_item_id"
-          ],
-          "columnsTo": [
-            "order_product_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "OrderTransLog_performed_by_employee_employee_id_fk": {
-          "name": "OrderTransLog_performed_by_employee_employee_id_fk",
-          "tableFrom": "OrderTransLog",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "performed_by"
-          ],
-          "columnsTo": [
-            "employee_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -3905,6 +3955,27 @@
         "Stocked"
       ]
     },
+    "public.order_log_action_type": {
+      "name": "order_log_action_type",
+      "schema": "public",
+      "values": [
+        "Added to inventory",
+        "Resolved",
+        "Ordered",
+        "Returned"
+      ]
+    },
+    "public.order_log_status": {
+      "name": "order_log_status",
+      "schema": "public",
+      "values": [
+        "Delivered",
+        "Pending",
+        "Resolved",
+        "Approved",
+        "Refunded"
+      ]
+    },
     "public.destination_Type": {
       "name": "destination_Type",
       "schema": "public",
@@ -3931,6 +4002,15 @@
         "Unavailable",
         "Available",
         "Discontinued"
+      ]
+    },
+    "public.product_record_action_type": {
+      "name": "product_record_action_type",
+      "schema": "public",
+      "values": [
+        "Received",
+        "Returned",
+        "Transferred"
       ]
     },
     "public.product_record_status": {

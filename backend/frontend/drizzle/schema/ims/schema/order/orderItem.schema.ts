@@ -28,9 +28,9 @@ export const orderProduct = pgTable('order_product', {
   total_quantity: integer('total_quantity').notNull(),
   ordered_quantity: integer('ordered_quantity').default(0),
   delivered_quantity: integer('delivered_quantity').default(0),
+  resolved_quantity: integer('resolved_quantity').default(0),
 
-  cost_price: decimal('cost_price', { precision: 50, scale: 2 }),
-  selling_price: decimal('selling_price', { precision: 50, scale: 2 }),
+  unit_price: decimal('unit_price', { precision: 50, scale: 2 }),
 
   status: orderItemStatus('status').default('Draft'),
   is_serialize: boolean('is_serialize').default(false),

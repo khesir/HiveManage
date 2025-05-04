@@ -11,9 +11,10 @@ import {
 } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
-import { OrderLog, ProductLog } from '@/drizzle/schema/records';
+import { ProductLog } from '@/drizzle/schema/records';
 import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 import { SupabaseService } from '@/supabase/supabase.service';
+import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog';
 
 export class OrderService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -177,7 +178,12 @@ export class OrderService {
     }
     if (includes.includes('order_products')) {
       query.leftJoin(orderProduct, eq(orderProduct.order_id, order.order_id));
-
+      if (includes.includes('order_logs')) {
+        query.leftJoin(
+          OrderLog,
+          eq(OrderLog.order_item_id, orderProduct.order_product_id),
+        );
+      }
       if (includes.includes('product')) {
         query.leftJoin(
           product,
@@ -324,7 +330,6 @@ export class OrderService {
           expected_arrival: data.expected_arrival
             ? new Date(data.expected_arrival)
             : null,
-          order_value: data.order_value?.toString(),
           order_payment_status: 'Pending',
           order_payment_method: 'Cash',
         })
@@ -364,11 +369,6 @@ export class OrderService {
         performed_by: empData[0].employee_id,
         action: `${empData[0].firstname} ${empData[0].lastname} created order for ${data.order_products.length} ${data.order_products.length > 1 ? 'products' : 'product'}`,
       });
-      await tx.insert(OrderLog).values({
-        order_id: insertedOrder.order_id,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} created order ${insertedOrder.order_id}`,
-      });
     });
   }
 
@@ -388,11 +388,7 @@ export class OrderService {
         .select()
         .from(employee)
         .where(eq(employee.employee_id, data.user));
-      await tx.insert(OrderLog).values({
-        order_id: paramsId,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} updated order`,
-      });
+
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
         performed_by: empData[0].employee_id,
@@ -417,11 +413,7 @@ export class OrderService {
         .select()
         .from(employee)
         .where(eq(employee.employee_id, user));
-      await tx.insert(OrderLog).values({
-        order_id: paramsId,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} deleted order`,
-      });
+
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
         performed_by: empData[0].employee_id,
@@ -439,7 +431,6 @@ export class OrderService {
           expected_arrival: data.expected_arrival
             ? new Date(data.expected_arrival)
             : null,
-          order_value: data.order_value?.toString(),
           order_status: 'Awaiting Arrival',
         })
         .where(eq(order.order_id, paramsId));
@@ -451,17 +442,24 @@ export class OrderService {
           .where(
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );
+        await tx.insert(OrderLog).values({
+          order_id: paramsId,
+          product_id: item.product_id,
+          order_item_id: item.order_product_id,
+          total_quantity: item.total_quantity,
+          ordered_quantity: item.ordered_quantity,
+
+          status: 'Pending',
+          action_type: 'Ordered',
+          performed_by: data.user,
+        });
       }
 
       const empData = await tx
         .select()
         .from(employee)
         .where(eq(employee.employee_id, data.user));
-      await tx.insert(OrderLog).values({
-        order_id: paramsId,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} finalize order`,
-      });
+
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
         performed_by: empData[0].employee_id,
@@ -478,7 +476,6 @@ export class OrderService {
           expected_arrival: data.expected_arrival
             ? new Date(data.expected_arrival)
             : null,
-          order_value: data.order_value?.toString(),
           order_status: 'Fulfilled',
         })
         .where(eq(order.order_id, paramsId));
@@ -512,11 +509,7 @@ export class OrderService {
           action: `${empData[0].firstname} ${empData[0].lastname} pushed order to inventory ${item.total_quantity}`,
         });
       }
-      await tx.insert(OrderLog).values({
-        order_id: paramsId,
-        performed_by: empData[0].employee_id,
-        action: `${empData[0].firstname} ${empData[0].lastname} finalize order`,
-      });
+
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
         performed_by: empData[0].employee_id,
