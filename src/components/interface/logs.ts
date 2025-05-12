@@ -38,6 +38,7 @@ export interface OrderLogs {
 	status: string;
 	action_type: string;
 	performed_by: EmployeeBasicInformation;
+	resolve_type: string;
 	created_at: string;
 	last_updated: string;
 	deleted_at: string;

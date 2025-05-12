@@ -1,4 +1,5 @@
-import useOrderStore from '@/api/order-state';
+import {request} from '@/api/axios';
+import {OrderLogs} from '@/components/interface/logs';
 import {Button} from '@/components/ui/button';
 import {
 	Form,
@@ -17,7 +18,9 @@ import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-si
 import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 import {zodResolver} from '@hookform/resolvers/zod';
 import axios from 'axios';
+import {useState} from 'react';
 import {useForm} from 'react-hook-form';
+import {useParams} from 'react-router-dom';
 import {toast} from 'sonner';
 
 interface Props {
@@ -25,9 +28,10 @@ interface Props {
 	orderProduct: OrderProduct;
 }
 
-export function AddDeliveredProductForm({onSubmit, orderProduct}: Props) {
-	const {selectedOrder, loading, updateOrderItem} = useOrderStore();
+export function AddResolveProductForm({onSubmit, orderProduct}: Props) {
 	const {user} = useEmployeeRoleDetailsStore();
+	const [loading, setLoading] = useState<boolean>(false);
+	const {id} = useParams();
 	const {toggleTrigger} = useEventTrigger();
 
 	const form = useForm<OrderProduct>({
@@ -37,7 +41,7 @@ export function AddDeliveredProductForm({onSubmit, orderProduct}: Props) {
 			total_quantity: orderProduct.total_quantity,
 			ordered_quantity: orderProduct.ordered_quantity,
 			product_id: orderProduct.product_id,
-			delivered_quantity: orderProduct.delivered_quantity,
+			resolved_quantity: orderProduct.resolved_quantity,
 			order_id: orderProduct.order_id,
 			status: orderProduct.status,
 		},
@@ -46,29 +50,39 @@ export function AddDeliveredProductForm({onSubmit, orderProduct}: Props) {
 
 	const processForm = async (data: OrderProduct) => {
 		try {
-			const deliveredQuantity = data.delivered_quantity || 0;
-			const totalQuantity = data.total_quantity || 0;
-
-			if (deliveredQuantity === totalQuantity) {
-				data.status = 'Delivered';
-			} else if (deliveredQuantity > 0 && deliveredQuantity < totalQuantity) {
-				data.status = 'Partially Delivered';
-			} else if (deliveredQuantity === 0) {
-				data.status = 'Awaiting Arrival';
+			setLoading(true);
+			const resolveQuantity =
+				data.resolved_quantity + orderProduct.resolved_quantity || 0;
+			const orderedQuantity = data.delivered_quantity - resolveQuantity;
+			if (orderedQuantity < 0) {
+				toast.error('Delivered Quantity is 0');
+				return;
 			}
+
 			if (!user?.employee.employee_id) {
 				toast.error('You need to be logged in to proceed');
 				return;
 			}
-			await updateOrderItem(
-				selectedOrder.order_id!,
-				orderProduct.order_product_id!,
+			await request(
+				'POST',
+				`/api/v1/ims/order/${id}/order-product/${orderProduct.order_product_id}/resolve`,
 				{
 					...data,
-					order_id: selectedOrder.order_id,
+					resolved_quantity: resolveQuantity,
+					user: user.employee.employee_id,
 				},
-				user.employee.employee_id,
 			);
+			await request('POST', `/api/v1/ims/orderlogs`, {
+				order_id: data.order_id,
+				product_id: data.product_id,
+				order_item_id: orderProduct.order_product_id,
+				total_quantity: data.total_quantity,
+				ordered_quantity: data.ordered_quantity,
+				resolved_quantity: resolveQuantity,
+				status: 'resolve',
+				action_type: 'resolve',
+				performed_by: user.employee.employee_id,
+			} as unknown as OrderLogs);
 			if (onSubmit) {
 				onSubmit();
 			}
@@ -84,8 +98,11 @@ export function AddDeliveredProductForm({onSubmit, orderProduct}: Props) {
 			}
 
 			toast.error(errorMessage);
+		} finally {
+			setLoading(true);
 		}
 	};
+	const deliveredQty = form.getValues('delivered_quantity') || 0;
 
 	return (
 		<Form {...form}>
@@ -95,10 +112,10 @@ export function AddDeliveredProductForm({onSubmit, orderProduct}: Props) {
 			>
 				<FormField
 					control={form.control}
-					name={`ordered_quantity`}
+					name={`delivered_quantity`}
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Ordered quantity</FormLabel>
+							<FormLabel>Delivered quantity</FormLabel>
 							<FormControl>
 								<Input
 									type="number"
@@ -116,35 +133,32 @@ export function AddDeliveredProductForm({onSubmit, orderProduct}: Props) {
 				/>
 				<FormField
 					control={form.control}
-					name={`delivered_quantity`}
+					name={`resolved_quantity`}
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Delivered quantity</FormLabel>
+							<FormLabel>resolve quantity</FormLabel>
 							<FormControl>
 								<Input
 									type="number"
-									placeholder="Enter Delivered Quantity"
+									placeholder="Enter resolve Quantity"
 									value={field.value !== undefined ? field.value : ''}
 									onChange={(e) => {
-										let deliveredQty = parseInt(e.target.value) || 0;
-										const totalQty = form.getValues('total_quantity') || 0;
-
-										// Prevent delivered from exceeding total
-										if (deliveredQty > totalQty) {
-											deliveredQty = totalQty;
+										let resolveQty = parseInt(e.target.value);
+										if (resolveQty == null) {
+											return;
+										}
+										// Prevent resolve from exceeding total
+										if (resolveQty > deliveredQty) {
+											resolveQty = deliveredQty;
 										}
 
-										// Ensure delivered is not negative
-										if (deliveredQty < 0) {
-											deliveredQty = 0;
+										// Ensure resolve is not negative
+										if (resolveQty < 0) {
+											resolveQty = 0;
 										}
-
-										// Auto-adjust ordered quantity
-										const orderedQty = totalQty - deliveredQty;
 
 										// Update form values
-										field.onChange(deliveredQty);
-										form.setValue('ordered_quantity', orderedQty);
+										field.onChange(resolveQty);
 									}}
 								/>
 							</FormControl>

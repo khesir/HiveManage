@@ -127,7 +127,7 @@ export const orderSchema = z.object({
 
 	order_products: z.array(orderItemSchema).optional(),
 	supplier: supplierSchema.optional(),
-
+	delivery_receipt: z.string().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().nullable().optional(),

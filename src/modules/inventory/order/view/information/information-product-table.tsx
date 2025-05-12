@@ -134,7 +134,7 @@ const columns: ColumnDef<OrderProduct>[] = [
 			return (
 				<>
 					{row.original.status === 'Draft' && <ActionCell {...row.original} />}
-					{row.original.status === 'Awaiting Arrival' && (
+					{row.original.status !== 'Draft' && (
 						<UpdateActionCell {...row.original} />
 					)}
 					{/* {row.original.status === 'Delivered' && <div>Delivered</div>} */}

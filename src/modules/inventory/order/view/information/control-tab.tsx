@@ -6,6 +6,7 @@ import useOrderStore from '@/api/order-state';
 import {InformationProductTable} from './information-product-table';
 import {LogsTabOrder} from '../logsRecord/logs-tab';
 import {UpdateOrderForm} from './update-order-form';
+import {UploadReceipt} from './uploadReciept';
 export function ControlTabOrder() {
 	const {selectedOrder, loading} = useOrderStore();
 
@@ -28,13 +29,15 @@ export function ControlTabOrder() {
 						</div>
 					)}
 					{/* Payment */}
-					{!loading &&
-						selectedOrder.order_status !== 'Draft' &&
-						selectedOrder.order_status !== 'Fulfilled' && (
-							<div className="flex gap-3">
-								<MarkComplete />
+					{!loading && selectedOrder.order_status !== 'Draft' && (
+						<div className="flex gap-3">
+							<div>
+								{' '}
+								<UploadReceipt {...selectedOrder} />
 							</div>
-						)}
+							{selectedOrder.order_status !== 'Fulfilled' && <MarkComplete />}
+						</div>
+					)}
 				</div>
 			</div>
 			<TabsContent value="Informations">

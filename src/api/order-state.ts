@@ -193,6 +193,7 @@ const useOrderStore = create<OrderState>((set) => ({
 			} else {
 				toast.error('An unknown error occured');
 			}
+			console.log(e);
 		} finally {
 			set({loading: false});
 		}

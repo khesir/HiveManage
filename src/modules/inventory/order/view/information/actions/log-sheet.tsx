@@ -11,7 +11,8 @@ import {Badge} from '@/components/ui/badge';
 import {Card} from '@/components/ui/card';
 import {OrderProduct} from '@/components/validation/order-product';
 import {LogTable} from './log-table';
-import {AddDeliveredProductDialogue} from './add-delivered-product-dialogue';
+import {AddDeliveredProductDialogue} from './AddDelivery/add-delivered-product-dialogue';
+import {AddResolveProductDialogue} from './AddResolve/add-resolve-product-dialogue';
 
 interface Props {
 	orderProduct: OrderProduct;
@@ -76,8 +77,7 @@ export function LogSheet({orderProduct}: Props) {
 				</SheetHeader>
 				<div className="space-x-3 pb-5 flex">
 					<AddDeliveredProductDialogue orderProduct={orderProduct} />
-					<Button>Add Delivery</Button>
-					<Button>Add Delivery</Button>
+					<AddResolveProductDialogue orderProduct={orderProduct} />
 				</div>
 				<LogTable orderProduct={orderProduct} />
 			</SheetContent>

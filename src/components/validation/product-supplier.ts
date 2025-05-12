@@ -48,8 +48,15 @@ const productSchema = z.object({
 	description: z.string().min(1),
 	img_url: z.string(),
 	is_serialize: z.boolean().optional(),
-	stock_limit: z.number().min(1),
-	total_stock: z.number().optional(),
+	status: z.union([z.string().optional(), z.boolean()]),
+	re_order_level: z.number().optional(),
+	selling_price: z.number().min(1),
+
+	total_quantity: z.number().optional(),
+	available_quantity: z.number().optional(),
+	transfered_quantity: z.number().optional(),
+	sold_quantity: z.number().optional(),
+
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().optional(),

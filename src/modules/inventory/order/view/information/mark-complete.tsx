@@ -9,29 +9,42 @@ import {
 } from '@/components/ui/dialog';
 import {useState} from 'react';
 
-import useOrderStore from '@/api/order-state';
 import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {toast} from 'sonner';
+import {request} from '@/api/axios';
+import {useParams} from 'react-router-dom';
+import axios from 'axios';
 
 export function MarkComplete() {
 	const [formModal, setFormModal] = useState<boolean>(false);
-	const {selectedOrder, pushToInventory} = useOrderStore();
 	const {toggleTrigger} = useEventTrigger();
 	const {user} = useEmployeeRoleDetailsStore();
+	const {id} = useParams();
 
-	const handleDelete = async () => {
-		if (!user?.employee.employee_id) {
-			toast.error('You need to be logged in to proceed');
-			return;
+	const handleComplete = async () => {
+		try {
+			if (!user?.employee.employee_id) {
+				toast.error('You need to be logged in to proceed');
+				return;
+			}
+			await request(
+				'POST',
+				`/api/v1/ims/order/${id}/pushToInventory?user_id=${user.employee.employee_id}`,
+			);
+			setFormModal(false);
+			toggleTrigger();
+		} catch (error) {
+			console.log(error);
+			let errorMessage = 'An unexpected error occurred';
+			if (axios.isAxiosError(error)) {
+				errorMessage =
+					error.response?.data?.message ||
+					error.response?.data?.errors?.[0]?.message ||
+					'Failed to process request';
+			}
+			toast.error(errorMessage);
 		}
-		await pushToInventory(
-			selectedOrder.order_id!,
-			selectedOrder,
-			user?.employee.employee_id,
-		);
-		setFormModal(false);
-		toggleTrigger();
 	};
 
 	return (
@@ -54,7 +67,7 @@ export function MarkComplete() {
 					</Button>
 					<Button
 						className="bg-green-400 hover:bg-green-600"
-						onClick={handleDelete}
+						onClick={handleComplete}
 					>
 						Confirm
 					</Button>
