@@ -163,7 +163,7 @@ export class OrderItemsController {
     }
   }
 
-  async AddDelivery(req: Request, res: Response, next: NextFunction) {
+  async addDelivery(req: Request, res: Response, next: NextFunction) {
     try {
       const { order_item_id } = req.params;
       const {
@@ -177,7 +177,7 @@ export class OrderItemsController {
         status,
         user,
       } = req.body;
-      await this.orderitemService.AddDelivery(
+      await this.orderitemService.addDelivery(
         {
           order_id,
           product_id,
@@ -188,6 +188,47 @@ export class OrderItemsController {
           unit_price,
           status,
           user,
+        },
+        Number(order_item_id),
+      );
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Order Item Updated Successfully ',
+      });
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error ' });
+      next(error);
+    }
+  }
+  async addResolve(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { order_item_id } = req.params;
+      const {
+        order_id,
+        product_id,
+        total_quantity,
+        ordered_quantity,
+        delivered_quantity,
+        resolved_quantity,
+        unit_price,
+        status,
+        user,
+        resolve_type,
+      } = req.body;
+      await this.orderitemService.addResolve(
+        {
+          order_id,
+          product_id,
+          total_quantity,
+          ordered_quantity,
+          delivered_quantity,
+          resolved_quantity,
+          unit_price,
+          status,
+          user,
+          resolve_type,
         },
         Number(order_item_id),
       );

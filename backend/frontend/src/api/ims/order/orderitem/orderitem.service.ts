@@ -5,7 +5,7 @@ import { order, orderProduct, product, supplier } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
 import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
-import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog';
+import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog.schema';
 
 export class OrderItemService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -200,12 +200,12 @@ export class OrderItemService {
     const productRecordsByProduct = new Map<number, unknown[]>();
 
     result.forEach((record) => {
-      const order_item_id = record.OrderTransLog.order_item_id!;
+      const order_item_id = record.order_log.order_item_id!;
       if (!productRecordsByProduct.has(order_item_id)) {
         productRecordsByProduct.set(order_item_id, []);
       }
       productRecordsByProduct.get(order_item_id)!.push({
-        ...record.OrderTransLog,
+        ...record.order_log,
         performed_by: {
           ...record.employee,
         },
@@ -213,17 +213,29 @@ export class OrderItemService {
     });
     return productRecordsByProduct;
   }
-  async AddDelivery(data: UpdateOrderItem, paramsId: number) {
-    return this.db.transaction(async (tx) => {
-      await tx.insert(OrderLog).values({
-        total_quantity: data.total_quantity,
-        ordered_quantity: data.ordered_quantity,
-        delivered_quantity: data.delivered_quantity,
-        resolved_quantity: data.resolved_quantity,
-        status: 'Pending',
-        action_type: 'Delivered',
-      });
 
+  async addDelivery(data: UpdateOrderItem, paramsId: number) {
+    return this.db.transaction(async (tx) => {
+      await tx
+        .update(orderProduct)
+        .set({ ...data })
+        .where(eq(orderProduct.order_product_id, Number(paramsId)));
+
+      // Logging
+      const empData = await tx
+        .select()
+        .from(employee)
+        .where(eq(employee.employee_id, data.user));
+
+      await tx.insert(employeeLog).values({
+        employee_id: empData[0].employee_id,
+        performed_by: empData[0].employee_id,
+        action: `${empData[0].firstname} ${empData[0].lastname} added delivery in order ${paramsId} with ${data.delivered_quantity}`,
+      });
+    });
+  }
+  async addResolve(data: UpdateOrderItem, paramsId: number) {
+    return this.db.transaction(async (tx) => {
       await tx
         .update(orderProduct)
         .set({ ...data })

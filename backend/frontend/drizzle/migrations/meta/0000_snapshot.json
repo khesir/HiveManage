@@ -1,5 +1,5 @@
 {
-  "id": "2a5c7cd4-3f45-4fe6-a68d-af7d61721616",
+  "id": "3cc3c8df-d234-4d36-9cc6-abbfda82bd5b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1828,8 +1828,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.OrderTransLog": {
-      "name": "OrderTransLog",
+    "public.order_log": {
+      "name": "order_log",
       "schema": "",
       "columns": {
         "order_log_id": {
@@ -1876,8 +1876,8 @@
           "notNull": false,
           "default": 0
         },
-        "resolve_quantity": {
-          "name": "resolve_quantity",
+        "resolved_quantity": {
+          "name": "resolved_quantity",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -1893,6 +1893,13 @@
         "action_type": {
           "name": "action_type",
           "type": "order_log_action_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "resolve_type": {
+          "name": "resolve_type",
+          "type": "resolve_type_enum",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
@@ -1926,9 +1933,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "OrderTransLog_order_id_order_order_id_fk": {
-          "name": "OrderTransLog_order_id_order_order_id_fk",
-          "tableFrom": "OrderTransLog",
+        "order_log_order_id_order_order_id_fk": {
+          "name": "order_log_order_id_order_order_id_fk",
+          "tableFrom": "order_log",
           "tableTo": "order",
           "columnsFrom": [
             "order_id"
@@ -1939,9 +1946,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "OrderTransLog_order_item_id_order_product_order_product_id_fk": {
-          "name": "OrderTransLog_order_item_id_order_product_order_product_id_fk",
-          "tableFrom": "OrderTransLog",
+        "order_log_order_item_id_order_product_order_product_id_fk": {
+          "name": "order_log_order_item_id_order_product_order_product_id_fk",
+          "tableFrom": "order_log",
           "tableTo": "order_product",
           "columnsFrom": [
             "order_item_id"
@@ -1952,9 +1959,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "OrderTransLog_product_id_product_product_id_fk": {
-          "name": "OrderTransLog_product_id_product_product_id_fk",
-          "tableFrom": "OrderTransLog",
+        "order_log_product_id_product_product_id_fk": {
+          "name": "order_log_product_id_product_product_id_fk",
+          "tableFrom": "order_log",
           "tableTo": "product",
           "columnsFrom": [
             "product_id"
@@ -1965,9 +1972,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "OrderTransLog_performed_by_employee_employee_id_fk": {
-          "name": "OrderTransLog_performed_by_employee_employee_id_fk",
-          "tableFrom": "OrderTransLog",
+        "order_log_performed_by_employee_employee_id_fk": {
+          "name": "order_log_performed_by_employee_employee_id_fk",
+          "tableFrom": "order_log",
           "tableTo": "employee",
           "columnsFrom": [
             "performed_by"
@@ -3961,6 +3968,7 @@
       "values": [
         "Added to inventory",
         "Resolved",
+        "Delivered",
         "Ordered",
         "Returned"
       ]
@@ -3974,6 +3982,16 @@
         "Resolved",
         "Approved",
         "Refunded"
+      ]
+    },
+    "public.resolve_type_enum": {
+      "name": "resolve_type_enum",
+      "schema": "public",
+      "values": [
+        "Replaced",
+        "Refunded",
+        "Discounted",
+        "Cancelled"
       ]
     },
     "public.destination_Type": {

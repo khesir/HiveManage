@@ -2,9 +2,9 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
-import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog';
 import { CreateOrderTransactionLog } from './OTL.model';
 import { orderProduct } from '@/drizzle/schema/ims';
+import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog.schema';
 
 export class OrderTransactionLogService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -14,7 +14,16 @@ export class OrderTransactionLogService {
   }
 
   async createOrderTransactionLog(data: CreateOrderTransactionLog) {
-    await this.db.insert(OrderLog).values(data);
+    await this.db.insert(OrderLog).values({
+      ...data,
+      resolve_type:
+        data.resolve_type !== undefined &&
+        ['Refunded', 'Cancelled', 'Replaced', 'Discounted'].includes(
+          data.resolve_type,
+        )
+          ? data.resolve_type
+          : null,
+    });
   }
 
   async getAllOrderTransactionLog(
@@ -62,7 +71,7 @@ export class OrderTransactionLogService {
     const result = await query;
 
     const ordertranslogWithDetails = result.map((row) => ({
-      ...row.OrderTransLog,
+      ...row.order_log,
       order_item: row.order_product,
       performed_by: {
         ...row.employee,

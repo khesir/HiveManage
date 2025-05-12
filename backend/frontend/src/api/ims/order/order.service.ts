@@ -8,13 +8,14 @@ import {
   product,
   productDetails,
   serializeProduct,
+  productRecord,
 } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 import { employee } from '@/drizzle/schema/ems';
 import { ProductLog } from '@/drizzle/schema/records';
 import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 import { SupabaseService } from '@/supabase/supabase.service';
-import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog';
+import { OrderLog } from '@/drizzle/schema/ims/schema/order/orderLog.schema';
 
 export class OrderService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -422,43 +423,46 @@ export class OrderService {
     });
   }
 
-  async finalize(data: UpdateOrder, paramsId: number) {
+  async finalize(paramsId: number, user_id: number) {
     await this.db.transaction(async (tx) => {
       await tx
         .update(order)
         .set({
-          ...data,
-          expected_arrival: data.expected_arrival
-            ? new Date(data.expected_arrival)
-            : null,
           order_status: 'Awaiting Arrival',
         })
         .where(eq(order.order_id, paramsId));
+      const order_products = await tx
+        .select()
+        .from(orderProduct)
+        .where(eq(orderProduct.order_id, paramsId));
 
-      for (const item of data.order_products!) {
+      for (const item of order_products) {
+        console.log('Processing item:', item.order_product_id);
         await tx
           .update(orderProduct)
           .set({ ...item, status: 'Awaiting Arrival' })
           .where(
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );
+        console.log('Updated item:', item.order_product_id);
+
         await tx.insert(OrderLog).values({
           order_id: paramsId,
           product_id: item.product_id,
           order_item_id: item.order_product_id,
           total_quantity: item.total_quantity,
           ordered_quantity: item.ordered_quantity,
-
           status: 'Pending',
           action_type: 'Ordered',
-          performed_by: data.user,
+          performed_by: user_id,
         });
+        console.log('Inserted log for:', item.order_product_id);
       }
 
       const empData = await tx
         .select()
         .from(employee)
-        .where(eq(employee.employee_id, data.user));
+        .where(eq(employee.employee_id, user_id));
 
       await tx.insert(employeeLog).values({
         employee_id: empData[0].employee_id,
@@ -467,25 +471,26 @@ export class OrderService {
       });
     });
   }
-  async pushToInventory(data: UpdateOrder, paramsId: number) {
+  async pushToInventory(paramsId: number, user_id: number) {
     await this.db.transaction(async (tx) => {
-      await tx
+      const orderData = await tx
         .update(order)
         .set({
-          ...data,
-          expected_arrival: data.expected_arrival
-            ? new Date(data.expected_arrival)
-            : null,
           order_status: 'Fulfilled',
         })
-        .where(eq(order.order_id, paramsId));
+        .where(eq(order.order_id, paramsId))
+        .returning({ supplier_id: order.supplier_id });
 
       const empData = await tx
         .select()
         .from(employee)
-        .where(eq(employee.employee_id, data.user));
+        .where(eq(employee.employee_id, user_id));
 
-      for (const item of data.order_products!) {
+      const order_products = await tx
+        .select()
+        .from(orderProduct)
+        .where(eq(orderProduct.order_id, paramsId));
+      for (const item of order_products!) {
         const status =
           item.ordered_quantity! == 0 ? 'Stocked' : 'Partially Stocked';
         await tx
@@ -494,15 +499,51 @@ export class OrderService {
           .where(
             eq(orderProduct.order_product_id, Number(item.order_product_id)),
           );
+        await tx.insert(productRecord).values({
+          product_id: item.product_id,
+          supplier_id: orderData[0].supplier_id,
+          order_item_id: item.order_product_id,
+          quantity: item.delivered_quantity,
+          status: 'Added',
+          action_type: 'Received',
+          handled_by: user_id,
+        });
+        await tx
+          .update(product)
+          .set({
+            total_quantity: sql`${product.total_quantity} + ${item.delivered_quantity}`,
+            available_quantity: sql`${product.available_quantity} + ${item.delivered_quantity}`,
+          })
+          .where(eq(product.product_id, item.product_id!));
         if (item.is_serialize) {
-          for (let i = 0; i < item.delivered_quantity!; i++) {
-            await tx.insert(serializeProduct).values({
-              product_id: Number(item.product_id),
-              condition: 'New',
-              status: 'Available',
-            });
-          }
+          const serializeRows = Array.from({
+            length: item.delivered_quantity!,
+          }).map(() => ({
+            product_id: Number(item.product_id),
+            condition: 'New' as 'New' | 'Secondhand' | 'Broken',
+            status: 'Available' as
+              | 'Available'
+              | 'Returned'
+              | 'Sold'
+              | 'In Service'
+              | 'On Order'
+              | 'Damage'
+              | 'Retired',
+          }));
+          await tx.insert(serializeProduct).values(serializeRows);
         }
+        await tx.insert(OrderLog).values({
+          order_id: item.order_id,
+          order_item_id: item.order_product_id,
+          product_id: item.product_id,
+          total_quantity: item.total_quantity,
+          ordered_quantity: item.ordered_quantity,
+          delivered_quantity: item.delivered_quantity,
+          resolved_quantity: item.resolved_quantity,
+          status: 'Delivered',
+          action_type: 'Added to inventory',
+          performed_by: user_id,
+        });
         await tx.insert(ProductLog).values({
           product_id: item.product_id,
           performed_by: empData[0].employee_id,

@@ -38,6 +38,17 @@ orderitemsRoute.delete(
   validateOrderItemID,
   orderitemsController.deleteOrderItem.bind(orderitemsController),
 );
+orderitemsRoute.post(
+  '/:order_item_id/delivery',
+  [validateRequest({ body: UpdateOrderItem }), validateOrderItemID],
+  orderitemsController.addDelivery.bind(orderitemsController),
+);
+orderitemsRoute.post(
+  '/:order_item_id/resolve',
+  [validateRequest({ body: UpdateOrderItem }), validateOrderItemID],
+  orderitemsController.addResolve.bind(orderitemsController),
+);
+
 orderitemsRoute.use(
   '/:order_item_id/orderlogs',
   validateOrderItemID,

@@ -8,9 +8,16 @@ export const CreateOrderTransactionLog = z.object({
   ordered_quantity: z.number(),
   delivered_quantity: z.number(),
   resolved_quantity: z.number(),
-
+  resolve_type: z
+    .enum(['Replaced', 'Refunded', 'Discounted', 'Cancelled'])
+    .optional(),
   status: z.enum(['Delivered', 'Pending', 'Resolved', 'Approved', 'Refunded']),
-  action_type: z.enum(['Added to inventory', 'Resolved', 'Returned']),
+  action_type: z.enum([
+    'Added to inventory',
+    'Resolved',
+    'Returned',
+    'Delivered',
+  ]),
   performed_by: z.number(),
 });
 
@@ -22,9 +29,14 @@ export const UpdateOrderTransactionLog = z.object({
   ordered_quantity: z.number(),
   delivered_quantity: z.number(),
   resolved_quantity: z.number(),
-
+  resolve_type: z.number(),
   status: z.enum(['Delivered', 'Pending', 'Resolved', 'Refunded']),
-  action_type: z.enum(['Added to inventory', 'Resolved', 'Returned']),
+  action_type: z.enum([
+    'Added to inventory',
+    'Resolved',
+    'Returned',
+    'Delivered',
+  ]),
   performed_by: z.number(),
 });
 

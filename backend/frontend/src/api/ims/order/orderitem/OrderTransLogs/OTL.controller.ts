@@ -65,6 +65,7 @@ export class OrderTransactionLogController {
         status,
         action_type,
         performed_by,
+        resolve_type,
       } = req.body;
 
       await this.ordertransactionlogService.createOrderTransactionLog({
@@ -78,6 +79,7 @@ export class OrderTransactionLogController {
         status,
         action_type,
         performed_by,
+        resolve_type,
       });
 
       res.status(HttpStatus.CREATED.code).json({

@@ -18,6 +18,7 @@ import {
 import { sales, salesItems } from './sales';
 import { payment } from './payment';
 import { inquiry, customerGroup, customer } from './customer';
+import { OrderLog } from './ims/schema/order/orderLog.schema';
 
 export type SchemaType = {
   [key: string]: ReturnType<typeof pgTable>;
@@ -56,4 +57,6 @@ export const schema: SchemaType = {
   inquiry,
   customerGroup,
   customer,
+
+  OrderLog,
 } as const;

@@ -63,3 +63,31 @@ export async function validateOrderByProductId(
       .json({ message: 'Internal Server Error ' });
   }
 }
+
+export const formDataToObject = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: Record<string, any> = {};
+
+  Object.keys(req.body).forEach((key) => {
+    const value = req.body[key];
+
+    if (value instanceof File) {
+      data[key] = value;
+    } else {
+      try {
+        const parsedValue = JSON.parse(value);
+        data[key] = parsedValue;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        // If it's not valid JSON, leave it as is
+        data[key] = value;
+      }
+    }
+  });
+  req.body = data;
+  next();
+};

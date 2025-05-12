@@ -193,32 +193,12 @@ export class OrderController {
 
   async finalize(req: Request, res: Response, next: NextFunction) {
     const { order_id } = req.params;
-    const {
-      notes,
-      supplier_id,
-      expected_arrival,
-
-      order_products,
-      order_status,
-      order_payment_status,
-      order_payment_method,
-      user,
-    } = req.body;
+    const user_id = req.query.user_id;
     try {
-      await this.orderService.finalize(
-        {
-          notes,
-          supplier_id,
-          expected_arrival,
-
-          order_products,
-          order_status,
-          order_payment_status,
-          order_payment_method,
-          user,
-        },
-        Number(order_id),
-      );
+      await this.orderService.finalize(Number(order_id), Number(user_id));
+      res
+        .status(HttpStatus.CREATED.code)
+        .json({ status: 'Success', message: 'Successfully Finalize Order' });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -228,31 +208,17 @@ export class OrderController {
   }
   async pushToInventory(req: Request, res: Response, next: NextFunction) {
     const { order_id } = req.params;
-    const {
-      notes,
-      supplier_id,
-      expected_arrival,
+    const user_id = req.query.user_id;
 
-      order_products,
-      order_status,
-      order_payment_status,
-      order_payment_method,
-      user,
-    } = req.body;
     try {
       await this.orderService.pushToInventory(
-        {
-          notes,
-          supplier_id,
-          expected_arrival,
-          order_products,
-          order_status,
-          order_payment_status,
-          order_payment_method,
-          user,
-        },
         Number(order_id),
+        Number(user_id),
       );
+      res.status(HttpStatus.CREATED.code).json({
+        status: 'Success',
+        message: 'Successfully Pushed to Inventory',
+      });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
@@ -264,6 +230,10 @@ export class OrderController {
     const { order_id } = req.params;
     try {
       await this.orderService.uploadOrder(Number(order_id), req.file!);
+      res.status(HttpStatus.CREATED.code).json({
+        status: 'Success',
+        message: 'Successfully Pushed to Inventory',
+      });
     } catch (error) {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { validateRequest } from '@/src/middlewares';
 import { db } from '@/drizzle/pool';
-import { validateOrderId } from './order.middleware';
-import { CreateOrder, FinalizeOrder, UpdateOrder } from './order.model';
+import { formDataToObject, validateOrderId } from './order.middleware';
+import { CreateOrder, UpdateOrder } from './order.model';
 import { OrderController } from './order.controller';
 import orderitemsRoute from './orderitem/orderitem.route';
 import { multerbase } from '../product/product.middleware';
@@ -31,13 +31,13 @@ orderRoute.post(
 
 orderRoute.post(
   '/:order_id/finalize',
-  [validateRequest({ body: FinalizeOrder })],
+  [validateOrderId],
   orderController.finalize.bind(orderController),
 );
 
 orderRoute.post(
   '/:order_id/pushToInventory',
-  [validateRequest({ body: UpdateOrder })],
+  [validateOrderId],
   orderController.pushToInventory.bind(orderController),
 );
 
@@ -53,11 +53,16 @@ orderRoute.delete(
   orderController.deleteOrderById.bind(orderController),
 );
 
-orderRoute.post(
-  '/:order_id',
-  [validateOrderId, multerbase.single('img_url')],
+// orderRoute.post(
+//   '/:order_id',
+//   [validateOrderId, multerbase.single('img_url')],
+//   orderController.updateOrder.bind(orderController),
+// );
 
-  orderController.updateOrder.bind(orderController),
+orderRoute.patch(
+  '/:order_id/upload-receipt',
+  [multerbase.single('img_url'), formDataToObject, validateOrderId],
+  orderController.uploadDeliveryReceipt.bind(orderController),
 );
 
 orderRoute.use('/:order_id/order-product', validateOrderId, orderitemsRoute);
