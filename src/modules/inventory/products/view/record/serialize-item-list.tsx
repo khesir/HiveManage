@@ -5,87 +5,47 @@ import {ColumnDef, Row} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {SerialiItemTable} from './serialize-item-table';
-import {Button} from '@/components/ui/button';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {Logs, Plus} from 'lucide-react';
-import {useSalesHook} from '@/components/hooks/use-sales-hook';
-import {useLocation} from 'react-router-dom';
-
-const ActionCell = (data: SerializeItem) => {
-	const {addProduct} = useSalesHook();
-	const location = useLocation();
-
-	return (
-		<div className="flex gap-2">
-			<TooltipProvider>
-				<Tooltip>
-					<TooltipTrigger>
-						<Button>
-							<Logs className="w-4 h-4" />
-						</Button>
-					</TooltipTrigger>
-					<TooltipContent>
-						<p>Logs</p>
-					</TooltipContent>
-				</Tooltip>
-			</TooltipProvider>
-			{location.pathname.includes('/sales/dashboard') && (
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger>
-							<Button
-								onClick={() => addProduct(data, 1, data.serial_id!, true)}
-							>
-								<Plus className="w-4 h-4" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Add Item</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			)}
-		</div>
-	);
-};
+import {useParams, useSearchParams} from 'react-router-dom';
+import {UpdateSerialDialogueForm} from '../_components/dialogue/update-serial-dialogue';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 
 export const columns: ColumnDef<SerializeItem>[] = [
+	{
+		accessorKey: 'serial_id',
+		header: 'ID',
+	},
 	{
 		accessorKey: 'supplier',
 		header: 'Supplier',
 		cell: ({row}) => {
 			return (
-				<AvatarCircles
-					avatar={[
-						{
-							link:
-								typeof row.original.supplier?.profile_link === 'string'
-									? row.original.supplier?.profile_link
-									: '',
-							name: row.original.supplier?.name ?? '',
-						},
-					]}
-				/>
+				<div className="flex gap-3 items-center">
+					<AvatarCircles
+						avatar={[
+							{
+								link:
+									typeof row.original.supplier?.profile_link === 'string'
+										? row.original.supplier?.profile_link
+										: '',
+								name: row.original.supplier?.name ?? '',
+							},
+						]}
+					/>
+					<span>{row.original.supplier?.name ?? 'Not set'}</span>
+				</div>
 			);
 		},
 	},
 	{
-		accessorKey: 'serial_number',
+		accessorKey: 'serial_code',
 		header: 'Serial',
+		cell: ({row}) =>
+			row.original.serial_code !== null ? row.original.serial_code : 'Not set',
 	},
 	{
 		accessorKey: 'warranty_date',
 		header: 'Warranty Date',
 		cell: ({row}) => dateParser(row?.original?.warranty_date ?? ''),
-	},
-	{
-		accessorKey: 'price',
-		header: 'Price',
 	},
 	{
 		accessorKey: 'condition',
@@ -103,22 +63,14 @@ export const columns: ColumnDef<SerializeItem>[] = [
 	{
 		header: 'Actions',
 		cell: ({row}: {row: Row<SerializeItem>}) => (
-			<ActionCell {...row.original} />
+			<UpdateSerialDialogueForm serializedItem={row.original} />
 		),
 	},
 ];
 
-interface ProductWithDetails {
-	searchParams: URLSearchParams;
-	showControls?: boolean;
-	product_id: string;
-}
-
-export default function SerializeItemRecord({
-	searchParams,
-	product_id,
-	showControls = true,
-}: ProductWithDetails) {
+export default function SerializeItemRecord() {
+	const [searchParams] = useSearchParams();
+	const {id} = useParams();
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [serials, setSerials] = useState<SerializeItem[]>([]);
 
@@ -128,12 +80,13 @@ export default function SerializeItemRecord({
 	const offset = (page - 1) * pageLimit;
 
 	const supplier_name = searchParams.get('supplier_name') || undefined;
+	const {isTriggered} = useEventTrigger();
 
 	useEffect(() => {
 		const fetchProducts = async () => {
 			const serialItems = await request<PaginationResponse<SerializeItem>>(
 				'GET',
-				`/api/v1/ims/product/${product_id}/serializeRecord?limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/ims/product/${id}/serializeRecord?limit=${pageLimit}&offset=${offset}` +
 					(sort ? `&sort=${sort}` : '') +
 					(supplier_name ? `&supplier_name=${supplier_name}` : ''),
 			);
@@ -141,7 +94,7 @@ export default function SerializeItemRecord({
 			setPageCount(Math.ceil(serialItems.total_data / pageLimit));
 		};
 		fetchProducts();
-	}, [offset, pageLimit, sort, supplier_name]);
+	}, [offset, pageLimit, sort, supplier_name, isTriggered]);
 
 	return (
 		<SerialiItemTable
@@ -149,7 +102,6 @@ export default function SerializeItemRecord({
 			data={serials}
 			searchKey={'supplier'}
 			pageCount={pageCount}
-			showControls={showControls}
 		/>
 	);
 }

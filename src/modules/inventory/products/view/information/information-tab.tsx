@@ -90,6 +90,12 @@ export function ProductInformationTab() {
 									<ul className="grid gap-1">
 										<li className="flex items-center justify-between">
 											<span className="text-muted-foreground">
+												Total Quantity
+											</span>
+											<span>{data.available_quantity}</span>
+										</li>
+										<li className="flex items-center justify-between">
+											<span className="text-muted-foreground">
 												Available Quantity
 											</span>
 											<span>{data.available_quantity}</span>
@@ -98,19 +104,13 @@ export function ProductInformationTab() {
 											<span className="text-muted-foreground">
 												Sold Quantity
 											</span>
-											<span>{data.available_quantity}</span>
-										</li>
-										<li className="flex items-center justify-between">
-											<span className="text-muted-foreground">
-												Total Quantity
-											</span>
-											<span>{data.available_quantity}</span>
+											<span>{data.sold_quantity}</span>
 										</li>
 										<li className="flex items-center justify-between">
 											<span className="text-muted-foreground">
 												Transfered Quantity
 											</span>
-											<span>{data.available_quantity}</span>
+											<span>{data.transfered_quantity}</span>
 										</li>
 										<li className="flex items-center justify-between">
 											<span className="text-muted-foreground">

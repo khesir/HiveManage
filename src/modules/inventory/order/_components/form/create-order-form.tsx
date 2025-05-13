@@ -104,9 +104,8 @@ export function CreateOrderForm() {
 	const form = useForm<Order>({
 		resolver: zodResolver(orderSchema),
 		defaultValues: {
-			supplier_id: '',
+			supplier_id: -1,
 			order_status: 'Draft',
-			order_value: 0,
 		},
 		mode: 'onChange',
 	});
@@ -123,20 +122,10 @@ export function CreateOrderForm() {
 	});
 
 	// Watcher to calculate order value
-	const orderValueTracker = watch();
 	const supplierId = watch('supplier_id');
 	const orderItems = watch('order_products');
 	// Calculate order value when order items change
 	// anything that is serialize will be change to 1 and be disabled
-	useEffect(() => {
-		const total =
-			orderValueTracker.order_products?.reduce(
-				(acc, curr) =>
-					acc + (curr.total_quantity * parseInt(curr.unit_price) || 0),
-				0,
-			) || 0;
-		setValue('order_value', total);
-	}, [orderValueTracker]);
 
 	// Fetch product variants when supplier ID changes
 	useEffect(() => {
@@ -235,6 +224,8 @@ export function CreateOrderForm() {
 									product_id: -1,
 									ordered_quantity: 0,
 									total_quantity: 0,
+									delivered_quantity: 0,
+									resolved_quantity: 0,
 									unit_price: '',
 									status: 'Draft',
 								})
@@ -265,7 +256,11 @@ export function CreateOrderForm() {
 										<Select
 											disabled={loading}
 											onValueChange={field.onChange}
-											value={field.value || ''}
+											value={
+												field.value !== undefined && field.value !== null
+													? String(field.value)
+													: ''
+											}
 										>
 											<FormControl>
 												<SelectTrigger>
@@ -309,19 +304,6 @@ export function CreateOrderForm() {
 								/>
 								<FormField
 									control={form.control}
-									name="order_value"
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Order Value</FormLabel>
-											<FormControl>
-												<Input disabled={true} placeholder="Value" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
 									name="order_status"
 									render={({field}) => (
 										<FormItem>
@@ -357,6 +339,7 @@ export function CreateOrderForm() {
 												<Textarea
 													placeholder="Additional information to be noted"
 													{...field}
+													value={field.value ?? ''}
 												/>
 											</FormControl>
 										</FormItem>

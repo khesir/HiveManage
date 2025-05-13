@@ -1,5 +1,4 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import SerializeItemRecord from './record/serialize-item-list';
 import BatchRecordList from './record/batch-record-list';
 import {OrderList} from './order/order-list';
 
@@ -11,7 +10,6 @@ interface InventoryRecordProps {
 export function ViewRecordTabs({
 	product_id,
 	searchParams,
-	is_serialize = false,
 }: InventoryRecordProps) {
 	return (
 		<Tabs defaultValue="Records" className="p-3 w-full">
@@ -20,20 +18,9 @@ export function ViewRecordTabs({
 					<TabsTrigger value="Records">Records</TabsTrigger>
 					<TabsTrigger value="Orders">Orders</TabsTrigger>
 				</TabsList>
-				{/* Possibly add a marquee here for announcements or something */}
 			</div>
 			<TabsContent value="Records">
-				{is_serialize ? (
-					<SerializeItemRecord
-						searchParams={searchParams}
-						product_id={product_id}
-					/>
-				) : (
-					<BatchRecordList
-						searchParams={searchParams}
-						product_id={product_id}
-					/>
-				)}
+				<BatchRecordList searchParams={searchParams} product_id={product_id} />
 			</TabsContent>
 			<TabsContent value="Orders">
 				<OrderList />

@@ -19,12 +19,14 @@ import {useEffect, useState} from 'react';
 import {Order} from '@/components/validation/order';
 import {PaginationResponse, request} from '@/api/axios';
 import {OrderProduct} from '@/components/validation/order-product';
+import useEventTrigger from '../_components/hooks/use-event-trigger';
 
 export function ProductProfile() {
 	const navigate = useNavigate();
 	const {data} = useProducts();
 	const [currentOrder, setCurrentOrder] = useState<Order[]>([]);
 	const [activeOrder, setActiveOrder] = useState<OrderProduct[]>([]);
+	const {isTriggered} = useEventTrigger();
 	const fetchData = async () => {
 		const [orderData, orderProduct] = await Promise.all([
 			request<PaginationResponse<Order>>(
@@ -55,7 +57,7 @@ export function ProductProfile() {
 		if (data) {
 			fetchData();
 		}
-	}, [data]);
+	}, [data, isTriggered]);
 	if (!data) {
 		return (
 			<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
@@ -179,7 +181,7 @@ export function ProductProfile() {
 					<ul className="grid gap-3">
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Total Quantity</span>
-							<span>{data.available_quantity}</span>
+							<span>{data.total_quantity}</span>
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Available Quantity</span>
@@ -187,15 +189,7 @@ export function ProductProfile() {
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Sold Quantity</span>
-							<span>{data.available_quantity}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Ordered Quantity</span>
-							<span>{data.available_quantity}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Transfered Quantity</span>
-							<span>{data.available_quantity}</span>
+							<span>{data.sold_quantity}</span>
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Ordered Quantity</span>
@@ -205,6 +199,10 @@ export function ProductProfile() {
 									0,
 								)}
 							</span>
+						</li>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Transfered Quantity</span>
+							<span>{data.transfered_quantity}</span>
 						</li>
 					</ul>
 				</div>

@@ -69,7 +69,6 @@ function App() {
 									<Route index element={<ServiceListPage />} />
 									<Route path="create" element={<CreateServicePage />} />
 									<Route path="view/:id" element={<ViewServicePage />} />
-									{/* Ticket */}
 									<Route
 										path="view/:id/ticket"
 										element={<CreateServicePage />}
@@ -208,21 +207,20 @@ function App() {
 								<Route path="create" element={<CreateSalesPage />} />
 								<Route path="list" element={<SalesListPage />} />
 								<Route path="list/view/:id" element={<SalesViewPage />} />
-							</Route>
-							<Route path="services">
-								<Route index element={<ServiceListPage />} />
-								<Route path="view/:id" element={<ViewServicePage />} />
-								<Route path="create" element={<CreateServicePage />} />
-								{/* Ticket */}
-								<Route path="view/:id/ticket" />
-								<Route
-									path="view/:id/ticket/create"
-									element={<CreateTaskPage />}
-								/>
-							</Route>
+								<Route path="services">
+									<Route index element={<ServiceListPage />} />
+									<Route path="view/:id" element={<ViewServicePage />} />
+									<Route path="create" element={<CreateServicePage />} />
+									{/* Ticket */}
+									<Route path="view/:id/ticket" />
+									<Route
+										path="view/:id/ticket/create"
+										element={<CreateTaskPage />}
+									/>
+								</Route>
 
-							<Route path="payment" element={<PaymentListPage />} />
-
+								<Route path="payment" element={<PaymentListPage />} />
+							</Route>
 							<Route path="customer">
 								<Route index element={<CustomerDatabasePage />} />
 								<Route path="view/:id" element={<CustomerViewPage />} />

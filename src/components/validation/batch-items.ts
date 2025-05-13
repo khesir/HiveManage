@@ -80,23 +80,31 @@ const productSchema = z.object({
 	product_details: productDetailsSchema.optional(),
 });
 
+const employeeSchema = z.object({
+	employee_id: z.number().optional(),
+	position_id: z.string().min(1),
+	firstname: z.string().min(1, 'First name is required'),
+	middlename: z.string().optional(),
+	lastname: z.string().min(1, 'Last name is required'),
+	email: z.string().min(1),
+	profile_link: z.string(),
+	role_id: z.string().optional(),
+	created_at: z.string().optional(),
+	last_updated: z.string().optional(),
+	deleted_at: z.string().optional(),
+});
+
 export const batchRecordSchema = z.object({
 	product_record_id: z.number().optional(),
 	product_id: z.number().min(1),
 	supplier_id: z.number().min(1),
 
 	quantity: z.number().min(1),
-	price: z.number().min(1),
-	condition: z.enum(['New', 'Secondhand', 'Broken']),
-	status: z.enum([
-		'Sold',
-		'Pending Payment',
-		'On Order',
-		'In Service',
-		'Awaiting Service',
-		'Return Requested',
-	]),
+	status: z.enum(['Pending', 'Confirmed', 'Returned', 'Added']),
+	action_type: z.enum(['Received', 'Returned', 'Transferred']),
 
+	handled_by: employeeSchema.optional(),
+	soruce: z.enum(['Purchase Order', 'Inventory', 'Service', 'Sales']),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().nullable().optional(),

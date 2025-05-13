@@ -14,15 +14,21 @@ import {toast} from 'sonner';
 import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 import {useParams} from 'react-router-dom';
 import {request} from '@/api/axios';
+import useOrderStore from '@/api/order-state';
 
 export function FinalizeOrder() {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const {user} = useEmployeeRoleDetailsStore();
 	const {id} = useParams();
 	const {toggleTrigger} = useEventTrigger();
+	const {selectedOrder} = useOrderStore();
 	const handleDelete = async () => {
 		if (!user?.employee.employee_id) {
 			toast.error('You need to be logged in to proceed');
+			return;
+		}
+		if (selectedOrder.expected_arrival === null) {
+			toast.error('Please set expected arrival before finalizing');
 			return;
 		}
 		const res = await request(

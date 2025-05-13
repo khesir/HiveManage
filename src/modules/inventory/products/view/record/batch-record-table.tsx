@@ -27,16 +27,7 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Input} from '@/components/ui/input';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Separator} from '@/components/ui/separator';
-import {Badge} from '@/components/ui/badge';
 import {BatchItem} from '@/components/validation/batch-items';
-import {CreateRecordDialogueForm} from '../_components/dialogue/create-record-dialogue';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -53,7 +44,6 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 	data,
 	pageCount,
 	searchKey,
-	showControls = true,
 	pageSizecategorys = [10, 20, 30, 40, 50],
 	searchParams,
 }: DataTableProps<TData, TValue>) {
@@ -151,99 +141,8 @@ export function BatchRecordTable<TData extends BatchItem, TValue>({
 		location.pathname,
 		createQueryString,
 	]);
-
-	// Filter
-
-	// TODO: Command Dynamic Filter
-	// const [selectedValues, setSelectedValues] = useState<Set<SelectedValue>>(
-	// 	new Set(),
-	// );
-	// const handleSelect = (id: number, name: string) => {
-	// 	setSelectedValues((prevSet) => {
-	// 		const newSet = new Set(prevSet);
-	// 		const isSelected = Array.from(newSet).some((item) => item.id === id);
-
-	// 		if (isSelected) {
-	// 			// Remove item if it exists
-	// 			newSet.forEach((item) => {
-	// 				if (item.id === id) newSet.delete(item);
-	// 			});
-	// 		} else {
-	// 			// Add new item
-	// 			newSet.add({id, name});
-	// 		}
-
-	// 		return newSet;
-	// 	});
-	// };
-	// const selectedValuesArray = Array.from(selectedValues);
-
-	// const resetFilter = () => {
-	// 	setSelectedValues(new Set());
-	// };
-
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
-		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
-	);
-	const handleSortOrderChange = (order: 'asc' | 'desc') => {
-		if (sortOrder === order) return;
-
-		setSortOrder(order);
-		navigate(
-			`${location.pathname}?${createQueryString({
-				page: pageIndex + 1,
-				limit: pageSize,
-				sort: order,
-			})}`,
-			{replace: true},
-		);
-	};
-
 	return (
 		<div className="flex flex-col gap-5">
-			<div className="flex justify-between gap-3 md:gap-0">
-				<div className="flex gap-2">
-					<Input
-						placeholder={`Find record...`}
-						value={searchValue ?? ''} // Bind the input value to the current filter value
-						onChange={(event) =>
-							table.getColumn(searchKey)?.setFilterValue(event.target.value)
-						} // Update filter value}
-						className="w-[40vh]"
-					/>
-					<DropdownMenu>
-						<DropdownMenuTrigger>
-							<Button variant={'outline'}>
-								Sort:{' '}
-								<div className="flex items-center">
-									<Separator orientation="vertical" className="mx-2 h-4" />
-									<Badge
-										variant={'secondary'}
-										className="rounded-sm px-1 font-normal"
-									>
-										{sortOrder === 'asc' ? 'Asc' : 'Desc'}
-									</Badge>
-								</div>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="flex flex-col">
-							<Button
-								variant={sortOrder === 'asc' ? 'default' : 'ghost'}
-								onClick={() => handleSortOrderChange('asc')}
-							>
-								Ascending
-							</Button>
-							<Button
-								variant={sortOrder === 'desc' ? 'default' : 'ghost'}
-								onClick={() => handleSortOrderChange('desc')}
-							>
-								Descending
-							</Button>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
-				{showControls && <CreateRecordDialogueForm />}
-			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>

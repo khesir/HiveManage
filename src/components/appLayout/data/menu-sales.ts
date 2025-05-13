@@ -56,9 +56,9 @@ export function getSalesMenuList(pathname: string): Group[] {
 			groupLabel: 'Systems',
 			menus: [
 				{
-					href: '/sales/system',
+					href: '/sales/system/sales',
 					label: 'Services & Sales',
-					active: pathname.includes('sales/system'),
+					active: pathname.includes('sales/system/sales'),
 					icon: Tag,
 					submenus: [
 						{
@@ -68,25 +68,31 @@ export function getSalesMenuList(pathname: string): Group[] {
 							active: pathname === '/sales/system/sales/list',
 						},
 						{
-							href: '/sales/system/services',
+							href: '/sales/system/sales/services',
 							label: 'Service',
 							icon: ScrollText,
-							active: pathname === '/sales/system/services',
+							active: pathname === '/sales/system/sales/services',
 						},
 						{
-							href: '/sales/system/payment',
+							href: '/sales/system/sales/payment',
 							label: 'Payments',
 							icon: Banknote,
-							active: pathname === '/sales/system/payment',
+							active: pathname === '/sales/system/sales/payment',
 						},
 					],
 				},
 				{
-					href: '/sales/system/inventory',
+					href: '/sales/system/inventory/',
 					label: 'Inventory',
 					active: pathname.includes('/sales/system/inventory/products'),
 					icon: ShoppingBag,
 					submenus: [
+						{
+							href: '/sales/system/inventory/products',
+							label: 'Products',
+							icon: BoxIcon,
+							active: pathname === '/sales/system/inventory/products',
+						},
 						{
 							href: '/sales/system/inventory/products',
 							label: 'Products',

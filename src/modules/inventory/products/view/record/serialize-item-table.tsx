@@ -27,7 +27,6 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Input} from '@/components/ui/input';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -36,7 +35,6 @@ import {
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {SerializeItem} from '@/components/validation/serialize-items';
-import {CreateSerialDialogueForm} from '../_components/dialogue/create-serial-dialogue';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -44,7 +42,6 @@ interface DataTableProps<TData, TValue> {
 	pageSizecategorys?: number[];
 	searchKey: string;
 	pageCount: number;
-	showControls?: boolean;
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
@@ -55,7 +52,6 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 	data,
 	pageCount,
 	searchKey,
-	showControls = true,
 	pageSizecategorys = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
@@ -205,14 +201,14 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 		<div className="flex flex-col gap-5">
 			<div className="flex justify-between gap-3 md:gap-0">
 				<div className="flex gap-2">
-					<Input
+					{/* <Input
 						placeholder={`Find supplier...`}
 						value={searchValue ?? ''} // Bind the input value to the current filter value
 						onChange={(event) =>
 							table.getColumn(searchKey)?.setFilterValue(event.target.value)
 						} // Update filter value}
 						className="w-[40vh]"
-					/>
+					/> */}
 					<DropdownMenu>
 						<DropdownMenuTrigger>
 							<Button variant={'outline'}>
@@ -244,14 +240,6 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				{showControls && (
-					<div className=" relative ">
-						<p className="absolute text-gray-500 -top-8 text-xs flex text-center">
-							Populating records without transaction, this is optional
-						</p>
-						<CreateSerialDialogueForm />
-					</div>
-				)}
 			</div>
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">

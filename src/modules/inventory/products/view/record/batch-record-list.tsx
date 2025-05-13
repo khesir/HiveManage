@@ -1,70 +1,35 @@
 import {PaginationResponse, request} from '@/api/axios';
 import {useEffect, useState} from 'react';
-import {ColumnDef, Row} from '@tanstack/react-table';
+import {ColumnDef} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {BatchItem} from '@/components/validation/batch-items';
 import {BatchRecordTable} from './batch-record-table';
-import {Button} from '@/components/ui/button';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {Logs} from 'lucide-react';
-import {useLocation} from 'react-router-dom';
-import {AddBatchQuantityForm} from './add-batch-qty-form';
-
-const ActionCell = (data: BatchItem) => {
-	const location = useLocation();
-	return (
-		<div className="flex gap-2">
-			<TooltipProvider>
-				<Tooltip>
-					<TooltipTrigger>
-						<Button>
-							<Logs className="w-4 h-4" />
-						</Button>
-					</TooltipTrigger>
-					<TooltipContent>
-						<p>Logs</p>
-					</TooltipContent>
-				</Tooltip>
-			</TooltipProvider>
-			{location.pathname.includes('/sales/dashboard') && (
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger>
-							<AddBatchQuantityForm data={data} />
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Add Item</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			)}
-		</div>
-	);
-};
 
 export const columns: ColumnDef<BatchItem>[] = [
+	{
+		accessorKey: 'product_record_id',
+		header: 'ID',
+	},
 	{
 		accessorKey: 'supplier',
 		header: 'Supplier',
 		cell: ({row}) => {
 			return (
-				<AvatarCircles
-					avatar={[
-						{
-							link:
-								typeof row.original.supplier?.profile_link === 'string'
-									? row.original.supplier?.profile_link
-									: '',
-							name: row.original.supplier?.name ?? '',
-						},
-					]}
-				/>
+				<div className="flex gap-3 items-center">
+					<AvatarCircles
+						avatar={[
+							{
+								link:
+									typeof row.original.supplier?.profile_link === 'string'
+										? row.original.supplier?.profile_link
+										: '',
+								name: row.original.supplier?.name ?? '',
+							},
+						]}
+					/>
+					<span>{row.original.supplier?.name}</span>
+				</div>
 			);
 		},
 	},
@@ -73,25 +38,46 @@ export const columns: ColumnDef<BatchItem>[] = [
 		header: 'Quantity',
 	},
 	{
-		accessorKey: 'price',
-		header: 'Price',
-	},
-	{
-		accessorKey: 'condition',
-		header: 'Condition',
-	},
-	{
 		accessorKey: 'status',
 		header: 'Status',
+	},
+	{
+		accessorKey: 'action_type',
+		header: 'Action Type',
+	},
+	{
+		accessorKey: 'source',
+		header: 'Source',
+	},
+	{
+		header: 'Handled By',
+		cell: ({row}) => {
+			return (
+				<div className="flex gap-3 items-center">
+					<AvatarCircles
+						avatar={[
+							{
+								link:
+									typeof row.original.handled_by?.profile_link === 'string'
+										? row.original.handled_by?.profile_link
+										: '',
+								name: row.original.handled_by?.firstname ?? '',
+							},
+						]}
+					/>
+					<span>
+						{row.original.handled_by
+							? `${row.original.handled_by.firstname ?? ''} ${row.original.handled_by.lastname ?? ''}`
+							: 'Handled by system'}
+					</span>
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: 'created_at',
 		header: 'Created At',
 		cell: ({row}) => dateParser(row?.original.created_at ?? ''),
-	},
-	{
-		header: 'Actions',
-		cell: ({row}: {row: Row<BatchItem>}) => <ActionCell {...row.original} />,
 	},
 ];
 

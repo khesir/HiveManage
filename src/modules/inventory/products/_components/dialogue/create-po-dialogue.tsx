@@ -27,6 +27,7 @@ import {toast} from 'sonner';
 import {createPO} from './fetch-supplier-draft-order.-dialogue';
 import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {Separator} from '@/components/ui/separator';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 interface Props {
 	id: number;
 	serialize: boolean;
@@ -51,6 +52,7 @@ export function CreatePODialogue({id, serialize}: Props) {
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<string | null>(null);
 	const {user} = useEmployeeRoleDetailsStore();
+	const {toggleTrigger} = useEventTrigger();
 	useEffect(() => {
 		try {
 			setLoading(true);
@@ -96,6 +98,7 @@ export function CreatePODialogue({id, serialize}: Props) {
 			serialize,
 			user.employee.employee_id,
 		);
+		toggleTrigger();
 	};
 	if (loading) {
 		return <div>Fetching data</div>;

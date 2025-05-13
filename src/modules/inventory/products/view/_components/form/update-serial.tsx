@@ -4,19 +4,19 @@ import {useForm} from 'react-hook-form';
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
 import {toast} from 'sonner';
-import axios, {AxiosError} from 'axios';
+import axios from 'axios';
 import {useParams} from 'react-router-dom';
-import {useEffect, useState} from 'react';
-import {ApiRequest, request} from '@/api/axios';
+import {useState} from 'react';
+import {request} from '@/api/axios';
 import {Skeleton} from '@/components/ui/skeleton';
 
-import {Supplier} from '@/components/validation/supplier';
 import {
 	Select,
 	SelectContent,
@@ -24,72 +24,45 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {
 	SerializeItem,
 	serializeItemSchema,
 } from '@/components/validation/serialize-items';
-import {generateCustomUUID} from '@/lib/util/utils';
+import { AvatarCircles } from '@/components/ui/avatarcircles';
+import { Input } from '@/components/ui/input';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 
 interface Props {
 	onSubmit?: () => void;
+	serializeItem: SerializeItem,
 }
 
-export function CreateInventorySerialRecord({onSubmit}: Props) {
+export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 	const [loading, setLoading] = useState(false);
-	const [res, setRes] = useState<string | null>(null);
-	const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 	const {id} = useParams();
-	useEffect(() => {
-		setLoading(true);
-		const fetchData = async () => {
-			try {
-				const supplierData = await request<ApiRequest<Supplier>>(
-					'GET',
-					`/api/v1/ims/product/${id}/productSupplier?no_pagination=true`,
-				);
-				setSuppliers(
-					Array.isArray(supplierData.data)
-						? supplierData.data
-						: [supplierData.data],
-				);
-				// setVariants(
-				// 	Array.isArray(productVariantResult.data)
-				// 		? productVariantResult.data
-				// 		: [productVariantResult.data],
-				// );
-			} catch (e) {
-				if (e instanceof Error) {
-					setRes(e.toString());
-				} else if (e instanceof AxiosError) {
-					setRes(e.response?.data as string);
-				} else {
-					setRes('An unknown error occured');
-				}
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchData();
-	}, []);
-	const uuid = generateCustomUUID();
 	const form = useForm<SerializeItem>({
 		resolver: zodResolver(serializeItemSchema),
 		defaultValues: {
+			serial_id: serializeItem.serial_id,
 			product_id: Number(id),
-			serial_number: uuid,
+			supplier_id: serializeItem.supplier_id,
+			condition: serializeItem.condition,
+			status: serializeItem.status,
 		},
-		mode: 'onChange',
+		mode: 'onSubmit',
 	});
+	const {toggleTrigger} = useEventTrigger();
 	const processForm = async (data: SerializeItem) => {
 		try {
+			setLoading(true);
 			console.log(data);
-			await request('POST', `/api/v1/ims/product/${id}/serializeRecord`, data);
-			toast.success('Record Added');
+			await request('PUT', `/api/v1/ims/product/${id}/serializeRecord/${serializeItem.serial_id}`, data);
+			toast.success('Record Updated');
 			if (onSubmit) {
 				onSubmit();
 			}
+			toggleTrigger();
 		} catch (error) {
 			let errorMessage = 'An unexpected error occurred';
 			if (axios.isAxiosError(error)) {
@@ -98,8 +71,10 @@ export function CreateInventorySerialRecord({onSubmit}: Props) {
 					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
 					'Failed to process request';
 			}
-
+			console.log(error);			
 			toast.error(errorMessage);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -113,9 +88,6 @@ export function CreateInventorySerialRecord({onSubmit}: Props) {
 		'Return Requested',
 	];
 	const condtion = ['New', 'Secondhand', 'Broken'];
-	if (res) {
-		return <div className="flex gap-5"> {res} </div>;
-	}
 	if (loading) {
 		return <Skeleton className="flex h-[600px]" />;
 	}
@@ -126,95 +98,51 @@ export function CreateInventorySerialRecord({onSubmit}: Props) {
 				className="w-full space-y-3"
 			>
 				{/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
+				<div className="flex gap-3 items-center border p-2 rounded-sm cursor-default">
+					<AvatarCircles
+						avatar={[
+							{
+								link:
+									typeof serializeItem.supplier?.profile_link === 'string'
+										? serializeItem.supplier?.profile_link
+										: '',
+								name: serializeItem.supplier?.name ?? '',
+							},
+						]}
+					/>
+					<span>{serializeItem.supplier?.name}</span>
+				</div>
 				<FormField
 					control={form.control}
-					name="supplier_id"
+					name="serial_code"
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Supplier</FormLabel>
-							<Select
-								disabled={loading}
-								onValueChange={(value) => field.onChange(Number(value))}
-								value={field.value?.toString()}
-								defaultValue={field.value?.toString()}
-							>
-								<FormControl>
-									<SelectTrigger>
-										<SelectValue
-											defaultValue={field.value}
-											placeholder="Select Supplier"
-										/>
-									</SelectTrigger>
-								</FormControl>
-								<SelectContent>
-									{suppliers.map((supplier, key) => (
-										<SelectItem
-											key={key}
-											value={supplier.supplier_id?.toString() ?? ''}
-										>
-											{supplier.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="external_serial_code"
-					render={({field}) => (
-						<FormItem>
-							<FormLabel>External Serial Code</FormLabel>
+							<FormLabel>Serial Code</FormLabel>
 							<FormControl>
 								<Input
 									disabled={loading}
-									placeholder="external_warranty_code"
+									placeholder="Serial #####-#####"
 									{...field}
 								/>
 							</FormControl>
+							<FormDescription>
+							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
 				<FormField
 					control={form.control}
-					name="external_warranty_date"
+					name="warranty_date"
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>External Warranty Date</FormLabel>
+							<FormLabel>Warranty Date</FormLabel>
 							<FormControl>
 								<Input
 									type="date"
 									disabled={loading}
+									className='text-gray-400'
 									{...field}
-									value={
-										field.value ? field.value.toISOString().split('T')[0] : ''
-									}
-								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="price"
-					render={({field}) => (
-						<FormItem>
-							<FormLabel>Price</FormLabel>
-							<FormControl>
-								<Input
-									type="number"
-									{...field}
-									disabled={loading}
-									placeholder="1000"
-									onChange={(e) => {
-										const value = e.target.value;
-										// Ensure the value is converted to a number
-										field.onChange(value ? parseFloat(value) : 0);
-									}}
 								/>
 							</FormControl>
 							<FormMessage />

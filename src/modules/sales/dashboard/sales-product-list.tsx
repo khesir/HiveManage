@@ -29,7 +29,7 @@ export default function SalesProductList() {
 				),
 				request<PaginationResponse<Product>>(
 					'GET',
-					`/api/v1/ims/product?limit=${pageLimit}&offset=${offset}` +
+					`/api/v1/ims/product?limit=${pageLimit}&offset=${offset}&status=Available` +
 						(sort ? `&sort=${sort}` : '') +
 						(category_id ? `&category_id=${category_id}` : '') +
 						(product_name ? `&product_name=${product_name}` : ''),
