@@ -447,6 +447,7 @@ CREATE TABLE IF NOT EXISTS "order_log" (
 	"action_type" "order_log_action_type",
 	"resolve_type" "resolve_type_enum",
 	"performed_by" integer,
+	"notes" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp

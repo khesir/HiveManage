@@ -4,6 +4,7 @@ import {
   pgTable,
   serial,
   timestamp,
+  varchar,
 } from 'drizzle-orm/pg-core';
 import { orderProduct } from './orderItem.schema';
 import { order } from './order.schema';
@@ -50,6 +51,7 @@ export const OrderLog = pgTable('order_log', {
   resolve_type: resolveTypeEnum('resolve_type'),
 
   performed_by: integer('performed_by').references(() => employee.employee_id),
+  notes: varchar('notes'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

@@ -1,5 +1,5 @@
 {
-  "id": "3cc3c8df-d234-4d36-9cc6-abbfda82bd5b",
+  "id": "d0d9b154-8efd-4fa9-9051-974c64fd9761",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1907,6 +1907,12 @@
         "performed_by": {
           "name": "performed_by",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
