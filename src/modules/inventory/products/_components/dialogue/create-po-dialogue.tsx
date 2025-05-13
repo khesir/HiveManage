@@ -126,7 +126,7 @@ export function CreatePODialogue({id, serialize}: Props) {
 											type="number"
 											{...field}
 											disabled={loading}
-											placeholder="10000"
+											placeholder="Enter Quantity"
 											value={field.value ?? ''}
 										/>
 									</FormControl>
@@ -145,7 +145,7 @@ export function CreatePODialogue({id, serialize}: Props) {
 											type="number"
 											{...field}
 											disabled={loading}
-											placeholder="10000"
+											placeholder="Enter Unit Price"
 											value={field.value ?? ''}
 										/>
 									</FormControl>

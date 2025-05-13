@@ -32,7 +32,7 @@ export function LogSheet({orderProduct}: Props) {
 			<SheetContent className="max-w-none w-[900px]">
 				<SheetHeader className="pb-5">
 					<div className="flex gap-5">
-						<div className="relative max-h-[300px] overflow-hidden rounded-md w-[300px] flex">
+						<div className="relative max-h-[300px] overflow-hidden border rounded-md w-[300px] flex">
 							<img
 								src={
 									typeof orderProduct?.product?.img_url === 'string'
@@ -40,7 +40,7 @@ export function LogSheet({orderProduct}: Props) {
 										: `/img/placeholder.jpg`
 								}
 								alt="Selected profile"
-								className="object-cover h-full w-full"
+								className="object-cover h-full max-h-[300px]"
 							/>
 						</div>
 						<div className="grid grid-cols-2 gap-5 w-full">

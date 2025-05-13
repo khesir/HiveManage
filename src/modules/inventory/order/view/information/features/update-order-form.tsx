@@ -37,7 +37,6 @@ export function UpdateOrderForm() {
 			order_id: selectedOrder.order_id,
 			notes: selectedOrder.notes || null,
 			expected_arrival: selectedOrder.expected_arrival,
-			order_value: Number(selectedOrder.order_value),
 			order_status: selectedOrder.order_status,
 			order_payment_method: selectedOrder.order_payment_method,
 			order_payment_status: selectedOrder.order_payment_status,

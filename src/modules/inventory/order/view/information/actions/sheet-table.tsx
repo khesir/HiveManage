@@ -2,10 +2,10 @@ import {
 	ColumnDef,
 	flexRender,
 	getCoreRowModel,
-	getPaginationRowModel,
+	getFilteredRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-
+import {ScrollArea, ScrollBar} from '@/components/ui/scroll-area';
 import {
 	Table,
 	TableBody,
@@ -14,46 +14,41 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import {Button} from '@/components/ui/button';
-import React from 'react';
+import {OrderLogs} from '@/components/interface/logs';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	children?: React.ReactNode;
 }
 
-export function OrderLogsSheetTable<TData, TValue>({
+export function OrderLogsSheetTable<TData extends OrderLogs, TValue>({
 	columns,
 	data,
-	children,
 }: DataTableProps<TData, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
+		getFilteredRowModel: getFilteredRowModel(),
 	});
 
 	return (
-		<div>
-			<div className="rounded-md border h-[calc(65vh-180px)]">
-				<Table>
+		<>
+			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
+				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => {
-									return (
-										<TableHead key={header.id}>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef.header,
-														header.getContext(),
-													)}
-										</TableHead>
-									);
-								})}
+								{headerGroup.headers.map((header) => (
+									<TableHead key={header.id}>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.header,
+													header.getContext(),
+												)}
+									</TableHead>
+								))}
 							</TableRow>
 						))}
 					</TableHeader>
@@ -62,6 +57,7 @@ export function OrderLogsSheetTable<TData, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
+									style={{cursor: 'pointer'}}
 									data-state={row.getIsSelected() && 'selected'}
 								>
 									{row.getVisibleCells().map((cell) => (
@@ -80,31 +76,14 @@ export function OrderLogsSheetTable<TData, TValue>({
 									colSpan={columns.length}
 									className="h-24 text-center"
 								>
-									{children ? children : 'No results'}
+									No results.
 								</TableCell>
 							</TableRow>
 						)}
 					</TableBody>
 				</Table>
-			</div>
-			<div className="flex items-center justify-end space-x-2 py-4">
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={() => table.previousPage()}
-					disabled={!table.getCanPreviousPage()}
-				>
-					Previous
-				</Button>
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={() => table.nextPage()}
-					disabled={!table.getCanNextPage()}
-				>
-					Next
-				</Button>
-			</div>
-		</div>
+				<ScrollBar orientation="horizontal" />
+			</ScrollArea>
+		</>
 	);
 }

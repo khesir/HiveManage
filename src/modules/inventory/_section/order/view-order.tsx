@@ -4,7 +4,7 @@ import useOrderStore from '@/api/order-state';
 import {Separator} from '@/components/ui/separator';
 import {Heading} from '@/components/ui/heading';
 import OrderInformationProfile from '../../order/view/information/information-profile';
-import {ControlTabOrder} from '../../order/view/information/control-tab';
+import {ControlTabOrder} from '../../order/view/information/features/control-tab';
 import useEventTrigger from '../../_components/hooks/use-event-trigger';
 
 export default function ViewOrderSection() {

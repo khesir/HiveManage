@@ -11,9 +11,13 @@ import {
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {
-	OrderProduct,
-	orderProductSchema,
-} from '@/components/validation/order-product';
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import {OrderProduct} from '@/components/validation/order-product';
 import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -22,39 +26,36 @@ import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useParams} from 'react-router-dom';
 import {toast} from 'sonner';
+import {z} from 'zod';
 
 interface Props {
 	onSubmit?: () => void;
 	orderProduct: OrderProduct;
 }
-
+const resolveSchema = z.object({
+	delivered_quantity: z.number(),
+	resolved_quantity: z.number(),
+	resolve_type: z.enum(['Replaced', 'Refunded', 'Discounted', 'Cancelled']),
+});
 export function AddResolveProductForm({onSubmit, orderProduct}: Props) {
 	const {user} = useEmployeeRoleDetailsStore();
 	const [loading, setLoading] = useState<boolean>(false);
 	const {id} = useParams();
 	const {toggleTrigger} = useEventTrigger();
 
-	const form = useForm<OrderProduct>({
-		resolver: zodResolver(orderProductSchema),
+	const form = useForm<z.infer<typeof resolveSchema>>({
+		resolver: zodResolver(resolveSchema),
 		defaultValues: {
-			unit_price: orderProduct.unit_price,
-			total_quantity: orderProduct.total_quantity,
-			ordered_quantity: orderProduct.ordered_quantity,
-			product_id: orderProduct.product_id,
+			delivered_quantity: orderProduct.delivered_quantity,
 			resolved_quantity: orderProduct.resolved_quantity,
-			order_id: orderProduct.order_id,
-			status: orderProduct.status,
 		},
-		mode: 'onChange',
+		mode: 'onSubmit',
 	});
 
-	const processForm = async (data: OrderProduct) => {
+	const processForm = async (data: z.infer<typeof resolveSchema>) => {
 		try {
 			setLoading(true);
-			const resolveQuantity =
-				data.resolved_quantity + orderProduct.resolved_quantity || 0;
-			const orderedQuantity = data.delivered_quantity - resolveQuantity;
-			if (orderedQuantity < 0) {
+			if (deliveredQty < 0) {
 				toast.error('Delivered Quantity is 0');
 				return;
 			}
@@ -63,26 +64,78 @@ export function AddResolveProductForm({onSubmit, orderProduct}: Props) {
 				toast.error('You need to be logged in to proceed');
 				return;
 			}
-			await request(
-				'POST',
-				`/api/v1/ims/order/${id}/order-product/${orderProduct.order_product_id}/resolve`,
-				{
-					...data,
+
+			if (data.resolve_type === 'Replaced') {
+				const orderedQty =
+					orderProduct.ordered_quantity + data.resolved_quantity;
+				const deliveredQty =
+					orderProduct.delivered_quantity - data.resolved_quantity;
+				let status = 'Delivered';
+				if (deliveredQty === orderProduct.total_quantity) {
+					status = 'Delivered';
+				} else if (
+					deliveredQty > 0 &&
+					deliveredQty < orderProduct.total_quantity
+				) {
+					status = 'Partially Delivered';
+				} else if (deliveredQty === 0) {
+					status = 'Awaiting Arrival';
+				}
+				await request(
+					'POST',
+					`/api/v1/ims/order/${id}/order-product/${orderProduct.order_product_id}/resolve`,
+					{
+						...orderProduct,
+						status: status,
+						ordered_quantity: orderedQty,
+						delivered_quantity: deliveredQty,
+						user: user.employee.employee_id,
+					},
+				);
+
+				await request('POST', `/api/v1/ims/orderlogs`, {
+					order_id: orderProduct.order_id,
+					product_id: orderProduct.product_id,
+					order_item_id: orderProduct.order_product_id,
+					total_quantity: orderProduct.total_quantity,
+					ordered_quantity: orderedQty,
+					delivered_quantity: deliveredQty,
+					resolved_quantity: orderProduct.resolved_quantity,
+					status: 'Resolved',
+					action_type: 'Resolved',
+					resolve_type: data.resolve_type,
+					performed_by: user.employee.employee_id,
+				} as unknown as OrderLogs);
+			} else {
+				const resolveQuantity =
+					Number(data.resolved_quantity) + orderProduct.resolved_quantity || 0;
+				const deliveredQty = orderProduct.delivered_quantity - resolveQuantity;
+
+				await request(
+					'POST',
+					`/api/v1/ims/order/${id}/order-product/${orderProduct.order_product_id}/resolve`,
+					{
+						...orderProduct,
+						delivered_quantity: deliveredQty,
+						resolved_quantity: resolveQuantity,
+						user: user.employee.employee_id,
+					},
+				);
+
+				await request('POST', `/api/v1/ims/orderlogs`, {
+					order_id: orderProduct.order_id,
+					product_id: orderProduct.product_id,
+					order_item_id: orderProduct.order_product_id,
+					total_quantity: orderProduct.total_quantity,
+					ordered_quantity: orderProduct.ordered_quantity,
+					delivered_quantity: deliveredQty,
 					resolved_quantity: resolveQuantity,
-					user: user.employee.employee_id,
-				},
-			);
-			await request('POST', `/api/v1/ims/orderlogs`, {
-				order_id: data.order_id,
-				product_id: data.product_id,
-				order_item_id: orderProduct.order_product_id,
-				total_quantity: data.total_quantity,
-				ordered_quantity: data.ordered_quantity,
-				resolved_quantity: resolveQuantity,
-				status: 'resolve',
-				action_type: 'resolve',
-				performed_by: user.employee.employee_id,
-			} as unknown as OrderLogs);
+					status: 'Resolved',
+					action_type: 'Resolved',
+					resolve_type: data.resolve_type,
+					performed_by: user.employee.employee_id,
+				} as unknown as OrderLogs);
+			}
 			if (onSubmit) {
 				onSubmit();
 			}
@@ -103,7 +156,7 @@ export function AddResolveProductForm({onSubmit, orderProduct}: Props) {
 		}
 	};
 	const deliveredQty = form.getValues('delivered_quantity') || 0;
-
+	const resolveList = ['Replaced', 'Refunded', 'Discounted', 'Cancelled'];
 	return (
 		<Form {...form}>
 			<form
@@ -136,11 +189,11 @@ export function AddResolveProductForm({onSubmit, orderProduct}: Props) {
 					name={`resolved_quantity`}
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>resolve quantity</FormLabel>
+							<FormLabel>Resolve quantity</FormLabel>
 							<FormControl>
 								<Input
 									type="number"
-									placeholder="Enter resolve Quantity"
+									placeholder="Enter Resolve Quantity"
 									value={field.value !== undefined ? field.value : ''}
 									onChange={(e) => {
 										let resolveQty = parseInt(e.target.value);
@@ -162,6 +215,38 @@ export function AddResolveProductForm({onSubmit, orderProduct}: Props) {
 									}}
 								/>
 							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="resolve_type"
+					render={({field}) => (
+						<FormItem>
+							<FormLabel>Resolve Type</FormLabel>
+							<Select
+								disabled={loading}
+								onValueChange={(value) => field.onChange(value)}
+								value={field.value?.toString()}
+								defaultValue={field.value?.toString()}
+							>
+								<FormControl>
+									<SelectTrigger>
+										<SelectValue
+											defaultValue={field.value}
+											placeholder="Select a Resolve Type"
+										/>
+									</SelectTrigger>
+								</FormControl>
+								<SelectContent>
+									{resolveList.map((data, key) => (
+										<SelectItem key={key} value={data}>
+											{data}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 							<FormMessage />
 						</FormItem>
 					)}

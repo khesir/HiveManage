@@ -3,8 +3,8 @@ import {AddOrderProductDialogue} from './add-order-product-dialogue';
 import {FinalizeOrder} from './finalize-order';
 import {MarkComplete} from './mark-complete';
 import useOrderStore from '@/api/order-state';
-import {InformationProductTable} from './information-product-table';
-import {LogsTabOrder} from '../logsRecord/logs-tab';
+import {InformationProductTable} from '../order-product-list';
+import {LogsTabOrder} from '../../logsRecord/logs-tab';
 import {UpdateOrderForm} from './update-order-form';
 import {UploadReceipt} from './uploadReciept';
 export function ControlTabOrder() {
@@ -32,7 +32,6 @@ export function ControlTabOrder() {
 					{!loading && selectedOrder.order_status !== 'Draft' && (
 						<div className="flex gap-3">
 							<div>
-								{' '}
 								<UploadReceipt {...selectedOrder} />
 							</div>
 							{selectedOrder.order_status !== 'Fulfilled' && <MarkComplete />}

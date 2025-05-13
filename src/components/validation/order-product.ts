@@ -137,6 +137,8 @@ export const orderLogsSchema = z.object({
 	action_type: z.string(),
 
 	performed_by: employeeSchema,
+	resolve_type: z.string(),
+	notes: z.string(),
 	created_at: z.string(),
 	last_updated: z.string(),
 	deleted_at: z.string(),

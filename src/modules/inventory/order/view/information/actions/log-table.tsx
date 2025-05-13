@@ -10,6 +10,7 @@ import {AvatarCircles} from '@/components/ui/avatarcircles';
 
 import {OrderLogsSheetTable} from './sheet-table';
 import {toast} from 'sonner';
+import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 const columns: ColumnDef<OrderLogs>[] = [
 	{
 		header: 'Handled By',
@@ -56,6 +57,14 @@ const columns: ColumnDef<OrderLogs>[] = [
 		accessorKey: 'action_type',
 		header: 'Action Type',
 	},
+	{
+		accessorKey: 'resolve_type',
+		header: 'Resolve Type',
+	},
+	{
+		accessorKey: 'notes',
+		header: 'Note',
+	},
 ];
 interface Props {
 	orderProduct: OrderProduct;
@@ -64,6 +73,8 @@ interface Props {
 export function LogTable({orderProduct}: Props) {
 	const {id} = useParams();
 	const [currentItem, setCurrentItem] = useState<OrderProduct>();
+	const {isTriggered} = useEventTrigger();
+
 	useEffect(() => {
 		if (!orderProduct?.order_product_id || !id) return;
 		const fetchData = async () => {
@@ -80,7 +91,7 @@ export function LogTable({orderProduct}: Props) {
 			}
 		};
 		fetchData();
-	}, []);
+	}, [isTriggered]);
 
 	return (
 		<OrderLogsSheetTable
