@@ -1,8 +1,8 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
-import { CreateSerialize } from './serialize.model';
+import { CreateSerialize, UpdateSerialize } from './serialize.model';
 import { SchemaType } from '@/drizzle/schema/type';
-import { product, serializeProduct } from '@/drizzle/schema/ims';
+import { product, serializeProduct, supplier } from '@/drizzle/schema/ims';
 
 export class SerializeItemService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -42,11 +42,15 @@ export class SerializeItemService {
       .select()
       .from(serializeProduct)
       .leftJoin(product, eq(product.product_id, serializeProduct.product_id))
+      .leftJoin(
+        supplier,
+        eq(supplier.supplier_id, serializeProduct.supplier_id),
+      )
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
-          ? asc(serializeProduct.created_at)
-          : desc(serializeProduct.created_at),
+          ? asc(serializeProduct.serial_id)
+          : desc(serializeProduct.serial_id),
       );
 
     if (!no_pagination) {
@@ -54,15 +58,10 @@ export class SerializeItemService {
     }
 
     const result = await query;
-
     const serializedproductsWithDetails = result.map((row) => ({
       ...row.serialized_product,
-      product: {
-        ...row.product,
-      },
-      supplier: {
-        row,
-      },
+      product: row.product,
+      supplier: row.supplier,
     }));
 
     return { totalData, serializedproductsWithDetails };
@@ -87,10 +86,10 @@ export class SerializeItemService {
     return serializedproductsWithDetails;
   }
 
-  async updateSerializeItem(data: object, paramsId: number) {
+  async updateSerializeItem(data: UpdateSerialize, paramsId: number) {
     await this.db
       .update(serializeProduct)
-      .set(data)
+      .set({ ...data })
       .where(eq(serializeProduct.serial_id, Number(paramsId)));
   }
 

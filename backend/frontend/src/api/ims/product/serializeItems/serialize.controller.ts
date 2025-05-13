@@ -71,11 +71,8 @@ export class SerializeItemController {
       const {
         product_id,
         supplier_id,
-        serial_number,
+        serial_code,
         warranty_date,
-        external_serial_code,
-        external_warranty_date,
-        price,
         condition,
         status,
       } = req.body;
@@ -83,11 +80,8 @@ export class SerializeItemController {
       await this.serializedproductService.createSerializeItem({
         product_id,
         supplier_id,
-        serial_number,
+        serial_code,
         warranty_date,
-        external_serial_code,
-        external_warranty_date,
-        price,
         condition,
         status,
       });
@@ -112,11 +106,8 @@ export class SerializeItemController {
       const {
         product_id,
         supplier_id,
-        serial_number,
+        serial_code,
         warranty_date,
-        external_serial_code,
-        external_warranty_date,
-        price,
         condition,
         status,
       } = req.body;
@@ -125,11 +116,8 @@ export class SerializeItemController {
         {
           product_id,
           supplier_id,
-          serial_number,
+          serial_code,
           warranty_date,
-          external_serial_code,
-          external_warranty_date,
-          price,
           condition,
           status,
         },

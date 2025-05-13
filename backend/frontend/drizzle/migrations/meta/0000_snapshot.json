@@ -1,5 +1,5 @@
 {
-  "id": "d0d9b154-8efd-4fa9-9051-974c64fd9761",
+  "id": "bddd1dd3-01f6-4ea0-819c-be1b683fad00",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1302,6 +1302,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "source": {
+          "name": "source",
+          "type": "transfer_source",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1397,8 +1404,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "product_record_id": {
-          "name": "product_record_id",
+        "supplier_id": {
+          "name": "supplier_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1465,15 +1472,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "serialized_product_product_record_id_product_record_product_record_id_fk": {
-          "name": "serialized_product_product_record_id_product_record_product_record_id_fk",
+        "serialized_product_supplier_id_supplier_supplier_id_fk": {
+          "name": "serialized_product_supplier_id_supplier_supplier_id_fk",
           "tableFrom": "serialized_product",
-          "tableTo": "product_record",
+          "tableTo": "supplier",
           "columnsFrom": [
-            "product_record_id"
+            "supplier_id"
           ],
           "columnsTo": [
-            "product_record_id"
+            "supplier_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -4044,7 +4051,18 @@
         "Pending",
         "Confirmed",
         "Returned",
+        "Sold",
         "Added"
+      ]
+    },
+    "public.transfer_source": {
+      "name": "transfer_source",
+      "schema": "public",
+      "values": [
+        "Purchase Order",
+        "Inventory",
+        "Service",
+        "Sales"
       ]
     },
     "public.serial_condition": {

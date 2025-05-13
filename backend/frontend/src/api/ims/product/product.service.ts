@@ -257,12 +257,20 @@ export class ProductService {
     offset: number,
     product_name: string | undefined,
     category_id: number | undefined,
+    status: string | undefined,
   ) {
     const conditions = [isNull(product.deleted_at)];
     if (product_name) {
-      conditions.push(like(product.name, product_name));
+      conditions.push(like(product.name, `%${product_name}%`));
     }
-
+    if (status) {
+      conditions.push(
+        eq(
+          product.status,
+          status as 'Unavailable' | 'Available' | 'Discontinued',
+        ),
+      );
+    }
     const result = await this.db
       .select()
       .from(product)

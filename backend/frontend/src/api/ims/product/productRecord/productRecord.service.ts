@@ -3,6 +3,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { product, productRecord, supplier } from '@/drizzle/schema/ims';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateProductRecord } from './productRecord.model';
+import { employee } from '@/drizzle/schema/ems';
 
 export class ProductRecordService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -40,6 +41,7 @@ export class ProductRecordService {
       .from(productRecord)
       .leftJoin(product, eq(product.product_id, productRecord.product_id))
       .leftJoin(supplier, eq(supplier.supplier_id, productRecord.supplier_id))
+      .leftJoin(employee, eq(employee.employee_id, productRecord.handled_by))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc'
@@ -56,6 +58,9 @@ export class ProductRecordService {
       },
       supplier: {
         ...row.supplier,
+      },
+      handled_by: {
+        ...row.employee,
       },
     }));
     console.log(itemrecordWithDetails);

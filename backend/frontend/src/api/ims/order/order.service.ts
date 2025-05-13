@@ -506,6 +506,7 @@ export class OrderService {
           quantity: item.delivered_quantity,
           status: 'Added',
           action_type: 'Received',
+          source: 'Inventory',
           handled_by: user_id,
         });
         await tx
@@ -520,6 +521,7 @@ export class OrderService {
             length: item.delivered_quantity!,
           }).map(() => ({
             product_id: Number(item.product_id),
+            supplier_id: orderData[0].supplier_id,
             condition: 'New' as 'New' | 'Secondhand' | 'Broken',
             status: 'Available' as
               | 'Available'

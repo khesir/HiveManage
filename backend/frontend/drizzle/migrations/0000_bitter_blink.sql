@@ -95,7 +95,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."product_record_status" AS ENUM('Pending', 'Confirmed', 'Returned', 'Added');
+ CREATE TYPE "public"."product_record_status" AS ENUM('Pending', 'Confirmed', 'Returned', 'Sold', 'Added');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."transfer_source" AS ENUM('Purchase Order', 'Inventory', 'Service', 'Sales');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -371,6 +377,7 @@ CREATE TABLE IF NOT EXISTS "product_record" (
 	"status" "product_record_status" NOT NULL,
 	"action_type" "product_record_action_type" NOT NULL,
 	"employee_id" integer,
+	"source" "transfer_source",
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -379,7 +386,7 @@ CREATE TABLE IF NOT EXISTS "product_record" (
 CREATE TABLE IF NOT EXISTS "serialized_product" (
 	"serial_id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer,
-	"product_record_id" integer,
+	"supplier_id" integer,
 	"serial_code" varchar(255),
 	"warranty_date" varchar,
 	"type" "serial_condition" NOT NULL,
@@ -791,7 +798,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "serialized_product" ADD CONSTRAINT "serialized_product_product_record_id_product_record_product_record_id_fk" FOREIGN KEY ("product_record_id") REFERENCES "public"."product_record"("product_record_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "serialized_product" ADD CONSTRAINT "serialized_product_supplier_id_supplier_supplier_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."supplier"("supplier_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

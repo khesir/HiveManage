@@ -17,6 +17,7 @@ export class ProductController {
     const offset = parseInt(req.query.offset as string) || 0;
     const product_name = (req.query.product_name as string) || undefined;
     const category_id = parseInt(req.query.category_id as string) || undefined;
+    const status = (req.query.status as string) || undefined;
     try {
       const data = await this.productService.getAllProduct(
         sort,
@@ -24,6 +25,7 @@ export class ProductController {
         offset,
         product_name,
         category_id,
+        status,
       );
 
       res.status(HttpStatus.OK.code).json({
