@@ -52,13 +52,13 @@ export function SelectedSaleReviewItems() {
 								>
 									<CardHeader className="flex-grow">
 										<CardTitle className="hover:underline">
-											<span className="font-semibold text-sm">{`#${item.product_id}-${item.record.product?.name}`}</span>
+											<span className="font-semibold text-sm">{`#${item.data.product_id}-${item.data.name}`}</span>
 
 											{/* Adjust this to display the actual item name if available */}
 										</CardTitle>
 										<CardDescription className="font-semibold text-sm">
 											<div className="flex gap-1">
-												Price: {item.record.price}
+												Price: {item.data.selling_price}
 											</div>
 											<p className="font-semibold text-sm text-slate-500 dark:text-slate-400">
 												Qty: {item.quantity}
@@ -88,7 +88,8 @@ export function SelectedSaleReviewItems() {
 							Math.round(
 								salesHookData.reduce(
 									(total, item) =>
-										total + (item.record.price || 0) * (item.quantity || 0),
+										total +
+										(item.data.selling_price || 0) * (item.quantity || 0),
 									0,
 								),
 							)
@@ -103,7 +104,8 @@ export function SelectedSaleReviewItems() {
 								Math.round(
 									salesHookData?.reduce(
 										(total, item) =>
-											total + (item.record.price || 0) * (item.quantity || 0),
+											total +
+											(item.data.selling_price || 0) * (item.quantity || 0),
 										0,
 									),
 								)
@@ -121,7 +123,7 @@ export function SelectedSaleReviewItems() {
 								Math.round(
 									salesHookData?.reduce(
 										(total, item) =>
-											total + (item.record.price || 0) * item.quantity,
+											total + (item.data.selling_price || 0) * item.quantity,
 										0,
 									),
 								)

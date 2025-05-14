@@ -4,16 +4,11 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 
 import {Product} from '@/components/validation/product';
 import clsx from 'clsx';
-import {useEffect} from 'react';
 
 interface Props {
 	data: Product;
-	refreshOnRender: () => void;
 }
-export function InformationCard({data, refreshOnRender}: Props) {
-	useEffect(() => {
-		refreshOnRender();
-	}, []);
+export function InformationCard({data}: Props) {
 	const avatar = (data.product_suppliers ?? []).map((row) => ({
 		name: row.supplier?.name ?? '',
 		link:

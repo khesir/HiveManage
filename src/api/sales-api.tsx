@@ -13,7 +13,7 @@ export const CreateSales = async (
 	employee_id: number,
 ): Promise<Sales | undefined> => {
 	try {
-		const orderedData: Sales = {
+		const salesData = {
 			status: 'Completed',
 			handled_by: employee_id,
 			customer: customer || undefined,
@@ -23,7 +23,7 @@ export const CreateSales = async (
 		const res = await request<ApiRequest<Sales>>(
 			'POST',
 			`/api/v1/sms/sales`,
-			orderedData,
+			salesData,
 		);
 		toast.success('Successfully recorded sales');
 		return res.data as Sales;

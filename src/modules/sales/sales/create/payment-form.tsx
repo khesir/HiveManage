@@ -33,7 +33,7 @@ export function CreatePaymentForm({process, loading}: Props) {
 		Math.round(
 			salesHookData.reduce(
 				(total, item) =>
-					total + (item.record.price || 0) * (item.quantity || 0),
+					total + (item.data.selling_price || 0) * (item.quantity || 0),
 				0,
 			),
 		),

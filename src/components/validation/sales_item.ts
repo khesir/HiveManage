@@ -44,10 +44,10 @@ export const salesItemSchema = z.object({
 	product_id: z.number().optional(),
 	sales_id: z.number().optional(),
 	product_record_id: z.number().optional(),
-	serial_id: z.number().optional(),
+	serialize_items: z.number().optional(),
 
 	quantity: z.number().min(1),
-	total_price: z.number().min(1),
+	sold_price: z.number().min(1),
 
 	product: productSchema.optional(),
 });

@@ -12,44 +12,6 @@ export const columns: ColumnDef<BatchItem>[] = [
 		header: 'ID',
 	},
 	{
-		accessorKey: 'supplier',
-		header: 'Supplier',
-		cell: ({row}) => {
-			return (
-				<div className="flex gap-3 items-center">
-					<AvatarCircles
-						avatar={[
-							{
-								link:
-									typeof row.original.supplier?.profile_link === 'string'
-										? row.original.supplier?.profile_link
-										: '',
-								name: row.original.supplier?.name ?? '',
-							},
-						]}
-					/>
-					<span>{row.original.supplier?.name}</span>
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: 'quantity',
-		header: 'Quantity',
-	},
-	{
-		accessorKey: 'status',
-		header: 'Status',
-	},
-	{
-		accessorKey: 'action_type',
-		header: 'Action Type',
-	},
-	{
-		accessorKey: 'source',
-		header: 'Source',
-	},
-	{
 		header: 'Handled By',
 		cell: ({row}) => {
 			return (
@@ -73,6 +35,22 @@ export const columns: ColumnDef<BatchItem>[] = [
 				</div>
 			);
 		},
+	},
+	{
+		accessorKey: 'quantity',
+		header: 'Quantity',
+	},
+	{
+		accessorKey: 'status',
+		header: 'Status',
+	},
+	{
+		accessorKey: 'action_type',
+		header: 'Action Type',
+	},
+	{
+		accessorKey: 'source',
+		header: 'Source',
 	},
 	{
 		accessorKey: 'created_at',

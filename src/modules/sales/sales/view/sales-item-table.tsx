@@ -67,7 +67,7 @@ const columns: ColumnDef<SalesItem>[] = [
 		header: 'Total Value',
 		cell: ({row}) => {
 			const totalValue =
-				Number(row.original.quantity) * Number(row.original.total_price);
+				Number(row.original.quantity) * Number(row.original.sold_price);
 			return <span>{totalValue.toFixed(2)}</span>;
 		},
 	},

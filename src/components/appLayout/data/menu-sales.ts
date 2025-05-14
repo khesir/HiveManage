@@ -94,12 +94,6 @@ export function getSalesMenuList(pathname: string): Group[] {
 							active: pathname === '/sales/system/inventory/products',
 						},
 						{
-							href: '/sales/system/inventory/products',
-							label: 'Products',
-							icon: BoxIcon,
-							active: pathname === '/sales/system/inventory/products',
-						},
-						{
 							href: '/sales/system/inventory/orders',
 							label: 'Orders',
 							icon: BoxesIcon,

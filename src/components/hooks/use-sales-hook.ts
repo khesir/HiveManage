@@ -1,58 +1,60 @@
 import {create} from 'zustand';
 import {toast} from 'sonner';
-import {BatchItem} from '../validation/batch-items';
 import {SerializeItem} from '../validation/serialize-items';
-
-type Product = BatchItem | SerializeItem;
+import {Product} from '../validation/product';
 
 export interface SalesItem {
-	product_id: number;
 	quantity: number;
-	product_record_id: number | undefined;
-	serial_id: number | undefined;
+	is_serialize: boolean;
 	sold_price: number;
-	total_price: number;
-	record: Product;
 	data: Product;
+	serializeData: SerializeItem[];
 }
 interface SalesHook {
 	salesHookData: SalesItem[];
 	trigger: boolean;
+	getSalesItemByProductId: (product_id: number) => SalesItem | null;
 	addProduct: (
 		product: Product,
 		quantity: number,
-		record_id: number,
-		serialized: boolean,
+		is_serialize: boolean,
+		serializedItems: SerializeItem[],
 	) => void;
 	updateQuantity: (index: number, quantity: number) => void;
 	removeProduct: (id: number) => void;
 	resetProducts: () => void;
 }
 
-export const useSalesHook = create<SalesHook>((set) => ({
+export const useSalesHook = create<SalesHook>((set, get) => ({
 	salesHookData: [],
 	trigger: false,
 
-	addProduct: (product, quantity, record_id, serialized) =>
+	getSalesItemByProductId: (product_id: number) =>
+		get().salesHookData.find((item) => item.data.product_id === product_id) ||
+		null,
+
+	addProduct: (
+		product,
+		quantity,
+		is_serialize,
+		serializedItems: SerializeItem[] = [],
+	) =>
 		set((state) => {
 			const exists = state.salesHookData.some(
-				(p) => p.product_id === product.product_id, // Assuming `Product` has an `id` field
+				(p) => p.data.product_id === product.product_id,
 			);
 			if (exists) {
 				toast.error(`Product with id ${product.product_id} already exists.`);
 				return state;
 			}
 
-			if (serialized) {
+			if (is_serialize) {
 				const salesItem: SalesItem = {
-					product_id: product.product_id,
-					product_record_id: undefined,
-					serial_id: record_id,
+					is_serialize: true,
 					quantity: quantity,
-					sold_price: product.price || 0,
-					total_price: (product.price || 0) * quantity,
-					record: product,
+					sold_price: product.selling_price || 0,
 					data: product,
+					serializeData: serializedItems,
 				};
 
 				return {
@@ -61,14 +63,11 @@ export const useSalesHook = create<SalesHook>((set) => ({
 				};
 			} else {
 				const salesItem: SalesItem = {
-					product_id: product.product_id,
-					product_record_id: record_id,
-					serial_id: undefined,
+					is_serialize: false,
 					quantity: quantity,
-					sold_price: product.price || 0,
-					total_price: (product.price || 0) * quantity,
-					record: product,
+					sold_price: product.selling_price || 0,
 					data: product,
+					serializeData: [],
 				};
 
 				return {
@@ -90,7 +89,7 @@ export const useSalesHook = create<SalesHook>((set) => ({
 			}
 
 			const currentItem = state.salesHookData[index];
-			if (quantity > (currentItem.data.quantity || 0)) {
+			if (quantity > (currentItem.data.selling_price || 0)) {
 				return state;
 			}
 
@@ -108,14 +107,16 @@ export const useSalesHook = create<SalesHook>((set) => ({
 
 	removeProduct: (id) =>
 		set((state) => {
-			const exists = state.salesHookData.some((p) => p.product_id === id);
+			const exists = state.salesHookData.some((p) => p.data.product_id === id);
 			if (!exists) {
 				toast.error(`Product with id ${id} does not exist.`);
 				return state;
 			}
 
 			return {
-				salesHookData: state.salesHookData.filter((p) => p.product_id !== id),
+				salesHookData: state.salesHookData.filter(
+					(p) => p.data.product_id !== id,
+				),
 				trigger: !state.trigger,
 			};
 		}),

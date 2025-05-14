@@ -37,6 +37,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
+import {SelectedSaleItems} from './selected-sale-items';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -334,8 +335,9 @@ export function SalesProductTable<TData extends Product, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
+				<SelectedSaleItems />
 			</div>
-			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
+			<ScrollArea className="h-[calc(65vh-50px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
