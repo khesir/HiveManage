@@ -21,7 +21,7 @@ export class SerializeItemController {
     const offset = parseInt(req.query.offset as string) || 0;
     const no_pagination = req.query.no_pagination === 'true';
     const product_id = req.params.product_id as string;
-
+    const status = (req.query.status as string) || undefined;
     try {
       const data = await this.serializedproductService.getAllSerializedProducts(
         product_id,
@@ -29,6 +29,7 @@ export class SerializeItemController {
         sort,
         limit,
         offset,
+        status,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

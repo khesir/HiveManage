@@ -1,5 +1,5 @@
 {
-  "id": "bddd1dd3-01f6-4ea0-819c-be1b683fad00",
+  "id": "5a4d0852-1e92-442e-b085-46a1deaf963f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -3160,17 +3160,12 @@
           "primaryKey": false,
           "notNull": false
         },
-        "product_record_id": {
-          "name": "product_record_id",
-          "type": "integer",
+        "serialize_items": {
+          "name": "serialize_items",
+          "type": "integer[]",
           "primaryKey": false,
-          "notNull": false
-        },
-        "serial_id": {
-          "name": "serial_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "'{}'::integer[]"
         },
         "sold_price": {
           "name": "sold_price",
@@ -3181,12 +3176,6 @@
         "quantity": {
           "name": "quantity",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "total_price": {
-          "name": "total_price",
-          "type": "real",
           "primaryKey": false,
           "notNull": false
         },
@@ -3235,32 +3224,6 @@
           ],
           "columnsTo": [
             "sales_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "sales_items_product_record_id_product_record_product_record_id_fk": {
-          "name": "sales_items_product_record_id_product_record_product_record_id_fk",
-          "tableFrom": "sales_items",
-          "tableTo": "product_record",
-          "columnsFrom": [
-            "product_record_id"
-          ],
-          "columnsTo": [
-            "product_record_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "sales_items_serial_id_serialized_product_serial_id_fk": {
-          "name": "sales_items_serial_id_serialized_product_serial_id_fk",
-          "tableFrom": "sales_items",
-          "tableTo": "serialized_product",
-          "columnsFrom": [
-            "serial_id"
-          ],
-          "columnsTo": [
-            "serial_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -4041,7 +4004,8 @@
       "values": [
         "Received",
         "Returned",
-        "Transferred"
+        "Transferred",
+        "Sold"
       ]
     },
     "public.product_record_status": {

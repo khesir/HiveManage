@@ -22,6 +22,7 @@ export const productRecordActionType = pgEnum('product_record_action_type', [
   'Received',
   'Returned',
   'Transferred',
+  'Sold',
 ]);
 export const transferSource = pgEnum('transfer_source', [
   'Purchase Order',

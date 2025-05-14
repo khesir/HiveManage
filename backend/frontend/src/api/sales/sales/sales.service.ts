@@ -1,4 +1,4 @@
-import { and, eq, isNull, asc, desc, sql } from 'drizzle-orm';
+import { and, eq, isNull, asc, desc, sql, inArray } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { customer } from '@/drizzle/schema/customer';
 import { SchemaType } from '@/drizzle/schema/type';
@@ -29,7 +29,7 @@ export class SalesService {
       ] as const;
       type Standing = (typeof validStandings)[number];
       const defaultStanding: Standing = 'Active';
-
+      // Create Customer if its not provided
       const customer_id =
         data.customer?.customer_id ??
         (
@@ -45,6 +45,8 @@ export class SalesService {
             })
             .returning({ customer_id: customer.customer_id })
         )[0].customer_id;
+
+      // Create new Sales
       const [newSales] = await tx
         .insert(sales)
         .values({
@@ -53,7 +55,8 @@ export class SalesService {
           customer_id: customer_id,
           total_price: Math.round(
             data.salesItems.reduce(
-              (total, item) => total + (item.total_price || 0),
+              (total, item) =>
+                total + (Number(item.sold_price) || 0) * (item.quantity || 0),
               0,
             ),
           ),
@@ -65,29 +68,49 @@ export class SalesService {
           ),
         })
         .returning({ sales_id: sales.sales_id });
+
+      // Create Payment
       await tx.insert(payment).values({
         sales_id: newSales.sales_id,
         ...data.payment!,
       });
       for (const item of data.salesItems) {
+        const serialData = item.serializeData
+          ? item.serializeData
+              .map((serial) => serial.serial_id)
+              .filter((id): id is number => id !== undefined)
+          : [];
+        // Create salesItem
         await tx.insert(salesItems).values({
           sales_id: newSales.sales_id,
-          ...item,
+          product_id: item.data?.product_id,
+          serialize_items: serialData,
+          sold_price: Number(item.sold_price),
+          quantity: item.quantity,
         });
-
-        if (item.product_record_id) {
-          await tx
-            .update(productRecord)
-            .set({
-              quantity: sql`${productRecord.quantity} - ${item.quantity}`,
-              status: sql`CASE WHEN ${productRecord.quantity} = ${item.quantity} THEN 'Sold' ELSE ${productRecord.status} END`,
-            })
-            .where(eq(productRecord.product_record_id, item.product_record_id));
-        } else if (item.serial_id) {
+        // Update Product
+        await tx
+          .update(product)
+          .set({
+            sold_quantity: sql`${product.sold_quantity} + ${item.quantity}`,
+            available_quantity: sql`${product.available_quantity} - ${item.quantity}`,
+          })
+          .where(eq(product.product_id, item.data!.product_id!));
+        // Create Trail log
+        await tx.insert(productRecord).values({
+          product_id: item.data!.product_id!,
+          quantity: item.quantity,
+          status: 'Sold',
+          action_type: 'Sold',
+          source: 'Sales',
+          handled_by: data.handled_by,
+        });
+        // If serialize and not 0, mark them
+        if (item.is_serialize && serialData.length > 0) {
           await tx
             .update(serializeProduct)
             .set({ status: 'Sold' })
-            .where(eq(serializeProduct.serial_id, item.serial_id));
+            .where(inArray(serializeProduct.serial_id, serialData));
         }
       }
 

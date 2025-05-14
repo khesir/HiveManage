@@ -23,11 +23,15 @@ export class SerializeItemService {
     sort: string,
     limit: number,
     offset: number,
+    status: string | undefined,
   ) {
     const conditions = [isNull(serializeProduct.deleted_at)];
 
     if (product_id) {
       conditions.push(eq(serializeProduct.product_id, Number(product_id)));
+    }
+    if (status) {
+      conditions.push(eq(serializeProduct.status, 'Available'));
     }
     const totalCountQuery = await this.db
       .select({
