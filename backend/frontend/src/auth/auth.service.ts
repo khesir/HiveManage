@@ -42,6 +42,7 @@ export class AuthenticationService {
     user_id: string | undefined,
     fullname: string | undefined,
     position_id: string | undefined,
+    no_pagination: boolean,
   ) {
     const data = await this.employeeRolesService.getAllEmployeeAccount(
       sort,
@@ -53,6 +54,7 @@ export class AuthenticationService {
       user_id,
       fullname,
       position_id,
+      no_pagination,
     );
     return data;
   }

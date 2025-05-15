@@ -645,7 +645,7 @@ CREATE TABLE IF NOT EXISTS "service_Type" (
 	"name" varchar NOT NULL,
 	"customizable_fee" real,
 	"description" varchar(255),
-	"duration" integer,
+	"duration" varchar,
 	"is_activate" boolean,
 	"requires_serial" boolean,
 	"created_at" timestamp DEFAULT now(),

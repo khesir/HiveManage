@@ -117,6 +117,7 @@ export class EmployeeRolesService {
     user_id: string | undefined,
     fullname: string | undefined,
     position_id: string | undefined,
+    no_pagination: boolean,
   ) {
     const conditions = [isNull(employeeRoles.deleted_at)];
     const employeeIds: number[] = [];
@@ -181,7 +182,7 @@ export class EmployeeRolesService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(employeeRoles)
       .leftJoin(employee, eq(employee.employee_id, employeeRoles.employee_id))
@@ -192,10 +193,12 @@ export class EmployeeRolesService {
         sort === 'asc'
           ? asc(employeeRoles.created_at)
           : desc(employeeRoles.created_at),
-      )
-      .limit(limit)
-      .offset(offset);
+      );
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
 
+    const result = await query;
     const employeeaccountWithDetails = result.map((row) => ({
       employee_roles_id: row.employee_roles.employee_roles_id,
       employee: {

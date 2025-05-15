@@ -13,7 +13,6 @@ export class ServiceTypesController {
 
   async getAllServiceTypes(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log('pass');
       const data = await this.servicetypeService.getAllServiceType();
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

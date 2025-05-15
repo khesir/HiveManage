@@ -17,12 +17,14 @@ export class EmployeeController {
     const limit = Number(req.query.limit) || 10;
     const offset = Number(req.query.offset) || 0;
     const fullname = (req.query.fullname as string) || undefined;
+    const no_pagination = req.query.no_pagination === 'true';
     try {
       const data = await this.employeeService.getAllEmployee(
         limit,
         sort,
         offset,
         fullname,
+        no_pagination,
       );
       res.status(HttpStatus.OK.code).json({
         status: HttpStatus.OK.status,

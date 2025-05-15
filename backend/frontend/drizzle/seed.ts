@@ -688,21 +688,37 @@ async function seedServiceType(db: PostgresJsDatabase<SchemaType>) {
       name: 'Joborder',
       description:
         'A service request for performing repairs, maintenance, or construction tasks.',
+      duration: '5-7 days',
+      is_active: true,
+      requires_serial: true,
+      customizable_fee: 5000,
     },
     {
       name: 'Borrow',
       description:
         'A service for temporarily borrowing items such as tools, equipment, or assets.',
+      duration: '7 days',
+      is_active: true,
+      requires_serial: true,
+      customizable_fee: 0,
     },
     {
       name: 'Reserve',
       description:
         'A service to reserve items, rooms, or equipment for future use.',
+      duration: '1 day',
+      is_active: false,
+      requires_serial: false,
+      customizable_fee: 0,
     },
     {
       name: 'Maintenance',
       description:
         'Scheduled or unscheduled maintenance services to ensure optimal performance of assets.',
+      duration: '1 day',
+      is_active: true,
+      requires_serial: false,
+      customizable_fee: 100,
     },
   ];
   await db.insert(service_Type).values(typesRecords);

@@ -10,6 +10,7 @@ import {
 import { customer } from '@/drizzle/schema/customer';
 import { employee } from '@/drizzle/schema/ems';
 import { payment } from '@/drizzle/schema/payment';
+import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
 
 export class ServicesService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -24,14 +25,24 @@ export class ServicesService {
         .insert(service)
         .values({ ...data })
         .returning({ service_id: service.service_id });
-
-      if (data.user_id) {
+      for (const item of data.assigned!) {
         await tx.insert(assignedEmployees).values({
+          employee_id: item.employee_id,
           service_id: newService.service_id,
-          employee_id: data.user_id,
-          is_leader: true,
+        });
+
+        await tx.insert(employeeLog).values({
+          employee_id: item.employee_id,
+          action: `Assigned to service ${newService.service_id}`,
+          performed_by: data.user_id,
         });
       }
+      // Create employee logging
+      await tx.insert(employeeLog).values({
+        employee_id: data.user_id,
+        action: 'Pushlied movie',
+        performed_by: data.user_id,
+      });
     });
   }
 

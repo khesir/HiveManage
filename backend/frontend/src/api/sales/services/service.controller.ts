@@ -68,8 +68,8 @@ export class ServiceController {
         service_status,
         total_cost_price,
         user_id,
+        assigned,
       } = req.body;
-      console.log(req.body);
       await this.servicesService.createServices({
         service_type_id,
         uuid,
@@ -79,6 +79,7 @@ export class ServiceController {
         service_status,
         total_cost_price,
         user_id,
+        assigned,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',

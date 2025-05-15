@@ -26,6 +26,7 @@ export class EmployeeService {
     sort: string,
     offset: number,
     fullname: string | undefined,
+    no_pagination: boolean,
   ) {
     const conditions = [isNull(employee.deleted_at)];
 
@@ -50,7 +51,7 @@ export class EmployeeService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(employee)
       .where(and(...conditions))
@@ -71,11 +72,12 @@ export class EmployeeService {
         eq(designation.designation_id, employmentInformation.designation_id),
       )
       .orderBy(
-        sort === 'asc' ? asc(employee.created_at) : desc(employee.created_at),
-      )
-      .limit(limit)
-      .offset(offset);
-
+        sort === 'asc' ? asc(employee.employee_id) : desc(employee.employee_id),
+      );
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+    const result = await query;
     const employeeWithRelatedData = result.map((row) => ({
       employee: row.employee,
       personal_information: row.personal_info,

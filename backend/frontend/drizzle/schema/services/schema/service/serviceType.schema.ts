@@ -1,6 +1,5 @@
 import {
   boolean,
-  integer,
   pgTable,
   real,
   serial,
@@ -14,7 +13,7 @@ export const service_Type = pgTable('service_Type', {
   name: varchar('name').notNull(),
   customizable_fee: real('customizable_fee'),
   description: varchar('description', { length: 255 }),
-  duration: integer('duration'),
+  duration: varchar('duration'),
   is_active: boolean('is_activate'),
   requires_serial: boolean('requires_serial'),
 

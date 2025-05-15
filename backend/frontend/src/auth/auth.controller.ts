@@ -61,6 +61,7 @@ export class AuthenticationController {
     const status = (req.query.status as string) || undefined;
     const employee_id = (req.query.employee_id as string) || undefined;
     const position_id = (req.query.position_id as string) || undefined;
+    const no_pagination = req.query.no_pagination === 'true';
     try {
       const data = await this.authService.getAllUser(
         sort,
@@ -72,6 +73,7 @@ export class AuthenticationController {
         user_id,
         fullname,
         position_id,
+        no_pagination,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
