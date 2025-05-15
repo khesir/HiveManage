@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
 import {Service} from '@/components/validation/service';
-import {ServiceTable} from './service-table';
 import {columns} from './columns';
+import {ServiceTable} from './service-table';
 
 export type paramsProps = {
 	searchParams: URLSearchParams;
@@ -34,7 +34,6 @@ export default function ServiceList({searchParams}: paramsProps) {
 
 		fetchEmployees();
 	}, [offset, pageLimit, sort, serviceType]);
-	console.log(service);
 	return (
 		<ServiceTable
 			columns={columns}

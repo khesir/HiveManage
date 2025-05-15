@@ -6,7 +6,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import {dateParser} from '@/lib/util/utils';
-import useServiceFormStore from './_components/use-service-hook';
+import useServiceFormStore from '../_components/use-service-hook';
 import {File} from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import {Button} from '@/components/ui/button';

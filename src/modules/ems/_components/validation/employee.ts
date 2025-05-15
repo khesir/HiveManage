@@ -22,7 +22,6 @@ export const employeeSchema = z.object({
 		.refine((file) => {
 			return !file || ACCEPTED_FILE_TYPES.includes(file.type);
 		}, 'File must be a PNG or JPEG'),
-	// This is just form form submission on settings, not part of employee Schema
 	role_id: z.string().optional(),
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),

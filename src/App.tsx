@@ -38,6 +38,7 @@ import ServiceListPage from './pages/sales/systems/service/service-list-page';
 import CreateServicePage from './pages/sales/systems/service/create-service-page';
 import CreateTaskPage from './pages/sales/systems/service/tickets/task-create';
 import CreateSupplierPage from './pages/inventory/suppliers/create-supplier';
+import ServiceMenuPage from './pages/sales/systems/service/menu-service-page';
 
 function App() {
 	return (
@@ -208,13 +209,21 @@ function App() {
 								<Route path="list" element={<SalesListPage />} />
 								<Route path="list/view/:id" element={<SalesViewPage />} />
 								<Route path="services">
-									<Route index element={<ServiceListPage />} />
-									<Route path="view/:id" element={<ViewServicePage />} />
-									<Route path="create" element={<CreateServicePage />} />
-									{/* Ticket */}
-									<Route path="view/:id/ticket" />
+									<Route index element={<ServiceMenuPage />} />
+									<Route path="create" />
+									<Route path="transactions" element={<ServiceListPage />} />
 									<Route
-										path="view/:id/ticket/create"
+										path="transactions/view/:id"
+										element={<ViewServicePage />}
+									/>
+									<Route
+										path="transactions/create"
+										element={<CreateServicePage />}
+									/>
+									{/* Ticket */}
+									<Route path="transactions/view/:id/ticket" />
+									<Route
+										path="transactions/view/:id/ticket/create"
 										element={<CreateTaskPage />}
 									/>
 								</Route>

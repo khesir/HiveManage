@@ -5,7 +5,6 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
-	Row,
 	useReactTable,
 } from '@tanstack/react-table'; // Adjust the import path based on your project setup
 import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
@@ -28,8 +27,6 @@ import {
 import {Button} from '@/components/ui/button';
 import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
-import {Service} from '@/components/validation/service';
-import {Input} from '@/components/ui/input';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -37,7 +34,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import useServiceFormStore from './_components/use-service-hook';
+import {Ticket} from '@/components/validation/tickets';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -47,14 +44,12 @@ interface DataTableProps<TData, TValue> {
 	searchParams?: {
 		[key: string]: string | string[] | undefined;
 	};
-	searchKey: string;
 }
 
-export function ServiceTable<TData extends Service, TValue>({
+export function TransactionServiceItemTable<TData extends Ticket, TValue>({
 	columns,
 	data,
 	pageCount,
-	searchKey,
 	pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) {
 	const navigate = useNavigate();
@@ -118,15 +113,6 @@ export function ServiceTable<TData extends Service, TValue>({
 		manualPagination: true,
 		manualFiltering: true,
 	});
-	const searchValue = table.getColumn(searchKey)?.getFilterValue() as string;
-	const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
-
-	useEffect(() => {
-		const handler = setTimeout(() => {
-			setDebouncedSearchValue(searchValue);
-		}, 500); // Adjust debounce delay as needed
-		return () => clearTimeout(handler);
-	}, [searchValue]);
 
 	// // Update the URL with the search query when the searchValue changes
 	useEffect(() => {
@@ -134,40 +120,11 @@ export function ServiceTable<TData extends Service, TValue>({
 			`${location.pathname}?${createQueryString({
 				page: pageIndex + 1,
 				limit: pageSize,
-				uuid: debouncedSearchValue || null,
 			})}`,
 			{replace: true},
 		);
+	}, [pageSize, pageIndex, navigate, location.pathname, createQueryString]);
 
-		// Reset pagination to first page on search change
-		if (debouncedSearchValue) {
-			setPagination((prev) => ({...prev, pageIndex: 0}));
-		}
-	}, [
-		debouncedSearchValue,
-		pageSize,
-		pageIndex, // Add pageIndex here
-		navigate,
-		location.pathname,
-		createQueryString,
-	]);
-
-	// Set the first employee data to Zustand on initial render
-	useEffect(() => {
-		if (data.length > 0) {
-			const payment: Service = data[0];
-			useServiceFormStore.getState().setServiceFormData(payment);
-		}
-	}, [data]);
-
-	// This handles the employee viewing by click
-	const handleRowClick = (row: Row<TData>) => {
-		// Access the data of the clicked row
-		const rowData: Service = row.original;
-
-		// Do something with the row data
-		useServiceFormStore.getState().setServiceFormData(rowData);
-	};
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
 		searchParams.get('sort') === 'desc' ? 'desc' : 'asc',
 	);
@@ -189,16 +146,10 @@ export function ServiceTable<TData extends Service, TValue>({
 		<>
 			<div className="flex justify-between items-center">
 				<div className="flex gap-10 items-center">
-					<h1 className="text-2xl font-bold tracking-tight">Service List</h1>
+					<h1 className="text-2xl font-bold tracking-tight">
+						Transaction Service Items
+					</h1>
 					<div className="flex gap-1">
-						<Input
-							placeholder={`Find Customer...`}
-							value={searchValue ?? ''} // Bind the input value to the current filter value
-							onChange={(event) =>
-								table.getColumn(searchKey)?.setFilterValue(event.target.value)
-							} // Update filter value}
-							className="w-[30vh] "
-						/>
 						<DropdownMenu>
 							<DropdownMenuTrigger>
 								<Button variant={'outline'}>
@@ -231,9 +182,9 @@ export function ServiceTable<TData extends Service, TValue>({
 						</DropdownMenu>
 					</div>
 				</div>
-				<Button onClick={() => navigate('create')}>
+				<Button onClick={() => navigate('ticket/create')}>
 					<Plus className="mr-2 h-4 w-4" />
-					Create Service
+					Add Item
 				</Button>
 			</div>
 			<ScrollArea className="h-[calc(90vh-220px)] rounded-md border">
@@ -261,7 +212,6 @@ export function ServiceTable<TData extends Service, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
-									onClick={() => handleRowClick(row)}
 									style={{cursor: 'pointer'}}
 									data-state={row.getIsSelected() && 'selected'}
 								>

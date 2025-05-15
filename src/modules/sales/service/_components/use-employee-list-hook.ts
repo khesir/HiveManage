@@ -4,6 +4,7 @@ import {create} from 'zustand';
 interface EmployeeState {
 	selectedEmployees: EmployeeWithRelatedDetails[];
 	appendEmployee: (employee: EmployeeWithRelatedDetails) => void;
+	setSelectedEmployees: (employees: EmployeeWithRelatedDetails[]) => void;
 	resetEmployees: (employees: EmployeeWithRelatedDetails[]) => void;
 	removeEmployeeById: (id: number) => void;
 }
@@ -18,6 +19,7 @@ const useEmployeeStore = create<EmployeeState>((set) => ({
 				? state.selectedEmployees
 				: [...state.selectedEmployees, employee],
 		})),
+	setSelectedEmployees: (employees) => set({selectedEmployees: employees}),
 	resetEmployees: () =>
 		set(() => ({
 			selectedEmployees: [],
