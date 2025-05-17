@@ -5,27 +5,32 @@ import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { employee } from '@/drizzle/schema/ems';
-import { service } from '@/drizzle/schema/services';
+import { serviceOwnedItems } from '@/drizzle/schema/services/schema/service/serviceOwnedItems.schema';
 
-export async function validateServiceID(
+// There's a globally used
+// middleware like error handling and schema validation
+
+export async function validateOwnedServiceItemsID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { service_id } = req.params;
+  const { service_owned_id } = req.params;
 
   try {
-    const Service = await db
+    const serviceOwnedItemsData = await db
       .select()
-      .from(service)
+      .from(serviceOwnedItems)
       .where(
         and(
-          eq(service.service_id, Number(service_id)),
-          isNull(service.deleted_at),
+          eq(serviceOwnedItems.service_owned_id, Number(service_owned_id)),
+          isNull(serviceOwnedItems.deleted_at),
         ),
       );
-    if (!Service[0]) {
-      return res.status(404).json({ message: 'Service not found' });
+    if (!serviceOwnedItemsData[0]) {
+      return res
+        .status(404)
+        .json({ message: 'Transaction Service Item not found' });
     }
     next();
   } catch (error) {

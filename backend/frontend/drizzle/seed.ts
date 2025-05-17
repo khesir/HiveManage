@@ -685,40 +685,60 @@ async function seedSupplier(db: PostgresJsDatabase<SchemaType>) {
 async function seedServiceType(db: PostgresJsDatabase<SchemaType>) {
   const typesRecords = [
     {
-      name: 'Joborder',
+      name: 'Repair',
       description:
-        'A service request for performing repairs, maintenance, or construction tasks.',
-      duration: '5-7 days',
+        'A service for diagnosing and repairing customer-owned equipment or items.',
+      duration: '3-5 days',
       is_active: true,
-      requires_serial: true,
-      customizable_fee: 5000,
+      customizable_fee: 1500,
     },
     {
-      name: 'Borrow',
+      name: 'Cleaning',
       description:
-        'A service for temporarily borrowing items such as tools, equipment, or assets.',
+        'A service for cleaning internal or external parts of devices, tools, or machinery.',
+      duration: '1 day',
+      is_active: true,
+      customizable_fee: 500,
+    },
+    {
+      name: 'Replacement',
+      description:
+        'A service for replacing defective or outdated components with new items.',
+      duration: '2-3 days',
+      is_active: true,
+      customizable_fee: 1000,
+    },
+    {
+      name: 'Build',
+      description:
+        'A custom assembly service where new systems or machines are built from parts.',
+      duration: '5-7 days',
+      is_active: true,
+      customizable_fee: 2500,
+    },
+    {
+      name: 'Upgrade',
+      description:
+        'Enhancement service for upgrading system specs or components.',
+      duration: '1-3 days',
+      is_active: true,
+      customizable_fee: 1200,
+    },
+    {
+      name: 'Rent',
+      description:
+        'A temporary service allowing customers to borrow company-owned items.',
       duration: '7 days',
       is_active: true,
-      requires_serial: true,
       customizable_fee: 0,
     },
     {
       name: 'Reserve',
       description:
-        'A service to reserve items, rooms, or equipment for future use.',
-      duration: '1 day',
-      is_active: false,
-      requires_serial: false,
-      customizable_fee: 0,
-    },
-    {
-      name: 'Maintenance',
-      description:
-        'Scheduled or unscheduled maintenance services to ensure optimal performance of assets.',
+        'Reservation service for booking specific items or slots for future use.',
       duration: '1 day',
       is_active: true,
-      requires_serial: false,
-      customizable_fee: 100,
+      customizable_fee: 0,
     },
   ];
   await db.insert(service_Type).values(typesRecords);

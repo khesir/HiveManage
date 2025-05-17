@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   pgEnum,
   pgTable,
@@ -26,6 +27,7 @@ export const service = pgTable('service', {
   customer_id: integer('customer_id').references(() => customer.customer_id),
   service_status: service_status('service_status').notNull(),
   total_cost_price: integer('total_cost_price'),
+  is_returned: boolean('is_returned').default(false),
   payment_status: integer('payment_status'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

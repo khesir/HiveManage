@@ -15,7 +15,6 @@ export const service_Type = pgTable('service_Type', {
   description: varchar('description', { length: 255 }),
   duration: varchar('duration'),
   is_active: boolean('is_activate'),
-  requires_serial: boolean('requires_serial'),
 
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

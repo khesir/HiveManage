@@ -5,27 +5,27 @@ import log from '@/lib/logger';
 import { db } from '@/drizzle/pool';
 import { HttpStatus } from '@/lib/HttpStatus';
 import { employee } from '@/drizzle/schema/ems';
-import { service } from '@/drizzle/schema/services';
+import { buildDetails } from '@/drizzle/schema/services/schema/service/services/buildDetails.schema';
 
-export async function validateServiceID(
+export async function validateBuildID(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const { service_id } = req.params;
+  const { build_id } = req.params;
 
   try {
-    const Service = await db
+    const buildData = await db
       .select()
-      .from(service)
+      .from(buildDetails)
       .where(
         and(
-          eq(service.service_id, Number(service_id)),
-          isNull(service.deleted_at),
+          eq(buildDetails.build_id, Number(build_id)),
+          isNull(buildDetails.deleted_at),
         ),
       );
-    if (!Service[0]) {
-      return res.status(404).json({ message: 'Service not found' });
+    if (!buildData[0]) {
+      return res.status(404).json({ message: 'build not found' });
     }
     next();
   } catch (error) {
@@ -50,7 +50,6 @@ export async function validateSalesByEmployeeID(
           isNull(employee.deleted_at),
         ),
       );
-    console.log(data);
     if (!data[0]) {
       return res
         .status(HttpStatus.NOT_FOUND.code)

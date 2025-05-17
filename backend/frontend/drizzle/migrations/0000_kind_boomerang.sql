@@ -71,18 +71,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."destination_Type" AS ENUM('Stock', 'Service', 'Damage');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."source_Type" AS ENUM('Supplier', 'Stock', 'Service', 'Damage');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."product_status" AS ENUM('Unavailable', 'Available', 'Discontinued');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -174,6 +162,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."transaction_service_status" AS ENUM('Pending', 'Used', 'Returned');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."reserve_details_status" AS ENUM('Pending', 'Confirmed', 'Cancelled');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -460,18 +454,6 @@ CREATE TABLE IF NOT EXISTS "order_log" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "inventory_movement" (
-	"inventory_movement_id" serial PRIMARY KEY NOT NULL,
-	"product_id" integer,
-	"status" "destination_Type" NOT NULL,
-	"quantity" integer DEFAULT 0,
-	"serial_ids" varchar,
-	"reason" varchar,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "product_category" (
 	"p_category_id" serial PRIMARY KEY NOT NULL,
 	"category_id" integer,
@@ -634,6 +616,7 @@ CREATE TABLE IF NOT EXISTS "service" (
 	"customer_id" integer,
 	"service_status" "service_status" NOT NULL,
 	"total_cost_price" integer,
+	"is_returned" boolean DEFAULT false,
 	"payment_status" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -647,7 +630,6 @@ CREATE TABLE IF NOT EXISTS "service_Type" (
 	"description" varchar(255),
 	"duration" varchar,
 	"is_activate" boolean,
-	"requires_serial" boolean,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -682,6 +664,110 @@ CREATE TABLE IF NOT EXISTS "transaction_service_item" (
 	"service_item_id" integer,
 	"quantity" integer,
 	"status" "transaction_service_status",
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "service_owned_items" (
+	"service_owned_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"item_description" varchar,
+	"serial_number" varchar,
+	"brand" varchar,
+	"model" varchar,
+	"notes " varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "service_return" (
+	"return_id" serial PRIMARY KEY NOT NULL,
+	"original_service_id" integer,
+	"new_service_id" integer,
+	"reason" varchar,
+	"under_warranty" boolean,
+	"returned_at" timestamp,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "build_details" (
+	"build_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"customer_items" integer[] DEFAULT '{}'::integer[],
+	"parts_used" integer[] DEFAULT '{}'::integer[],
+	"build_specs" varchar,
+	"checklist" varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "cleaning_details" (
+	"cleaning_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"method" varchar,
+	"notes" varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "rent_details" (
+	"rent_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"rented_items" integer[] DEFAULT '{}'::integer[],
+	"start_date" timestamp,
+	"end_date" timestamp,
+	"deposit" real,
+	"returned" boolean,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "repair_details" (
+	"repair_details_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"parts_used" integer[] DEFAULT '{}'::integer[],
+	"diagnostic_notes" varchar,
+	"work_done" varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "replacement_details" (
+	"replacement_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"owned_items" integer[] DEFAULT '{}'::integer[],
+	"new_product" integer[] DEFAULT '{}'::integer[],
+	"reason" varchar,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "reserve_details" (
+	"reserve_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"reserve_item_id" integer[] DEFAULT '{}'::integer[],
+	"reservation_date" timestamp,
+	"status" "reserve_details_status",
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "upgrade_details" (
+	"upgrade_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"before_specs" integer[] DEFAULT '{}'::integer[],
+	"upgraded_components" integer[] DEFAULT '{}'::integer[],
+	"notes" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -863,12 +949,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "order_log" ADD CONSTRAINT "order_log_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "inventory_movement" ADD CONSTRAINT "inventory_movement_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1115,6 +1195,66 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "transaction_service_item" ADD CONSTRAINT "transaction_service_item_service_item_id_service_item_service_item_id_fk" FOREIGN KEY ("service_item_id") REFERENCES "public"."service_item"("service_item_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "service_owned_items" ADD CONSTRAINT "service_owned_items_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "service_return" ADD CONSTRAINT "service_return_original_service_id_service_service_id_fk" FOREIGN KEY ("original_service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "service_return" ADD CONSTRAINT "service_return_new_service_id_service_service_id_fk" FOREIGN KEY ("new_service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "build_details" ADD CONSTRAINT "build_details_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "cleaning_details" ADD CONSTRAINT "cleaning_details_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "rent_details" ADD CONSTRAINT "rent_details_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "repair_details" ADD CONSTRAINT "repair_details_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "replacement_details" ADD CONSTRAINT "replacement_details_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "reserve_details" ADD CONSTRAINT "reserve_details_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "upgrade_details" ADD CONSTRAINT "upgrade_details_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
