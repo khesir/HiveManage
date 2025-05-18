@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const CreateService = z.object({
   service_type_id: z.number().min(1),
+  joborder_id: z.number().min(1),
   uuid: z.string().min(1),
   fee: z.number().min(0),
   description: z.string().min(1),
@@ -14,6 +15,7 @@ export const CreateService = z.object({
 
 export const UpdateService = z.object({
   service_type_id: z.number().min(1),
+  joborder_id: z.number().min(1),
   uuid: z.string().min(1),
   fee: z.number().min(1),
   description: z.string().min(1),

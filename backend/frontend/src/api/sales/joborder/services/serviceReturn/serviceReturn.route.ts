@@ -8,36 +8,36 @@ import {
   UpdateServiceReturn,
 } from './serviceReturn.model';
 
-const serviceReturnRote = Router({ mergeParams: true });
+const serviceReturnRoute = Router({ mergeParams: true });
 const buildController = new ServiceReturnController(db);
 
-serviceReturnRote.get(
+serviceReturnRoute.get(
   '/',
   buildController.getAllServiceReturn.bind(buildController),
 );
 
-serviceReturnRote.get(
+serviceReturnRoute.get(
   '/:service_return_id',
   validateServiceReturnID,
   buildController.getServiceReturnById.bind(buildController),
 );
 
-serviceReturnRote.post(
+serviceReturnRoute.post(
   '/',
   [validateRequest({ body: CreateServiceReturn })],
   buildController.createServiceReturn.bind(buildController),
 );
 
-serviceReturnRote.put(
+serviceReturnRoute.put(
   '/:service_return_id',
   [validateRequest({ body: UpdateServiceReturn }), validateServiceReturnID],
   buildController.updateServiceReturn.bind(buildController),
 );
 
-serviceReturnRote.delete(
+serviceReturnRoute.delete(
   '/:service_return_id',
   validateServiceReturnID,
   buildController.deleteServiceReturn.bind(buildController),
 );
 
-export default serviceReturnRote;
+export default serviceReturnRoute;

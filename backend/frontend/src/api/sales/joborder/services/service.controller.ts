@@ -17,10 +17,13 @@ export class ServiceController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const joborder_service_only = req.query.joborder_service_only === 'true';
+    const joborder_id = (req.params.joborder_id as string) || undefined;
     try {
       const data = await this.servicesService.getAllServices(
         service_type_id,
+        joborder_service_only,
+        joborder_id,
         no_pagination,
         sort,
         limit,
@@ -69,8 +72,9 @@ export class ServiceController {
         total_cost_price,
         user_id,
         assigned,
+        joborder_id,
       } = req.body;
-      await this.servicesService.createServices({
+      const data = await this.servicesService.createServices({
         service_type_id,
         uuid,
         description,
@@ -80,11 +84,9 @@ export class ServiceController {
         total_cost_price,
         user_id,
         assigned,
+        joborder_id,
       });
-      res.status(HttpStatus.CREATED.code).json({
-        status: 'Success',
-        message: 'Successfully Created Service ',
-      });
+      res.status(200).json({ status: 'Success', data: data });
     } catch (error) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR.code).json({
         status: 'Error ',
@@ -106,6 +108,7 @@ export class ServiceController {
         customer_id,
         service_status,
         total_price_cost,
+        joborder_id,
       } = req.body;
 
       await this.servicesService.updateService(
@@ -117,6 +120,7 @@ export class ServiceController {
           customer_id,
           service_status,
           total_price_cost,
+          joborder_id,
         },
         Number(service_id),
       );

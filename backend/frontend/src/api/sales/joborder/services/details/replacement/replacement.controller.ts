@@ -53,8 +53,14 @@ export class ReplacementController {
     }
   }
   async createReplacement(req: Request, res: Response, next: NextFunction) {
-    const { replacement_id, service_id, owned_items, new_product, reason } =
-      req.body;
+    const {
+      replacement_id,
+      service_id,
+      owned_items,
+      new_product,
+      reason,
+      user_id,
+    } = req.body;
     try {
       await this.replacementService.createReplacement({
         replacement_id,
@@ -62,6 +68,7 @@ export class ReplacementController {
         owned_items,
         new_product,
         reason,
+        user_id,
       });
       res.status(HttpStatus.CREATED.code).json({
         status: 'Success',
@@ -79,7 +86,7 @@ export class ReplacementController {
 
   async updateReplacement(req: Request, res: Response, next: NextFunction) {
     const { replacement_id } = req.params;
-    const { service_id, owned_items, new_product, reason } = req.body;
+    const { service_id, owned_items, new_product, reason, user_id } = req.body;
     try {
       await this.replacementService.updateReplacement(
         {
@@ -87,6 +94,7 @@ export class ReplacementController {
           owned_items,
           new_product,
           reason,
+          user_id,
         },
         Number(replacement_id),
       );
@@ -105,8 +113,12 @@ export class ReplacementController {
   }
   async deleteReplacement(req: Request, res: Response, next: NextFunction) {
     const { service_id } = req.params;
+    const user_id = req.query.user_id as string;
     try {
-      await this.replacementService.deleteReplacement(Number(service_id));
+      await this.replacementService.deleteReplacement(
+        Number(service_id),
+        Number(user_id),
+      );
       res.status(200).json({
         status: 'Success',
         message: `Service ID:${service_id} is deleted Successfully`,

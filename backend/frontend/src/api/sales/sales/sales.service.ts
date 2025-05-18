@@ -46,10 +46,18 @@ export class SalesService {
             .returning({ customer_id: customer.customer_id })
         )[0].customer_id;
 
+      // Create Payment
+      const [paymentData] = await tx
+        .insert(payment)
+        .values({
+          ...data.payment!,
+        })
+        .returning({ payment_id: payment.payment_id });
       // Create new Sales
       const [newSales] = await tx
         .insert(sales)
         .values({
+          payment_id: paymentData.payment_id,
           status: data.status,
           handled_by: data.handled_by,
           customer_id: customer_id,
@@ -69,11 +77,6 @@ export class SalesService {
         })
         .returning({ sales_id: sales.sales_id });
 
-      // Create Payment
-      await tx.insert(payment).values({
-        sales_id: newSales.sales_id,
-        ...data.payment!,
-      });
       for (const item of data.salesItems) {
         const serialData = item.serializeData
           ? item.serializeData
@@ -188,7 +191,7 @@ export class SalesService {
       .from(sales)
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
       .leftJoin(employee, eq(employee.employee_id, sales.handled_by))
-      .leftJoin(payment, eq(payment.sales_id, sales.sales_id))
+      .leftJoin(payment, eq(payment.payment_id, sales.payment_id))
       .where(eq(sales.sales_id, Number(sales_id)));
 
     const items = await this.db

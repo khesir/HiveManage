@@ -149,6 +149,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."joborder_status" AS ENUM('In Progress', 'Pending', 'Completed', 'Turned Over', 'Cancelled');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."service_status" AS ENUM('Cancelled', 'In Progress', 'Pending', 'Complete');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -499,8 +505,6 @@ CREATE TABLE IF NOT EXISTS "service_record" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "payment" (
 	"payment_id" serial PRIMARY KEY NOT NULL,
-	"service_id" integer,
-	"sales_id" integer,
 	"total_price" real,
 	"paid_amount" real,
 	"change_amount" real,
@@ -538,6 +542,16 @@ CREATE TABLE IF NOT EXISTS "employeeLog" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "joborder_Log" (
+	"product_log_id" serial PRIMARY KEY NOT NULL,
+	"joborder_id" integer,
+	"action" varchar(255),
+	"performed_by" integer,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "salesLog" (
 	"sales_logs_id" serial PRIMARY KEY NOT NULL,
 	"sales_id" integer,
@@ -554,9 +568,6 @@ CREATE TABLE IF NOT EXISTS "salesLog" (
 CREATE TABLE IF NOT EXISTS "serviceLog" (
 	"service_log_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
-	"ticket_id" integer,
-	"transaction_service_item_id" integer,
-	"payment_id" integer,
 	"action" varchar(255),
 	"performed_by" integer,
 	"created_at" timestamp DEFAULT now(),
@@ -567,6 +578,7 @@ CREATE TABLE IF NOT EXISTS "serviceLog" (
 CREATE TABLE IF NOT EXISTS "sales" (
 	"sales_id" serial PRIMARY KEY NOT NULL,
 	"customer_id" integer,
+	"payment_id" integer,
 	"sales_status" "sales_status" NOT NULL,
 	"handled_by" integer,
 	"product_sold" integer,
@@ -611,13 +623,12 @@ CREATE TABLE IF NOT EXISTS "assigned_ticket" (
 CREATE TABLE IF NOT EXISTS "service" (
 	"service_id" serial PRIMARY KEY NOT NULL,
 	"service_type_id" integer,
+	"joborder_id" integer,
 	"uuid" varchar NOT NULL,
 	"fee" integer,
-	"customer_id" integer,
 	"service_status" "service_status" NOT NULL,
 	"total_cost_price" integer,
 	"is_returned" boolean DEFAULT false,
-	"payment_status" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -667,6 +678,21 @@ CREATE TABLE IF NOT EXISTS "transaction_service_item" (
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "joborder" (
+	"joborder_id" serial PRIMARY KEY NOT NULL,
+	"customer_id" integer,
+	"payment_id" integer,
+	"joborder_uuid" varchar,
+	"expected_completion_data" timestamp,
+	"completed_at" timestamp,
+	"turned_over_at" timestamp,
+	"status" "joborder_status",
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
+	CONSTRAINT "joborder_joborder_uuid_unique" UNIQUE("joborder_uuid")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "service_owned_items" (
@@ -1008,18 +1034,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "payment" ADD CONSTRAINT "payment_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "payment" ADD CONSTRAINT "payment_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "ProductTransLog" ADD CONSTRAINT "ProductTransLog_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1056,6 +1070,18 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "joborder_Log" ADD CONSTRAINT "joborder_Log_joborder_id_joborder_joborder_id_fk" FOREIGN KEY ("joborder_id") REFERENCES "public"."joborder"("joborder_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "joborder_Log" ADD CONSTRAINT "joborder_Log_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "salesLog" ADD CONSTRAINT "salesLog_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1086,24 +1112,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "serviceLog" ADD CONSTRAINT "serviceLog_ticket_id_tickets_ticket_id_fk" FOREIGN KEY ("ticket_id") REFERENCES "public"."tickets"("ticket_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "serviceLog" ADD CONSTRAINT "serviceLog_transaction_service_item_id_transaction_service_item_transaction_service_item_id_fk" FOREIGN KEY ("transaction_service_item_id") REFERENCES "public"."transaction_service_item"("transaction_service_item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "serviceLog" ADD CONSTRAINT "serviceLog_payment_id_payment_payment_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."payment"("payment_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "serviceLog" ADD CONSTRAINT "serviceLog_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1111,6 +1119,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "sales" ADD CONSTRAINT "sales_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "sales" ADD CONSTRAINT "sales_payment_id_payment_payment_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."payment"("payment_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1170,7 +1184,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "service" ADD CONSTRAINT "service_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "service" ADD CONSTRAINT "service_joborder_id_joborder_joborder_id_fk" FOREIGN KEY ("joborder_id") REFERENCES "public"."joborder"("joborder_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1195,6 +1209,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "transaction_service_item" ADD CONSTRAINT "transaction_service_item_service_item_id_service_item_service_item_id_fk" FOREIGN KEY ("service_item_id") REFERENCES "public"."service_item"("service_item_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "joborder" ADD CONSTRAINT "joborder_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "joborder" ADD CONSTRAINT "joborder_payment_id_payment_payment_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."payment"("payment_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

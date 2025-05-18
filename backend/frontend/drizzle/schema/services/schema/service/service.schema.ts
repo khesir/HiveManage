@@ -7,8 +7,8 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { customer } from '@/drizzle/schema/customer/schema/customer.schema';
 import { service_Type } from './serviceType.schema';
+import { joborder } from './joborder.schema';
 
 export const service_status = pgEnum('service_status', [
   'Cancelled',
@@ -22,13 +22,12 @@ export const service = pgTable('service', {
   service_type_id: integer('service_type_id').references(
     () => service_Type.service_type_id,
   ),
+  joborder_id: integer('joborder_id').references(() => joborder.joborder_id),
   uuid: varchar('uuid').notNull(),
   fee: integer('fee'),
-  customer_id: integer('customer_id').references(() => customer.customer_id),
   service_status: service_status('service_status').notNull(),
   total_cost_price: integer('total_cost_price'),
   is_returned: boolean('is_returned').default(false),
-  payment_status: integer('payment_status'),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')
     .defaultNow()

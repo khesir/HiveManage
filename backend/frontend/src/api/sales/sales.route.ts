@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import log from '@/lib/logger';
 import salesRoute from './sales/sales.route';
-import assignedEmployeeRoute from './services/assignedemployees/assignedemployees.route';
-import ticketsRoute from './services/tickets/ticket.route';
-import tickettypesRoute from './services/ticketType/tickettype.route';
-import serviceRoute from './services/service.route';
-import servicetypesRoute from './services/servicetype/servicetype.route';
+import assignedEmployeeRoute from './joborder/services/assignedemployees/assignedemployees.route';
+import ticketsRoute from './joborder/services/tickets/ticket.route';
+import tickettypesRoute from './joborder/services/ticketType/tickettype.route';
+import servicetypesRoute from './joborder/services/servicetype/servicetype.route';
+import jobrderRoute from './joborder/joborder.route';
 
 const smsRoute = Router({ mergeParams: true });
 
@@ -18,8 +18,8 @@ log.info('ROUTE assigned-employee set');
 smsRoute.use('/sales', salesRoute);
 log.info('ROUTE sales set');
 
-smsRoute.use('/service', serviceRoute);
-log.info('ROUTE services set');
+smsRoute.use('/joborder', jobrderRoute);
+log.info('ROUTE joborder set');
 
 smsRoute.use('/service-type', servicetypesRoute);
 log.info('ROUTE service-type set');

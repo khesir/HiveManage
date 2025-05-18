@@ -23,7 +23,6 @@ export class TicketsService {
 
       await tx.insert(serviceLog).values({
         service_id: data.service_id,
-        ticket_id: newTicket.ticket_id,
         action: `User ID: ${data.user_id} created new ticket`,
         performed_by: data.user_id,
       });
@@ -36,7 +35,6 @@ export class TicketsService {
         });
         await tx.insert(serviceLog).values({
           service_id: data.service_id,
-          ticket_id: newTicket.ticket_id,
           action: `User ID: ${employee} has assigned employee to the ticket ID${newTicket.ticket_id}`,
           performed_by: data.user_id,
         });

@@ -17,10 +17,6 @@ export class ServiceLogService {
 
   async getAllServiceLog(
     service_id: string | undefined,
-    ticket_id: string | undefined,
-    report_id: string | undefined,
-    transaction_service_item_id: string | undefined,
-    payment_id: string | undefined,
     no_pagination: boolean,
     sort: string,
     limit: number,
@@ -30,22 +26,6 @@ export class ServiceLogService {
 
     if (service_id) {
       conditions.push(eq(serviceLog.service_id, Number(service_id)));
-    }
-
-    if (ticket_id) {
-      conditions.push(eq(serviceLog.ticket_id, Number(ticket_id)));
-    }
-    if (transaction_service_item_id) {
-      conditions.push(
-        eq(
-          serviceLog.transaction_service_item_id,
-          Number(transaction_service_item_id),
-        ),
-      );
-    }
-
-    if (payment_id) {
-      conditions.push(eq(serviceLog.payment_id, Number(payment_id)));
     }
     const totalCountQuery = await this.db
       .select({

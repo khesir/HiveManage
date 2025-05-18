@@ -3,8 +3,6 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { CreatePayment, UpdatePayment } from './payment.model';
 import { payment } from '@/drizzle/schema/payment/schema/payment.schema';
 import { SchemaType } from '@/drizzle/schema/type';
-import { sales } from '@/drizzle/schema/sales';
-import { service } from '@/drizzle/schema/services';
 
 export class PaymentService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -53,8 +51,6 @@ export class PaymentService {
     const result = await this.db
       .select()
       .from(payment)
-      .leftJoin(service, eq(service.service_id, payment.service_id))
-      .leftJoin(sales, eq(sales.sales_id, payment.sales_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(payment.created_at) : desc(payment.created_at),
@@ -63,13 +59,7 @@ export class PaymentService {
       .offset(offset);
 
     const paymentWithDetails = result.map((row) => ({
-      ...row.payment,
-      service: {
-        ...row.service,
-      },
-      sales: {
-        ...row.sales,
-      },
+      ...row,
     }));
 
     return { totalData, paymentWithDetails };
@@ -79,18 +69,10 @@ export class PaymentService {
     const result = await this.db
       .select()
       .from(payment)
-      .leftJoin(service, eq(service.service_id, payment.service_id))
-      .leftJoin(sales, eq(sales.sales_id, payment.sales_id))
       .where(eq(payment.payment_id, Number(payment_id)));
 
     const paymentWithDetails = result.map((row) => ({
-      ...row.payment,
-      service: {
-        ...row.service,
-      },
-      sales: {
-        ...row.sales,
-      },
+      ...row,
     }));
 
     return paymentWithDetails;

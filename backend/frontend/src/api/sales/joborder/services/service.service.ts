@@ -7,10 +7,9 @@ import {
   service,
   service_Type,
 } from '@/drizzle/schema/services';
-import { customer } from '@/drizzle/schema/customer';
 import { employee } from '@/drizzle/schema/ems';
-import { payment } from '@/drizzle/schema/payment';
 import { employeeLog } from '@/drizzle/schema/records/schema/employeeLog';
+import { joborder } from '@/drizzle/schema/services/schema/service/joborder.schema';
 
 export class ServicesService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -20,7 +19,7 @@ export class ServicesService {
   }
 
   async createServices(data: CreateService) {
-    await this.db.transaction(async (tx) => {
+    return await this.db.transaction(async (tx) => {
       const [newService] = await tx
         .insert(service)
         .values({ ...data })
@@ -43,11 +42,18 @@ export class ServicesService {
         action: 'Pushlied movie',
         performed_by: data.user_id,
       });
+      const returnData = await tx
+        .select()
+        .from(service)
+        .where(eq(service.service_id, newService.service_id));
+      return returnData;
     });
   }
 
   async getAllServices(
     service_type_id: string | undefined,
+    joborder_service_only: boolean,
+    joborder_id: string | undefined,
     no_pagination: boolean,
     sort: string,
     limit: number,
@@ -57,6 +63,9 @@ export class ServicesService {
 
     if (service_type_id) {
       conditions.push(eq(service.service_id, Number(service_type_id)));
+    }
+    if (joborder_service_only && joborder_id) {
+      conditions.push(eq(service.joborder_id, Number(joborder_id)));
     }
     const totalCountQuery = await this.db
       .select({
@@ -74,8 +83,7 @@ export class ServicesService {
         service_Type,
         eq(service_Type.service_type_id, service.service_type_id),
       )
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
-      .leftJoin(payment, eq(payment.service_id, service.service_id))
+      .leftJoin(joborder, eq(joborder.joborder_id, service.joborder_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(service.created_at) : desc(service.created_at),
@@ -93,10 +101,9 @@ export class ServicesService {
 
     const serviceWithDetails = result.map((row) => ({
       ...row.service,
-      customer: row.customer,
       service_type: row.service_Type,
+      joborder: row.joborder,
       assigned: assignedByService.get(row.service.service_id),
-      payment: row.payment,
     }));
 
     return { totalData, serviceWithDetails };
@@ -110,8 +117,6 @@ export class ServicesService {
         service_Type,
         eq(service_Type.service_type_id, service.service_type_id),
       )
-      .leftJoin(customer, eq(customer.customer_id, service.customer_id))
-      .leftJoin(payment, eq(payment.service_id, service.service_id))
       .where(eq(service.service_id, Number(service_id)));
 
     const assignedByService = await this.getAssignedEmployeeByServiceIDs([
@@ -120,10 +125,8 @@ export class ServicesService {
 
     const serviceWithDetails = result.map((row) => ({
       ...row.service,
-      customer: row.customer,
       service_type: row.service_Type,
       assigned: assignedByService.get(row.service.service_id),
-      payment: row.payment,
     }));
 
     return serviceWithDetails;

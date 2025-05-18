@@ -7,8 +7,6 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { service } from '../../services';
-import { sales } from '../../sales';
 
 export const paymentMethodEnum = pgEnum('payment_method', [
   'Cash',
@@ -19,8 +17,6 @@ export const paymentType = pgEnum('payment_type', ['Service', 'Sales']);
 
 export const payment = pgTable('payment', {
   payment_id: serial('payment_id').primaryKey(),
-  service_id: integer('service_id').references(() => service.service_id),
-  sales_id: integer('sales_id').references(() => sales.sales_id),
   amount: real('total_price'),
   paid_amount: real('paid_amount'),
   change_amount: real('change_amount'),

@@ -6,11 +6,11 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { employee } from '../../ems';
-import { service } from '../../services';
+import { joborder } from '../../services/schema/service/joborder.schema';
 
-export const serviceLog = pgTable('serviceLog', {
-  service_log_id: serial('service_log_id').primaryKey(),
-  service_id: integer('service_id').references(() => service.service_id),
+export const joborderLog = pgTable('joborder_Log', {
+  joborder_log_id: serial('product_log_id').primaryKey(),
+  joborder_id: integer('joborder_id').references(() => joborder.joborder_id),
   action: varchar('action', { length: 255 }),
   performed_by: integer('performed_by').references(() => employee.employee_id),
   created_at: timestamp('created_at').defaultNow(),

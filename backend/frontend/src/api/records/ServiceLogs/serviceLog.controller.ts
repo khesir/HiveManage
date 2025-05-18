@@ -13,10 +13,6 @@ export class ServiceLogController {
 
   async getSalesLog(req: Request, res: Response, next: NextFunction) {
     const service_id = (req.params.service_id as string) || undefined;
-    const ticket_id = (req.params.ticket_id as string) || undefined;
-    const report_id = (req.params.report_id as string) || undefined;
-    const service_item_id = (req.params.service_item_id as string) || undefined;
-    const payment_id = (req.params.payment_id as string) || undefined;
     const no_pagination = req.query.no_pagination == 'true';
     const sort = (req.query.sort as string) || 'asc';
     const limit = Number(req.query.limit as string) || 10;
@@ -24,10 +20,6 @@ export class ServiceLogController {
     try {
       const data = await this.servicelogService.getAllServiceLog(
         service_id,
-        ticket_id,
-        report_id,
-        service_item_id,
-        payment_id,
         no_pagination,
         sort,
         limit,
@@ -51,23 +43,10 @@ export class ServiceLogController {
 
   async createSalesLog(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        service_id,
-        ticket_id,
-        report_id,
-        service_item_id,
-        payment_id,
-        action,
-        quantity,
-        performed_by,
-      } = req.body;
+      const { service_id, action, quantity, performed_by } = req.body;
 
       await this.servicelogService.createServiceLog({
         service_id,
-        ticket_id,
-        report_id,
-        service_item_id,
-        payment_id,
         action,
         quantity,
         performed_by,

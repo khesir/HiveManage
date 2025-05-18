@@ -8,7 +8,7 @@ import {
 } from './serviceRecord.model';
 import { validateServiceRecordID } from './serviceRecord.middleware';
 import serialserviceitemRoute from '../serializedServiceItems/serializedServItem.route';
-import transerviceitemsRoute from '@/src/api/sales/services/transactionServiceItem/transerviceitem.route';
+import transerviceitemsRoute from '@/src/api/sales/joborder/services/transactionServiceItem/transerviceitem.route';
 
 const serviceRecordRoute = Router({ mergeParams: true });
 const serviceRecordController = new ServiceRecordController(db);

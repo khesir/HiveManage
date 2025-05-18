@@ -7,6 +7,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { customer } from '../../customer';
 import { employee } from '../../ems';
+import { payment } from '../../payment';
 
 export const salesStatus = pgEnum('sales_status', [
   'Completed',
@@ -18,6 +19,7 @@ export const salesStatus = pgEnum('sales_status', [
 export const sales = pgTable('sales', {
   sales_id: serial('sales_id').primaryKey(),
   customer_id: integer('customer_id').references(() => customer.customer_id),
+  payment_id: integer('payment_id').references(() => payment.payment_id),
   status: salesStatus('sales_status').notNull(),
   handled_by: integer('handled_by').references(() => employee.employee_id),
   product_sold: integer('product_sold'),
