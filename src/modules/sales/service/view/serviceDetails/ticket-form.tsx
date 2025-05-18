@@ -25,8 +25,8 @@ import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-si
 import {useNavigate, useParams} from 'react-router-dom';
 import {TicketType} from '@/components/validation/ticket-type';
 import {Ticket, ticketSchema} from '@/components/validation/tickets';
-import {SearchEmployee} from '../_components/employee-selector';
-import useEmployeeStore from '../_components/use-employee-list-hook';
+import {SearchEmployee} from '../../_components/employee-selector';
+import useEmployeeStore from '../../_components/use-employee-list-hook';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Button} from '@/components/ui/button';
 import {CreateTicket} from '@/api/tickets-api';

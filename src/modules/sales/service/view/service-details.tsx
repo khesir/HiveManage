@@ -10,7 +10,7 @@ import {AvatarCircles} from '@/components/ui/avatarcircles';
 import {Separator} from '@/components/ui/separator';
 import useService from '../../_components/hooks/use-service';
 
-export function ServiceDetails() {
+export function ServiceInformation() {
 	const {data} = useService();
 	if (!data) {
 		return (
@@ -21,7 +21,6 @@ export function ServiceDetails() {
 			</Card>
 		);
 	}
-	console.log(data);
 	return (
 		<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
 			<CardHeader className="flex flex-row items-start bg-muted/50">

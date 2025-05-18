@@ -28,7 +28,6 @@ import {Card} from '@/components/ui/card';
 import {SalesCustomerProfile} from '../../sales/create/customer-profile-form';
 import {generateCustomUUID} from '@/lib/util/utils';
 import {toast} from 'sonner';
-import {CreateService} from '@/api/service-api';
 import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-sign-in-userdata';
 import {useNavigate} from 'react-router-dom';
 
@@ -80,7 +79,7 @@ export function ServiceForm() {
 			customer_id: customer.customer_id,
 			total_cost_price: formData.fee,
 		};
-		await CreateService(data);
+		console.log(data);
 		setLoading(false);
 		navigate(-1);
 	};

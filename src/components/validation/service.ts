@@ -70,15 +70,17 @@ const paymentSchema = z.object({
 export const serviceSchema = z.object({
 	service_id: z.number().optional(),
 	service_type_id: z.number().min(1),
+	joborder_id: z.number().optional(),
 	uuid: z.string().min(1),
 	fee: z.number().min(0),
 	description: z.string().min(1),
 	customer_id: z.number().optional(),
 	service_status: z.enum(['Pending', 'In Progress', 'Complete']),
 	total_cost_price: z.number().optional(),
-
+	is_returned: z.boolean().default(false),
 	customer: customerSchema.optional(),
 	service_type: serviceTypeSchema.optional(),
+
 	assigned: z.array(assignedEmployeeSchema).optional(),
 	payment: paymentSchema.optional(),
 

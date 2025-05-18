@@ -6,7 +6,7 @@ import ViewService from '@/modules/sales/_sections/service/service-view';
 const breadcrubItems = [
 	{title: 'Dashboard', link: 'sales/dashboard'},
 	{title: 'Systems', link: 'sales/overview'},
-	{title: 'Overview', link: 'sales/overview'},
+	{title: 'Joborder', link: 'sales/overview'},
 	{title: 'Services', link: 'sales/services'},
 	{title: 'View', link: '#'},
 ];

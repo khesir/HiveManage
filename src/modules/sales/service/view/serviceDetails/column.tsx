@@ -9,7 +9,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {TicketSheetList} from './sheet/ticket-sheet';
+import {TicketSheetList} from '../sheet/ticket-sheet';
 
 const ActionCell = (data: Ticket) => {
 	return (

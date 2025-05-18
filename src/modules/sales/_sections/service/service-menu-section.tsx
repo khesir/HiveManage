@@ -1,5 +1,5 @@
-import {ServiceMenu} from '../../service/service-menu';
-import {ServiceMenuProfile} from '../../service/service-menu-profile';
+import {ServiceMenu} from '../../service/view/service-menu';
+import {ServiceMenuProfile} from '../../service/view/service-menu-profile';
 
 export default function ServiceMenuSection() {
 	return (

@@ -9,7 +9,7 @@ import {ServiceType} from '@/components/validation/service-type';
 import clsx from 'clsx';
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import useServiceTypeStore from './_components/use-serviceType-hook';
+import useServiceTypeStore from '../_components/use-serviceType-hook';
 
 export function ServiceMenu() {
 	const [serviceMenu, setServiceMenu] = useState<ServiceType[]>();
@@ -40,15 +40,15 @@ export function ServiceMenu() {
 			<div className="flex justify-between">
 				<Heading title={'Servie Menu'} description="" />
 				<div className="flex gap-3">
-					<Button onClick={() => navigate('transactions')}>Transaction</Button>
+					<Button onClick={() => navigate(-1)}>Transaction</Button>
 					<Button onClick={() => navigate('create')}>
 						Create New Service Type
 					</Button>
 				</div>
 			</div>
 			<Separator />
-			<ScrollArea>
-				<div className="grid grid-cols-3 gap-2">
+			<ScrollArea className="h-[70vh] w-full rounded-md border">
+				<div className="grid grid-cols-3 gap-2 p-4">
 					{serviceMenu?.map((service, index) => (
 						<ServiceCard
 							key={index}

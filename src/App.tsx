@@ -39,6 +39,8 @@ import CreateServicePage from './pages/sales/systems/service/create-service-page
 import CreateTaskPage from './pages/sales/systems/service/tickets/task-create';
 import CreateSupplierPage from './pages/inventory/suppliers/create-supplier';
 import ServiceMenuPage from './pages/sales/systems/service/menu-service-page';
+import JoborderListPage from './pages/sales/systems/service/joborder-list-page';
+import CreateJoborderPage from './pages/sales/systems/service/create-joborder-page';
 
 function App() {
 	return (
@@ -208,24 +210,24 @@ function App() {
 								<Route path="create" element={<CreateSalesPage />} />
 								<Route path="list" element={<SalesListPage />} />
 								<Route path="list/view/:id" element={<SalesViewPage />} />
-								<Route path="services">
-									<Route index element={<ServiceMenuPage />} />
-									<Route path="create" />
-									<Route path="transactions" element={<ServiceListPage />} />
+								<Route path="joborder">
+									<Route index element={<JoborderListPage />} />
+									<Route path="create" element={<CreateJoborderPage />} />
+									<Route path=":joborder_id" element={<ServiceListPage />} />
 									<Route
-										path="transactions/view/:id"
-										element={<ViewServicePage />}
+										path=":joborder_id/create"
+										element={<ServiceMenuPage />}
 									/>
-									<Route
-										path="transactions/create"
-										element={<CreateServicePage />}
-									/>
-									{/* Ticket */}
-									<Route path="transactions/view/:id/ticket" />
-									<Route
-										path="transactions/view/:id/ticket/create"
-										element={<CreateTaskPage />}
-									/>
+									<Route path=":joborder_id/services">
+										<Route path=":service_id" element={<ViewServicePage />} />
+										<Route path="create" element={<CreateServicePage />} />
+										{/* Ticket */}
+										<Route path="transactions/view/:id/ticket" />
+										<Route
+											path="transactions/view/:id/ticket/create"
+											element={<CreateTaskPage />}
+										/>
+									</Route>
 								</Route>
 
 								<Route path="payment" element={<PaymentListPage />} />

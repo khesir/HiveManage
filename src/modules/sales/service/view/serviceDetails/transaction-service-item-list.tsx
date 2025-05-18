@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
-import {useParams} from 'react-router-dom';
+import {useParams, useSearchParams} from 'react-router-dom';
 import {Ticket} from '@/components/validation/tickets';
 import {columns} from './column';
 import {TransactionServiceItemTable} from './transaction-service-item-table';
@@ -9,9 +9,8 @@ export type paramsProps = {
 	searchParams: URLSearchParams;
 };
 
-export default function TransactionServiceItemList({
-	searchParams,
-}: paramsProps) {
+export default function TransactionServiceItemList() {
+	const [searchParams] = useSearchParams();
 	const [ticket, setTicket] = useState<Ticket[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const {id} = useParams();

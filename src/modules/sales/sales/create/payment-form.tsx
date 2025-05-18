@@ -12,7 +12,6 @@ import {Card} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Payment, paymentSchema} from '@/components/validation/payment';
-import {useSalesHook} from '@/components/hooks/use-sales-hook';
 import {
 	Select,
 	SelectContent,
@@ -20,24 +19,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {useState} from 'react';
 
 interface Props {
 	process: (data: Payment) => void;
 	loading: boolean;
+	totalValue: number;
 }
 
-export function CreatePaymentForm({process, loading}: Props) {
-	const {salesHookData} = useSalesHook();
-	const [totalValue] = useState<number>(() =>
-		Math.round(
-			salesHookData.reduce(
-				(total, item) =>
-					total + (item.data.selling_price || 0) * (item.quantity || 0),
-				0,
-			),
-		),
-	);
+export function CreatePaymentForm({process, loading, totalValue}: Props) {
 	const form = useForm<Payment>({
 		resolver: zodResolver(paymentSchema),
 		defaultValues: {
@@ -100,7 +89,7 @@ export function CreatePaymentForm({process, loading}: Props) {
 										</FormItem>
 									)}
 								/>
-								<div className="flex gap-5 justify-between">
+								<div className="grid grid-cols-2 gap-5">
 									<FormField
 										control={form.control}
 										name="vat_amount"
@@ -189,7 +178,7 @@ export function CreatePaymentForm({process, loading}: Props) {
 													type="number"
 													{...field}
 													disabled={loading}
-													placeholder="1234-5678"
+													placeholder="ID1234-5678"
 													onChange={(e) => {
 														field.onChange(e.target.value);
 													}}
@@ -199,7 +188,7 @@ export function CreatePaymentForm({process, loading}: Props) {
 										</FormItem>
 									)}
 								/>
-								<div className="flex gap-5 justify-between">
+								<div className="grid grid-cols-2 gap-5">
 									<FormField
 										control={form.control}
 										name="amount"
@@ -211,7 +200,7 @@ export function CreatePaymentForm({process, loading}: Props) {
 														type="number"
 														{...field}
 														disabled={true}
-														placeholder="123123"
+														placeholder="Total Amount"
 														onChange={(e) => {
 															const value = e.target.value;
 															// Ensure the value is converted to a number
@@ -234,7 +223,7 @@ export function CreatePaymentForm({process, loading}: Props) {
 														type="number"
 														{...field}
 														disabled={true}
-														placeholder="123123"
+														placeholder="Total Change"
 														onChange={(e) => {
 															const value = e.target.value;
 															// Ensure the value is converted to a number

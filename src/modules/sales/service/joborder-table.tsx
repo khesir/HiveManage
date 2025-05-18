@@ -25,7 +25,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {
 	DropdownMenu,
@@ -34,7 +34,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import {Ticket} from '@/components/validation/tickets';
+import {Joborder} from '@/components/validation/joborder';
+import {JoborderCreateDialog} from './create/create-joborder-form';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -46,7 +47,7 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function TransactionServiceItemTable<TData extends Ticket, TValue>({
+export function JoborderTable<TData extends Joborder, TValue>({
 	columns,
 	data,
 	pageCount,
@@ -143,12 +144,10 @@ export function TransactionServiceItemTable<TData extends Ticket, TValue>({
 	};
 
 	return (
-		<>
+		<div className="space-y-2">
 			<div className="flex justify-between items-center">
 				<div className="flex gap-10 items-center">
-					<h1 className="text-2xl font-bold tracking-tight">
-						Transaction Service Items
-					</h1>
+					<h1 className="text-2xl font-bold tracking-tight">Joborders</h1>
 					<div className="flex gap-1">
 						<DropdownMenu>
 							<DropdownMenuTrigger>
@@ -182,10 +181,7 @@ export function TransactionServiceItemTable<TData extends Ticket, TValue>({
 						</DropdownMenu>
 					</div>
 				</div>
-				<Button onClick={() => navigate('ticket/create')}>
-					<Plus className="mr-2 h-4 w-4" />
-					Add Item
-				</Button>
+				<JoborderCreateDialog />
 			</div>
 			<ScrollArea className="h-[calc(90vh-220px)] rounded-md border">
 				<Table className="relative">
@@ -317,6 +313,6 @@ export function TransactionServiceItemTable<TData extends Ticket, TValue>({
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

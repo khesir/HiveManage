@@ -3,12 +3,11 @@ import {PaginationResponse, request} from '@/api/axios';
 import {Service} from '@/components/validation/service';
 import {columns} from './columns';
 import {ServiceTable} from './service-table';
+import {useParams, useSearchParams} from 'react-router-dom';
 
-export type paramsProps = {
-	searchParams: URLSearchParams;
-};
-
-export default function ServiceList({searchParams}: paramsProps) {
+export default function ServiceList() {
+	const [searchParams] = useSearchParams();
+	const {joborder_id} = useParams();
 	const [service, setService] = useState<Service[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
 
@@ -23,7 +22,7 @@ export default function ServiceList({searchParams}: paramsProps) {
 		const fetchEmployees = async () => {
 			const res = await request<PaginationResponse<Service>>(
 				'GET',
-				`/api/v1/sms/service?limit=${pageLimit}&offset=${offset}` +
+				`/api/v1/sms/joborder/${joborder_id}/service?joborder_service_only=true&limit=${pageLimit}&offset=${offset}` +
 					(serviceType ? `&serviceType=${serviceType}` : '') +
 					(sort ? `&sort=${sort}` : '') +
 					(uuid ? `&product_name=${uuid}` : ''),

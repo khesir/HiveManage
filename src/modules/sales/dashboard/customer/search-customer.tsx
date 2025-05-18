@@ -22,8 +22,13 @@ import {useEffect, useState} from 'react';
 interface Props {
 	processCreate: (data: Customer) => void;
 	showTitle?: boolean;
+	showConfirmation?: boolean;
 }
-export function SearchCustomer({processCreate, showTitle = true}: Props) {
+export function SearchCustomer({
+	processCreate,
+	showTitle = true,
+	showConfirmation = true,
+}: Props) {
 	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,7 +65,11 @@ export function SearchCustomer({processCreate, showTitle = true}: Props) {
 									key={customer.customer_id}
 									onSelect={() => {
 										setSelectedCustomer(customer);
-										setIsModalOpen(true);
+										if (showConfirmation) {
+											setIsModalOpen(true);
+										} else {
+											processCreate(selectedCustomer!);
+										}
 									}}
 								>
 									<div className="flex items-center gap-3">

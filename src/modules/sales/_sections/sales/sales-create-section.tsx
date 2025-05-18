@@ -78,7 +78,15 @@ export function CreateSalesSection() {
 								)}
 							</div>
 							<div className="flex-[50%]">
-								<CreatePaymentForm loading={loading} process={processData} />
+								<CreatePaymentForm
+									loading={loading}
+									process={processData}
+									totalValue={salesHookData.reduce(
+										(total, item) =>
+											total + (item.data.selling_price || 0) * item.quantity,
+										0,
+									)}
+								/>
 							</div>
 						</div>
 					) : (

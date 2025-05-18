@@ -68,10 +68,10 @@ export function getSalesMenuList(pathname: string): Group[] {
 							active: pathname === '/sales/system/sales/list',
 						},
 						{
-							href: '/sales/system/sales/services',
-							label: 'Service',
+							href: '/sales/system/sales/joborder',
+							label: 'Joborder',
 							icon: ScrollText,
-							active: pathname === '/sales/system/sales/services',
+							active: pathname === '/sales/system/sales/joborder',
 						},
 						{
 							href: '/sales/system/sales/payment',

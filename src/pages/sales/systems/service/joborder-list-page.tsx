@@ -1,20 +1,19 @@
 import {ContentLayout} from '@/components/appLayout/content-layout';
 
 import {Breadcrumbs} from '@/components/ui/breadcrumbs';
-import ServiceListSection from '@/modules/sales/_sections/service/joborder-view-service-list';
+import JoborderListSection from '@/modules/sales/_sections/service/joborder-list-section';
 
 const breadcrubItems = [
 	{title: 'Dashboard', link: '/sales/dashboard'},
 	{title: 'Systems', link: '/sales/overview'},
 	{title: 'Joborder', link: '/sales/services'},
-	{title: 'Services', link: '/sales/services'},
 ];
 
-export default function ServiceListPage() {
+export default function JoborderListPage() {
 	return (
 		<ContentLayout title="PC BEE Management Systems">
 			<Breadcrumbs items={breadcrubItems} />
-			<ServiceListSection />
+			<JoborderListSection />
 		</ContentLayout>
 	);
 }

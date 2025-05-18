@@ -1,9 +1,35 @@
-import {ColumnDef} from '@tanstack/react-table';
+import {ColumnDef, Row} from '@tanstack/react-table';
 import {dateParser} from '@/lib/util/utils';
 import {Service} from '@/components/validation/service';
 import {Badge} from '@/components/ui/badge';
 import {AvatarCircles} from '@/components/ui/avatarcircles';
-
+import {useNavigate} from 'react-router-dom';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {Button} from '@/components/ui/button';
+const ActionCell = (data: Service) => {
+	const navigate = useNavigate();
+	return (
+		<div className="flex gap-2">
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger>
+						<Button onClick={() => navigate(`services/${data.service_id}`)}>
+							View
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>View Service</p>
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
+		</div>
+	);
+};
 export const columns: ColumnDef<Service>[] = [
 	{
 		accessorKey: 'uuid',
@@ -50,5 +76,9 @@ export const columns: ColumnDef<Service>[] = [
 		accessorKey: 'created_at',
 		header: 'Created',
 		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
+	},
+	{
+		header: 'Action',
+		cell: ({row}: {row: Row<Service>}) => <ActionCell {...row.original} />,
 	},
 ];

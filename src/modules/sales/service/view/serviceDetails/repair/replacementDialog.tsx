@@ -6,11 +6,10 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import {Plus} from 'lucide-react';
 import {useState} from 'react';
-import EmployeeList from './employee-selection-list';
+import {ReplacementForm} from './replacementFormDialog';
 
-export function AddEmployeeSelection() {
+export function ReplacementDialog() {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const handleSubmit = () => {
 		setFormModal(false);
@@ -18,15 +17,12 @@ export function AddEmployeeSelection() {
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
-				<Button className="flex items-center gap-1">
-					<Plus className="w-4 h-4" />
-					Assign
-				</Button>
+				<Button className="flex items-center gap-1">Create Details</Button>
 			</DialogTrigger>
 			<DialogContent className="max-w-[100vh]">
-				<DialogTitle>Select Employee</DialogTitle>
+				<DialogTitle>Replacement Details Form</DialogTitle>
 				<DialogDescription></DialogDescription>
-				<EmployeeList onSubmit={handleSubmit} />
+				<ReplacementForm onSubmit={handleSubmit} />
 			</DialogContent>
 		</Dialog>
 	);

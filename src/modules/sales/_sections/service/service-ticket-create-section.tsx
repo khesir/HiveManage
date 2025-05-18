@@ -1,5 +1,5 @@
 import {Heading} from '@/components/ui/heading';
-import {TicketForm} from '../../service/view/ticket-form';
+import {TicketForm} from '../../service/view/serviceDetails/ticket-form';
 
 export function CreateServiceTicketSection() {
 	return (
