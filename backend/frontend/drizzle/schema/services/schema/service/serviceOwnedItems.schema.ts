@@ -10,6 +10,7 @@ import { service } from './service.schema';
 export const serviceOwnedItems = pgTable('service_owned_items', {
   service_owned_id: serial('service_owned_id').primaryKey(),
   service_id: integer('service_id').references(() => service.service_id),
+  name: varchar('name'),
   item_description: varchar('item_description'),
   serial_number: varchar('serial_number'),
   brand: varchar('brand'),

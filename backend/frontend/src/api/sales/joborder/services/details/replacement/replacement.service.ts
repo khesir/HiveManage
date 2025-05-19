@@ -5,6 +5,8 @@ import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { service } from '@/drizzle/schema/services';
 import { replacementDetails } from '@/drizzle/schema/services/schema/service/services/replacementDetails.schema';
 import { serviceLog } from '@/drizzle/schema/records/schema/serviceLog';
+import { serviceItem } from '@/drizzle/schema/services/schema/service/serviceItems';
+import { serviceOwnedItems } from '@/drizzle/schema/services/schema/service/serviceOwnedItems.schema';
 
 export class ReplacementService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -51,11 +53,18 @@ export class ReplacementService {
     }
 
     const result = await query;
-
-    const ReplacementDetailsWithDetails = result.map((row) => ({
-      ...row.replacement_details,
-      service: row.service,
-    }));
+    const ReplacementDetailsWithDetails = await Promise.all(
+      result.map(async (row) => ({
+        ...row.replacement_details,
+        service: row.service,
+        serviceItems: await this.getReplacementById(
+          row.replacement_details.service_id!,
+        ),
+        ownedItems: await this.getOwnedItemByServiceId(
+          row.replacement_details.service_id!,
+        ),
+      })),
+    );
     return { ReplacementDetailsWithDetails, totalData };
   }
   async getReplacementById(Replacement_id: number) {
@@ -94,5 +103,20 @@ export class ReplacementService {
       action: 'Created Replacement Details',
       performed_by: user_id,
     });
+  }
+
+  async getSerByServiceId(service_id: number) {
+    const result = await this.db
+      .select()
+      .from(serviceItem)
+      .where(eq(serviceItem.service_id, service_id));
+    return result;
+  }
+  async getOwnedItemByServiceId(service_id: number) {
+    const result = await this.db
+      .select()
+      .from(serviceOwnedItems)
+      .where(eq(serviceOwnedItems.service_id, service_id));
+    return result;
   }
 }

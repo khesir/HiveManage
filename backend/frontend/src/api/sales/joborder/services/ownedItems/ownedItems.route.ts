@@ -35,7 +35,7 @@ ownedServiceItemsRoute.post(
 );
 
 ownedServiceItemsRoute.put(
-  '/:transaction_service_Record',
+  '/:service_owned_id',
   [
     validateRequest({ body: UpdateOwnedServiceItems }),
     validateOwnedServiceItemsID,
@@ -46,7 +46,7 @@ ownedServiceItemsRoute.put(
 );
 
 ownedServiceItemsRoute.delete(
-  '/:transaction_service_Record',
+  '/:service_owned_id',
   validateOwnedServiceItemsID,
   ownedServiceItemssController.deleteOwnedServiceItems.bind(
     ownedServiceItemssController,

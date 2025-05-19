@@ -65,7 +65,6 @@ export class ServiceController {
       const {
         service_type_id,
         uuid,
-        description,
         fee,
         customer_id,
         service_status,
@@ -77,7 +76,6 @@ export class ServiceController {
       const data = await this.servicesService.createServices({
         service_type_id,
         uuid,
-        description,
         fee,
         customer_id,
         service_status,
@@ -103,7 +101,6 @@ export class ServiceController {
       const {
         service_type_id,
         uuid,
-        description,
         fee,
         customer_id,
         service_status,
@@ -115,7 +112,6 @@ export class ServiceController {
         {
           service_type_id,
           uuid,
-          description,
           fee,
           customer_id,
           service_status,

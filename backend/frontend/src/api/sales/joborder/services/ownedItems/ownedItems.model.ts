@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const CreateOwnedServiceItems = z.object({
   service_owned_id: z.number().optional(),
   service_id: z.number().min(1),
+  name: z.string(),
   item_description: z.string().optional().nullable(),
   serial_number: z.string(),
   brand: z.string(),
@@ -13,6 +14,7 @@ export const CreateOwnedServiceItems = z.object({
 export const UpdateOwnedServiceItems = z.object({
   service_owned_id: z.number().optional(),
   service_id: z.number().min(1),
+  name: z.string(),
   item_description: z.string().optional().nullable(),
   serial_number: z.string(),
   brand: z.string(),

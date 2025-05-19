@@ -13,7 +13,7 @@ export async function validateSerializedProductID(
   res: Response,
   next: NextFunction,
 ) {
-  const { serialized_item_id } = req.params;
+  const { serial_id } = req.params;
 
   try {
     const data = await db
@@ -21,7 +21,7 @@ export async function validateSerializedProductID(
       .from(serializeProduct)
       .where(
         and(
-          eq(serializeProduct.serial_id, Number(serialized_item_id)),
+          eq(serializeProduct.serial_id, Number(serial_id)),
           isNull(serializeProduct.deleted_at),
         ),
       );

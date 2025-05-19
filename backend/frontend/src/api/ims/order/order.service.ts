@@ -513,7 +513,7 @@ export class OrderService {
           .update(product)
           .set({
             total_quantity: sql`${product.total_quantity} + ${item.delivered_quantity}`,
-            available_quantity: sql`${product.available_quantity} + ${item.delivered_quantity}`,
+            sale_quantity: sql`${product.sale_quantity} + ${item.delivered_quantity}`,
           })
           .where(eq(product.product_id, item.product_id!));
         if (item.is_serialize) {

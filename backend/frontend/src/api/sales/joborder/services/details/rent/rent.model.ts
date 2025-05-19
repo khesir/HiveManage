@@ -6,7 +6,7 @@ export const CreateRent = z.object({
   rented_items: z.array(z.number()).default([]),
   start_date: z.string().min(1),
   end_date: z.string().min(1),
-  deposit: z.string().min(0),
+  deposit: z.number().min(0),
   returned: z.boolean().default(false),
 });
 export const UpdateRent = z.object({
@@ -15,7 +15,7 @@ export const UpdateRent = z.object({
   rented_items: z.array(z.number()).default([]),
   start_date: z.string().min(1),
   end_date: z.string().min(1),
-  deposit: z.string().min(0),
+  deposit: z.number().min(0),
   returned: z.boolean().default(false),
 });
 export type CreateRent = z.infer<typeof CreateRent>;

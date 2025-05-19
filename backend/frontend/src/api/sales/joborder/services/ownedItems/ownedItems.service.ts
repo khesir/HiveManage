@@ -16,9 +16,16 @@ export class OwnedServiceItemService {
     await this.db.insert(serviceOwnedItems).values(data);
   }
 
-  async getAllOwnedServiceItems(sort: string, limit: number, offset: number) {
+  async getAllOwnedServiceItems(
+    sort: string,
+    limit: number,
+    offset: number,
+    service_id: string,
+  ) {
     const conditions = [isNull(serviceOwnedItems.deleted_at)];
-
+    if (service_id) {
+      conditions.push(eq(serviceOwnedItems.service_id, Number(service_id)));
+    }
     const totalCountQuery = await this.db
       .select({ count: sql<number>`COUNT(*)` })
       .from(serviceOwnedItems)

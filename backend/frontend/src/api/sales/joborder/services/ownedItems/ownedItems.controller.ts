@@ -19,12 +19,13 @@ export class OwnedServiceItemsController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const service_id = req.params.service_id;
     try {
       const data = await this.ownedServiceItemService.getAllOwnedServiceItems(
         sort,
         limit,
         offset,
+        service_id,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -69,6 +70,7 @@ export class OwnedServiceItemsController {
     try {
       const {
         service_id,
+        name,
         item_description,
         serial_number,
         brand,
@@ -78,6 +80,7 @@ export class OwnedServiceItemsController {
 
       await this.ownedServiceItemService.createOwnedServiceItems({
         service_id,
+        name,
         item_description,
         serial_number,
         brand,
@@ -107,6 +110,7 @@ export class OwnedServiceItemsController {
       const { service_owned_id } = req.params;
       const {
         service_id,
+        name,
         item_description,
         serial_number,
         brand,
@@ -117,6 +121,7 @@ export class OwnedServiceItemsController {
       await this.ownedServiceItemService.updateOwnedServiceItems(
         {
           service_id,
+          name,
           item_description,
           serial_number,
           brand,

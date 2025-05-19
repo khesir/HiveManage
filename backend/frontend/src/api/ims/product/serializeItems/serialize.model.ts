@@ -9,6 +9,8 @@ export const CreateSerialize = z.object({
   condition: z.enum(['New', 'Secondhand', 'Broken']),
   status: z.enum([
     'Sold',
+    'Rented',
+    'Reserve',
     'Available',
     'In Service',
     'On Order',
@@ -16,6 +18,7 @@ export const CreateSerialize = z.object({
     'Damage',
     'Retired',
   ]),
+  purpose: z.enum(['Rent', 'Service', 'Sales']),
 });
 export const UpdateSerialize = z.object({
   serial_id: z.number().optional(),
@@ -26,6 +29,8 @@ export const UpdateSerialize = z.object({
   condition: z.enum(['New', 'Secondhand', 'Broken']),
   status: z.enum([
     'Sold',
+    'Rented',
+    'Reserve',
     'Available',
     'In Service',
     'On Order',
@@ -33,6 +38,7 @@ export const UpdateSerialize = z.object({
     'Damage',
     'Retired',
   ]),
+  purpose: z.enum(['Rent', 'Service', 'Sales']),
 });
 
 export type UpdateSerialize = z.infer<typeof UpdateSerialize>;

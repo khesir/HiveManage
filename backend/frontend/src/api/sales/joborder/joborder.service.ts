@@ -8,6 +8,8 @@ import { joborder } from '@/drizzle/schema/services/schema/service/joborder.sche
 import { joborderLog } from '@/drizzle/schema/records/schema/joborderLog';
 import { payment } from '@/drizzle/schema/payment';
 import { service } from '@/drizzle/schema/services';
+import { serviceItem } from '@/drizzle/schema/services/schema/service/serviceItems';
+import { product, serializeProduct } from '@/drizzle/schema/ims';
 
 export class JoborderService {
   private db: PostgresJsDatabase<SchemaType>;
@@ -74,7 +76,7 @@ export class JoborderService {
       .leftJoin(customer, eq(customer.customer_id, joborder.customer_id))
       .where(and(...conditions))
       .orderBy(
-        sort === 'asc' ? asc(joborder.created_at) : desc(joborder.created_at),
+        sort === 'asc' ? asc(joborder.joborder_id) : desc(joborder.joborder_id),
       );
 
     if (!no_pagination) {
@@ -115,21 +117,34 @@ export class JoborderService {
   }
 
   async updateJoborder(data: UpdateJoborder, paramsId: number) {
-    await this.db
-      .update(joborder)
-      .set({
-        ...data,
-        expected_completion_date: data.expected_completion_date
-          ? new Date(data.expected_completion_date)
-          : undefined,
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
-        turned_over_at: data.turned_over_at
-          ? new Date(data.turned_over_at)
-          : undefined,
-      })
-      .where(eq(joborder.joborder_id, paramsId));
+    await this.db.transaction(async (tx) => {
+      const [returningData] = await tx
+        .update(joborder)
+        .set({
+          ...data,
+          expected_completion_date: data.expected_completion_date
+            ? new Date(data.expected_completion_date)
+            : undefined,
+          completed_at: data.completed_at
+            ? new Date(data.completed_at)
+            : undefined,
+          turned_over_at: data.turned_over_at
+            ? new Date(data.turned_over_at)
+            : undefined,
+        })
+        .where(eq(joborder.joborder_id, paramsId))
+        .returning({ joborder_id: joborder.joborder_id });
+      await tx.insert(joborderLog).values({
+        joborder_id: returningData.joborder_id,
+        action: 'Updated Joborder Data',
+        performed_by: data.user_id,
+      });
+      await tx.insert(employeeLog).values({
+        employee_id: data.user_id,
+        action: 'Updated Joborder',
+        performed_by: data.user_id,
+      });
+    });
   }
 
   async deleteJoborder(paramsId: number): Promise<void> {
@@ -158,9 +173,47 @@ export class JoborderService {
           payment_type: paymentData.payment_type,
         })
         .returning({ payment_id: payment.payment_id });
+      // Process all service items and stockout
+      const services = await tx
+        .select()
+        .from(service)
+        .where(eq(service.joborder_id, joborder_id));
+
+      const serviceIds = services.map((service) => service.service_id);
+      const serviceItems = await tx
+        .select()
+        .from(serviceItem)
+        .where(inArray(serviceItem.service_id, serviceIds));
+      await Promise.all(
+        serviceItems.map(async (item) => {
+          if (!item.product_id) {
+            throw new Error('Missing product_id in service item');
+          }
+          await tx
+            .update(product)
+            .set({
+              service_quantity: sql`${product.service_quantity} - ${item.quantity}`,
+            })
+            .where(eq(product.product_id, item.product_id!));
+          await tx
+            .update(serializeProduct)
+            .set({ status: 'Sold' })
+            .where(
+              inArray(
+                serializeProduct.serial_id,
+                Array.isArray(item.serialize_items) ? item.serialize_items : [],
+              ),
+            );
+        }),
+      );
+      // Mark Joborder Complete
       await tx
         .update(joborder)
-        .set({ payment_id: newPayment.payment_id, status: 'Completed' })
+        .set({
+          payment_id: newPayment.payment_id,
+          status: 'Completed',
+          turned_over_at: new Date(),
+        })
         .where(eq(joborder.joborder_id, joborder_id));
       await tx.insert(joborderLog).values({
         joborder_id: joborder_id,

@@ -14,7 +14,7 @@ export const service_status = pgEnum('service_status', [
   'Cancelled',
   'In Progress',
   'Pending',
-  'Complete',
+  'Completed',
 ]);
 
 export const service = pgTable('service', {

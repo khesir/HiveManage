@@ -20,6 +20,14 @@ export const CreateProduct = z.object({
     .optional(),
   re_order_level: z.number().optional(),
   selling_price: z.number().min(1),
+
+  total_quantity: z.number().optional(),
+  sale_quantity: z.number().optional(),
+  service_quantity: z.number().optional(),
+  rent_quantity: z.number().optional(),
+  damage_quantity: z.number().optional(),
+  sold_quantity: z.number().optional(),
+
   user: z.number().min(1),
 });
 
@@ -43,6 +51,13 @@ export const UpdateProduct = z.object({
     .optional(),
   re_order_level: z.number().optional(),
   selling_price: z.number().min(1),
+
+  total_quantity: z.number().optional(),
+  sale_quantity: z.number().optional(),
+  service_quantity: z.number().optional(),
+  rent_quantity: z.number().optional(),
+  damage_quantity: z.number().optional(),
+  sold_quantity: z.number().optional(),
   user: z.number().min(1),
 });
 

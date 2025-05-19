@@ -18,13 +18,19 @@ export const serialCondition = pgEnum('serial_condition', [
 export const serialStatus = pgEnum('serial_status', [
   'Sold',
   'Available',
+  'Rented',
+  'Reserve',
   'In Service',
   'On Order',
   'Returned',
   'Damage',
   'Retired',
 ]);
-
+export const purposeStatus = pgEnum('purpose_status', [
+  'Rent',
+  'Service',
+  'Sales',
+]);
 export const serializeProduct = pgTable('serialized_product', {
   serial_id: serial('serial_id').primaryKey(),
   product_id: integer('product_id').references(() => product.product_id),
@@ -32,6 +38,7 @@ export const serializeProduct = pgTable('serialized_product', {
   serial_code: varchar('serial_code', { length: 255 }),
   warranty_date: varchar('warranty_date'),
   condition: serialCondition('type').notNull(),
+  purpose: purposeStatus('purpose').notNull().default('Sales'),
   status: serialStatus('status').notNull(),
   created_at: timestamp('created_at').defaultNow(),
   last_updated: timestamp('last_updated')

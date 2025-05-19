@@ -18,6 +18,9 @@ export class ProductController {
     const product_name = (req.query.product_name as string) || undefined;
     const category_id = parseInt(req.query.category_id as string) || undefined;
     const status = (req.query.status as string) || undefined;
+    const is_rent = req.query.is_rent === 'true';
+    const is_service = req.query.is_service === 'true';
+    const no_pagination = req.query.no_pagination === 'true';
     try {
       const data = await this.productService.getAllProduct(
         sort,
@@ -26,6 +29,9 @@ export class ProductController {
         product_name,
         category_id,
         status,
+        is_rent,
+        is_service,
+        no_pagination,
       );
 
       res.status(HttpStatus.OK.code).json({
@@ -67,6 +73,12 @@ export class ProductController {
         product_details,
         re_order_level,
         selling_price,
+        total_quantity,
+        sale_quantity,
+        service_quantity,
+        rent_quantity,
+        damage_quantity,
+        sold_quantity,
         user,
       } = req.body;
 
@@ -79,6 +91,12 @@ export class ProductController {
           product_details,
           re_order_level,
           selling_price,
+          total_quantity,
+          sale_quantity,
+          service_quantity,
+          rent_quantity,
+          damage_quantity,
+          sold_quantity,
           user,
         },
         req.file,
@@ -108,6 +126,12 @@ export class ProductController {
         product_details,
         re_order_level,
         selling_price,
+        total_quantity,
+        sale_quantity,
+        service_quantity,
+        rent_quantity,
+        damage_quantity,
+        sold_quantity,
         user,
       } = req.body;
       await this.productService.updateProduct(
@@ -119,6 +143,12 @@ export class ProductController {
           product_details,
           re_order_level,
           selling_price,
+          total_quantity,
+          sale_quantity,
+          service_quantity,
+          rent_quantity,
+          damage_quantity,
+          sold_quantity,
           user,
         },
         req.file,

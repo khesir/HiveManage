@@ -23,12 +23,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."damage_record_status" AS ENUM('Pending', 'Confirmed', 'Returned', 'Added');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "public"."order_status" AS ENUM('Draft', 'Finalized', 'Awaiting Arrival', 'Partially Fulfiled', 'Fulfilled', 'Cancelled');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -95,13 +89,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."purpose_status" AS ENUM('Rent', 'Service', 'Sales');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."serial_condition" AS ENUM('New', 'Secondhand', 'Broken');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."serial_status" AS ENUM('Sold', 'Available', 'In Service', 'On Order', 'Returned', 'Damage', 'Retired');
+ CREATE TYPE "public"."serial_status" AS ENUM('Sold', 'Available', 'Rented', 'Reserve', 'In Service', 'On Order', 'Returned', 'Damage', 'Retired');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -114,18 +114,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."supplierRelation_Status" AS ENUM('manufacturer', 'distributor', 'wholesaler', 'vendor', 'authorized dealer', 'OEM (Original Equipment Manufacturer)', 'peripheral supplier', 'component reseller', 'refurbished parts supplier', 'specialized parts supplier', 'network hardware supplier', 'value-added reseller', 'accessories supplier', 'logistics partner');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."service_item_status" AS ENUM('Unavailable', 'Available', 'Discontinued');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."service_record_status" AS ENUM('Sold', 'Available');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -155,19 +143,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."service_status" AS ENUM('Cancelled', 'In Progress', 'Pending', 'Complete');
+ CREATE TYPE "public"."service_status" AS ENUM('Cancelled', 'In Progress', 'Pending', 'Completed');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."service_item_status" AS ENUM('Pending', 'Used', 'Sold', 'Returned');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."tickets_status" AS ENUM('Pending', 'In Review', 'Approved', 'Rejected', 'Assigned', 'In Progress', 'On Hold', 'Completed', 'Cancelled', 'Closed');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "public"."transaction_service_status" AS ENUM('Pending', 'Used', 'Returned');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -349,8 +337,10 @@ CREATE TABLE IF NOT EXISTS "product" (
 	"re_order_level" integer DEFAULT 0,
 	"selling_price" numeric(50, 2),
 	"total_quantity" integer DEFAULT 0 NOT NULL,
-	"available_quantity" integer DEFAULT 0,
-	"transfered_quantity" integer DEFAULT 0,
+	"sale_quantity" integer DEFAULT 0,
+	"service_quantity" integer DEFAULT 0,
+	"rent_quantity" integer DEFAULT 0,
+	"damage_quantity" integer DEFAULT 0,
 	"sold_quantity" integer DEFAULT 0,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -390,6 +380,7 @@ CREATE TABLE IF NOT EXISTS "serialized_product" (
 	"serial_code" varchar(255),
 	"warranty_date" varchar,
 	"type" "serial_condition" NOT NULL,
+	"purpose" "purpose_status" DEFAULT 'Sales' NOT NULL,
 	"status" "serial_status" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -404,38 +395,6 @@ CREATE TABLE IF NOT EXISTS "supplier" (
 	"relationship" "supplierRelation_Status",
 	"profile_link" varchar,
 	"supplier_status" "supplier_status" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "damage_item" (
-	"damage_item_id" serial PRIMARY KEY NOT NULL,
-	"product_id" integer,
-	"quantity" integer DEFAULT 0,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "damage_record" (
-	"damage_record_id" serial PRIMARY KEY NOT NULL,
-	"service_record_id" integer,
-	"product_id" integer,
-	"damage_item_id" integer,
-	"quantity" integer DEFAULT 0,
-	"employee_id" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "service_serialize_record" (
-	"service_serilize_record_id" serial PRIMARY KEY NOT NULL,
-	"serial_id" integer,
-	"service_item_id" integer,
-	"qty" integer DEFAULT 0,
-	"status" "service_record_status" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -473,31 +432,6 @@ CREATE TABLE IF NOT EXISTS "product_supplier" (
 	"p_supplier_id" serial PRIMARY KEY NOT NULL,
 	"supplier_id" integer,
 	"product_id" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "service_item" (
-	"service_item_id" serial PRIMARY KEY NOT NULL,
-	"product_id" integer,
-	"service_type_id" integer,
-	"total_quantity" integer DEFAULT 0,
-	"used_quantity" integer DEFAULT 0,
-	"available_quantity" integer DEFAULT 0,
-	"status" "service_item_status" NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "service_record" (
-	"service_record_id" serial PRIMARY KEY NOT NULL,
-	"product_record_id" integer,
-	"service_item_id" integer,
-	"quantity" integer NOT NULL,
-	"status" "service_record_status" NOT NULL,
-	"employee_id" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -669,17 +603,6 @@ CREATE TABLE IF NOT EXISTS "tickets" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "transaction_service_item" (
-	"transaction_service_item_id" serial PRIMARY KEY NOT NULL,
-	"service_id" integer,
-	"service_item_id" integer,
-	"quantity" integer,
-	"status" "transaction_service_status",
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "joborder" (
 	"joborder_id" serial PRIMARY KEY NOT NULL,
 	"customer_id" integer,
@@ -695,9 +618,23 @@ CREATE TABLE IF NOT EXISTS "joborder" (
 	CONSTRAINT "joborder_joborder_uuid_unique" UNIQUE("joborder_uuid")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "service_item" (
+	"service_item_id" serial PRIMARY KEY NOT NULL,
+	"service_id" integer,
+	"product_id" integer,
+	"serialize_items" integer[] DEFAULT '{}'::integer[],
+	"sold_price" integer,
+	"quantity" integer,
+	"status" "service_item_status",
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "service_owned_items" (
 	"service_owned_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
+	"name" varchar,
 	"item_description" varchar,
 	"serial_number" varchar,
 	"brand" varchar,
@@ -914,48 +851,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "damage_item" ADD CONSTRAINT "damage_item_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "damage_record" ADD CONSTRAINT "damage_record_service_record_id_service_record_service_record_id_fk" FOREIGN KEY ("service_record_id") REFERENCES "public"."service_record"("service_record_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "damage_record" ADD CONSTRAINT "damage_record_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "damage_record" ADD CONSTRAINT "damage_record_damage_item_id_damage_item_damage_item_id_fk" FOREIGN KEY ("damage_item_id") REFERENCES "public"."damage_item"("damage_item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "damage_record" ADD CONSTRAINT "damage_record_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "service_serialize_record" ADD CONSTRAINT "service_serialize_record_serial_id_serialized_product_serial_id_fk" FOREIGN KEY ("serial_id") REFERENCES "public"."serialized_product"("serial_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "service_serialize_record" ADD CONSTRAINT "service_serialize_record_service_item_id_service_item_service_item_id_fk" FOREIGN KEY ("service_item_id") REFERENCES "public"."service_item"("service_item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "order_log" ADD CONSTRAINT "order_log_order_id_order_order_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."order"("order_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -999,36 +894,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "product_supplier" ADD CONSTRAINT "product_supplier_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "service_item" ADD CONSTRAINT "service_item_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "service_item" ADD CONSTRAINT "service_item_service_type_id_service_Type_service_type_id_fk" FOREIGN KEY ("service_type_id") REFERENCES "public"."service_Type"("service_type_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "service_record" ADD CONSTRAINT "service_record_product_record_id_product_record_product_record_id_fk" FOREIGN KEY ("product_record_id") REFERENCES "public"."product_record"("product_record_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "service_record" ADD CONSTRAINT "service_record_service_item_id_service_item_service_item_id_fk" FOREIGN KEY ("service_item_id") REFERENCES "public"."service_item"("service_item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "service_record" ADD CONSTRAINT "service_record_employee_id_employee_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1202,18 +1067,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "transaction_service_item" ADD CONSTRAINT "transaction_service_item_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "transaction_service_item" ADD CONSTRAINT "transaction_service_item_service_item_id_service_item_service_item_id_fk" FOREIGN KEY ("service_item_id") REFERENCES "public"."service_item"("service_item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "joborder" ADD CONSTRAINT "joborder_customer_id_customer_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customer"("customer_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1221,6 +1074,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "joborder" ADD CONSTRAINT "joborder_payment_id_payment_payment_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."payment"("payment_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "service_item" ADD CONSTRAINT "service_item_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "service_item" ADD CONSTRAINT "service_item_product_id_service_service_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

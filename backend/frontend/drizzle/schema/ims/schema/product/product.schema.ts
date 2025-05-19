@@ -27,8 +27,10 @@ export const product = pgTable('product', {
   selling_price: decimal('selling_price', { precision: 50, scale: 2 }),
 
   total_quantity: integer('total_quantity').default(0).notNull(),
-  available_quantity: integer('available_quantity').default(0),
-  transfered_quantity: integer('transfered_quantity').default(0),
+  sale_quantity: integer('sale_quantity').default(0),
+  service_quantity: integer('service_quantity').default(0),
+  rent_quantity: integer('rent_quantity').default(0),
+  damage_quantity: integer('damage_quantity').default(0),
   sold_quantity: integer('sold_quantity').default(0),
 
   created_at: timestamp('created_at').defaultNow(),

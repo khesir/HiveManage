@@ -22,6 +22,7 @@ export class SerializeItemController {
     const no_pagination = req.query.no_pagination === 'true';
     const product_id = req.params.product_id as string;
     const status = (req.query.status as string) || undefined;
+    const purpose = (req.query.purpose as string) || undefined;
     try {
       const data = await this.serializedproductService.getAllSerializedProducts(
         product_id,
@@ -30,6 +31,7 @@ export class SerializeItemController {
         limit,
         offset,
         status,
+        purpose,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',
@@ -76,6 +78,7 @@ export class SerializeItemController {
         warranty_date,
         condition,
         status,
+        purpose,
       } = req.body;
 
       await this.serializedproductService.createSerializeItem({
@@ -85,6 +88,7 @@ export class SerializeItemController {
         warranty_date,
         condition,
         status,
+        purpose,
       });
 
       res.status(HttpStatus.CREATED.code).json({
@@ -111,6 +115,7 @@ export class SerializeItemController {
         warranty_date,
         condition,
         status,
+        purpose,
       } = req.body;
 
       await this.serializedproductService.updateSerializeItem(
@@ -121,6 +126,7 @@ export class SerializeItemController {
           warranty_date,
           condition,
           status,
+          purpose,
         },
         Number(serial_id),
       );

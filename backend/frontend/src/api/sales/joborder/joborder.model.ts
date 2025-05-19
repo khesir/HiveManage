@@ -39,10 +39,10 @@ export const CreateJoborder = z.object({
 export const UpdateJoborder = z.object({
   reservation_id: z.number().optional(),
   customer_id: z.number().optional(),
-  payment_id: z.number().optional(),
+  payment_id: z.number().optional().nullable(),
   expected_completion_date: z.string().optional(),
-  completed_at: z.string().optional(),
-  turned_over_at: z.string().optional(),
+  completed_at: z.string().optional().nullable(),
+  turned_over_at: z.string().optional().nullable(),
   status: z.enum([
     'Pending',
     'In Progress',

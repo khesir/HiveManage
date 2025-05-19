@@ -96,7 +96,7 @@ export class SalesService {
           .update(product)
           .set({
             sold_quantity: sql`${product.sold_quantity} + ${item.quantity}`,
-            available_quantity: sql`${product.available_quantity} - ${item.quantity}`,
+            sale_quantity: sql`${product.sale_quantity} - ${item.quantity}`,
           })
           .where(eq(product.product_id, item.data!.product_id!));
         // Create Trail log
@@ -169,7 +169,7 @@ export class SalesService {
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
       .leftJoin(employee, eq(employee.employee_id, sales.handled_by))
       .where(and(...conditions))
-      .orderBy(sort === 'asc' ? asc(sales.created_at) : desc(sales.created_at))
+      .orderBy(sort === 'asc' ? asc(sales.sales_id) : desc(sales.sales_id))
       .limit(limit)
       .offset(offset);
     const salesWithDetails = result.map((row) => ({

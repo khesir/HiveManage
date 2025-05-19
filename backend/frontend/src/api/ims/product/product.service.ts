@@ -9,6 +9,7 @@ import {
   inArray,
   like,
   InferSelectModel,
+  gt,
 } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SupabaseService } from '@/supabase/supabase.service';
@@ -258,6 +259,9 @@ export class ProductService {
     product_name: string | undefined,
     category_id: number | undefined,
     status: string | undefined,
+    is_rent: boolean,
+    is_service: boolean,
+    no_pagination: boolean,
   ) {
     const conditions = [isNull(product.deleted_at)];
     if (product_name) {
@@ -270,8 +274,14 @@ export class ProductService {
           status as 'Unavailable' | 'Available' | 'Discontinued',
         ),
       );
+      if (is_rent) {
+        conditions.push(gt(product.rent_quantity, 0));
+      }
+      if (is_service) {
+        conditions.push(gt(product.service_quantity, 0));
+      }
     }
-    const result = await this.db
+    const query = this.db
       .select()
       .from(product)
       .leftJoin(
@@ -281,10 +291,11 @@ export class ProductService {
       .where(and(...conditions))
       .orderBy(
         sort == 'asc' ? desc(product.product_id) : asc(product.product_id),
-      )
-      .limit(limit)
-      .offset(offset);
-
+      );
+    if (!no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+    const result = await query;
     const productIds = result.map((p) => p.product.product_id);
     const recordByProduct = await this.getRecordByProduct(productIds);
     const serialByProduct = await this.getSerializedByProduct(productIds);

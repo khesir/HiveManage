@@ -5,32 +5,32 @@ import { ServiceItemController } from './serviceItem.controller';
 import { validateServiceItemID } from './serviceItem.middleware';
 import { CreateServiceItem, UpdateServiceItem } from './serviceItem.model';
 
-const serviceitemRoute = Router({ mergeParams: true });
+const serviceItemRoute = Router({ mergeParams: true });
 const serviceitemController = new ServiceItemController(db);
 
-serviceitemRoute.get(
+serviceItemRoute.get(
   '/',
   serviceitemController.getAllServiceItem.bind(serviceitemController),
 );
-serviceitemRoute.get(
-  '/:serial_id',
+serviceItemRoute.get(
+  '/:service_item_id',
   validateServiceItemID,
   serviceitemController.getServiceItemById.bind(serviceitemController),
 );
-serviceitemRoute.post(
+serviceItemRoute.post(
   '/',
   [validateRequest({ body: CreateServiceItem })],
   serviceitemController.createServiceItem.bind(serviceitemController),
 );
-serviceitemRoute.put(
-  '/:serial_id',
+serviceItemRoute.put(
+  '/:service_item_id',
   [validateRequest({ body: UpdateServiceItem })],
   serviceitemController.updateServiceItem.bind(serviceitemController),
 );
-serviceitemRoute.delete(
-  '/:serial_id',
+serviceItemRoute.delete(
+  '/:service_item_id',
   validateServiceItemID,
   serviceitemController.deleteServiceItem.bind(serviceitemController),
 );
 
-export default serviceitemRoute;
+export default serviceItemRoute;

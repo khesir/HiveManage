@@ -7,7 +7,6 @@ import { validateServiceID } from './service.middleware';
 import { CreateService, UpdateService } from './service.model';
 import ticketsRoute from './tickets/ticket.route';
 import tickettypesRoute from './ticketType/tickettype.route';
-import transerviceitemsRoute from './transactionServiceItem/transerviceitem.route';
 import ownedServiceItemsRoute from './ownedItems/ownedItems.route';
 import serviceReturnRoute from './serviceReturn/serviceReturn.route';
 import buildRoute from './details/building/build.route';
@@ -16,6 +15,7 @@ import rentRoute from './details/rent/rent.route';
 import repairRoute from './details/repair/repair.route';
 import replacementRoute from './details/replacement/replacement.route';
 import upgradeRoute from './details/upgrade/upgrade.route';
+import serviceItemRoute from './serviceItems/serviceItem.route';
 
 const serviceRoute = Router({ mergeParams: true });
 const serviceController = new ServiceController(db);
@@ -61,9 +61,9 @@ serviceRoute.use(
 );
 
 serviceRoute.use(
-  '/:transaction_service_Record/service-item',
+  '/:service_id/service-items',
   validateServiceID,
-  transerviceitemsRoute,
+  serviceItemRoute,
 );
 
 serviceRoute.use(

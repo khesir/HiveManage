@@ -11,7 +11,6 @@ import { CreateProduct, UpdateProduct } from './product.model';
 import productRecordRoute from './productRecord/productRecord.route';
 import serialproductRoute from './serializeItems/serialize.route';
 import productSuppplierRoute from './productSupplier/productSupplier.route';
-import damageRecordRoute from './damageRecord/damageRecord.route';
 
 const productRoute = Router({ mergeParams: true });
 const productController = new ProductController(db);
@@ -69,9 +68,4 @@ productRoute.use(
   productSuppplierRoute,
 );
 
-productRoute.get(
-  '/:product_id/damage_record',
-  validateProductID,
-  damageRecordRoute,
-);
 export default productRoute;
