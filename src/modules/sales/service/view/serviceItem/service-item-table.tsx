@@ -25,7 +25,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
-import {ChevronLeftIcon, ChevronRightIcon, Plus} from 'lucide-react';
+import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
 import {DoubleArrowLeftIcon, DoubleArrowRightIcon} from '@radix-ui/react-icons';
 import {
 	DropdownMenu,
@@ -34,7 +34,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
-import {Ticket} from '@/components/validation/tickets';
+import {ServiceItem} from '@/components/validation/service-item';
+import {ServiceItemDialog} from './itemSelection/service-item-dialog';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -46,7 +47,7 @@ interface DataTableProps<TData, TValue> {
 	};
 }
 
-export function TicketTable<TData extends Ticket, TValue>({
+export function ServiceItemTable<TData extends ServiceItem, TValue>({
 	columns,
 	data,
 	pageCount,
@@ -141,12 +142,11 @@ export function TicketTable<TData extends Ticket, TValue>({
 			{replace: true},
 		);
 	};
-
 	return (
-		<>
+		<div className="flex flex-col gap-3">
 			<div className="flex justify-between items-center">
 				<div className="flex gap-10 items-center">
-					<h1 className="text-2xl font-bold tracking-tight">Ticket List</h1>
+					<h1 className="text-2xl font-bold tracking-tight">Service Items</h1>
 					<div className="flex gap-1">
 						<DropdownMenu>
 							<DropdownMenuTrigger>
@@ -180,10 +180,7 @@ export function TicketTable<TData extends Ticket, TValue>({
 						</DropdownMenu>
 					</div>
 				</div>
-				<Button onClick={() => navigate('ticket/create')}>
-					<Plus className="mr-2 h-4 w-4" />
-					Create Ticket
-				</Button>
+				<ServiceItemDialog />
 			</div>
 			<ScrollArea className="h-[calc(90vh-220px)] rounded-md border">
 				<Table className="relative">
@@ -315,6 +312,6 @@ export function TicketTable<TData extends Ticket, TValue>({
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

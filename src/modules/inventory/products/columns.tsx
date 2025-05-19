@@ -45,15 +45,17 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorKey: 'available_quantity',
-		header: 'Available Quantity',
+		header: 'Quantity',
 		cell: ({row}) => {
-			const flag =
-				(row.original.re_order_level ?? 0) >=
-				(row.original.available_quantity ?? 0);
+			const quantity =
+				(row.original.rent_quantity ?? 0) +
+				(row.original.sale_quantity ?? 0) +
+				(row.original.service_quantity ?? 0) -
+				(row.original.sold_quantity ?? 0);
+			const flag = (row.original.re_order_level ?? 0) >= quantity;
 			return (
 				<div className={clsx('text-white flex gap-2', flag && 'text-red-500')}>
-					{row.original.available_quantity}
+					{quantity}
 					{flag && <Badge className="bg-red-500"> Low Inventory</Badge>}
 				</div>
 			);

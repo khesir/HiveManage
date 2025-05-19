@@ -7,9 +7,13 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import {useState} from 'react';
-import {ReplacementForm} from './replacementFormDialog';
+import SerializeItemRecord from './serialize-item-list';
 
-export function ReplacementDialog() {
+interface Props {
+	product_id: number;
+	limit: number;
+}
+export function AddSerializeSelection({product_id, limit}: Props) {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const handleSubmit = () => {
 		setFormModal(false);
@@ -17,18 +21,18 @@ export function ReplacementDialog() {
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
-				<Button
-					variant={'outline'}
-					size={'xs'}
-					className="flex items-center gap-1"
-				>
-					Update Details
+				<Button className="flex items-center gap-1">
+					{`Select (${limit}) Serialize Items`}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="max-w-[100vh]">
-				<DialogTitle>Replacement Details Form</DialogTitle>
+				<DialogTitle>Select Items</DialogTitle>
 				<DialogDescription></DialogDescription>
-				<ReplacementForm onSubmit={handleSubmit} />
+				<SerializeItemRecord
+					product_id={product_id}
+					limit={limit}
+					onSubmit={handleSubmit}
+				/>
 			</DialogContent>
 		</Dialog>
 	);

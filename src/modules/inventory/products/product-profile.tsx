@@ -118,7 +118,7 @@ export function ProductProfile() {
 							data.is_serialize ? 'bg-green-500' : 'bg-red-500',
 						)}
 					>
-						{data.is_serialize ? 'Serialized' : 'Batch'}
+						{data.is_serialize ? 'Serialized' : 'Non-Serialize'}
 					</div>
 				</div>
 			</CardHeader>
@@ -176,16 +176,15 @@ export function ProductProfile() {
 				</div>
 				<Separator className="my-4" />
 				<div className="grid gap-3">
-					<div className="font-semibold">Stock records</div>
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Stock records</span>
+						<span>{`Total: ${data.total_quantity}`}</span>
+					</div>
 
 					<ul className="grid gap-3">
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Total Quantity</span>
-							<span>{data.total_quantity}</span>
-						</li>
-						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Available Quantity</span>
-							<span>{data.available_quantity}</span>
+							<span className="text-muted-foreground">Sale Quantity</span>
+							<span>{data.sale_quantity}</span>
 						</li>
 						<li className="flex items-center justify-between">
 							<span className="text-muted-foreground">Sold Quantity</span>
@@ -201,8 +200,12 @@ export function ProductProfile() {
 							</span>
 						</li>
 						<li className="flex items-center justify-between">
-							<span className="text-muted-foreground">Transfered Quantity</span>
-							<span>{data.transfered_quantity}</span>
+							<span className="text-muted-foreground">Service Quantity</span>
+							<span>{data.service_quantity}</span>
+						</li>
+						<li className="flex items-center justify-between">
+							<span className="text-muted-foreground">Rent Quantity</span>
+							<span>{data.rent_quantity}</span>
 						</li>
 					</ul>
 				</div>

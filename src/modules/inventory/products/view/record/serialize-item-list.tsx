@@ -56,6 +56,10 @@ export const columns: ColumnDef<SerializeItem>[] = [
 		header: 'Status',
 	},
 	{
+		accessorKey: 'purpose',
+		header: 'Purpose',
+	},
+	{
 		accessorKey: 'created_at',
 		header: 'Created At',
 		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),

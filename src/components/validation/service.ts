@@ -75,7 +75,7 @@ export const serviceSchema = z.object({
 	fee: z.number().min(0),
 	description: z.string().min(1),
 	customer_id: z.number().optional(),
-	service_status: z.enum(['Pending', 'In Progress', 'Complete']),
+	service_status: z.enum(['Pending', 'In Progress', 'Completed']),
 	total_cost_price: z.number().optional(),
 	is_returned: z.boolean().default(false),
 	customer: customerSchema.optional(),

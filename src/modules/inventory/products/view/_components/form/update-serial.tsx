@@ -29,13 +29,13 @@ import {
 	SerializeItem,
 	serializeItemSchema,
 } from '@/components/validation/serialize-items';
-import { AvatarCircles } from '@/components/ui/avatarcircles';
-import { Input } from '@/components/ui/input';
+import {AvatarCircles} from '@/components/ui/avatarcircles';
+import {Input} from '@/components/ui/input';
 import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 
 interface Props {
 	onSubmit?: () => void;
-	serializeItem: SerializeItem,
+	serializeItem: SerializeItem;
 }
 
 export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
@@ -49,6 +49,7 @@ export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 			supplier_id: serializeItem.supplier_id,
 			condition: serializeItem.condition,
 			status: serializeItem.status,
+			purpose: serializeItem.purpose,
 		},
 		mode: 'onSubmit',
 	});
@@ -57,7 +58,11 @@ export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 		try {
 			setLoading(true);
 			console.log(data);
-			await request('PUT', `/api/v1/ims/product/${id}/serializeRecord/${serializeItem.serial_id}`, data);
+			await request(
+				'PUT',
+				`/api/v1/ims/product/${id}/serializeRecord/${serializeItem.serial_id}`,
+				data,
+			);
 			toast.success('Record Updated');
 			if (onSubmit) {
 				onSubmit();
@@ -71,7 +76,7 @@ export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 					error.response?.data?.errors?.[0]?.message || // If `errors` array exists, use the first error's message
 					'Failed to process request';
 			}
-			console.log(error);			
+			console.log(error);
 			toast.error(errorMessage);
 		} finally {
 			setLoading(false);
@@ -88,6 +93,8 @@ export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 		'Return Requested',
 	];
 	const condtion = ['New', 'Secondhand', 'Broken'];
+	const purpose = ['Rent', 'Service', 'Sales'];
+
 	if (loading) {
 		return <Skeleton className="flex h-[600px]" />;
 	}
@@ -125,8 +132,7 @@ export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 									{...field}
 								/>
 							</FormControl>
-							<FormDescription>
-							</FormDescription>
+							<FormDescription></FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -141,7 +147,7 @@ export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 								<Input
 									type="date"
 									disabled={loading}
-									className='text-gray-400'
+									className="text-gray-400"
 									{...field}
 								/>
 							</FormControl>
@@ -203,6 +209,38 @@ export function UpdateInventorySerialRecord({serializeItem, onSubmit}: Props) {
 								</FormControl>
 								<SelectContent>
 									{status.map((x, key) => (
+										<SelectItem key={key} value={x}>
+											{x}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="purpose"
+					render={({field}) => (
+						<FormItem>
+							<FormLabel>Purpose</FormLabel>
+							<Select
+								disabled={loading}
+								onValueChange={(value) => field.onChange(value)}
+								value={field.value}
+								defaultValue={field.value}
+							>
+								<FormControl>
+									<SelectTrigger>
+										<SelectValue
+											defaultValue={field.value}
+											placeholder="Select Item Purpose"
+										/>
+									</SelectTrigger>
+								</FormControl>
+								<SelectContent>
+									{purpose.map((x, key) => (
 										<SelectItem key={key} value={x}>
 											{x}
 										</SelectItem>

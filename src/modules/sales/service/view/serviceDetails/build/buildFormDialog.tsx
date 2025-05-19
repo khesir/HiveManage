@@ -17,26 +17,30 @@ import {useParams} from 'react-router-dom';
 import {request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
 import {
-	ReplacementDetails,
-	replacementDetailsSchema,
+	BuildDetails,
+	buildDetailsSchema,
 } from '@/components/validation/service-details';
+import {useServiceDetails} from '../../../_components/use-service-details-hook';
 type Props = {
 	onSubmit?: () => void;
-	processData?: (data: ReplacementDetails) => void;
+	processData?: (data: BuildDetails) => void;
 };
-export function ReplacementForm({onSubmit, processData}: Props) {
+export function BuildForm({onSubmit, processData}: Props) {
+	const {serviceDetails} = useServiceDetails();
 	const {user} = useEmployeeRoleDetailsStore();
 	const [loading, setLoading] = useState(false);
 	const {joborder_id, service_id} = useParams();
-	const form = useForm<ReplacementDetails>({
-		resolver: zodResolver(replacementDetailsSchema),
+	const form = useForm<BuildDetails>({
+		resolver: zodResolver(buildDetailsSchema),
 		defaultValues: {
-			owned_items: [],
-			new_product: [],
+			customer_items: [],
+			parts_used: [],
+			build_specs: (serviceDetails as BuildDetails)?.build_specs ?? '',
+			checklist: (serviceDetails as BuildDetails)?.checklist ?? '',
 		},
 		mode: 'onSubmit',
 	});
-	const processForm = async (data: ReplacementDetails) => {
+	const processForm = async (data: BuildDetails) => {
 		if (!user?.employee.employee_id) {
 			toast.error('Must be login to process');
 			return;
@@ -47,19 +51,20 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 				processData(data);
 				return;
 			}
-			if (onSubmit) {
-				onSubmit();
-				return;
-			}
 			await request(
 				'POST',
-				`/api/v1/sms/joborder/${joborder_id}/service/${service_id}/replacement-details`,
+				`/api/v1/sms/joborder/${joborder_id}/service/${service_id}/build-details`,
 				{
 					...data,
+					service_id: Number(service_id),
 					user_id: user.employee.employee_id,
 				},
 			);
 
+			if (onSubmit) {
+				onSubmit();
+				return;
+			}
 			toast.success('Successfully created replacement details');
 		} catch (e) {
 			if (e instanceof Error) {
@@ -81,15 +86,33 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 			>
 				<FormField
 					control={form.control}
-					name="reason"
+					name="build_specs"
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Reason</FormLabel>
+							<FormLabel>Build Specs</FormLabel>
 							<FormControl>
 								<Textarea
 									{...field}
 									disabled={loading}
-									placeholder="Write Reason for Replacement"
+									placeholder="Spec builds"
+									value={field.value ?? ''}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="checklist"
+					render={({field}) => (
+						<FormItem>
+							<FormLabel>Checklist</FormLabel>
+							<FormControl>
+								<Textarea
+									{...field}
+									disabled={loading}
+									placeholder="[X] Check List"
 									value={field.value ?? ''}
 								/>
 							</FormControl>

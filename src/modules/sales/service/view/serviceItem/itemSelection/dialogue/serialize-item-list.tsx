@@ -81,7 +81,7 @@ export default function SerializeItemRecord({
 		const fetchProducts = async () => {
 			const serialItems = await request<PaginationResponse<SerializeItem>>(
 				'GET',
-				`/api/v1/ims/product/${product_id}/serializeRecord?no_pagination=true&status="Available"&purpose=Sales`,
+				`/api/v1/ims/product/${product_id}/serializeRecord?no_pagination=true&status=Available&purpose=Service`,
 			);
 			setSerials(serialItems.data);
 		};

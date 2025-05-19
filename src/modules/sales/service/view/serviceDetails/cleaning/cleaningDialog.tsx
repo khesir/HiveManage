@@ -7,9 +7,9 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import {useState} from 'react';
-import {ReplacementForm} from './replacementFormDialog';
+import {CleaningForm} from './cleaningFormDialog';
 
-export function ReplacementDialog() {
+export function CleaningDialog() {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const handleSubmit = () => {
 		setFormModal(false);
@@ -17,12 +17,18 @@ export function ReplacementDialog() {
 	return (
 		<Dialog open={formModal} onOpenChange={setFormModal}>
 			<DialogTrigger asChild>
-				<Button className="flex items-center gap-1">Create Details</Button>
+				<Button
+					variant={'outline'}
+					size={'xs'}
+					className="flex items-center gap-1"
+				>
+					Update Details
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="max-w-[100vh]">
 				<DialogTitle>Replacement Details Form</DialogTitle>
 				<DialogDescription></DialogDescription>
-				<ReplacementForm onSubmit={handleSubmit} />
+				<CleaningForm onSubmit={handleSubmit} />
 			</DialogContent>
 		</Dialog>
 	);

@@ -13,6 +13,7 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {Button} from '@/components/ui/button';
+import useEventTrigger from './_components/use-event-hook';
 const ActionCell = (data: Joborder) => {
 	const navigate = useNavigate();
 	return (
@@ -83,6 +84,7 @@ export default function JoborderList() {
 	const [searchParams] = useSearchParams();
 	const [joborder, setjoborder] = useState<Joborder[]>([]);
 	const [pageCount, setPageCount] = useState<number>(0);
+	const {isTriggered} = useEventTrigger();
 
 	const page = Number(searchParams.get('page')) || 1;
 	const pageLimit = Number(searchParams.get('limit')) || 10;
@@ -103,7 +105,7 @@ export default function JoborderList() {
 		};
 
 		fetchJoborders();
-	}, [offset, pageLimit, sort, joborderType]);
+	}, [offset, pageLimit, sort, joborderType, isTriggered]);
 	return (
 		<JoborderTable columns={columns} data={joborder} pageCount={pageCount} />
 	);

@@ -1,6 +1,7 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {LogsTabProduct} from '../logsRecord/logs-tab';
-import TransactionServiceItemList from './transaction-service-item-list';
+import OwnedItemList from '../ownedItems/owned-items-list';
+import ServiceItemList from '../serviceItem/service-item-list';
 
 export function ServiceTab() {
 	return (
@@ -13,9 +14,11 @@ export function ServiceTab() {
 				</TabsList>
 			</div>
 			<TabsContent value="Service Items">
-				<TransactionServiceItemList />
+				<ServiceItemList />
 			</TabsContent>
-			<TabsContent value="Customer Items"></TabsContent>
+			<TabsContent value="Customer Items">
+				<OwnedItemList />
+			</TabsContent>
 			<TabsContent value="Logs">
 				<LogsTabProduct />
 			</TabsContent>

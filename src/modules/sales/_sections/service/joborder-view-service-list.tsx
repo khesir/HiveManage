@@ -5,10 +5,13 @@ import {JoborderProfile} from '../../service/view/joborder-profile';
 import {ApiRequest, request} from '@/api/axios';
 import {useParams} from 'react-router-dom';
 import {Joborder} from '@/components/validation/joborder';
+import useEventTrigger from '../../service/_components/use-event-hook';
 
 export default function ServiceListSection() {
 	const {joborder_id} = useParams();
 	const {setJoborder} = useJoborderStore();
+	const {isTriggered} = useEventTrigger();
+
 	useEffect(() => {
 		const fetchData = async () => {
 			const res = await request<ApiRequest<Joborder>>(
@@ -18,7 +21,7 @@ export default function ServiceListSection() {
 			setJoborder(Array.isArray(res.data) ? res.data[0] : res.data);
 		};
 		fetchData();
-	}, []);
+	}, [isTriggered]);
 
 	return (
 		<div className="flex flex-col sm:gap-4">

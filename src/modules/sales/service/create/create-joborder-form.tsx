@@ -37,6 +37,7 @@ import {Expand} from 'lucide-react';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {request} from '@/api/axios';
 import {AxiosError} from 'axios';
+import useEventTrigger from '../_components/use-event-hook';
 
 export function JoborderCreateDialog() {
 	const navigate = useNavigate();
@@ -74,6 +75,7 @@ export function CreateJoborderForm({onSubmit, isDialog = false}: Props) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [customer, setCustomer] = useState<Customer>();
 	const {user} = useEmployeeRoleDetailsStore();
+	const {toggleTrigger} = useEventTrigger();
 
 	const form = useForm<Joborder>({
 		resolver: zodResolver(joborderSchema),
@@ -103,6 +105,7 @@ export function CreateJoborderForm({onSubmit, isDialog = false}: Props) {
 			if (onSubmit) {
 				onSubmit();
 			}
+			toggleTrigger();
 		} catch (e) {
 			if (e instanceof Error) {
 				toast.error(e.toString());

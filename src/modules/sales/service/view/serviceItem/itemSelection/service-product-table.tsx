@@ -1,3 +1,4 @@
+import {useMemo, useState} from 'react';
 import {
 	ColumnDef,
 	flexRender,
@@ -14,91 +15,56 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import {SerializeItem} from '@/components/validation/serialize-items';
-import {useSelectedItemsStore} from '../hooks/use-serialize-selection';
-import {Button} from '@/components/ui/button';
-import {toast} from 'sonner';
-import {useMemo, useState} from 'react';
+import {Product} from '@/components/validation/product';
 import {Input} from '@/components/ui/input';
+import {SelectedServiceItems} from './sheet/selected-product';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
-	data: TData[];
-	selectedRowIds?: Record<string, boolean>;
-	onRowSelectionChange?: (selected: Record<string, boolean>) => void;
-	limit: number;
+	rowData: TData[];
 	onSubmit: () => void;
 }
-
-export function SerialiItemTable<TData extends SerializeItem, TValue>({
+// type SelectedValue = {
+// 	id: number; // Selected ID
+// 	name: string; // Selected name
+// };
+export function SalesProductTable<TData extends Product, TValue>({
 	columns,
-	data,
-	onRowSelectionChange,
-	selectedRowIds,
-	limit,
+	rowData,
 	onSubmit,
 }: DataTableProps<TData, TValue>) {
 	const [filterValue, setFilterValue] = useState('');
 	const filteredData = useMemo(() => {
 		return filterValue
-			? data.filter((item) =>
-					item.serial_code?.toLowerCase().includes(filterValue.toLowerCase()),
+			? rowData.filter((item) =>
+					item.name?.toLowerCase().includes(filterValue.toLowerCase()),
 				)
-			: data;
-	}, [data, filterValue]);
+			: rowData;
+	}, [rowData, filterValue]);
+
 	const table = useReactTable({
 		data: filteredData,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-		enableRowSelection: true,
-		onRowSelectionChange: onRowSelectionChange
-			? (updaterOrValue) => {
-					let newSelection: Record<string, boolean>;
-
-					if (typeof updaterOrValue === 'function') {
-						newSelection = updaterOrValue(table.getState().rowSelection);
-					} else {
-						newSelection = updaterOrValue;
-					}
-
-					// Limit check
-					const selectedCount =
-						Object.values(newSelection).filter(Boolean).length;
-					if (limit && selectedCount > limit) {
-						return; // Ignore selection update if limit exceeded
-					}
-
-					onRowSelectionChange(newSelection);
-				}
-			: undefined,
-		state: {
-			rowSelection: selectedRowIds ?? {},
-		},
 	});
-	const {setSelectedItems} = useSelectedItemsStore();
-	const handleSubmit = () => {
-		if (table.getSelectedRowModel().rows.length == limit) {
-			const selectedItems = table
-				.getSelectedRowModel()
-				.rows.map((row) => row.original);
-			setSelectedItems(selectedItems);
-			onSubmit();
-		} else {
-			toast.error(`Please Select total of ${limit} items`);
-		}
-	};
 	return (
-		<div className="flex flex-col gap-5">
-			<div className="flex items-center justify-between">
-				<p className="text-sm font-medium">Filter by Serial Code</p>
-				<Input
-					placeholder="Search serial code..."
-					value={filterValue}
-					onChange={(e) => setFilterValue(e.target.value)}
-					className="max-w-sm"
-				/>
+		<>
+			<div className="flex justify-between items-center gap-3 md:gap-0">
+				<div className="flex gap-2">
+					<div className="flex items-center justify-between">
+						<p className="text-sm font-medium">Filter by Name</p>
+						<Input
+							placeholder="Search serial code..."
+							value={filterValue}
+							onChange={(e) => setFilterValue(e.target.value)}
+							className="max-w-sm"
+						/>
+					</div>
+				</div>
+				<SelectedServiceItems onSubmit={onSubmit} />
 			</div>
+
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">
 				<Table className="relative">
 					<TableHeader>
@@ -152,12 +118,6 @@ export function SerialiItemTable<TData extends SerializeItem, TValue>({
 				</Table>
 				<ScrollBar orientation="horizontal" />
 			</ScrollArea>
-			<Button onClick={handleSubmit}>
-				<p className="text-sm">
-					{Object.values(table.getState().rowSelection).filter(Boolean).length}{' '}
-					of {limit} row(s) selected
-				</p>
-			</Button>
-		</div>
+		</>
 	);
 }

@@ -1,6 +1,7 @@
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -47,10 +48,6 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 				processData(data);
 				return;
 			}
-			if (onSubmit) {
-				onSubmit();
-				return;
-			}
 			await request(
 				'POST',
 				`/api/v1/sms/joborder/${joborder_id}/service/${service_id}/replacement-details`,
@@ -59,6 +56,11 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 					user_id: user.employee.employee_id,
 				},
 			);
+
+			if (onSubmit) {
+				onSubmit();
+				return;
+			}
 
 			toast.success('Successfully created replacement details');
 		} catch (e) {
@@ -79,8 +81,7 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 				onSubmit={form.handleSubmit(processForm)}
 				className="w-full space-y-2 h-full"
 			>
-				<pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
-
+				{/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
 				<FormField
 					control={form.control}
 					name="reason"
@@ -95,14 +96,13 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 									value={field.value ?? ''}
 								/>
 							</FormControl>
+							<FormDescription>You can update this note later</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
 				<div className="flex justify-end">
-					<Button type="submit" className="w-full">
-						Submit
-					</Button>
+					<Button type="submit">Submit</Button>
 				</div>
 			</form>
 		</Form>

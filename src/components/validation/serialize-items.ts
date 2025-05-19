@@ -91,7 +91,7 @@ export const serializeItemSchema = z.object({
 	created_at: z.string().optional(),
 	last_updated: z.string().optional(),
 	deleted_at: z.string().nullable().optional(),
-
+	purpose: z.enum(['Rent', 'Service', 'Sales']),
 	supplier: supplierSchema.optional(),
 	product: productSchema.optional(),
 });

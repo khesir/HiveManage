@@ -19,6 +19,11 @@ import {
 } from '@/components/validation/service-details';
 import {ApiRequest, request} from '@/api/axios';
 import {AxiosError} from 'axios';
+import {RepairForm} from './serviceDetails/repair/repairFormDialog';
+import {UpgradeForm} from './serviceDetails/upgrade/upgradeFormDialog';
+import {RentForm} from './serviceDetails/rent/rentFormDialog';
+import {CleaningForm} from './serviceDetails/cleaning/cleaningFormDialog';
+import {BuildForm} from './serviceDetails/build/buildFormDialog';
 type ServiceDetails =
 	| ReplacementDetails
 	| BuildDetails
@@ -82,6 +87,7 @@ export function ServiceMenuProfile() {
 			const savedServiceData: Service = Array.isArray(res.data)
 				? res.data[0]
 				: res.data;
+			console.log(savedServiceData);
 			if (savedServiceData.service_id) {
 				switch (data.name) {
 					case 'Replacement':
@@ -112,6 +118,7 @@ export function ServiceMenuProfile() {
 							`/api/v1/sms/joborder/${joborder_id}/service/${savedServiceData.service_id}/cleaning-details`,
 							{
 								...serviceDetails,
+								service_id: savedServiceData.service_id,
 								user_id: user.employee.employee_id,
 							},
 						);
@@ -122,6 +129,7 @@ export function ServiceMenuProfile() {
 							`/api/v1/sms/joborder/${joborder_id}/service/${savedServiceData.service_id}/rent-details`,
 							{
 								...serviceDetails,
+								service_id: savedServiceData.service_id,
 								user_id: user.employee.employee_id,
 							},
 						);
@@ -132,6 +140,7 @@ export function ServiceMenuProfile() {
 							`/api/v1/sms/joborder/${joborder_id}/service/${savedServiceData.service_id}/repair-details`,
 							{
 								...serviceDetails,
+								service_id: savedServiceData.service_id,
 								user_id: user.employee.employee_id,
 							},
 						);
@@ -142,6 +151,7 @@ export function ServiceMenuProfile() {
 							`/api/v1/sms/joborder/${joborder_id}/service/${savedServiceData.service_id}/upgrade-details`,
 							{
 								...serviceDetails,
+								service_id: savedServiceData.service_id,
 								user_id: user.employee.employee_id,
 							},
 						);
@@ -171,10 +181,10 @@ export function ServiceMenuProfile() {
 	return (
 		<div className="space-y-2">
 			<Card className="p-3 flex justify-between items-center">
-				<h1 className="text-lg">{data?.name}</h1>{' '}
+				<h1 className="text-lg font-semibold">{data?.name}</h1>{' '}
 				<div className="flex gap-3 items-center">
 					{avatar.length === 0 ? (
-						<span>No Empployee</span>
+						<span className="text-sm">No Empployee</span>
 					) : (
 						<AvatarCircles numPeople={numPeople} avatar={avatar} />
 					)}
@@ -182,33 +192,31 @@ export function ServiceMenuProfile() {
 				</div>
 			</Card>
 			{data.name === 'Repair' ? (
-				<p>Repair Form</p>
+				<Card className="p-5">
+					<RepairForm processData={processForm} />
+				</Card>
 			) : data.name === 'Cleaning' ? (
-				<Card>
-					<p>Cleaning service details go here.</p>
+				<Card className="p-5">
+					<CleaningForm processData={processForm} />
 				</Card>
 			) : data.name === 'Replacement' ? (
-				<Card className="p-3">
+				<Card className="p-5">
 					<ReplacementForm processData={processForm} />
 				</Card>
 			) : data.name === 'Build' ? (
-				<Card>
-					<p>Build service details go here.</p>
+				<Card className="p-5">
+					<BuildForm processData={processForm} />
 				</Card>
 			) : data.name === 'Upgrade' ? (
-				<Card>
-					<p>Upgrade service details go here.</p>
+				<Card className="p-5">
+					<UpgradeForm processData={processForm} />
 				</Card>
 			) : data.name === 'Rent' ? (
-				<Card>
-					<p>Rent service details go here.</p>
-				</Card>
-			) : data.name === 'Reserve' ? (
-				<Card>
-					<p>Reserve service details go here.</p>
+				<Card className="p-5">
+					<RentForm processData={processForm} />
 				</Card>
 			) : (
-				<Card>
+				<Card className="p-5">
 					<p>No selected Service</p>
 				</Card>
 			)}

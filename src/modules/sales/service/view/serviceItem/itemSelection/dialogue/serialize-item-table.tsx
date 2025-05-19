@@ -15,11 +15,11 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import {SerializeItem} from '@/components/validation/serialize-items';
-import {useSelectedItemsStore} from '../hooks/use-serialize-selection';
 import {Button} from '@/components/ui/button';
 import {toast} from 'sonner';
 import {useMemo, useState} from 'react';
 import {Input} from '@/components/ui/input';
+import {useSelectedItemsStore} from '@/modules/sales/dashboard/_components/hooks/use-serialize-selection';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

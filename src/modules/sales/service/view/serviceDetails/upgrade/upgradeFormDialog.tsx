@@ -1,6 +1,7 @@
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -17,26 +18,26 @@ import {useParams} from 'react-router-dom';
 import {request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
 import {
-	ReplacementDetails,
-	replacementDetailsSchema,
+	UpgradeDetails,
+	upgradeDetailsSchema,
 } from '@/components/validation/service-details';
 type Props = {
 	onSubmit?: () => void;
-	processData?: (data: ReplacementDetails) => void;
+	processData?: (data: UpgradeDetails) => void;
 };
-export function ReplacementForm({onSubmit, processData}: Props) {
+export function UpgradeForm({onSubmit, processData}: Props) {
 	const {user} = useEmployeeRoleDetailsStore();
 	const [loading, setLoading] = useState(false);
 	const {joborder_id, service_id} = useParams();
-	const form = useForm<ReplacementDetails>({
-		resolver: zodResolver(replacementDetailsSchema),
+	const form = useForm<UpgradeDetails>({
+		resolver: zodResolver(upgradeDetailsSchema),
 		defaultValues: {
-			owned_items: [],
-			new_product: [],
+			before_specs: [],
+			upgraded_components: [],
 		},
 		mode: 'onSubmit',
 	});
-	const processForm = async (data: ReplacementDetails) => {
+	const processForm = async (data: UpgradeDetails) => {
 		if (!user?.employee.employee_id) {
 			toast.error('Must be login to process');
 			return;
@@ -47,19 +48,19 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 				processData(data);
 				return;
 			}
-			if (onSubmit) {
-				onSubmit();
-				return;
-			}
+
 			await request(
 				'POST',
-				`/api/v1/sms/joborder/${joborder_id}/service/${service_id}/replacement-details`,
+				`/api/v1/sms/joborder/${joborder_id}/service/${service_id}/upgrade-details`,
 				{
 					...data,
 					user_id: user.employee.employee_id,
 				},
 			);
-
+			if (onSubmit) {
+				onSubmit();
+				return;
+			}
 			toast.success('Successfully created replacement details');
 		} catch (e) {
 			if (e instanceof Error) {
@@ -81,18 +82,19 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 			>
 				<FormField
 					control={form.control}
-					name="reason"
+					name="notes"
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Reason</FormLabel>
+							<FormLabel>Notes</FormLabel>
 							<FormControl>
 								<Textarea
 									{...field}
 									disabled={loading}
-									placeholder="Write Reason for Replacement"
+									placeholder="Notes"
 									value={field.value ?? ''}
 								/>
 							</FormControl>
+							<FormDescription>You can update this note later</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}

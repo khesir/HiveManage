@@ -1,21 +1,23 @@
 import {ApiRequest, request} from '@/api/axios';
+import {CardContent} from '@/components/ui/card';
 import {Skeleton} from '@/components/ui/skeleton';
 import {useEffect, useState} from 'react';
-import {ReplacementDialog} from './replacementDialog';
-import {ReplacementDetails} from '@/components/validation/service-details';
+import {CleaningDialog} from './cleaningDialog';
+import {CleaningDetails} from '@/components/validation/service-details';
 import {useParams} from 'react-router-dom';
 import {useServiceDetails} from '../../../_components/use-service-details-hook';
 
-export function ReplacementDetailsCard() {
+export function CleaningDetailsCard() {
 	const {serviceDetails, setServiceDetails} = useServiceDetails();
+
 	const [loading, setLoading] = useState(false);
 	const {joborder_id, service_id} = useParams();
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			const res = await request<ApiRequest<ReplacementDetails>>(
+			const res = await request<ApiRequest<CleaningDetails>>(
 				'GET',
-				`/api/v1/sms/joborder/${joborder_id}/service/${service_id}/replacement-details`,
+				`/api/v1/sms/joborder/${joborder_id}/service/${service_id}/cleaning-details`,
 			);
 			setServiceDetails(
 				Array.isArray(res.data) ? (res.data[0] ?? null) : res.data,
@@ -23,7 +25,7 @@ export function ReplacementDetailsCard() {
 		};
 		fetchData();
 		setLoading(false);
-	}, [serviceDetails]);
+	}, []);
 
 	if (loading) {
 		return <Skeleton className="w-[200px]"></Skeleton>;
@@ -31,34 +33,26 @@ export function ReplacementDetailsCard() {
 
 	if (serviceDetails === null) {
 		return (
-			<div className="flex flex-col justify-center items-center font-semibold gap-3 p-3">
+			<CardContent className="flex flex-col justify-center items-center font-semibold gap-3 p-3">
 				No Existing Replacement Details
-				<ReplacementDialog />
-			</div>
+				<CleaningDialog />
+			</CardContent>
 		);
 	}
 	return (
 		<div className="grid gap-3">
 			<div className="font-semibold flex justify-between">
-				<span>Replacement Details</span>
-				<ReplacementDialog />
+				<span>Cleaning Details</span>
+				<CleaningDialog />
 			</div>
 			<ul className="grid gap-3">
 				<li className="flex items-center justify-between">
-					<span className="text-muted-foreground">Reason</span>
-					<span>{(serviceDetails as ReplacementDetails).reason}</span>
+					<span className="text-muted-foreground">Method</span>
+					<span>{(serviceDetails as CleaningDetails).method}</span>
 				</li>
 				<li className="flex items-center justify-between">
-					<span className="text-muted-foreground">Owned Items</span>
-					<span>
-						{(serviceDetails as ReplacementDetails).ownedItems?.length ?? 0}
-					</span>
-				</li>
-				<li className="flex items-center justify-between">
-					<span className="text-muted-foreground">New Products</span>
-					<span>
-						{(serviceDetails as ReplacementDetails).serviceItems?.length ?? 0}
-					</span>
+					<span className="text-muted-foreground">Notes</span>
+					<span>{(serviceDetails as CleaningDetails).notes}</span>
 				</li>
 			</ul>
 		</div>

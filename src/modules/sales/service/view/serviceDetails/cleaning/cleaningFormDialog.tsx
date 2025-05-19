@@ -17,26 +17,28 @@ import {useParams} from 'react-router-dom';
 import {request} from '@/api/axios';
 import {Button} from '@/components/ui/button';
 import {
-	ReplacementDetails,
-	replacementDetailsSchema,
+	CleaningDetails,
+	cleaningDetailSchema,
 } from '@/components/validation/service-details';
+import {useServiceDetails} from '../../../_components/use-service-details-hook';
 type Props = {
 	onSubmit?: () => void;
-	processData?: (data: ReplacementDetails) => void;
+	processData?: (data: CleaningDetails) => void;
 };
-export function ReplacementForm({onSubmit, processData}: Props) {
+export function CleaningForm({onSubmit, processData}: Props) {
 	const {user} = useEmployeeRoleDetailsStore();
+	const {serviceDetails} = useServiceDetails();
 	const [loading, setLoading] = useState(false);
 	const {joborder_id, service_id} = useParams();
-	const form = useForm<ReplacementDetails>({
-		resolver: zodResolver(replacementDetailsSchema),
+	const form = useForm<CleaningDetails>({
+		resolver: zodResolver(cleaningDetailSchema),
 		defaultValues: {
-			owned_items: [],
-			new_product: [],
+			method: (serviceDetails as CleaningDetails)?.method ?? '',
+			notes: (serviceDetails as CleaningDetails)?.notes ?? '',
 		},
 		mode: 'onSubmit',
 	});
-	const processForm = async (data: ReplacementDetails) => {
+	const processForm = async (data: CleaningDetails) => {
 		if (!user?.employee.employee_id) {
 			toast.error('Must be login to process');
 			return;
@@ -45,10 +47,6 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 			setLoading(true);
 			if (processData) {
 				processData(data);
-				return;
-			}
-			if (onSubmit) {
-				onSubmit();
 				return;
 			}
 			await request(
@@ -60,6 +58,10 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 				},
 			);
 
+			if (onSubmit) {
+				onSubmit();
+				return;
+			}
 			toast.success('Successfully created replacement details');
 		} catch (e) {
 			if (e instanceof Error) {
@@ -81,15 +83,33 @@ export function ReplacementForm({onSubmit, processData}: Props) {
 			>
 				<FormField
 					control={form.control}
-					name="reason"
+					name="method"
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Reason</FormLabel>
+							<FormLabel>Method</FormLabel>
 							<FormControl>
 								<Textarea
 									{...field}
 									disabled={loading}
-									placeholder="Write Reason for Replacement"
+									placeholder="List out methods of cleaning"
+									value={field.value ?? ''}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="notes"
+					render={({field}) => (
+						<FormItem>
+							<FormLabel>Notes</FormLabel>
+							<FormControl>
+								<Textarea
+									{...field}
+									disabled={loading}
+									placeholder="List out methods of cleaning"
 									value={field.value ?? ''}
 								/>
 							</FormControl>

@@ -76,41 +76,32 @@ export function ProductInformationTab() {
 
 					{/* Middle section: 40% */}
 					<div className="flex-[1_1_40%] min-w-[300px]">
-						<InformationCard data={data} refreshOnRender={fetchData} />
+						<InformationCard data={data} />
 					</div>
 
 					{/* Third section: 30% */}
 					<div className="flex-[1_1_30%] min-w-[250px]">
 						<Card className="flex flex-col lg:max-w-md h-full">
-							<CardHeader>
-								<div className="font-semibold">Stock records</div>
+							<CardHeader className="p-5 pb-1">
+								<div className="flex items-center justify-between">
+									<span className="font-semibold">Stock records</span>
+									<span>{`Total: ${data.total_quantity}`}</span>
+								</div>{' '}
 							</CardHeader>
-							<CardContent>
-								<div className="grid gap-1">
+							<CardContent className="pb-1">
+								<div className="grid gap-3">
 									<ul className="grid gap-1">
 										<li className="flex items-center justify-between">
 											<span className="text-muted-foreground">
-												Total Quantity
+												Sale Quantity
 											</span>
-											<span>{data.available_quantity}</span>
-										</li>
-										<li className="flex items-center justify-between">
-											<span className="text-muted-foreground">
-												Available Quantity
-											</span>
-											<span>{data.available_quantity}</span>
+											<span>{data.sale_quantity}</span>
 										</li>
 										<li className="flex items-center justify-between">
 											<span className="text-muted-foreground">
 												Sold Quantity
 											</span>
 											<span>{data.sold_quantity}</span>
-										</li>
-										<li className="flex items-center justify-between">
-											<span className="text-muted-foreground">
-												Transfered Quantity
-											</span>
-											<span>{data.transfered_quantity}</span>
 										</li>
 										<li className="flex items-center justify-between">
 											<span className="text-muted-foreground">
@@ -123,18 +114,36 @@ export function ProductInformationTab() {
 												)}
 											</span>
 										</li>
+										<li className="flex items-center justify-between">
+											<span className="text-muted-foreground">
+												Service Quantity
+											</span>
+											<span>{data.service_quantity}</span>
+										</li>
+										<li className="flex items-center justify-between">
+											<span className="text-muted-foreground">
+												Rent Quantity
+											</span>
+											<span>{data.rent_quantity}</span>
+										</li>
+										<li className="flex items-center justify-between">
+											<span className="text-muted-foreground">
+												Damaged Quantity
+											</span>
+											<span>{data.damage_quantity}</span>
+										</li>
 									</ul>
 								</div>
 							</CardContent>
-							<CardFooter className="w-full flex-col items-start">
-								<CreatePODialogue
-									id={data.product_id!}
-									serialize={data.is_serialize!}
-								/>
+							<CardFooter className="w-full flex-col items-start pt-0">
 								<p className=" text-gray-500 text-xs font-semibold">
 									Has currently {currentOrder.length} active/draft purchase
 									order
 								</p>
+								<CreatePODialogue
+									id={data.product_id!}
+									serialize={data.is_serialize!}
+								/>
 							</CardFooter>
 						</Card>
 					</div>

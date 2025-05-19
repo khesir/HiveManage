@@ -2,18 +2,18 @@ import {Joborder} from '@/components/validation/joborder';
 import {create} from 'zustand';
 
 type JoborderStore = {
-	data: Joborder | null;
+	joborderData: Joborder | null;
 	setJoborder: (newData: Joborder) => void;
 	resetJoborder: () => void;
 };
 
 const useJoborderStore = create<JoborderStore>((set) => ({
-	data: null,
+	joborderData: null,
 	setJoborder: (newData) =>
 		set(() => ({
-			data: newData,
+			joborderData: newData,
 		})),
-	resetJoborder: () => set({data: null}),
+	resetJoborder: () => set({joborderData: null}),
 }));
 
 export default useJoborderStore;

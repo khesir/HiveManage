@@ -151,26 +151,31 @@ export const productSchema = z.object({
 		})
 		.min(1),
 
-	img_url: z.union([
-		z
-			.instanceof(File)
-			.optional()
-			.refine((file) => {
-				return !file || file.size <= MAX_UPLOAD_SIZE;
-			}, 'File size must be less than 3MB')
-			.refine((file) => {
-				return !file || ACCEPTED_FILE_TYPES.includes(file.type);
-			}, 'File must be a PNG or JPEG'),
-		z.string(),
-	]),
+	img_url: z
+		.union([
+			z
+				.instanceof(File)
+				.optional()
+				.refine((file) => {
+					return !file || file.size <= MAX_UPLOAD_SIZE;
+				}, 'File size must be less than 3MB')
+				.refine((file) => {
+					return !file || ACCEPTED_FILE_TYPES.includes(file.type);
+				}, 'File must be a PNG or JPEG'),
+			z.string(),
+		])
+		.optional()
+		.nullable(),
 	is_serialize: z.boolean().optional(),
 	status: z.union([z.string().optional(), z.boolean()]),
 	re_order_level: z.number().optional(),
 	selling_price: z.number().min(1),
 
 	total_quantity: z.number().optional(),
-	available_quantity: z.number().optional(),
-	transfered_quantity: z.number().optional(),
+	sale_quantity: z.number().optional(),
+	service_quantity: z.number().optional(),
+	rent_quantity: z.number().optional(),
+	damage_quantity: z.number().optional(),
 	sold_quantity: z.number().optional(),
 
 	created_at: z.string().optional(),

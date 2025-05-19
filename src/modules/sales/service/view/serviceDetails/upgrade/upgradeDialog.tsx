@@ -7,9 +7,9 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import {useState} from 'react';
-import {ReplacementForm} from './replacementFormDialog';
+import {UpgradeForm} from './upgradeFormDialog';
 
-export function ReplacementDialog() {
+export function UpgradeDialog() {
 	const [formModal, setFormModal] = useState<boolean>(false);
 	const handleSubmit = () => {
 		setFormModal(false);
@@ -26,9 +26,9 @@ export function ReplacementDialog() {
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="max-w-[100vh]">
-				<DialogTitle>Replacement Details Form</DialogTitle>
+				<DialogTitle>Upgrade Details Form</DialogTitle>
 				<DialogDescription></DialogDescription>
-				<ReplacementForm onSubmit={handleSubmit} />
+				<UpgradeForm onSubmit={handleSubmit} />
 			</DialogContent>
 		</Dialog>
 	);
