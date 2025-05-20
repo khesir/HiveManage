@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker';
 
 import log from '../lib/logger';
@@ -21,6 +22,8 @@ import {
 
 import { service_Type, ticketType } from './schema/services';
 import { category, supplier } from './schema/ims';
+import { payment } from './schema/payment';
+import { joborder } from './schema/services/schema/service/joborder.schema';
 
 const supabase = new SupabaseService();
 
@@ -743,7 +746,98 @@ async function seedServiceType(db: PostgresJsDatabase<SchemaType>) {
   ];
   await db.insert(service_Type).values(typesRecords);
 }
+async function seedPayments(db: PostgresJsDatabase<SchemaType>) {
+  const paymentMethods = ['Cash', 'Card', 'Online Payment'] as const;
+  const paymentTypes = ['Service', 'Sales'] as const;
+  const paymentsToInsert = [];
 
+  for (let i = 0; i < 30; i++) {
+    const totalPrice = faker.number.float({
+      min: 500,
+      max: 10000,
+      multipleOf: 0.01,
+    });
+
+    const discount = faker.number.int({ min: 0, max: 1000 });
+    const vatAmount = parseFloat((totalPrice * 0.12).toFixed(2));
+
+    let baseAmount = totalPrice - discount + vatAmount;
+    if (baseAmount < 200) baseAmount = 200; // ensure a valid range
+
+    const shouldPayFull = faker.datatype.boolean();
+    const paidAmount = shouldPayFull
+      ? baseAmount
+      : faker.number.float({
+          min: 100,
+          max: baseAmount - 100,
+          multipleOf: 0.01,
+        });
+
+    const changeAmount =
+      paidAmount > baseAmount
+        ? parseFloat((paidAmount - baseAmount).toFixed(2))
+        : 0;
+
+    const paymentDate = faker.date.between({
+      from: '2024-12-01',
+      to: new Date(),
+    });
+
+    paymentsToInsert.push({
+      amount: totalPrice,
+      paid_amount: paidAmount,
+      change_amount: changeAmount,
+      vat_amount: vatAmount,
+      discount_amount: discount,
+      payment_date: paymentDate.toISOString(),
+      payment_method: faker.helpers.arrayElement(paymentMethods),
+      payment_type: faker.helpers.arrayElement(paymentTypes),
+      reference_number: faker.string.alphanumeric(10).toUpperCase(),
+      created_at: paymentDate,
+      last_updated: paymentDate,
+      deleted_at: null,
+    });
+  }
+
+  await db.insert(payment).values(paymentsToInsert);
+  console.log('✅ Seeded 30 payments');
+}
+async function seedJoborders(db: PostgresJsDatabase<SchemaType>) {
+  const jobOrdersToInsert = [];
+  const customerIds = await db.select().from(customer);
+  const paymentIds = await db.select().from(payment);
+  const now = new Date();
+
+  for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+    for (let i = 0; i < 2; i++) {
+      const created_at = new Date(now);
+      created_at.setDate(now.getDate() - dayOffset);
+      created_at.setHours(9 + i * 4); // Different times in the day
+
+      const expected_completion = new Date(created_at);
+      expected_completion.setDate(expected_completion.getDate() + 2);
+
+      const completed_at = new Date(expected_completion);
+      const turned_over_at = new Date(expected_completion);
+      turned_over_at.setDate(turned_over_at.getDate() + 1);
+
+      jobOrdersToInsert.push({
+        joborder_uuid: faker.string.uuid(),
+        customer_id: faker.helpers.arrayElement(customerIds).customer_id,
+        payment_id: faker.helpers.arrayElement(paymentIds).payment_id,
+        status: 'Turned Over' as const,
+        created_at,
+        expected_completion_date: expected_completion,
+        completed_at,
+        turned_over_at,
+        last_updated: turned_over_at,
+        deleted_at: null,
+      });
+    }
+  }
+
+  await db.insert(joborder).values(jobOrdersToInsert);
+}
 async function main() {
   try {
     await createBucketByName(process.env.PROFILE_BUCKET!);
@@ -766,6 +860,8 @@ async function main() {
     await seedServiceType(db);
     // Participants
     await seedCustomer(db);
+    // await seedPayments(db);
+    // await seedJoborders(db);
   } catch (error) {
     console.error('Error during seeding:', error);
   } finally {

@@ -137,6 +137,24 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "public"."sales_resolve_type_enum" AS ENUM('Refunded', 'Replaced', 'Discounted', 'Cancelled');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."sales_log_action_type" AS ENUM('Sold', 'Returned', 'Restocked', 'Refunded', 'Exchanged');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."sales_log_status" AS ENUM('Completed', 'Pending', 'Refunded', 'Partial Return', 'Resolved');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "public"."joborder_status" AS ENUM('In Progress', 'Pending', 'Completed', 'Turned Over', 'Cancelled');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -440,13 +458,15 @@ CREATE TABLE IF NOT EXISTS "product_supplier" (
 CREATE TABLE IF NOT EXISTS "payment" (
 	"payment_id" serial PRIMARY KEY NOT NULL,
 	"total_price" real,
-	"paid_amount" real,
-	"change_amount" real,
-	"vat_amount" real,
-	"discount_amount" integer,
+	"paid_amount" real DEFAULT 0,
+	"change_amount" real DEFAULT 0,
+	"vat_amount" real DEFAULT 0,
+	"discount_amount" integer DEFAULT 0,
 	"payment_date" varchar,
 	"payment_method" "payment_method" NOT NULL,
 	"payment_type" "payment_type" NOT NULL,
+	"is_refund" boolean DEFAULT false,
+	"related_payment_id" integer,
 	"reference_number" varchar,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
@@ -486,19 +506,6 @@ CREATE TABLE IF NOT EXISTS "joborder_Log" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "salesLog" (
-	"sales_logs_id" serial PRIMARY KEY NOT NULL,
-	"sales_id" integer,
-	"payment_id" integer,
-	"sales_items_idv" integer,
-	"action" varchar(255),
-	"quantity" integer,
-	"performed_by" integer,
-	"created_at" timestamp DEFAULT now(),
-	"last_updated" timestamp DEFAULT now() NOT NULL,
-	"deleted_at" timestamp
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "serviceLog" (
 	"service_log_id" serial PRIMARY KEY NOT NULL,
 	"service_id" integer,
@@ -529,6 +536,31 @@ CREATE TABLE IF NOT EXISTS "sales_items" (
 	"serialize_items" integer[] DEFAULT '{}'::integer[],
 	"sold_price" integer,
 	"quantity" integer,
+	"return_qty" integer DEFAULT 0,
+	"refund_amount" real DEFAULT 0,
+	"return_note" varchar,
+	"warranty_date" timestamp,
+	"warranty_used" boolean,
+	"warranty_claimed_at" timestamp,
+	"created_at" timestamp DEFAULT now(),
+	"last_updated" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "sales_log" (
+	"sales_log_id" serial PRIMARY KEY NOT NULL,
+	"sales_id" integer,
+	"sale_item_id" integer,
+	"product_id" integer,
+	"total_quantity" integer NOT NULL,
+	"returned_quantity" integer DEFAULT 0,
+	"restocked_quantity" integer DEFAULT 0,
+	"refunded_amount" numeric(10, 2) DEFAULT '0.00',
+	"status" "sales_log_status",
+	"action_type" "sales_log_action_type",
+	"resolve_type" "sales_resolve_type_enum",
+	"notes" varchar(255),
+	"performed_by" integer,
 	"created_at" timestamp DEFAULT now(),
 	"last_updated" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
@@ -947,30 +979,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "salesLog" ADD CONSTRAINT "salesLog_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "salesLog" ADD CONSTRAINT "salesLog_payment_id_payment_payment_id_fk" FOREIGN KEY ("payment_id") REFERENCES "public"."payment"("payment_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "salesLog" ADD CONSTRAINT "salesLog_sales_items_idv_sales_items_sales_item_id_fk" FOREIGN KEY ("sales_items_idv") REFERENCES "public"."sales_items"("sales_item_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "salesLog" ADD CONSTRAINT "salesLog_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  ALTER TABLE "serviceLog" ADD CONSTRAINT "serviceLog_service_id_service_service_id_fk" FOREIGN KEY ("service_id") REFERENCES "public"."service"("service_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1008,6 +1016,30 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "sales_items" ADD CONSTRAINT "sales_items_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "sales_log" ADD CONSTRAINT "sales_log_sales_id_sales_sales_id_fk" FOREIGN KEY ("sales_id") REFERENCES "public"."sales"("sales_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "sales_log" ADD CONSTRAINT "sales_log_sale_item_id_sales_items_sales_item_id_fk" FOREIGN KEY ("sale_item_id") REFERENCES "public"."sales_items"("sales_item_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "sales_log" ADD CONSTRAINT "sales_log_product_id_product_product_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."product"("product_id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "sales_log" ADD CONSTRAINT "sales_log_performed_by_employee_employee_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."employee"("employee_id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

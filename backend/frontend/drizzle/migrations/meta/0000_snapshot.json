@@ -1,5 +1,5 @@
 {
-  "id": "1b0ac204-5fbf-47ff-a27b-26665c4ecac3",
+  "id": "402163c9-ed26-42d3-8de5-51cf94fd35ef",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1922,25 +1922,29 @@
           "name": "paid_amount",
           "type": "real",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "change_amount": {
           "name": "change_amount",
           "type": "real",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "vat_amount": {
           "name": "vat_amount",
           "type": "real",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "discount_amount": {
           "name": "discount_amount",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": 0
         },
         "payment_date": {
           "name": "payment_date",
@@ -1961,6 +1965,19 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "is_refund": {
+          "name": "is_refund",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "related_payment_id": {
+          "name": "related_payment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "reference_number": {
           "name": "reference_number",
@@ -2281,131 +2298,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.salesLog": {
-      "name": "salesLog",
-      "schema": "",
-      "columns": {
-        "sales_logs_id": {
-          "name": "sales_logs_id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "sales_id": {
-          "name": "sales_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "payment_id": {
-          "name": "payment_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sales_items_idv": {
-          "name": "sales_items_idv",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "action": {
-          "name": "action",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "quantity": {
-          "name": "quantity",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "performed_by": {
-          "name": "performed_by",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "last_updated": {
-          "name": "last_updated",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "salesLog_sales_id_sales_sales_id_fk": {
-          "name": "salesLog_sales_id_sales_sales_id_fk",
-          "tableFrom": "salesLog",
-          "tableTo": "sales",
-          "columnsFrom": [
-            "sales_id"
-          ],
-          "columnsTo": [
-            "sales_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "salesLog_payment_id_payment_payment_id_fk": {
-          "name": "salesLog_payment_id_payment_payment_id_fk",
-          "tableFrom": "salesLog",
-          "tableTo": "payment",
-          "columnsFrom": [
-            "payment_id"
-          ],
-          "columnsTo": [
-            "payment_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "salesLog_sales_items_idv_sales_items_sales_item_id_fk": {
-          "name": "salesLog_sales_items_idv_sales_items_sales_item_id_fk",
-          "tableFrom": "salesLog",
-          "tableTo": "sales_items",
-          "columnsFrom": [
-            "sales_items_idv"
-          ],
-          "columnsTo": [
-            "sales_item_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "salesLog_performed_by_employee_employee_id_fk": {
-          "name": "salesLog_performed_by_employee_employee_id_fk",
-          "tableFrom": "salesLog",
-          "tableTo": "employee",
-          "columnsFrom": [
-            "performed_by"
-          ],
-          "columnsTo": [
-            "employee_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "public.serviceLog": {
       "name": "serviceLog",
       "schema": "",
@@ -2641,6 +2533,44 @@
           "primaryKey": false,
           "notNull": false
         },
+        "return_qty": {
+          "name": "return_qty",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "refund_amount": {
+          "name": "refund_amount",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "return_note": {
+          "name": "return_note",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warranty_date": {
+          "name": "warranty_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warranty_used": {
+          "name": "warranty_used",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warranty_claimed_at": {
+          "name": "warranty_claimed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -2686,6 +2616,173 @@
           ],
           "columnsTo": [
             "sales_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.sales_log": {
+      "name": "sales_log",
+      "schema": "",
+      "columns": {
+        "sales_log_id": {
+          "name": "sales_log_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sales_id": {
+          "name": "sales_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sale_item_id": {
+          "name": "sale_item_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_quantity": {
+          "name": "total_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "returned_quantity": {
+          "name": "returned_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "restocked_quantity": {
+          "name": "restocked_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "refunded_amount": {
+          "name": "refunded_amount",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0.00'"
+        },
+        "status": {
+          "name": "status",
+          "type": "sales_log_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action_type": {
+          "name": "action_type",
+          "type": "sales_log_action_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "resolve_type": {
+          "name": "resolve_type",
+          "type": "sales_resolve_type_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "performed_by": {
+          "name": "performed_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sales_log_sales_id_sales_sales_id_fk": {
+          "name": "sales_log_sales_id_sales_sales_id_fk",
+          "tableFrom": "sales_log",
+          "tableTo": "sales",
+          "columnsFrom": [
+            "sales_id"
+          ],
+          "columnsTo": [
+            "sales_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_log_sale_item_id_sales_items_sales_item_id_fk": {
+          "name": "sales_log_sale_item_id_sales_items_sales_item_id_fk",
+          "tableFrom": "sales_log",
+          "tableTo": "sales_items",
+          "columnsFrom": [
+            "sale_item_id"
+          ],
+          "columnsTo": [
+            "sales_item_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_log_product_id_product_product_id_fk": {
+          "name": "sales_log_product_id_product_product_id_fk",
+          "tableFrom": "sales_log",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "product_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sales_log_performed_by_employee_employee_id_fk": {
+          "name": "sales_log_performed_by_employee_employee_id_fk",
+          "tableFrom": "sales_log",
+          "tableTo": "employee",
+          "columnsFrom": [
+            "performed_by"
+          ],
+          "columnsTo": [
+            "employee_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -4396,6 +4493,38 @@
         "Partially Completed",
         "Cancelled",
         "Pending"
+      ]
+    },
+    "public.sales_resolve_type_enum": {
+      "name": "sales_resolve_type_enum",
+      "schema": "public",
+      "values": [
+        "Refunded",
+        "Replaced",
+        "Discounted",
+        "Cancelled"
+      ]
+    },
+    "public.sales_log_action_type": {
+      "name": "sales_log_action_type",
+      "schema": "public",
+      "values": [
+        "Sold",
+        "Returned",
+        "Restocked",
+        "Refunded",
+        "Exchanged"
+      ]
+    },
+    "public.sales_log_status": {
+      "name": "sales_log_status",
+      "schema": "public",
+      "values": [
+        "Completed",
+        "Pending",
+        "Refunded",
+        "Partial Return",
+        "Resolved"
       ]
     },
     "public.joborder_status": {

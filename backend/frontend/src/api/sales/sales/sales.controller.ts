@@ -18,7 +18,8 @@ export class SalesController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const range = (req.query.range as string) || undefined;
+    const no_pagination = req.query.no_pagination === 'true';
     try {
       const data = await this.salesService.getAllSales(
         customer_id,
@@ -27,6 +28,8 @@ export class SalesController {
         sort,
         limit,
         offset,
+        range,
+        no_pagination,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

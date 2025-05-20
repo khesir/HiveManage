@@ -16,13 +16,16 @@ export class JoborderController {
     const sort = (req.query.sort as string) || 'asc';
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = parseInt(req.query.offset as string) || 0;
-
+    const status = (req.query.status as string) || undefined;
+    const range = (req.query.range as string) || undefined;
     try {
       const data = await this.jobrderService.getAllJoborders(
         no_pagination,
         sort,
         limit,
         offset,
+        status,
+        range,
       );
       res.status(HttpStatus.OK.code).json({
         status: 'Success',

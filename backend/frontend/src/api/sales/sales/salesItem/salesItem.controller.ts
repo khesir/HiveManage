@@ -102,6 +102,10 @@ export class SalesItemController {
         serial_id,
         total_price,
         sold_price,
+        return_qty,
+        damage_qty,
+        restocked_qty,
+        return_note,
       } = req.body;
 
       await this.salesitemService.updateSalesItem(
@@ -113,6 +117,10 @@ export class SalesItemController {
           quantity,
           total_price,
           sold_price,
+          return_qty,
+          damage_qty,
+          restocked_qty,
+          return_note,
         },
         Number(sales_items_id),
       );
@@ -140,6 +148,50 @@ export class SalesItemController {
       res
         .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
         .json({ status: 'Error', message: 'Internal Server Error' });
+      next(error);
+    }
+  }
+
+  async returnSalesItem(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { sales_item_id } = req.params;
+      const {
+        product_id,
+        sales_id,
+        quantity,
+        sold_price,
+        return_qty,
+        refund_amount,
+        return_note,
+        warranty_date,
+        warranty_used,
+        user_id,
+      } = req.body;
+      console.log(sales_item_id);
+      await this.salesitemService.addReturn(
+        {
+          product_id,
+          sales_id,
+          quantity,
+          sold_price,
+          return_qty,
+          refund_amount,
+          return_note,
+          warranty_date,
+          warranty_used,
+          user_id,
+        },
+        Number(sales_item_id),
+      );
+      res.status(HttpStatus.OK.code).json({
+        status: 'Success',
+        message: 'Sales Item Updated Successfully ',
+      });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.code)
+        .json({ status: 'Error', message: 'Internal Server Error ' });
       next(error);
     }
   }

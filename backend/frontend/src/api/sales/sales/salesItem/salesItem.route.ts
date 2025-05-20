@@ -36,5 +36,9 @@ salesitemRoute.delete(
   validateSalesItemID,
   salesitemController.deleteSalesItem.bind(salesitemController),
 );
-
+salesitemRoute.put(
+  '/:sales_item_id/return',
+  [validateRequest({ body: UpdateSalesItem }), validateSalesItemID],
+  salesitemController.returnSalesItem.bind(salesitemController),
+);
 export default salesitemRoute;

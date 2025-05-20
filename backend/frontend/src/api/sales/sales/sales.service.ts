@@ -1,4 +1,14 @@
-import { and, eq, isNull, asc, desc, sql, inArray } from 'drizzle-orm';
+import {
+  and,
+  eq,
+  isNull,
+  asc,
+  desc,
+  sql,
+  inArray,
+  lte,
+  gte,
+} from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { customer } from '@/drizzle/schema/customer';
 import { SchemaType } from '@/drizzle/schema/type';
@@ -90,6 +100,7 @@ export class SalesService {
           serialize_items: serialData,
           sold_price: Number(item.sold_price),
           quantity: item.quantity,
+          warranty_date: new Date(),
         });
         // Update Product
         await tx
@@ -131,6 +142,8 @@ export class SalesService {
     sort: string,
     limit: number,
     offset: number,
+    range: string | undefined,
+    no_pagination: boolean,
   ) {
     const conditions = [isNull(sales.deleted_at)];
 
@@ -148,6 +161,23 @@ export class SalesService {
         throw new Error(`Invalid payment status: ${status}`);
       }
     }
+    if (range) {
+      const now = new Date();
+      const date = new Date(now); // clone the current date
+
+      const amount = parseInt(range.slice(0, -1));
+      const unit = range.slice(-1).toLowerCase(); // lowercase to accept "D" or "d"
+
+      if (unit === 'd') {
+        date.setDate(date.getDate() - amount); // subtract days
+      } else if (unit === 'm') {
+        date.setMonth(date.getMonth() - amount); // subtract months
+      }
+
+      // Conditions: From 'date' (earlier) to 'now' (later)
+      conditions.push(gte(sales.created_at, date));
+      conditions.push(lte(sales.created_at, now));
+    }
     if (customer_id) {
       conditions.push(eq(sales.customer_id, Number(customer_id)));
     }
@@ -163,15 +193,19 @@ export class SalesService {
 
     const totalData = totalCountQuery[0].count;
 
-    const result = await this.db
+    const query = this.db
       .select()
       .from(sales)
       .leftJoin(customer, eq(customer.customer_id, sales.customer_id))
       .leftJoin(employee, eq(employee.employee_id, sales.handled_by))
+      .leftJoin(payment, eq(payment.payment_id, sales.payment_id))
       .where(and(...conditions))
-      .orderBy(sort === 'asc' ? asc(sales.sales_id) : desc(sales.sales_id))
-      .limit(limit)
-      .offset(offset);
+      .orderBy(sort === 'asc' ? asc(sales.sales_id) : desc(sales.sales_id));
+
+    if (no_pagination) {
+      query.limit(limit).offset(offset);
+    }
+    const result = await query;
     const salesWithDetails = result.map((row) => ({
       ...row.sales,
       customer: {
@@ -179,6 +213,9 @@ export class SalesService {
       },
       employee: {
         ...row.employee,
+      },
+      payment: {
+        ...row.payment,
       },
     }));
 

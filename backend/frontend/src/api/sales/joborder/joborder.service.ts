@@ -1,4 +1,14 @@
-import { and, eq, isNull, sql, asc, desc, inArray } from 'drizzle-orm';
+import {
+  and,
+  eq,
+  isNull,
+  sql,
+  asc,
+  desc,
+  inArray,
+  gte,
+  lte,
+} from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { SchemaType } from '@/drizzle/schema/type';
 import { CreateJoborder, UpdateJoborder } from './joborder.model';
@@ -58,9 +68,41 @@ export class JoborderService {
     sort: string,
     limit: number,
     offset: number,
+    status: string | undefined,
+    range: string | undefined,
   ) {
     const conditions = [isNull(joborder.deleted_at)];
+    if (status) {
+      conditions.push(
+        eq(
+          joborder.status,
+          status as
+            | 'Pending'
+            | 'In Progress'
+            | 'Completed'
+            | 'Turned Over'
+            | 'Cancelled',
+        ),
+      );
+    }
 
+    if (range) {
+      const now = new Date();
+      const date = new Date(now); // clone the current date
+
+      const amount = parseInt(range.slice(0, -1));
+      const unit = range.slice(-1).toLowerCase(); // lowercase to accept "D" or "d"
+
+      if (unit === 'd') {
+        date.setDate(date.getDate() - amount); // subtract days
+      } else if (unit === 'm') {
+        date.setMonth(date.getMonth() - amount); // subtract months
+      }
+
+      // Conditions: From 'date' (earlier) to 'now' (later)
+      conditions.push(gte(joborder.turned_over_at, date));
+      conditions.push(lte(joborder.turned_over_at, now));
+    }
     const totalCountQuery = await this.db
       .select({
         count: sql<number>`COUNT(*)`,
@@ -74,6 +116,7 @@ export class JoborderService {
       .select()
       .from(joborder)
       .leftJoin(customer, eq(customer.customer_id, joborder.customer_id))
+      .leftJoin(payment, eq(payment.payment_id, joborder.payment_id))
       .where(and(...conditions))
       .orderBy(
         sort === 'asc' ? asc(joborder.joborder_id) : desc(joborder.joborder_id),
@@ -91,6 +134,7 @@ export class JoborderService {
       ...row.joborder,
       customer: row.customer,
       services: joborderServiceByJoborderID.get(row.joborder.joborder_id),
+      payment: row.payment,
     }));
 
     return { totalData, joborderWithDetails };
