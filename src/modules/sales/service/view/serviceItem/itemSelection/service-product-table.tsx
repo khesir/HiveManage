@@ -18,6 +18,7 @@ import {
 import {Product} from '@/components/validation/product';
 import {Input} from '@/components/ui/input';
 import {SelectedServiceItems} from './sheet/selected-product';
+import useService from '@/modules/sales/_components/hooks/use-service';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -34,6 +35,8 @@ export function SalesProductTable<TData extends Product, TValue>({
 	onSubmit,
 }: DataTableProps<TData, TValue>) {
 	const [filterValue, setFilterValue] = useState('');
+	const {data} = useService();
+
 	const filteredData = useMemo(() => {
 		return filterValue
 			? rowData.filter((item) =>
@@ -62,7 +65,10 @@ export function SalesProductTable<TData extends Product, TValue>({
 						/>
 					</div>
 				</div>
-				<SelectedServiceItems onSubmit={onSubmit} />
+				<SelectedServiceItems
+					onSubmit={onSubmit}
+					isRent={data?.service_type?.name === 'Rent'}
+				/>
 			</div>
 
 			<ScrollArea className="h-[calc(81vh-220px)] rounded-md border">

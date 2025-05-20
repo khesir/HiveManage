@@ -14,8 +14,9 @@ import {useEmployeeRoleDetailsStore} from '@/modules/authentication/hooks/use-si
 import useEventTrigger from '@/modules/sales/service/_components/use-event-hook';
 type Props = {
 	onSubmit: () => void;
+	isRent: boolean;
 };
-export function SelectedServiceItems({onSubmit}: Props) {
+export function SelectedServiceItems({onSubmit, isRent = false}: Props) {
 	const {data} = useServiceItem();
 	const [loading, setLoading] = useState<boolean>(false);
 	const {joborder_id, service_id} = useParams();
@@ -68,7 +69,7 @@ export function SelectedServiceItems({onSubmit}: Props) {
 					service_id: Number(service_id),
 					serialize_items: selectedItems,
 					quantity: quantity,
-					sold_price: Number(data.selling_price),
+					sold_price: isRent ? 0 : Number(data.selling_price),
 					status: 'Pending',
 					user_id: user?.employee.employee_id,
 				},

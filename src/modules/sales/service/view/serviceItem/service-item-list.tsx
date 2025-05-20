@@ -75,10 +75,6 @@ export const columns: ColumnDef<ServiceItem>[] = [
 		header: 'Created',
 		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
 	},
-	{
-		header: 'Action',
-		cell: ({row}: {row: Row<ServiceItem>}) => <ActionCell {...row.original} />,
-	},
 ];
 
 export default function ServiceItemList() {

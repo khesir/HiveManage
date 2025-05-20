@@ -70,16 +70,7 @@ export const columns: ColumnDef<Product>[] = [
 	{
 		header: 'Quantity',
 		cell: ({row}) => {
-			if (row.original.is_serialize) {
-				return row.original.product_serials?.length ?? 0;
-			} else {
-				return (
-					row.original.product_records?.reduce(
-						(sum: number, record: {quantity: number}) => sum + record.quantity,
-						0,
-					) ?? 0
-				);
-			}
+			return row.original.sale_quantity;
 		},
 	},
 	{

@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import {PaginationResponse, request} from '@/api/axios';
 import {useParams, useSearchParams} from 'react-router-dom';
 import {OwnedItemTable} from './owned-items-table';
-import {ColumnDef, Row} from '@tanstack/react-table';
+import {ColumnDef} from '@tanstack/react-table';
 import {
 	Tooltip,
 	TooltipContent,
@@ -60,10 +60,6 @@ export const columns: ColumnDef<OwnedItems>[] = [
 		accessorKey: 'created_at',
 		header: 'Created',
 		cell: ({row}) => dateParser(row?.original?.created_at ?? ''),
-	},
-	{
-		header: 'Action',
-		cell: ({row}: {row: Row<OwnedItems>}) => <ActionCell {...row.original} />,
 	},
 ];
 

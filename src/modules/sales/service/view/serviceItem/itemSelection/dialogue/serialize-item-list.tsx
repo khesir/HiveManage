@@ -6,6 +6,7 @@ import {dateParser} from '@/lib/util/utils';
 import {SerialiItemTable} from './serialize-item-table';
 import useEventTrigger from '@/modules/inventory/_components/hooks/use-event-trigger';
 import {Checkbox} from '@/components/ui/checkbox';
+import useService from '@/modules/sales/_components/hooks/use-service';
 
 export const columns: ColumnDef<SerializeItem>[] = [
 	{
@@ -76,12 +77,16 @@ export default function SerializeItemRecord({
 
 	const {isTriggered} = useEventTrigger();
 	const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
+	const {data} = useService();
 
 	useEffect(() => {
 		const fetchProducts = async () => {
 			const serialItems = await request<PaginationResponse<SerializeItem>>(
 				'GET',
-				`/api/v1/ims/product/${product_id}/serializeRecord?no_pagination=true&status=Available&purpose=Service`,
+				`/api/v1/ims/product/${product_id}/serializeRecord?no_pagination=true&status=Available` +
+					(data?.service_type?.name === 'Rent'
+						? `&purpose=Rent`
+						: '&purpose=Service'),
 			);
 			setSerials(serialItems.data);
 		};

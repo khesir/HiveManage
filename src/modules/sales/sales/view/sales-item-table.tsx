@@ -21,6 +21,8 @@ import {
 import {useState} from 'react';
 import {SalesItem} from '@/components/validation/sales_item';
 import {Badge} from '@/components/ui/badge';
+import {ReturnDialogue} from './actions/return-dialogue';
+import {dateParser} from '@/lib/util/utils';
 
 const columns: ColumnDef<SalesItem>[] = [
 	{
@@ -69,6 +71,21 @@ const columns: ColumnDef<SalesItem>[] = [
 			const totalValue =
 				Number(row.original.quantity) * Number(row.original.sold_price);
 			return <span>{totalValue.toFixed(2)}</span>;
+		},
+	},
+	{
+		accessorKey: 'return_qty',
+		header: 'Returned Quantity',
+	},
+	{
+		accessorKey: 'warranty_date',
+		header: 'Warranty Date',
+		cell: ({row}) => dateParser(row.original.warranty_date ?? ''),
+	},
+	{
+		header: 'Action',
+		cell: ({row}) => {
+			return <ReturnDialogue salesItem={row.original} />;
 		},
 	},
 ];

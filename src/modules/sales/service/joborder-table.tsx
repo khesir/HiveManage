@@ -36,6 +36,7 @@ import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {Joborder} from '@/components/validation/joborder';
 import {JoborderCreateDialog} from './create/create-joborder-form';
+import {ServiceChartsDialog} from './_components/reports/service-charts-dialog';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -181,7 +182,10 @@ export function JoborderTable<TData extends Joborder, TValue>({
 						</DropdownMenu>
 					</div>
 				</div>
-				<JoborderCreateDialog />
+				<div className="flex gap-3">
+					<ServiceChartsDialog />
+					<JoborderCreateDialog />
+				</div>
 			</div>
 			<ScrollArea className="h-[calc(90vh-220px)] rounded-md border">
 				<Table className="relative">
