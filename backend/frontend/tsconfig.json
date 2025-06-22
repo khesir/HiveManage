@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+
+    "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
+  
+    "target": "ESNext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+  
+    "module": "CommonJS",                                /* Specify what module code is generated. */
+    "rootDir": ".",                                  /* Specify the root folder within your source files. */
+    "baseUrl": ".",
+    "paths": {
+      "@/*" : [
+        "./*"
+      ],
+    },                                    
+    
+    "types": ["@types/jest"],                                     
+    "resolveJsonModule": true,                        /* Enable importing .json files. */
+    "declaration": true,                              /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
+
+    "outDir": "./dist",                                   /* Specify an output folder for all emitted files. */
+    "removeComments": true,                           /* Disable emitting comments. */
+    
+    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
+
+    "strict": true,                                      /* Enable all strict type-checking options. */
+    "noImplicitAny": true,                            /* Enable error reporting for expressions and declarations with an implied 'any' type. */
+    "strictNullChecks": true,                         /* When type checking, take into account 'null' and 'undefined'. */
+ 
+    "strictBindCallApply": true,                      /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
+  
+    "noFallthroughCasesInSwitch": true,               /* Enable error reporting for fallthrough cases in switch statements. */
+  
+    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
+    "moduleResolution": "Node",
+  },
+  "include": ["./src/**/*", "mysql", "lib", "drizzle", "docs/swaggerDocs.ts", "drizzle.config.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+
+}
