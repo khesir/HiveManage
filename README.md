@@ -13,8 +13,46 @@ HiveManage is an all-in-one Business Management System designed to centralize op
 - 🔐 Role-based access control
 - 📊 Dashboard overview
 
-## 🛠️ Tech Stack
+---
+## 🛠 Tech Stack
 
-- **Frontend**: React (Vite), Tailwind CSS
-- **Backend**: NestJS, MySQL, Drizzle ORM
-- **Others**: Electron (desktop app wrapper), ShadCN UI, Jotai or Zustand (state), Swagger (API docs)
+| Layer     | Tech Used                                 |
+|-----------|--------------------------------------------|
+| Frontend  | React + Vite, Tailwind CSS, ShadCN UI      |
+| Backend   | NestJS, MySQL, Drizzle ORM                 |
+| Desktop   | Electron                                   |
+| Docs/API  | Swagger, Zod, YAML                         |
+| State     | Zustand                                    |
+
+---
+
+## 📦 Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/hivemanage.git
+cd hivemanage
+```
+### Install & Run Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Install & Run Backend
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the **GNU General Public License v3.0**.  
+See the [LICENSE](./LICENSE) file for full terms.
+
+Khesir © 2025
